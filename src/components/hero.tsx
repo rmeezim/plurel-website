@@ -21,9 +21,6 @@ const SERVICES = [
   { label: "PR", icon: "pr" },
 ] as const;
 
-// Angled left edge for the primary CTA — square on the right, wedge on the left.
-const CTA_CLIP = "polygon(22% 0, 100% 0, 100% 100%, 0% 100%)";
-
 function ServiceIcon({ kind }: { kind: (typeof SERVICES)[number]["icon"] }) {
   switch (kind) {
     case "brand":
@@ -201,10 +198,10 @@ export function Hero() {
     <section aria-labelledby="hero-heading">
       <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
         {/* Headline + vertical service labels */}
-        <div className="grid grid-cols-1 gap-x-8 gap-y-8 pb-10 pt-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:pb-12 lg:pt-16">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-8 pb-8 pt-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:pb-10 lg:pt-14">
           <h1
             id="hero-heading"
-            className="fade-up font-sans text-[clamp(2.5rem,6.7vw,8rem)] font-normal leading-[0.95] tracking-[-0.02em] text-ink"
+            className="fade-up font-sans text-[clamp(2.25rem,6.4vw,7.5rem)] font-normal leading-[0.95] tracking-[-0.02em] text-ink"
           >
             We build the
             <br className="hidden sm:block" /> visible layer of growth.
@@ -223,7 +220,7 @@ export function Hero() {
         </div>
 
         {/* Intro column + work showcase rail */}
-        <div className="grid grid-cols-1 gap-10 border-t border-line py-10 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-12 lg:py-12">
+        <div className="grid grid-cols-1 gap-10 border-t border-line py-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-12 lg:py-10">
           {/* Left: intro + selected work stat */}
           <div className="flex flex-col">
             <div className="flex items-center gap-3">
@@ -272,7 +269,7 @@ export function Hero() {
           {/* Right: infinite marquee of work + anchored primary CTA */}
           <div className="min-w-0">
             <div className="fade-up relative">
-              <div className="marquee-mask relative h-[340px] overflow-hidden sm:h-[380px]">
+              <div className="marquee-mask relative h-[320px] overflow-hidden sm:h-[350px]">
                 <div className="animate-marquee flex h-full w-max will-change-transform">
                   <ShowcaseCards prefix="a" />
                   <ShowcaseCards prefix="b" hidden />
@@ -289,20 +286,16 @@ export function Hero() {
               </div>
 
               {/* Primary CTA — anchored bottom-right, framed by a thick
-                  canvas-colored border so it reads as its own panel */}
+                  canvas-colored border so it reads as its own panel. The
+                  border is padding-based, so it stays perfectly even, and the
+                  inner/outer radii are concentric (outer 20 − border 9 = 11). */}
               <Link
                 href="/about"
                 className="group absolute bottom-0 right-0 z-20"
                 aria-label="Learn how we work"
               >
-                <span
-                  className="block bg-canvas p-[7px]"
-                  style={{ clipPath: CTA_CLIP }}
-                >
-                  <span
-                    className="flex items-center gap-3 bg-brand py-4 pl-9 pr-5 text-paper transition-colors group-hover:bg-[#a8302c] sm:py-5 sm:pl-11 sm:pr-6"
-                    style={{ clipPath: CTA_CLIP }}
-                  >
+                <span className="block rounded-[20px] bg-canvas p-[9px]">
+                  <span className="flex items-center gap-3 rounded-[11px] bg-brand py-4 pl-6 pr-5 text-paper transition-colors group-hover:bg-[#a8302c] sm:py-5 sm:pl-7 sm:pr-6">
                     <span className="text-base font-medium leading-tight sm:text-lg">
                       Learn how
                       <br />
