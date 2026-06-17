@@ -285,26 +285,32 @@ export function Hero() {
                 />
               </div>
 
-              {/* Primary CTA — a rounded rhombus. A skewX transform gives the
-                  slanted (parallelogram) silhouette; a real border + radius on
-                  the element underneath keep the bone frame perfectly even with
-                  concentric rounded corners. The label is counter-skewed so it
-                  stays upright. */}
+              {/* Primary CTA — a soft, premium floating capsule layered over
+                  the carousel: brand-red fill, thick warm off-white border, a
+                  thin inner outline at ~50% opacity, and a soft drop shadow so
+                  it lifts off the cards behind it. */}
               <Link
-                href="/about"
-                className="group absolute bottom-0 right-0 z-20 origin-bottom-right [transform:skewX(-14deg)]"
-                aria-label="Learn how we work"
+                href="/contact"
+                aria-label="Book Strategy Call"
+                className="group absolute -bottom-3 right-0 z-20 sm:-bottom-4"
               >
-                <span className="flex rounded-[20px] border-[9px] border-canvas bg-brand py-4 pl-6 pr-5 text-paper transition-colors group-hover:bg-[#a8302c] sm:py-5 sm:pl-7 sm:pr-6">
-                  <span className="flex items-center gap-3 [transform:skewX(14deg)]">
-                    <span className="text-base font-medium leading-tight sm:text-lg">
-                      Learn how
-                      <br />
-                      we work
-                    </span>
-                    <ArrowUpRight className="size-6 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                <div className="relative h-[120px] w-[278px] rounded-[46px] border-[10px] border-paper bg-brand shadow-[0_24px_50px_-18px_rgba(17,15,10,0.55)] transition-colors duration-300 group-hover:bg-[#b0332f] sm:h-[136px] sm:w-[306px]">
+                  {/* Thin inner outline following the same rounded shape */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-[7px] rounded-[30px] border border-paper/50"
+                  />
+                  {/* Plurel mark, top-right */}
+                  <Spark className="absolute right-6 top-5 size-4 text-paper/80" />
+                  {/* Label, left-aligned */}
+                  <span className="absolute bottom-5 left-7 font-sans text-[22px] font-medium leading-[1.14] tracking-[-0.01em] text-paper sm:text-[26px]">
+                    Book
+                    <br />
+                    Strategy Call
                   </span>
-                </span>
+                  {/* Diagonal arrow, right side */}
+                  <ArrowUpRight className="absolute bottom-5 right-6 size-6 text-paper transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </div>
               </Link>
             </div>
           </div>
