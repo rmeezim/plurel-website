@@ -21,6 +21,9 @@ const SERVICES = [
   { label: "PR", icon: "pr" },
 ] as const;
 
+// Angled left edge for the primary CTA — square on the right, wedge on the left.
+const CTA_CLIP = "polygon(22% 0, 100% 0, 100% 100%, 0% 100%)";
+
 function ServiceIcon({ kind }: { kind: (typeof SERVICES)[number]["icon"] }) {
   switch (kind) {
     case "brand":
@@ -41,6 +44,158 @@ function ServiceIcon({ kind }: { kind: (typeof SERVICES)[number]["icon"] }) {
   }
 }
 
+/**
+ * One set of showcase cards. Rendered twice (back to back) inside the marquee
+ * track so the loop is seamless. Each card carries its own right margin so the
+ * -50% translate lands exactly on the duplicate. The second set is aria-hidden.
+ */
+function ShowcaseCards({ prefix, hidden }: { prefix: string; hidden?: boolean }) {
+  const ariaHidden = hidden || undefined;
+  return (
+    <>
+      {/* 1 — Editorial collage (placeholder image) */}
+      <article
+        key={`${prefix}-collage`}
+        aria-hidden={ariaHidden}
+        className="relative mr-4 h-full w-[200px] shrink-0 overflow-hidden rounded-2xl bg-clay sm:w-[230px]"
+      >
+        <div className="absolute inset-x-0 top-0 h-1/2 -skew-y-6 bg-brand/90" />
+        <div className="absolute inset-x-0 bottom-0 h-2/5 skew-y-6 bg-ink" />
+        <span className="absolute bottom-4 left-4 font-sans text-7xl font-extrabold leading-none text-paper/90">
+          STR
+        </span>
+        <Spark className="absolute right-4 top-4 size-5 text-paper" />
+      </article>
+
+      {/* 2 — Website mockup: dark studio panel + interior shot */}
+      <article
+        key={`${prefix}-studio`}
+        aria-hidden={ariaHidden}
+        className="mr-4 flex h-full w-[340px] shrink-0 overflow-hidden rounded-2xl bg-ink text-paper sm:w-[420px]"
+      >
+        <div className="flex w-[60%] flex-col p-5 sm:p-6">
+          <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.15em] text-paper/55">
+            <span className="flex items-center gap-1.5 font-semibold text-paper">
+              <CircledX className="size-4" /> Aurem
+            </span>
+            <span className="hidden gap-2.5 sm:flex">
+              <span>Work</span>
+              <span>About</span>
+              <span>Journal</span>
+            </span>
+          </div>
+          <div className="mt-auto">
+            <h3 className="font-serif text-[26px] leading-[1.05] sm:text-3xl">
+              Strategic<span className="text-brand">*</span>
+              <br />
+              by design.
+            </h3>
+            <p className="mt-3 max-w-[26ch] text-xs leading-relaxed text-paper/60">
+              A branding and digital studio crafting considered experiences for
+              forward-thinking companies.
+            </p>
+            <span className="mt-4 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-paper/80">
+              View case study <CircledArrow className="size-4" />
+            </span>
+          </div>
+        </div>
+        {/* Placeholder interior photograph */}
+        <div
+          aria-hidden
+          className="w-[40%]"
+          style={{
+            backgroundImage:
+              "linear-gradient(155deg, #c7b49d 0%, #a65a45 70%, #4a342b 100%)",
+          }}
+        />
+      </article>
+
+      {/* 3 — Red campaign card */}
+      <article
+        key={`${prefix}-campaign`}
+        aria-hidden={ariaHidden}
+        className="mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-brand p-6 text-paper sm:w-[250px]"
+      >
+        <h3 className="font-serif text-3xl leading-[1.05] sm:text-[34px]">
+          Clarity
+          <br />
+          Builds
+          <br />
+          Confidence.
+        </h3>
+        <div className="mt-auto pt-6">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-paper/70">
+            2025 Brand Campaign
+          </p>
+          <p className="mt-3 flex items-center gap-2 text-sm font-semibold">
+            <Spark className="size-4" /> Aurem
+          </p>
+        </div>
+      </article>
+
+      {/* 4 — Plurel business card */}
+      <article
+        key={`${prefix}-card`}
+        aria-hidden={ariaHidden}
+        className="relative mr-4 h-full w-[230px] shrink-0 overflow-hidden rounded-2xl bg-charcoal p-6 text-paper sm:w-[250px]"
+      >
+        <Spark className="absolute -right-6 top-6 size-32 text-paper/10" />
+        <div className="flex h-full flex-col justify-end">
+          <p className="text-2xl font-extrabold tracking-tight text-brand">
+            PLUREL
+          </p>
+          <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-paper/50">
+            A Northeon Division
+          </p>
+        </div>
+      </article>
+
+      {/* 5 — Product shot (placeholder image) */}
+      <article
+        key={`${prefix}-product`}
+        aria-hidden={ariaHidden}
+        className="relative mr-4 h-full w-[200px] shrink-0 overflow-hidden rounded-2xl sm:w-[220px]"
+        style={{
+          backgroundImage:
+            "linear-gradient(165deg, #d8cdbb 0%, #c7b49d 55%, #a65a45 100%)",
+        }}
+      >
+        <p className="absolute left-4 top-4 max-w-[18ch] font-serif text-sm leading-snug text-ink/85">
+          Formulated for daily performance.
+        </p>
+        {/* Stand-in for the bottle product photography */}
+        <div className="absolute bottom-10 left-1/2 h-28 w-12 -translate-x-1/2 rounded-[10px] bg-ink/85">
+          <span className="absolute -top-3 left-1/2 h-3 w-5 -translate-x-1/2 rounded-sm bg-ink" />
+        </div>
+        <p className="absolute bottom-4 left-4 text-[10px] uppercase tracking-[0.2em] text-ink/60">
+          Fence Labs
+        </p>
+      </article>
+
+      {/* 6 — Plurel campaign card */}
+      <article
+        key={`${prefix}-plurel`}
+        aria-hidden={ariaHidden}
+        className="relative mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-brand p-6 text-paper sm:w-[250px]"
+      >
+        <span className="inline-flex size-10 items-center justify-center rounded-full border border-paper/40">
+          <Spark className="size-5" />
+        </span>
+        <h3 className="mt-6 font-serif text-3xl leading-[1.05]">
+          Built to
+          <br />
+          be chosen.
+        </h3>
+        <div className="mt-auto pt-6">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-paper/70">
+            Plurel &mdash; Selected Work
+          </p>
+        </div>
+      </article>
+    </>
+  );
+}
+
 export function Hero() {
   return (
     <section aria-labelledby="hero-heading">
@@ -49,7 +204,7 @@ export function Hero() {
         <div className="grid grid-cols-1 gap-x-8 gap-y-8 pb-10 pt-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:pb-12 lg:pt-16">
           <h1
             id="hero-heading"
-            className="fade-up font-sans text-[clamp(2.5rem,6.7vw,8rem)] font-extrabold leading-[0.92] tracking-[-0.03em] text-ink"
+            className="fade-up font-sans text-[clamp(2.5rem,6.7vw,8rem)] font-normal leading-[0.95] tracking-[-0.02em] text-ink"
           >
             We build the
             <br className="hidden sm:block" /> visible layer of growth.
@@ -97,10 +252,10 @@ export function Hero() {
               <div className="flex items-end justify-between gap-4">
                 <div>
                   <div className="flex items-start gap-1">
-                    <span className="text-6xl font-extrabold leading-none tracking-tight text-ink">
+                    <span className="text-6xl font-normal leading-none tracking-tight text-ink">
                       120
                     </span>
-                    <span className="text-2xl font-bold leading-none text-brand">
+                    <span className="text-2xl font-normal leading-none text-brand">
                       +
                     </span>
                   </div>
@@ -114,138 +269,50 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right: horizontally scrollable showcase */}
-          <div className="relative min-w-0">
-            <div className="no-scrollbar fade-up flex h-[340px] snap-x snap-mandatory gap-4 overflow-x-auto pb-1 sm:h-[380px]">
-              {/* 1 — Editorial collage (placeholder image) */}
-              <article className="relative h-full w-[200px] shrink-0 snap-start overflow-hidden rounded-2xl bg-clay sm:w-[230px]">
-                <div className="absolute inset-x-0 top-0 h-1/2 -skew-y-6 bg-brand/90" />
-                <div className="absolute inset-x-0 bottom-0 h-2/5 skew-y-6 bg-ink" />
-                <span className="absolute bottom-4 left-4 font-sans text-7xl font-extrabold leading-none text-paper/90">
-                  STR
-                </span>
-                <Spark className="absolute right-4 top-4 size-5 text-paper" />
-              </article>
-
-              {/* 2 — Website mockup: dark studio panel + interior shot */}
-              <article className="flex h-full w-[340px] shrink-0 snap-start overflow-hidden rounded-2xl bg-ink text-paper sm:w-[420px]">
-                <div className="flex w-[60%] flex-col p-5 sm:p-6">
-                  <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.15em] text-paper/55">
-                    <span className="flex items-center gap-1.5 font-semibold text-paper">
-                      <CircledX className="size-4" /> Aurem
-                    </span>
-                    <span className="hidden gap-2.5 sm:flex">
-                      <span>Work</span>
-                      <span>About</span>
-                      <span>Journal</span>
-                    </span>
-                  </div>
-                  <div className="mt-auto">
-                    <h3 className="font-serif text-[26px] leading-[1.05] sm:text-3xl">
-                      Strategic<span className="text-brand">*</span>
-                      <br />
-                      by design.
-                    </h3>
-                    <p className="mt-3 max-w-[26ch] text-xs leading-relaxed text-paper/60">
-                      A branding and digital studio crafting considered
-                      experiences for forward-thinking companies.
-                    </p>
-                    <span className="mt-4 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-paper/80">
-                      View case study <CircledArrow className="size-4" />
-                    </span>
-                  </div>
+          {/* Right: infinite marquee of work + anchored primary CTA */}
+          <div className="min-w-0">
+            <div className="fade-up relative">
+              <div className="marquee-mask relative h-[340px] overflow-hidden sm:h-[380px]">
+                <div className="animate-marquee flex h-full w-max will-change-transform">
+                  <ShowcaseCards prefix="a" />
+                  <ShowcaseCards prefix="b" hidden />
                 </div>
-                {/* Placeholder interior photograph */}
+                {/* Edge fades */}
                 <div
                   aria-hidden
-                  className="w-[40%]"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(155deg, #c7b49d 0%, #a65a45 70%, #4a342b 100%)",
-                  }}
+                  className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-canvas to-transparent"
                 />
-              </article>
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-canvas to-transparent"
+                />
+              </div>
 
-              {/* 3 — Red campaign card */}
-              <article className="flex h-full w-[230px] shrink-0 snap-start flex-col rounded-2xl bg-brand p-6 text-paper sm:w-[250px]">
-                <h3 className="font-serif text-3xl leading-[1.05] sm:text-[34px]">
-                  Clarity
-                  <br />
-                  Builds
-                  <br />
-                  Confidence.
-                </h3>
-                <div className="mt-auto pt-6">
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-paper/70">
-                    2025 Brand Campaign
-                  </p>
-                  <p className="mt-3 flex items-center gap-2 text-sm font-semibold">
-                    <Spark className="size-4" /> Aurem
-                  </p>
-                </div>
-              </article>
-
-              {/* 4 — Plurel business card */}
-              <article className="relative h-full w-[230px] shrink-0 snap-start overflow-hidden rounded-2xl bg-charcoal p-6 text-paper sm:w-[250px]">
-                <Spark className="absolute -right-6 top-6 size-32 text-paper/10" />
-                <div className="flex h-full flex-col justify-end">
-                  <p className="text-2xl font-extrabold tracking-tight text-brand">
-                    PLUREL
-                  </p>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-paper/50">
-                    A Northeon Division
-                  </p>
-                </div>
-              </article>
-
-              {/* 5 — Product shot (placeholder image) */}
-              <article
-                className="relative h-full w-[200px] shrink-0 snap-start overflow-hidden rounded-2xl sm:w-[220px]"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(165deg, #d8cdbb 0%, #c7b49d 55%, #a65a45 100%)",
-                }}
-              >
-                <p className="absolute left-4 top-4 max-w-[18ch] font-serif text-sm leading-snug text-ink/85">
-                  Formulated for daily performance.
-                </p>
-                {/* Stand-in for the bottle product photography */}
-                <div className="absolute bottom-10 left-1/2 h-28 w-12 -translate-x-1/2 rounded-[10px] bg-ink/85">
-                  <span className="absolute -top-3 left-1/2 h-3 w-5 -translate-x-1/2 rounded-sm bg-ink" />
-                </div>
-                <p className="absolute bottom-4 left-4 text-[10px] uppercase tracking-[0.2em] text-ink/60">
-                  Fence Labs
-                </p>
-              </article>
-
-              {/* 6 — Book Strategy Call CTA card */}
+              {/* Primary CTA — anchored bottom-right, framed by a thick
+                  canvas-colored border so it reads as its own panel */}
               <Link
-                href="/contact"
-                className="group relative flex h-full w-[230px] shrink-0 snap-start flex-col rounded-2xl bg-brand p-6 text-paper transition-colors hover:bg-[#a8302c] sm:w-[250px]"
+                href="/about"
+                className="group absolute bottom-0 right-0 z-20"
+                aria-label="Learn how we work"
               >
-                <span className="inline-flex size-10 items-center justify-center rounded-full border border-paper/40">
-                  <Spark className="size-5" />
+                <span
+                  className="block bg-canvas p-[7px]"
+                  style={{ clipPath: CTA_CLIP }}
+                >
+                  <span
+                    className="flex items-center gap-3 bg-brand py-4 pl-9 pr-5 text-paper transition-colors group-hover:bg-[#a8302c] sm:py-5 sm:pl-11 sm:pr-6"
+                    style={{ clipPath: CTA_CLIP }}
+                  >
+                    <span className="text-base font-medium leading-tight sm:text-lg">
+                      Learn how
+                      <br />
+                      we work
+                    </span>
+                    <ArrowUpRight className="size-6 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </span>
                 </span>
-                <h3 className="mt-6 text-3xl font-extrabold leading-[1.05]">
-                  Book
-                  <br />
-                  Strategy
-                  <br />
-                  Call
-                </h3>
-                <div className="mt-auto flex items-end justify-between gap-3 border-t border-paper/30 pt-4">
-                  <p className="max-w-[14ch] text-sm text-paper/85">
-                    Let&rsquo;s build what sets you apart.
-                  </p>
-                  <ArrowUpRight className="size-6 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </div>
               </Link>
             </div>
-            {/* Scroll hint fade on the right edge */}
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 right-0 hidden w-12 bg-gradient-to-l from-canvas to-transparent lg:block"
-            />
           </div>
         </div>
 
