@@ -285,31 +285,28 @@ export function Hero() {
                 />
               </div>
 
-              {/* Primary CTA — a soft, premium floating capsule layered over
-                  the carousel: brand-red fill, thick warm off-white border, a
-                  thin inner outline at ~50% opacity, and a soft drop shadow so
-                  it lifts off the cards behind it. */}
+              {/* Primary CTA — an edge-docked foreground panel. Anchored to the
+                  bottom-right of the slider and overlapping down toward the
+                  service divider, with a page-cream cutout mask and a square
+                  docked corner so it reads as a fixed panel above the cards. */}
               <Link
                 href="/contact"
                 aria-label="Book Strategy Call"
-                className="group absolute -bottom-3 right-0 z-20 sm:-bottom-4"
+                className="group absolute -bottom-8 right-0 z-20 lg:-bottom-10"
               >
-                <div className="relative h-[120px] w-[278px] rounded-[46px] border-[10px] border-paper bg-brand shadow-[0_24px_50px_-18px_rgba(17,15,10,0.55)] transition-colors duration-300 group-hover:bg-[#b0332f] sm:h-[136px] sm:w-[306px]">
-                  {/* Thin inner outline following the same rounded shape */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-[7px] rounded-[30px] border border-paper/50"
-                  />
-                  {/* Plurel mark, top-right */}
-                  <Spark className="absolute right-6 top-5 size-4 text-paper/80" />
-                  {/* Label, left-aligned */}
-                  <span className="absolute bottom-5 left-7 font-sans text-[22px] font-medium leading-[1.14] tracking-[-0.01em] text-paper sm:text-[26px]">
-                    Book
-                    <br />
-                    Strategy Call
-                  </span>
-                  {/* Diagonal arrow, right side */}
-                  <ArrowUpRight className="absolute bottom-5 right-6 size-6 text-paper transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                <div className="rounded-[24px] rounded-br-none bg-canvas p-[8px] shadow-[0_16px_32px_-18px_rgba(17,15,10,0.5)]">
+                  <div className="relative h-[100px] w-[284px] overflow-hidden rounded-[16px] rounded-br-none bg-brand transition-colors duration-300 group-hover:bg-[#b0332f] sm:h-[112px] sm:w-[316px]">
+                    {/* Plurel mark, subtle, top-right */}
+                    <Spark className="absolute right-5 top-4 size-3.5 text-paper/70" />
+                    {/* Label, left-aligned */}
+                    <span className="absolute bottom-4 left-6 font-sans text-[21px] font-medium leading-[1.16] tracking-[-0.01em] text-paper sm:text-[24px]">
+                      Book
+                      <br />
+                      Strategy Call
+                    </span>
+                    {/* Diagonal arrow, right */}
+                    <ArrowUpRight className="absolute bottom-4 right-5 size-5 text-paper transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </div>
                 </div>
               </Link>
             </div>
