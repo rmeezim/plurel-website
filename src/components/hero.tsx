@@ -285,17 +285,18 @@ export function Hero() {
                 />
               </div>
 
-              {/* Primary CTA — anchored bottom-right, framed by a thick
-                  canvas-colored border so it reads as its own panel. The
-                  border is padding-based, so it stays perfectly even, and the
-                  inner/outer radii are concentric (outer 20 − border 9 = 11). */}
+              {/* Primary CTA — a rounded rhombus. A skewX transform gives the
+                  slanted (parallelogram) silhouette; a real border + radius on
+                  the element underneath keep the bone frame perfectly even with
+                  concentric rounded corners. The label is counter-skewed so it
+                  stays upright. */}
               <Link
                 href="/about"
-                className="group absolute bottom-0 right-0 z-20"
+                className="group absolute bottom-0 right-0 z-20 origin-bottom-right [transform:skewX(-14deg)]"
                 aria-label="Learn how we work"
               >
-                <span className="block rounded-[20px] bg-canvas p-[9px]">
-                  <span className="flex items-center gap-3 rounded-[11px] bg-brand py-4 pl-6 pr-5 text-paper transition-colors group-hover:bg-[#a8302c] sm:py-5 sm:pl-7 sm:pr-6">
+                <span className="flex rounded-[20px] border-[9px] border-canvas bg-brand py-4 pl-6 pr-5 text-paper transition-colors group-hover:bg-[#a8302c] sm:py-5 sm:pl-7 sm:pr-6">
+                  <span className="flex items-center gap-3 [transform:skewX(14deg)]">
                     <span className="text-base font-medium leading-tight sm:text-lg">
                       Learn how
                       <br />
