@@ -187,13 +187,15 @@ export function JournalSection() {
             </span>
           </Link>
 
-          {/* Compact index */}
-          <ul className="divide-y divide-line lg:self-center">
-            {POSTS.map((post) => (
+          {/* Compact index — top-aligned with the featured cover */}
+          <ul className="divide-y divide-line lg:self-start">
+            {POSTS.map((post, index) => (
               <li key={post.title}>
                 <Link
                   href="/blog"
-                  className="group grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-x-5 py-5"
+                  className={`group grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-x-5 pb-5 ${
+                    index === 0 ? "pt-0" : "pt-5"
+                  }`}
                 >
                   <span className="block size-[72px] overflow-hidden rounded-xl transition-transform duration-300 group-hover:scale-[1.04]">
                     <PostThumb kind={post.thumb} />
