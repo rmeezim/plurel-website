@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, Spark } from "@/components/icons";
+import { ManifestoStatement } from "@/components/manifesto-statement";
 
 export function ManifestoSection() {
   return (
@@ -14,16 +15,7 @@ export function ManifestoSection() {
           The Plurel manifesto
         </p>
 
-        <h2
-          id="manifesto-heading"
-          className="mt-8 max-w-[26ch] font-sans text-[clamp(1.9rem,4.4vw,4rem)] font-normal leading-[1.12] tracking-[-0.02em]"
-        >
-          Most businesses don&rsquo;t have a quality problem &mdash; they have
-          a <em className="font-serif italic text-clay">presence</em>
-          {" problem. We build the visible layer of your brand, so the work "}
-          you&rsquo;re proud of finally{" "}
-          <em className="font-serif italic text-clay">looks the part</em>.
-        </h2>
+        <ManifestoStatement />
 
         <div className="mt-12 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-paper/15 pt-6">
           <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-paper/50">
