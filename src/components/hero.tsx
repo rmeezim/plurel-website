@@ -274,14 +274,15 @@ export function Hero() {
                   <ShowcaseCards prefix="a" />
                   <ShowcaseCards prefix="b" hidden />
                 </div>
-                {/* Edge fades */}
+                {/* Raised-edge shadows — the page surface on either side reads
+                    as a layer sitting above the cards passing beneath it */}
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-canvas to-transparent"
+                  className="pointer-events-none absolute inset-y-0 left-0 w-5 bg-gradient-to-r from-ink/35 via-ink/10 via-45% to-transparent"
                 />
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-canvas to-transparent"
+                  className="pointer-events-none absolute inset-y-0 right-0 w-5 bg-gradient-to-l from-ink/35 via-ink/10 via-45% to-transparent"
                 />
               </div>
 
