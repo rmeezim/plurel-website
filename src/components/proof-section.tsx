@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { ArrowDownRight, ArrowUpRight, Spark } from "@/components/icons";
-
-const STATS = [
-  { value: "3.2", suffix: "×", label: "Average lift in qualified inquiries" },
-  { value: "+64", suffix: "%", label: "Average conversion-rate improvement" },
-  { value: "+185", suffix: "%", label: "Organic & AI-search visibility gained" },
-  { value: "0.9", suffix: "s", label: "Median page load after rebuild" },
-] as const;
+import { ProofStats } from "@/components/proof-stats";
 
 const CASES = [
   {
@@ -77,27 +71,8 @@ export function ProofSection() {
           <em className="font-serif italic text-clay">measure</em>.
         </h2>
 
-        {/* Headline metrics */}
-        <dl className="mt-12 grid grid-cols-2 gap-y-10 lg:mt-16 lg:grid-cols-4">
-          {STATS.map((stat) => (
-            <div
-              key={stat.label}
-              className="border-l border-paper/15 pl-5 sm:pl-6"
-            >
-              <dd className="flex items-start gap-0.5">
-                <span className="text-5xl font-normal leading-none tracking-[-0.02em] sm:text-6xl">
-                  {stat.value}
-                </span>
-                <span className="text-xl font-normal leading-none text-brand sm:text-2xl">
-                  {stat.suffix}
-                </span>
-              </dd>
-              <dt className="mt-3 max-w-[24ch] text-[13px] leading-relaxed text-paper/60">
-                {stat.label}
-              </dt>
-            </div>
-          ))}
-        </dl>
+        {/* Headline metrics — count up from zero when scrolled into view */}
+        <ProofStats />
 
         {/* Client result cards */}
         <div className="mt-14 grid grid-cols-1 gap-5 lg:mt-16 lg:grid-cols-3 lg:gap-6">
