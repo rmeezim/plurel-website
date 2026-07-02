@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ArrowDownRight,
   ArrowUpRight,
-  CircledArrow,
   CircledX,
   Globe,
   Layers,
@@ -10,6 +9,9 @@ import {
   Spark,
   Trend,
 } from "@/components/icons";
+
+/** Days lit up in the Content Engine card's mini calendar */
+const HERO_CALENDAR_PUBLISHED = new Set([1, 4, 8, 11, 15, 22, 25]);
 
 const SIDE_LABELS = ["Brand Systems", "Web Design", "Content / PR"];
 
@@ -42,31 +44,46 @@ function ServiceIcon({ kind }: { kind: (typeof SERVICES)[number]["icon"] }) {
 }
 
 /**
- * One set of showcase cards. Rendered twice (back to back) inside the marquee
- * track so the loop is seamless. Each card carries its own right margin so the
- * -50% translate lands exactly on the duplicate. The second set is aria-hidden.
+ * One set of showcase cards — each represents a capability of the Plurel
+ * operating system, tagged consistently. Rendered twice (back to back) inside
+ * the marquee track so the loop is seamless. Each card carries its own right
+ * margin so the -50% translate lands exactly on the duplicate. The second set
+ * is aria-hidden.
  */
 function ShowcaseCards({ prefix, hidden }: { prefix: string; hidden?: boolean }) {
   const ariaHidden = hidden || undefined;
   return (
     <>
-      {/* 1 — Editorial collage (placeholder image) */}
+      {/* 1 — Brand System: identity tiles */}
       <article
-        key={`${prefix}-collage`}
+        key={`${prefix}-brand`}
         aria-hidden={ariaHidden}
-        className="relative mr-4 h-full w-[200px] shrink-0 overflow-hidden rounded-2xl bg-clay sm:w-[230px]"
+        className="mr-4 flex h-full w-[210px] shrink-0 flex-col overflow-hidden rounded-2xl bg-ink p-4 sm:w-[230px]"
       >
-        <div className="absolute inset-x-0 top-0 h-1/2 -skew-y-6 bg-brand/90" />
-        <div className="absolute inset-x-0 bottom-0 h-2/5 skew-y-6 bg-ink" />
-        <span className="absolute bottom-4 left-4 font-sans text-7xl font-extrabold leading-none text-paper/90">
-          STR
+        <span className="grid flex-1 grid-cols-2 gap-2">
+          <span className="flex items-center justify-center rounded-lg bg-brand">
+            <Spark className="size-6 text-paper" />
+          </span>
+          <span className="flex items-center justify-center rounded-lg bg-paper font-serif text-3xl leading-none text-ink">
+            Aa
+          </span>
+          <span className="flex items-center justify-center gap-1.5 rounded-lg bg-charcoal">
+            <span className="size-2.5 rounded-full bg-brand" />
+            <span className="size-2.5 rounded-full bg-clay" />
+            <span className="size-2.5 rounded-full bg-paper" />
+          </span>
+          <span className="flex items-center justify-center rounded-lg bg-clay text-[10px] font-semibold tracking-[0.3em] text-ink">
+            PLU
+          </span>
         </span>
-        <Spark className="absolute right-4 top-4 size-5 text-paper" />
+        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
+          <Spark className="size-3 text-brand" /> Brand System
+        </span>
       </article>
 
-      {/* 2 — Website mockup: dark studio panel + interior shot */}
+      {/* 2 — Website Experience: dark studio mockup + interior shot */}
       <article
-        key={`${prefix}-studio`}
+        key={`${prefix}-web`}
         aria-hidden={ariaHidden}
         className="mr-4 flex h-full w-[340px] shrink-0 overflow-hidden rounded-2xl bg-ink text-paper sm:w-[420px]"
       >
@@ -91,8 +108,8 @@ function ShowcaseCards({ prefix, hidden }: { prefix: string; hidden?: boolean })
               A branding and digital studio crafting considered experiences for
               forward-thinking companies.
             </p>
-            <span className="mt-4 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.12em] text-paper/80">
-              View case study <CircledArrow className="size-4" />
+            <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
+              <Spark className="size-3 text-brand" /> Website Experience
             </span>
           </div>
         </div>
@@ -107,87 +124,131 @@ function ShowcaseCards({ prefix, hidden }: { prefix: string; hidden?: boolean })
         />
       </article>
 
-      {/* 3 — Red campaign card */}
+      {/* 3 — AI Search Visibility: rising query graph */}
+      <article
+        key={`${prefix}-search`}
+        aria-hidden={ariaHidden}
+        className="mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-charcoal p-5 text-paper sm:w-[250px]"
+      >
+        <span className="flex h-9 items-center gap-2 rounded-full bg-paper/10 px-3">
+          <span className="size-2.5 rounded-full border border-paper/50" />
+          <span className="h-1.5 w-20 rounded-full bg-paper/25" />
+        </span>
+        <span className="mt-3 text-right text-sm font-medium leading-none text-brand">
+          +185%
+        </span>
+        <span className="mt-auto flex h-28 items-end gap-2">
+          {["30%", "44%", "58%", "76%", "100%"].map((h, i) => (
+            <span
+              key={h}
+              style={{ height: h }}
+              className={`flex-1 rounded-t-md ${i === 4 ? "bg-brand" : "bg-paper/20"}`}
+            />
+          ))}
+        </span>
+        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
+          <Spark className="size-3 text-brand" /> AI Search Visibility
+        </span>
+      </article>
+
+      {/* 4 — Content Engine: editorial calendar */}
+      <article
+        key={`${prefix}-content`}
+        aria-hidden={ariaHidden}
+        className="mr-4 flex h-full w-[210px] shrink-0 flex-col rounded-2xl border border-line bg-paper p-5 text-ink sm:w-[230px]"
+      >
+        <span className="flex items-center justify-between">
+          <span className="text-[10px] font-semibold tracking-[0.25em] text-muted">
+            JUL
+          </span>
+          <span className="size-2 rounded-full bg-brand" />
+        </span>
+        <span className="mt-3 grid flex-1 grid-cols-7 content-start gap-1.5">
+          {Array.from({ length: 28 }, (_, i) => (
+            <span
+              key={i}
+              className={`aspect-square rounded-[3px] ${
+                HERO_CALENDAR_PUBLISHED.has(i)
+                  ? "bg-brand"
+                  : i === 17
+                    ? "bg-clay"
+                    : "bg-line/70"
+              }`}
+            />
+          ))}
+        </span>
+        <span className="mt-3 space-y-1.5">
+          <span className="block h-1.5 w-3/4 rounded-full bg-line" />
+          <span className="block h-1.5 w-1/2 rounded-full bg-line/70" />
+        </span>
+        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-ink/60">
+          <Spark className="size-3 text-brand" /> Content Engine
+        </span>
+      </article>
+
+      {/* 5 — Campaign Intelligence: funnel + return stat */}
       <article
         key={`${prefix}-campaign`}
         aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-brand p-6 text-paper sm:w-[250px]"
+        className="mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-brand p-5 text-paper sm:w-[250px]"
       >
-        <h3 className="font-serif text-3xl leading-[1.05] sm:text-[34px]">
-          Clarity
-          <br />
-          Builds
+        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-paper/70">
+          <span>Q3 &mdash; Awareness</span>
+          <span className="text-sm font-semibold normal-case tracking-normal text-paper">
+            4.2&times;
+          </span>
+        </span>
+        <h3 className="mt-4 font-serif text-[26px] leading-[1.08]">
+          Clarity Builds
           <br />
           Confidence.
         </h3>
-        <div className="mt-auto pt-6">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-paper/70">
-            2025 Brand Campaign
-          </p>
-          <p className="mt-3 flex items-center gap-2 text-sm font-semibold">
-            <Spark className="size-4" /> Aurem
-          </p>
-        </div>
-      </article>
-
-      {/* 4 — Plurel business card */}
-      <article
-        key={`${prefix}-card`}
-        aria-hidden={ariaHidden}
-        className="relative mr-4 h-full w-[230px] shrink-0 overflow-hidden rounded-2xl bg-charcoal p-6 text-paper sm:w-[250px]"
-      >
-        <Spark className="absolute -right-6 top-6 size-32 text-paper/10" />
-        <div className="flex h-full flex-col justify-end">
-          <p className="text-2xl font-extrabold tracking-tight text-brand">
-            PLUREL
-          </p>
-          <p className="mt-1 text-[10px] uppercase tracking-[0.22em] text-paper/50">
-            A Northeon Division
-          </p>
-        </div>
-      </article>
-
-      {/* 5 — Product shot (placeholder image) */}
-      <article
-        key={`${prefix}-product`}
-        aria-hidden={ariaHidden}
-        className="relative mr-4 h-full w-[200px] shrink-0 overflow-hidden rounded-2xl sm:w-[220px]"
-        style={{
-          backgroundImage:
-            "linear-gradient(165deg, #d8cdbb 0%, #c7b49d 55%, #a65a45 100%)",
-        }}
-      >
-        <p className="absolute left-4 top-4 max-w-[18ch] font-serif text-sm leading-snug text-ink/85">
-          Formulated for daily performance.
-        </p>
-        {/* Stand-in for the bottle product photography */}
-        <div className="absolute bottom-10 left-1/2 h-28 w-12 -translate-x-1/2 rounded-[10px] bg-ink/85">
-          <span className="absolute -top-3 left-1/2 h-3 w-5 -translate-x-1/2 rounded-sm bg-ink" />
-        </div>
-        <p className="absolute bottom-4 left-4 text-[10px] uppercase tracking-[0.2em] text-ink/60">
-          Fence Labs
-        </p>
-      </article>
-
-      {/* 6 — Plurel campaign card */}
-      <article
-        key={`${prefix}-plurel`}
-        aria-hidden={ariaHidden}
-        className="relative mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-brand p-6 text-paper sm:w-[250px]"
-      >
-        <span className="inline-flex size-10 items-center justify-center rounded-full border border-paper/40">
-          <Spark className="size-5" />
+        <span className="mt-auto flex flex-col gap-1.5">
+          <span className="h-2.5 w-full rounded-full bg-paper/25" />
+          <span className="h-2.5 w-[70%] rounded-full bg-paper/40" />
+          <span className="h-2.5 w-[44%] rounded-full bg-paper/60" />
+          <span className="h-2.5 w-[26%] rounded-full bg-paper" />
         </span>
-        <h3 className="mt-6 font-serif text-3xl leading-[1.05]">
-          Built to
-          <br />
-          be chosen.
-        </h3>
-        <div className="mt-auto pt-6">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-paper/70">
-            Plurel &mdash; Selected Work
-          </p>
-        </div>
+        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/80">
+          <Spark className="size-3 text-paper" /> Campaign Intelligence
+        </span>
+      </article>
+
+      {/* 6 — Reputation Layer: trust signal map */}
+      <article
+        key={`${prefix}-reputation`}
+        aria-hidden={ariaHidden}
+        className="mr-4 flex h-full w-[210px] shrink-0 flex-col rounded-2xl bg-rust p-5 text-paper sm:w-[230px]"
+      >
+        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-paper/70">
+          <span>Signals</span>
+          <span className="text-sm font-semibold normal-case tracking-normal text-paper">
+            40+
+          </span>
+        </span>
+        <span className="my-auto block">
+          <svg viewBox="0 0 100 70" className="w-full">
+            <g stroke="#fbfaf6" strokeOpacity="0.35" strokeWidth="0.75">
+              <line x1="50" y1="37" x2="14" y2="14" />
+              <line x1="50" y1="37" x2="56" y2="8" />
+              <line x1="50" y1="37" x2="87" y2="16" />
+              <line x1="50" y1="37" x2="90" y2="52" />
+              <line x1="50" y1="37" x2="16" y2="58" />
+            </g>
+            <g fill="#fbfaf6" fillOpacity="0.7">
+              <circle cx="14" cy="14" r="2.6" />
+              <circle cx="56" cy="8" r="2.6" />
+              <circle cx="87" cy="16" r="2.6" />
+              <circle cx="90" cy="52" r="2.6" />
+              <circle cx="16" cy="58" r="2.6" />
+            </g>
+            <circle cx="50" cy="37" r="6" fill="#110f0a" />
+            <circle cx="50" cy="37" r="2" fill="#fbfaf6" />
+          </svg>
+        </span>
+        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/80">
+          <Spark className="size-3 text-paper" /> Reputation Layer
+        </span>
       </article>
     </>
   );
@@ -290,11 +351,14 @@ export function Hero() {
                   the slider's bottom-right corner: a canvas mask pads its top
                   and left edges, and two concave fillets weld the cutout into
                   the slider's bottom and right boundaries, so the page surface
-                  flows around it like the raised tab of a folder. */}
+                  flows around it like the raised tab of a folder. The outer
+                  wrapper clips the cast shadow so it falls only up/left onto
+                  the cards — never onto the page below or right of the tab. */}
+              <div className="pointer-events-none absolute bottom-0 right-0 z-20 overflow-hidden pl-12 pt-12">
               <Link
                 href="/contact"
                 aria-label="Book Strategy Call"
-                className="group absolute bottom-0 right-0 z-20 block rounded-tl-[25px] bg-canvas pl-[9px] pt-[9px] [filter:drop-shadow(-6px_-6px_10px_rgba(17,15,10,0.22))]"
+                className="group pointer-events-auto relative block rounded-tl-[25px] bg-canvas pl-[9px] pt-[9px] [filter:drop-shadow(-6px_-6px_10px_rgba(17,15,10,0.22))]"
               >
                 {/* Concave fillets — page-colored quarter-curves that blend
                     the tab into the slider's right and bottom edges */}
@@ -327,6 +391,7 @@ export function Hero() {
                   <ArrowUpRight className="absolute bottom-4 right-5 size-5 text-paper transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </span>
               </Link>
+              </div>
             </div>
           </div>
         </div>

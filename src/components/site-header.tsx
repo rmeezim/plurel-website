@@ -51,7 +51,7 @@ export function SiteHeader() {
             href="/contact"
             className="hidden items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-[#a8302c] sm:inline-flex"
           >
-            Book Strategy Call
+            Book Growth Audit
             <ArrowUpRight className="size-4" />
           </Link>
           <button
@@ -85,7 +85,7 @@ export function SiteHeader() {
               onClick={() => setOpen(false)}
               className="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-3 text-sm font-medium text-paper"
             >
-              Book Strategy Call
+              Book Growth Audit
               <ArrowUpRight className="size-4" />
             </Link>
           </nav>
