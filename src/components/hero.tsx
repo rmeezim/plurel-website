@@ -294,7 +294,7 @@ export function Hero() {
               <Link
                 href="/contact"
                 aria-label="Book Strategy Call"
-                className="group absolute bottom-0 right-0 z-20 block rounded-tl-[25px] bg-canvas pl-[9px] pt-[9px]"
+                className="group absolute bottom-0 right-0 z-20 block rounded-tl-[25px] bg-canvas pl-[9px] pt-[9px] [filter:drop-shadow(-6px_-6px_10px_rgba(17,15,10,0.22))]"
               >
                 {/* Concave fillets — page-colored quarter-curves that blend
                     the tab into the slider's right and bottom edges */}
