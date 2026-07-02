@@ -5,11 +5,15 @@ function CaseCard({
   name,
   services,
   year,
+  metricValue,
+  metricLabel,
   children,
 }: {
   name: string;
   services: string;
   year: string;
+  metricValue: string;
+  metricLabel: string;
   children: React.ReactNode;
 }) {
   return (
@@ -31,6 +35,11 @@ function CaseCard({
           </h3>
           <p className="mt-1 text-[13px] text-muted">
             {services} &mdash; {year}
+          </p>
+          {/* Outcome chip — the transformation behind the visual */}
+          <p className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-[11px]">
+            <span className="font-medium text-brand">{metricValue}</span>
+            <span className="text-muted">{metricLabel}</span>
           </p>
         </div>
         <ArrowUpRight className="mt-1.5 size-5 shrink-0 text-ink transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -73,7 +82,13 @@ export function WorkSection() {
             lg bottom padding absorbs the translate so nothing overlaps */}
         <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-12 sm:grid-cols-2 lg:mt-14 lg:gap-10 lg:pb-12 lg:[&>*:nth-child(even)]:translate-y-12">
           {/* 1 — Aurem: dark studio mockup */}
-          <CaseCard name="Aurem" services="Brand Identity, Web Design" year="2025">
+          <CaseCard
+            name="Aurem"
+            services="Brand Identity, Web Design"
+            year="2025"
+            metricValue="+212%"
+            metricLabel="qualified inquiries"
+          >
             <div className="flex h-full flex-col bg-ink p-6 text-paper sm:p-8">
               <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.15em] text-paper/55">
                 <span className="flex items-center gap-1.5 font-semibold text-paper">
@@ -97,7 +112,13 @@ export function WorkSection() {
           </CaseCard>
 
           {/* 2 — Fence Labs: warm product still-life */}
-          <CaseCard name="Fence Labs" services="Packaging, Art Direction" year="2025">
+          <CaseCard
+            name="Fence Labs"
+            services="Packaging, Art Direction"
+            year="2025"
+            metricValue="+64%"
+            metricLabel="DTC conversion"
+          >
             <div
               className="relative h-full"
               style={{
@@ -120,7 +141,13 @@ export function WorkSection() {
           </CaseCard>
 
           {/* 3 — Northgate Legal: editorial typography study */}
-          <CaseCard name="Northgate Legal" services="Website, AEO/SEO" year="2024">
+          <CaseCard
+            name="Northgate Legal"
+            services="Website, AEO/SEO"
+            year="2024"
+            metricValue="+185%"
+            metricLabel="search visibility"
+          >
             <div className="flex h-full flex-col bg-paper p-6 sm:p-8">
               <div className="flex items-center justify-between border-b border-line pb-3 text-[9px] uppercase tracking-[0.2em] text-muted">
                 <span>Northgate Legal</span>
@@ -142,7 +169,13 @@ export function WorkSection() {
           </CaseCard>
 
           {/* 4 — Mara Atelier: brand campaign card */}
-          <CaseCard name="Mara Atelier" services="Brand Identity, Content" year="2024">
+          <CaseCard
+            name="Mara Atelier"
+            services="Brand Identity, Content"
+            year="2024"
+            metricValue="2.6&times;"
+            metricLabel="email-driven revenue"
+          >
             <div className="flex h-full flex-col bg-brand p-6 text-paper sm:p-8">
               <span className="inline-flex size-10 items-center justify-center rounded-full border border-paper/40">
                 <Spark className="size-5" />

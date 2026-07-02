@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { ArrowUpRight, Spark } from "@/components/icons";
+import { ArrowUpRight, Spark, Trend } from "@/components/icons";
+
+const FLOW_PHASES = ["Diagnose", "Design", "Deploy", "Compound"] as const;
 
 export function CtaSection() {
   return (
@@ -30,7 +32,22 @@ export function CtaSection() {
           read on your brand, your visibility, and your next move &mdash;
           whatever you decide.
         </p>
-        <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+        {/* The system behind the call — operating-model flow */}
+        <div aria-hidden className="mt-9 hidden items-center sm:flex">
+          {FLOW_PHASES.map((phase, index) => (
+            <span key={phase} className="flex items-center">
+              {index > 0 && <span className="h-px w-7 bg-paper/35" />}
+              <span className="flex items-center gap-2 rounded-full border border-paper/30 px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-paper/80">
+                <span className="size-1.5 rounded-full bg-paper/80" />
+                {phase}
+              </span>
+            </span>
+          ))}
+          <span className="h-px w-7 bg-paper/35" />
+          <Trend className="size-4 text-paper/80" />
+        </div>
+
+        <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
           <Link
             href="/contact"
             className="group inline-flex items-center gap-2 rounded-lg bg-paper px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-canvas"
