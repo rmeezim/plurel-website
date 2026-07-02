@@ -285,29 +285,46 @@ export function Hero() {
                 />
               </div>
 
-              {/* Primary CTA — an edge-docked foreground panel. Anchored to the
-                  bottom-right of the slider and overlapping down toward the
-                  service divider, with a page-cream cutout mask and a square
-                  docked corner so it reads as a fixed panel above the cards. */}
+              {/* Primary CTA — a folder-tab corner. The panel is carved into
+                  the slider's bottom-right corner: a canvas mask pads its top
+                  and left edges, and two concave fillets weld the cutout into
+                  the slider's bottom and right boundaries, so the page surface
+                  flows around it like the raised tab of a folder. */}
               <Link
                 href="/contact"
                 aria-label="Book Strategy Call"
-                className="group absolute -bottom-8 right-0 z-20 lg:-bottom-10"
+                className="group absolute bottom-0 right-0 z-20 block rounded-tl-[25px] bg-canvas pl-[9px] pt-[9px]"
               >
-                <div className="rounded-[24px] rounded-br-none bg-canvas p-[8px] shadow-[0_16px_32px_-18px_rgba(17,15,10,0.5)]">
-                  <div className="relative h-[100px] w-[284px] overflow-hidden rounded-[16px] rounded-br-none bg-brand transition-colors duration-300 group-hover:bg-[#b0332f] sm:h-[112px] sm:w-[316px]">
-                    {/* Plurel mark, subtle, top-right */}
-                    <Spark className="absolute right-5 top-4 size-3.5 text-paper/70" />
-                    {/* Label, left-aligned */}
-                    <span className="absolute bottom-4 left-6 font-sans text-[21px] font-medium leading-[1.16] tracking-[-0.01em] text-paper sm:text-[24px]">
-                      Book
-                      <br />
-                      Strategy Call
-                    </span>
-                    {/* Diagonal arrow, right */}
-                    <ArrowUpRight className="absolute bottom-4 right-5 size-5 text-paper transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </div>
-                </div>
+                {/* Concave fillets — page-colored quarter-curves that blend
+                    the tab into the slider's right and bottom edges */}
+                <span
+                  aria-hidden
+                  className="absolute -top-6 right-0 size-6"
+                  style={{
+                    background:
+                      "radial-gradient(circle 24px at 0 0, transparent 23px, var(--color-canvas) 24px)",
+                  }}
+                />
+                <span
+                  aria-hidden
+                  className="absolute -left-6 bottom-0 size-6"
+                  style={{
+                    background:
+                      "radial-gradient(circle 24px at 0 0, transparent 23px, var(--color-canvas) 24px)",
+                  }}
+                />
+                <span className="relative block h-[100px] w-[284px] rounded-[16px] bg-brand transition-colors duration-300 group-hover:bg-[#b0332f] sm:h-[112px] sm:w-[316px]">
+                  {/* Plurel mark, subtle, top-right */}
+                  <Spark className="absolute right-5 top-4 size-3.5 text-paper/70" />
+                  {/* Label, left-aligned */}
+                  <span className="absolute bottom-4 left-6 font-sans text-[21px] font-medium leading-[1.16] tracking-[-0.01em] text-paper sm:text-[24px]">
+                    Book
+                    <br />
+                    Strategy Call
+                  </span>
+                  {/* Diagonal arrow, right */}
+                  <ArrowUpRight className="absolute bottom-4 right-5 size-5 text-paper transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </span>
               </Link>
             </div>
           </div>
