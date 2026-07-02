@@ -34,6 +34,14 @@ Creative Direction, and consulting.
 Use the generated utilities (`bg-canvas`, `text-ink`, `border-line`,
 `text-brand`, etc.) rather than hardcoded hex values.
 
+## Positioning (long-term)
+
+Plurel is evolving into Northeon's global AI/tech division for martech,
+marketing, and growth transformations. Where natural, copy should frame
+engagements as "growth transformations" and treat AI-era visibility (AEO),
+martech, and growth systems as core to the method — confident and premium,
+never buzzwordy.
+
 ## Conventions
 
 - Reusable UI lives in `src/components/`. Keep server components by default;
