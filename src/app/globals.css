@@ -90,4 +90,29 @@
   .marquee-mask:hover .animate-marquee {
     animation-play-state: paused;
   }
+
+  /* Continuous pulse travelling along the operating-model connectors */
+  @keyframes method-comet {
+    from {
+      left: -22%;
+    }
+    to {
+      left: 104%;
+    }
+  }
+
+  .method-comet {
+    position: absolute;
+    top: -1.5px;
+    height: 4px;
+    width: 22%;
+    border-radius: 9999px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(191, 58, 54, 0.85),
+      transparent
+    );
+    animation: method-comet 2.6s linear infinite;
+  }
 }

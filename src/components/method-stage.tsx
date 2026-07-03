@@ -1,18 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Spark } from "@/components/icons";
+import { Close, Spark } from "@/components/icons";
+
+export interface MethodOutput {
+  label: string;
+  detail: string;
+}
 
 export interface MethodPhase {
   number: string;
   name: string;
   tagline: string;
   description: string;
-  outputs: string[];
+  outputs: MethodOutput[];
   ai: string;
 }
 
-/** Vertical positions (SVG y, 0-100) of the four output nodes */
+/** Vertical positions (%) of the four output nodes */
 const OUTPUT_Y = [14, 38, 62, 86];
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
@@ -20,14 +25,16 @@ const clamp = (value: number) => Math.min(1, Math.max(0, value));
 /**
  * Scroll-driven operating-model stage. The section pins while the visitor
  * scrolls through four phases; each phase is a workflow diagram — a central
- * node with outputs branching out on energized connectors, plus an AI
- * sub-node — sliding in from the right and out to the left, fully scrubbed
- * to scroll. Mobile, no-JS, and reduced-motion get the static timeline.
+ * node feeding a framed group of output nodes over energized connectors with
+ * a continuous pulse current, plus a dashed AI sub-node. Output nodes expand
+ * on click to explain their deliverable. Mobile, no-JS, and reduced-motion
+ * visitors get the static timeline instead.
  */
 export function MethodStage({ phases }: { phases: MethodPhase[] }) {
   const outerRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [openOutput, setOpenOutput] = useState<string | null>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -153,6 +160,17 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
 
                     {/* Workflow diagram */}
                     <div className="relative h-[440px]">
+                      {/* Output group frame */}
+                      <div
+                        aria-hidden
+                        className="absolute -right-4 bottom-[2%] top-[4%] w-[286px] rounded-2xl border border-dashed border-muted/40"
+                        style={{ opacity: clamp(branch * 1.6) }}
+                      >
+                        <span className="absolute -top-2.5 left-5 bg-paper px-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+                          Outputs
+                        </span>
+                      </div>
+
                       {/* Connectors — elbow segments that energize in sequence */}
                       {OUTPUT_Y.map((y, k) => {
                         const reveal = clamp((branch - 0.12 * k) / 0.4);
@@ -177,11 +195,11 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                             />
                             {/* Energized overlay */}
                             <span
-                              className="absolute left-[26%] top-1/2 h-px w-[24%] origin-left bg-brand/70"
+                              className="absolute left-[26%] top-1/2 h-px w-[24%] origin-left bg-brand/60"
                               style={{ transform: `scaleX(${h1})` }}
                             />
                             <span
-                              className={`absolute left-1/2 w-px bg-brand/70 ${up ? "origin-bottom" : "origin-top"}`}
+                              className={`absolute left-1/2 w-px bg-brand/60 ${up ? "origin-bottom" : "origin-top"}`}
                               style={{
                                 top: `${vTop}%`,
                                 height: `${vHeight}%`,
@@ -189,23 +207,46 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                               }}
                             />
                             <span
-                              className="absolute left-1/2 h-px w-[23%] origin-left bg-brand/70"
+                              className="absolute left-1/2 h-px w-[23%] origin-left bg-brand/60"
                               style={{ top: `${y}%`, transform: `scaleX(${h2})` }}
                             />
+                            {/* Continuous pulse current, once energized */}
+                            <span
+                              className="absolute left-[26%] top-1/2 h-px w-[24%]"
+                              style={{ opacity: h1 >= 1 ? 1 : 0 }}
+                            >
+                              <span
+                                className="method-comet"
+                                style={{ animationDelay: `${k * 0.65}s` }}
+                              />
+                            </span>
+                            <span
+                              className="absolute left-1/2 h-px w-[23%]"
+                              style={{
+                                top: `${y}%`,
+                                opacity: h2 >= 1 ? 1 : 0,
+                              }}
+                            >
+                              <span
+                                className="method-comet"
+                                style={{ animationDelay: `${k * 0.65 + 0.9}s` }}
+                              />
+                            </span>
                           </span>
                         );
                       })}
+
                       {/* Dashed drop to the AI sub-node */}
                       <span
                         aria-hidden
-                        className="absolute left-[13%] top-[67%] h-[19%] border-l border-dashed border-brand/50"
+                        className="absolute left-[11%] top-[68%] h-[16%] border-l border-dashed border-brand/50"
                         style={{ opacity: aiReveal }}
                       />
 
                       {/* Central node */}
                       <div
                         className="absolute left-0 top-1/2 w-[240px] -translate-y-1/2 rounded-2xl border border-line bg-canvas p-5 shadow-[0_16px_32px_-20px_rgba(17,15,10,0.4)]"
-                        style={{ transform: `translateY(-50%) scale(${pop})` }}
+                        style={{ transform: `scale(${pop})` }}
                       >
                         <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
                           <span className="relative flex size-2">
@@ -222,12 +263,15 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                         </p>
                       </div>
 
-                      {/* Output nodes */}
+                      {/* Output nodes — click to expand what each one is */}
                       {phase.outputs.map((output, k) => {
                         const reveal = clamp((branch - 0.12 * k - 0.18) / 0.3);
+                        const key = `${phase.number}-${k}`;
+                        const open = openOutput === key;
+                        const popBelow = k < 2;
                         return (
                           <div
-                            key={output}
+                            key={output.label}
                             className="absolute right-0 w-[250px]"
                             style={{
                               top: `${OUTPUT_Y[k]}%`,
@@ -235,13 +279,37 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                               opacity: reveal,
                             }}
                           >
-                            <span className="flex items-center gap-2.5 rounded-full border border-line bg-canvas px-4 py-3 text-sm leading-snug text-ink/85 shadow-[0_10px_20px_-16px_rgba(17,15,10,0.4)]">
+                            <button
+                              type="button"
+                              onClick={() => setOpenOutput(open ? null : key)}
+                              aria-expanded={open}
+                              className={`flex w-full items-center gap-2.5 rounded-full border bg-canvas px-4 py-3 text-left text-sm leading-snug text-ink/85 shadow-[0_10px_20px_-16px_rgba(17,15,10,0.4)] transition-colors ${
+                                open
+                                  ? "border-brand"
+                                  : "border-line hover:border-brand/60"
+                              }`}
+                            >
                               <span
                                 aria-hidden
                                 className="size-1.5 shrink-0 rounded-full bg-brand"
                               />
-                              {output}
-                            </span>
+                              <span className="flex-1">{output.label}</span>
+                              <Close
+                                aria-hidden
+                                className={`size-3.5 shrink-0 text-muted transition-transform duration-300 ${
+                                  open ? "rotate-0 text-brand" : "rotate-45"
+                                }`}
+                              />
+                            </button>
+                            {open && (
+                              <div
+                                className={`absolute right-0 z-10 w-[250px] rounded-xl border border-line bg-paper p-4 text-[13px] leading-relaxed text-ink/75 shadow-[0_18px_36px_-16px_rgba(17,15,10,0.35)] ${
+                                  popBelow ? "top-full mt-2" : "bottom-full mb-2"
+                                }`}
+                              >
+                                {output.detail}
+                              </div>
+                            )}
                           </div>
                         );
                       })}
@@ -312,14 +380,14 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
               <ul className="mt-3 space-y-2">
                 {phase.outputs.map((item) => (
                   <li
-                    key={item}
+                    key={item.label}
                     className="flex items-center gap-2.5 rounded-lg border border-line bg-canvas px-3.5 py-2.5 text-sm leading-snug text-ink/80"
                   >
                     <span
                       aria-hidden
                       className="size-1.5 shrink-0 rounded-full bg-brand"
                     />
-                    {item}
+                    {item.label}
                   </li>
                 ))}
                 <li className="flex items-center gap-2.5 rounded-lg border border-dashed border-brand/50 bg-paper px-3.5 py-2.5 text-sm leading-snug text-ink/80">

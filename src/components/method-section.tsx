@@ -10,10 +10,26 @@ const PHASES: MethodPhase[] = [
     description:
       "A presence audit across brand, website, search, and AI visibility — where you win, where you leak, and what to fix first.",
     outputs: [
-      "Brand & presence audit",
-      "Competitor map",
-      "SEO / AEO baseline",
-      "Growth gap report",
+      {
+        label: "Brand & presence audit",
+        detail:
+          "A scored review of your identity, website, and profiles — what builds trust today and what quietly leaks it.",
+      },
+      {
+        label: "Competitor map",
+        detail:
+          "Who you're actually compared against, and exactly where they beat you on visibility, clarity, and proof.",
+      },
+      {
+        label: "SEO / AEO baseline",
+        detail:
+          "Your current rankings, plus how AI assistants answer your category's buying questions right now.",
+      },
+      {
+        label: "Growth gap report",
+        detail:
+          "The prioritized fix list — what to tackle first, and the projected impact of each move.",
+      },
     ],
     ai: "AI visibility scan",
   },
@@ -24,10 +40,26 @@ const PHASES: MethodPhase[] = [
     description:
       "Identity, website, and content systems designed as one coherent experience — considered, premium, unmistakably yours.",
     outputs: [
-      "Brand identity",
-      "Website design",
-      "Content architecture",
-      "Creative direction",
+      {
+        label: "Brand identity",
+        detail:
+          "Logo, color, type, and usage rules — a system your team can apply without guesswork.",
+      },
+      {
+        label: "Website design",
+        detail:
+          "Page-by-page UX and UI, designed around the actions you need visitors to take.",
+      },
+      {
+        label: "Content architecture",
+        detail:
+          "The page map, messaging hierarchy, and templates your content will live in.",
+      },
+      {
+        label: "Creative direction",
+        detail:
+          "The photography, illustration, and motion language that keeps every touchpoint unmistakably yours.",
+      },
     ],
     ai: "Generative concepting",
   },
@@ -38,10 +70,26 @@ const PHASES: MethodPhase[] = [
     description:
       "Ship the new presence and wire the machinery underneath — analytics, CRM, automation, and attribution from day one.",
     outputs: [
-      "Site build & QA",
-      "Martech stack",
-      "Tracking & attribution",
-      "Launch PR",
+      {
+        label: "Site build & QA",
+        detail:
+          "The site engineered fast and accessible, tested across devices before it ships.",
+      },
+      {
+        label: "Martech stack",
+        detail:
+          "Analytics, CRM, and automation wired together — one source of truth from day one.",
+      },
+      {
+        label: "Tracking & attribution",
+        detail:
+          "Every inquiry tagged to its source, so spend decisions run on data instead of hunches.",
+      },
+      {
+        label: "Launch PR",
+        detail:
+          "Announcement placements and refreshed profiles that turn the relaunch into a visibility event.",
+      },
     ],
     ai: "Automation & agent wiring",
   },
@@ -52,10 +100,26 @@ const PHASES: MethodPhase[] = [
     description:
       "Always-on content, paid, and reputation programs that stack results quarter over quarter — growth that compounds.",
     outputs: [
-      "Content engine",
-      "Paid media",
-      "PR & reputation",
-      "Quarterly strategy",
+      {
+        label: "Content engine",
+        detail:
+          "An editorial cadence that keeps you present in search, feeds, and AI answers.",
+      },
+      {
+        label: "Paid media",
+        detail:
+          "Campaigns managed against return targets — scaled when they earn it, cut when they don't.",
+      },
+      {
+        label: "PR & reputation",
+        detail:
+          "A steady drumbeat of coverage, reviews, and citations that compounds trust.",
+      },
+      {
+        label: "Quarterly strategy",
+        detail:
+          "A standing review of the numbers — what's compounding, what gets cut, what's next.",
+      },
     ],
     ai: "Predictive optimization",
   },
