@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Close, Spark } from "@/components/icons";
+import { Spark } from "@/components/icons";
 
 export interface MethodOutput {
   label: string;
@@ -17,18 +17,28 @@ export interface MethodPhase {
   ai: string;
 }
 
-/** Vertical positions (%) of the four output nodes */
-const OUTPUT_Y = [14, 38, 62, 86];
+/* Fixed diagram geometry (px, inside a 620x440 canvas) */
+const DIAGRAM_W = 620;
+const DIAGRAM_H = 440;
+const CARD_W = 230;
+const BUS_X = 330;
+const CHIP_LEFT = 374; // where connectors dock into the output nodes
+const OUTPUT_Y = [62, 166, 270, 374];
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
+
+/** Shared grid template so the static Outputs frame aligns with the scenes */
+const SCENE_GRID =
+  "mx-auto grid w-full max-w-[1160px] grid-cols-[minmax(0,400px)_620px] items-center justify-between gap-x-10";
 
 /**
  * Scroll-driven operating-model stage. The section pins while the visitor
  * scrolls through four phases; each phase is a workflow diagram — a central
- * node feeding a framed group of output nodes over energized connectors with
- * a continuous pulse current, plus a dashed AI sub-node. Output nodes expand
- * on click to explain their deliverable. Mobile, no-JS, and reduced-motion
- * visitors get the static timeline instead.
+ * node feeding a framed group of output nodes over elbow connectors with a
+ * continuous same-thickness pulse travelling the path — plus an AI sub-node
+ * anchored to the card. Hovering an output opens a glass detail card with a
+ * word-by-word cascade. Mobile, no-JS, and reduced-motion visitors get the
+ * static timeline instead.
  */
 export function MethodStage({ phases }: { phases: MethodPhase[] }) {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -104,8 +114,27 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
               </span>
             </div>
 
-            {/* Scenes */}
+            {/* Stage area */}
             <div className="relative mt-6 flex-1">
+              {/* Static Outputs frame — persists while scenes change inside it */}
+              <div
+                aria-hidden
+                className={`pointer-events-none absolute inset-0 ${SCENE_GRID}`}
+              >
+                <div />
+                <div
+                  className="relative"
+                  style={{ width: DIAGRAM_W, height: DIAGRAM_H }}
+                >
+                  <div className="absolute bottom-[16px] right-0 top-[14px] w-[280px] rounded-3xl border border-dashed border-muted/40">
+                    <span className="absolute -top-2.5 left-6 bg-paper px-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+                      Outputs
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Scenes */}
               {phases.map((phase, i) => {
                 const d = phaseFloat - i;
                 const last = i === phases.length - 1;
@@ -135,7 +164,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                   <div
                     key={phase.number}
                     aria-hidden={opacity === 0 || undefined}
-                    className="absolute inset-0 grid grid-cols-[minmax(0,380px)_minmax(0,1fr)] items-center gap-x-16"
+                    className={`absolute inset-0 ${SCENE_GRID}`}
                     style={{
                       opacity,
                       transform: `translateX(${tx}px)`,
@@ -159,174 +188,162 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                     </div>
 
                     {/* Workflow diagram */}
-                    <div className="relative h-[440px]">
-                      {/* Output group frame */}
-                      <div
+                    <div
+                      className="relative"
+                      style={{ width: DIAGRAM_W, height: DIAGRAM_H }}
+                    >
+                      {/* Connectors */}
+                      <svg
                         aria-hidden
-                        className="absolute -right-4 bottom-[2%] top-[4%] w-[286px] rounded-2xl border border-dashed border-muted/40"
-                        style={{ opacity: clamp(branch * 1.6) }}
+                        width={DIAGRAM_W}
+                        height={DIAGRAM_H}
+                        viewBox={`0 0 ${DIAGRAM_W} ${DIAGRAM_H}`}
+                        className="absolute inset-0"
                       >
-                        <span className="absolute -top-2.5 left-5 bg-paper px-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
-                          Outputs
-                        </span>
+                        {OUTPUT_Y.map((y, k) => {
+                          const reveal = clamp((branch - 0.12 * k) / 0.4);
+                          const d2 = `M${CARD_W} ${DIAGRAM_H / 2} H${BUS_X} V${y} H${CHIP_LEFT}`;
+                          return (
+                            <g key={y} fill="none" strokeLinecap="round">
+                              <path d={d2} stroke="#d8d2c8" strokeWidth="1.5" />
+                              <path
+                                d={d2}
+                                stroke="#bf3a36"
+                                strokeOpacity="0.5"
+                                strokeWidth="1.5"
+                                pathLength={100}
+                                strokeDasharray="100"
+                                strokeDashoffset={100 * (1 - reveal)}
+                              />
+                              <path
+                                d={d2}
+                                className="method-pulse"
+                                stroke="#bf3a36"
+                                strokeWidth="1.5"
+                                pathLength={100}
+                                style={{
+                                  opacity: reveal >= 1 ? 0.9 : 0,
+                                  animationDelay: `${-(k * 550)}ms`,
+                                }}
+                              />
+                            </g>
+                          );
+                        })}
+                      </svg>
+
+                      {/* Central node with anchored AI sub-node */}
+                      <div
+                        className="absolute left-0 top-1/2 -translate-y-1/2"
+                        style={{ width: CARD_W }}
+                      >
+                        <div
+                          className="rounded-2xl border border-line bg-canvas p-5 shadow-[0_16px_32px_-20px_rgba(17,15,10,0.4)]"
+                          style={{ transform: `scale(${pop})` }}
+                        >
+                          <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+                            <span className="relative flex size-2">
+                              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-60" />
+                              <span className="relative inline-flex size-2 rounded-full bg-brand" />
+                            </span>
+                            Phase {phase.number}
+                          </p>
+                          <p className="mt-2.5 text-[26px] font-normal leading-none tracking-[-0.01em] text-ink">
+                            {phase.name}
+                          </p>
+                          <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
+                            {phase.tagline}
+                          </p>
+                        </div>
+                        {/* Dashed tail into the AI node — anchored to the card */}
+                        <span
+                          aria-hidden
+                          className="absolute left-1/2 top-full h-[52px] border-l border-dashed border-brand/50"
+                          style={{ opacity: aiReveal }}
+                        />
+                        <div
+                          className="absolute left-1/2 top-[calc(100%+52px)] -translate-x-1/2"
+                          style={{
+                            opacity: aiReveal,
+                            marginTop: `${6 * (1 - aiReveal)}px`,
+                          }}
+                        >
+                          <span className="flex w-max items-center gap-2 rounded-full border border-dashed border-brand/60 bg-paper px-4 py-2.5 text-[13px] text-ink/80">
+                            <Spark
+                              className="size-3.5 shrink-0 text-brand"
+                              aria-hidden
+                            />
+                            {phase.ai}
+                          </span>
+                        </div>
                       </div>
 
-                      {/* Connectors — elbow segments that energize in sequence */}
-                      {OUTPUT_Y.map((y, k) => {
-                        const reveal = clamp((branch - 0.12 * k) / 0.4);
-                        const up = y < 50;
-                        const vTop = up ? y : 50;
-                        const vHeight = Math.abs(y - 50);
-                        const seg = reveal * 3;
-                        const h1 = clamp(seg);
-                        const v = clamp(seg - 1);
-                        const h2 = clamp(seg - 2);
-                        return (
-                          <span aria-hidden key={y}>
-                            {/* Base lines */}
-                            <span className="absolute left-[26%] top-1/2 h-px w-[24%] bg-line" />
-                            <span
-                              className="absolute left-1/2 w-px bg-line"
-                              style={{ top: `${vTop}%`, height: `${vHeight}%` }}
-                            />
-                            <span
-                              className="absolute left-1/2 h-px w-[23%] bg-line"
-                              style={{ top: `${y}%` }}
-                            />
-                            {/* Energized overlay */}
-                            <span
-                              className="absolute left-[26%] top-1/2 h-px w-[24%] origin-left bg-brand/60"
-                              style={{ transform: `scaleX(${h1})` }}
-                            />
-                            <span
-                              className={`absolute left-1/2 w-px bg-brand/60 ${up ? "origin-bottom" : "origin-top"}`}
-                              style={{
-                                top: `${vTop}%`,
-                                height: `${vHeight}%`,
-                                transform: `scaleY(${v})`,
-                              }}
-                            />
-                            <span
-                              className="absolute left-1/2 h-px w-[23%] origin-left bg-brand/60"
-                              style={{ top: `${y}%`, transform: `scaleX(${h2})` }}
-                            />
-                            {/* Continuous pulse current, once energized */}
-                            <span
-                              className="absolute left-[26%] top-1/2 h-px w-[24%]"
-                              style={{ opacity: h1 >= 1 ? 1 : 0 }}
-                            >
-                              <span
-                                className="method-comet"
-                                style={{ animationDelay: `${k * 0.65}s` }}
-                              />
-                            </span>
-                            <span
-                              className="absolute left-1/2 h-px w-[23%]"
-                              style={{
-                                top: `${y}%`,
-                                opacity: h2 >= 1 ? 1 : 0,
-                              }}
-                            >
-                              <span
-                                className="method-comet"
-                                style={{ animationDelay: `${k * 0.65 + 0.9}s` }}
-                              />
-                            </span>
-                          </span>
-                        );
-                      })}
-
-                      {/* Dashed drop to the AI sub-node */}
-                      <span
-                        aria-hidden
-                        className="absolute left-[11%] top-[68%] h-[16%] border-l border-dashed border-brand/50"
-                        style={{ opacity: aiReveal }}
-                      />
-
-                      {/* Central node */}
-                      <div
-                        className="absolute left-0 top-1/2 w-[240px] -translate-y-1/2 rounded-2xl border border-line bg-canvas p-5 shadow-[0_16px_32px_-20px_rgba(17,15,10,0.4)]"
-                        style={{ transform: `scale(${pop})` }}
-                      >
-                        <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
-                          <span className="relative flex size-2">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-60" />
-                            <span className="relative inline-flex size-2 rounded-full bg-brand" />
-                          </span>
-                          Phase {phase.number}
-                        </p>
-                        <p className="mt-2.5 text-[26px] font-normal leading-none tracking-[-0.01em] text-ink">
-                          {phase.name}
-                        </p>
-                        <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
-                          {phase.tagline}
-                        </p>
-                      </div>
-
-                      {/* Output nodes — click to expand what each one is */}
+                      {/* Output nodes — hover for the glass detail card */}
                       {phase.outputs.map((output, k) => {
                         const reveal = clamp((branch - 0.12 * k - 0.18) / 0.3);
                         const key = `${phase.number}-${k}`;
                         const open = openOutput === key;
-                        const popBelow = k < 2;
+                        const below = k < 2;
                         return (
                           <div
                             key={output.label}
-                            className="absolute right-0 w-[250px]"
+                            className="absolute right-[16px] w-[230px]"
                             style={{
-                              top: `${OUTPUT_Y[k]}%`,
+                              top: OUTPUT_Y[k],
                               transform: `translateY(-50%) translateX(${14 * (1 - reveal)}px)`,
                               opacity: reveal,
+                              zIndex: open ? 30 : undefined,
                             }}
+                            onMouseEnter={() => setOpenOutput(key)}
+                            onMouseLeave={() =>
+                              setOpenOutput((current) =>
+                                current === key ? null : current,
+                              )
+                            }
                           >
-                            <button
-                              type="button"
-                              onClick={() => setOpenOutput(open ? null : key)}
-                              aria-expanded={open}
-                              className={`flex w-full items-center gap-2.5 rounded-full border bg-canvas px-4 py-3 text-left text-sm leading-snug text-ink/85 shadow-[0_10px_20px_-16px_rgba(17,15,10,0.4)] transition-colors ${
+                            <span
+                              tabIndex={0}
+                              onFocus={() => setOpenOutput(key)}
+                              onBlur={() =>
+                                setOpenOutput((current) =>
+                                  current === key ? null : current,
+                                )
+                              }
+                              className={`flex w-full cursor-help items-center gap-2.5 rounded-full border bg-canvas px-4 py-3 text-left text-sm leading-snug text-ink/85 shadow-[0_10px_20px_-16px_rgba(17,15,10,0.4)] outline-none transition-colors duration-300 ${
                                 open
-                                  ? "border-brand"
-                                  : "border-line hover:border-brand/60"
+                                  ? "border-brand/70"
+                                  : "border-line"
                               }`}
                             >
                               <span
                                 aria-hidden
                                 className="size-1.5 shrink-0 rounded-full bg-brand"
                               />
-                              <span className="flex-1">{output.label}</span>
-                              <Close
-                                aria-hidden
-                                className={`size-3.5 shrink-0 text-muted transition-transform duration-300 ${
-                                  open ? "rotate-0 text-brand" : "rotate-45"
-                                }`}
-                              />
-                            </button>
+                              {output.label}
+                            </span>
                             {open && (
                               <div
-                                className={`absolute right-0 z-10 w-[250px] rounded-xl border border-line bg-paper p-4 text-[13px] leading-relaxed text-ink/75 shadow-[0_18px_36px_-16px_rgba(17,15,10,0.35)] ${
-                                  popBelow ? "top-full mt-2" : "bottom-full mb-2"
+                                className={`glass-in absolute right-0 z-20 w-[248px] rounded-2xl border border-paper/70 bg-paper/70 p-4 text-[13px] leading-relaxed text-ink/85 shadow-[0_22px_44px_-20px_rgba(17,15,10,0.4)] backdrop-blur-md ${
+                                  below ? "top-full mt-2.5" : "bottom-full mb-2.5"
                                 }`}
                               >
-                                {output.detail}
+                                {output.detail.split(" ").map((word, w) => (
+                                  <span key={w}>
+                                    {w > 0 && " "}
+                                    <span
+                                      className="word-in"
+                                      style={{
+                                        animationDelay: `${0.08 + w * 0.028}s`,
+                                      }}
+                                    >
+                                      {word}
+                                    </span>
+                                  </span>
+                                ))}
                               </div>
                             )}
                           </div>
                         );
                       })}
-
-                      {/* AI sub-node */}
-                      <div
-                        className="absolute bottom-[6%] left-0"
-                        style={{
-                          opacity: aiReveal,
-                          transform: `translateY(${8 * (1 - aiReveal)}px)`,
-                        }}
-                      >
-                        <span className="flex items-center gap-2 rounded-full border border-dashed border-brand/60 bg-paper px-4 py-2.5 text-[13px] text-ink/80">
-                          <Spark className="size-3.5 shrink-0 text-brand" aria-hidden />
-                          {phase.ai}
-                        </span>
-                      </div>
                     </div>
                   </div>
                 );

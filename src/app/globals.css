@@ -91,28 +91,56 @@
     animation-play-state: paused;
   }
 
-  /* Continuous pulse travelling along the operating-model connectors */
-  @keyframes method-comet {
+  /* Same-thickness pulse sliding along the operating-model connector paths.
+     Paths are normalized with pathLength=100; the 12-unit dash slides out of
+     the source, travels the full elbow, and exits at the output node. */
+  @keyframes method-pulse {
     from {
-      left: -22%;
+      stroke-dashoffset: 124;
     }
     to {
-      left: 104%;
+      stroke-dashoffset: -100;
     }
   }
 
-  .method-comet {
-    position: absolute;
-    top: -1.5px;
-    height: 4px;
-    width: 22%;
-    border-radius: 9999px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(191, 58, 54, 0.85),
-      transparent
-    );
-    animation: method-comet 2.6s linear infinite;
+  .method-pulse {
+    stroke-dasharray: 12 100;
+    animation: method-pulse 3.2s linear infinite;
+    transition: opacity 0.4s ease;
+  }
+
+  /* Glass detail card entrance */
+  @keyframes glass-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px) scale(0.97);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .glass-in {
+    animation: glass-in 0.35s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+  }
+
+  /* Word-by-word cascade inside the glass card */
+  @keyframes word-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+      filter: blur(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+
+  .word-in {
+    display: inline-block;
+    animation: word-in 0.5s cubic-bezier(0.2, 0.6, 0.3, 1) both;
   }
 }
