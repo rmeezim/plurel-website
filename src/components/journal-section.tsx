@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, Spark } from "@/components/icons";
+import { Reveal } from "@/components/reveal";
 
 const FEATURED = {
   slug: "aeo-is-the-new-seo",
@@ -126,7 +127,7 @@ export function JournalSection() {
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
         {/* Header */}
-        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-6">
+        <Reveal className="flex flex-wrap items-end justify-between gap-x-8 gap-y-6">
           <div>
             <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
               <Spark className="size-3.5 text-brand" aria-hidden />
@@ -147,10 +148,11 @@ export function JournalSection() {
             All articles
             <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
-        </div>
+        </Reveal>
 
         <div className="mt-12 grid grid-cols-1 gap-x-12 gap-y-12 lg:grid-cols-2">
           {/* Featured article */}
+          <Reveal>
           <Link
             href={`/blog/${FEATURED.slug}`}
             className="group flex flex-col"
@@ -194,9 +196,11 @@ export function JournalSection() {
               <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </span>
           </Link>
+          </Reveal>
 
           {/* Compact index — top-aligned with the featured cover */}
-          <ul className="divide-y divide-line lg:self-start">
+          <Reveal delay={0.12} className="lg:self-start">
+          <ul className="divide-y divide-line">
             {POSTS.map((post, index) => (
               <li key={post.title}>
                 <Link
@@ -228,6 +232,7 @@ export function JournalSection() {
               </li>
             ))}
           </ul>
+          </Reveal>
         </div>
       </div>
     </section>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowDownRight, ArrowUpRight, Spark } from "@/components/icons";
 import { ProofStats } from "@/components/proof-stats";
+import { Reveal } from "@/components/reveal";
 
 const CASES = [
   {
@@ -59,28 +60,32 @@ export function ProofSection() {
       className="bg-charcoal text-paper"
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-        <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/50">
-          <Spark className="size-3.5 text-brand" aria-hidden />
-          The proof layer
-        </p>
-        <h2
-          id="proof-heading"
-          className="mt-5 max-w-[20ch] font-sans text-[clamp(2rem,4.4vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em]"
-        >
-          Transformation you can{" "}
-          <em className="font-serif italic text-clay">measure</em>.
-        </h2>
+        <Reveal>
+          <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/50">
+            <Spark className="size-3.5 text-brand" aria-hidden />
+            The proof layer
+          </p>
+          <h2
+            id="proof-heading"
+            className="mt-5 max-w-[20ch] font-sans text-[clamp(2rem,4.4vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em]"
+          >
+            Transformation you can{" "}
+            <em className="font-serif italic text-clay">measure</em>.
+          </h2>
+        </Reveal>
 
         {/* Headline metrics — count up from zero when scrolled into view */}
         <ProofStats />
 
         {/* Client result cards */}
         <div className="mt-14 grid grid-cols-1 gap-5 lg:mt-16 lg:grid-cols-3 lg:gap-6">
-          {CASES.map((item) => (
-            <article
+          {CASES.map((item, index) => (
+            <Reveal
               key={item.client}
-              className="flex flex-col rounded-2xl border border-paper/15 p-6 sm:p-7"
+              delay={index * 0.09}
+              className="flex"
             >
+            <article className="flex w-full flex-col rounded-2xl border border-paper/15 p-6 sm:p-7">
               {/* Client + engagement */}
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className="text-lg font-medium tracking-[-0.01em]">
@@ -135,10 +140,12 @@ export function ProofSection() {
                 </figcaption>
               </figure>
             </article>
+            </Reveal>
           ))}
         </div>
 
         {/* Trust indicators */}
+        <Reveal>
         <ul className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-4 border-t border-paper/15 pt-6">
           {TRUST_SIGNALS.map((signal) => (
             <li
@@ -150,6 +157,7 @@ export function ProofSection() {
             </li>
           ))}
         </ul>
+        </Reveal>
 
         {/* Closing rail */}
         <div className="mt-12 flex flex-wrap items-center justify-between gap-x-8 gap-y-5 border-t border-paper/15 pt-7">

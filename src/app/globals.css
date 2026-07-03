@@ -125,6 +125,21 @@
     animation: glass-in 0.35s cubic-bezier(0.2, 0.6, 0.3, 1) both;
   }
 
+  /* Scroll-entrance reveal — armed by JS after hydration, below-fold only */
+  .reveal-armed {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .reveal-in {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0s);
+  }
+
   /* Word-by-word cascade inside the glass card */
   @keyframes word-in {
     from {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, Spark } from "@/components/icons";
+import { Reveal } from "@/components/reveal";
 
 const SERVICES = [
   {
@@ -231,6 +232,7 @@ export function ServicesSection() {
         <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-x-16">
           {/* Left: sticky intro */}
           <div className="lg:sticky lg:top-28 lg:self-start">
+            <Reveal>
             <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
               <Spark className="size-3.5 text-brand" aria-hidden />
               What we do
@@ -254,9 +256,11 @@ export function ServicesSection() {
               All services
               <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
+            </Reveal>
           </div>
 
           {/* Right: numbered index with system modules */}
+          <Reveal delay={0.12}>
           <ul>
             {SERVICES.map((service) => (
               <li
@@ -294,6 +298,7 @@ export function ServicesSection() {
               </li>
             ))}
           </ul>
+          </Reveal>
         </div>
       </div>
     </section>

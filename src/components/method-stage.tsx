@@ -22,11 +22,12 @@ export interface MethodPhase {
 const DIAGRAM_W = 620;
 const DIAGRAM_H = 440;
 const CARD_W = 230;
-const BUS_X = 330;
+const BUS_X = 302; // distribution spine — kept clear of the Outputs frame
 const CHIP_LEFT = 374; // where connectors dock into the output nodes
 const OUTPUT_Y = [62, 166, 270, 374];
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
+const smooth = (t: number) => t * t * (3 - 2 * t);
 
 /** Shared grid template so the static Outputs frame aligns with the scenes */
 const SCENE_GRID =
@@ -80,7 +81,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
   /** The phase whose scene has begun entering — drives the narrative cascade */
   const activeIndex = Math.min(
     phases.length - 1,
-    Math.max(0, Math.floor(phaseFloat + 0.28)),
+    Math.max(0, Math.floor(phaseFloat + 0.15)),
   );
 
   return (
@@ -146,27 +147,30 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
               {phases.map((phase, i) => {
                 const d = phaseFloat - i;
                 const last = i === phases.length - 1;
+                /* Sequential handoff: the outgoing scene finishes leaving at
+                   d=0.85 exactly as the incoming one starts at its d=-0.15,
+                   so two phases never share the stage. */
                 let opacity = 0;
-                let tx = 90;
-                if (d < -0.28) {
+                let tx = 70;
+                if (d < -0.15) {
                   opacity = 0;
-                  tx = 90;
+                  tx = 70;
                 } else if (d < 0) {
-                  const t = (d + 0.28) / 0.28;
+                  const t = smooth((d + 0.15) / 0.15);
                   opacity = t;
-                  tx = 90 * (1 - t);
-                } else if (d <= 0.72 || last) {
+                  tx = 70 * (1 - t);
+                } else if (d <= 0.7 || last) {
                   opacity = 1;
                   tx = 0;
-                } else if (d <= 1) {
-                  const t = (d - 0.72) / 0.28;
+                } else if (d <= 0.85) {
+                  const t = smooth((d - 0.7) / 0.15);
                   opacity = 1 - t;
-                  tx = -90 * t;
+                  tx = -70 * t;
                 }
-                if (d > 1 && !last) opacity = 0;
+                if (d > 0.85 && !last) opacity = 0;
                 const branch = clamp(d / 0.5);
                 const aiReveal = clamp((branch - 0.62) / 0.3);
-                const pop = 0.94 + 0.06 * clamp((d + 0.28) / 0.32);
+                const pop = 0.94 + 0.06 * clamp((d + 0.15) / 0.3);
                 const active = entered && i === activeIndex;
 
                 return (

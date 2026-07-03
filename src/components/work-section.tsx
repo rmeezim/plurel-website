@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, CircledX, Spark } from "@/components/icons";
+import { Reveal } from "@/components/reveal";
 
 function CaseCard({
   name,
@@ -53,7 +54,7 @@ export function WorkSection() {
     <section id="work" aria-labelledby="work-heading" className="border-t border-line">
       <div className="mx-auto w-full max-w-[1440px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
         {/* Header row */}
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <Reveal className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
               Selected Work
@@ -76,12 +77,13 @@ export function WorkSection() {
             </div>
             <p className="mt-2 text-[13px] text-muted">projects shipped</p>
           </div>
-        </div>
+        </Reveal>
 
         {/* Case grid — even cards drop on lg for editorial rhythm; the grid's
             lg bottom padding absorbs the translate so nothing overlaps */}
         <div className="mt-10 grid grid-cols-1 gap-6 sm:mt-12 sm:grid-cols-2 lg:mt-14 lg:gap-10 lg:pb-12 lg:[&>*:nth-child(even)]:translate-y-12">
           {/* 1 — Aurem: dark studio mockup */}
+          <Reveal>
           <CaseCard
             name="Aurem"
             services="Brand Identity, Web Design"
@@ -110,8 +112,10 @@ export function WorkSection() {
               </p>
             </div>
           </CaseCard>
+          </Reveal>
 
           {/* 2 — Fence Labs: warm product still-life */}
+          <Reveal delay={0.08}>
           <CaseCard
             name="Fence Labs"
             services="Packaging, Art Direction"
@@ -139,8 +143,10 @@ export function WorkSection() {
               </p>
             </div>
           </CaseCard>
+          </Reveal>
 
           {/* 3 — Northgate Legal: editorial typography study */}
+          <Reveal>
           <CaseCard
             name="Northgate Legal"
             services="Website, AEO/SEO"
@@ -167,8 +173,10 @@ export function WorkSection() {
               </div>
             </div>
           </CaseCard>
+          </Reveal>
 
           {/* 4 — Mara Atelier: brand campaign card */}
+          <Reveal delay={0.08}>
           <CaseCard
             name="Mara Atelier"
             services="Brand Identity, Content"
@@ -191,6 +199,7 @@ export function WorkSection() {
               </div>
             </div>
           </CaseCard>
+          </Reveal>
         </div>
 
         {/* All-work row */}

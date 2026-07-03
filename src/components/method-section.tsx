@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { MethodStage, type MethodPhase } from "@/components/method-stage";
+import { Reveal } from "@/components/reveal";
 
 const PHASES: MethodPhase[] = [
   {
@@ -134,7 +135,7 @@ export function MethodSection() {
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
         {/* Header */}
-        <div className="grid grid-cols-1 gap-y-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-end lg:gap-x-16">
+        <Reveal className="grid grid-cols-1 gap-y-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-end lg:gap-x-16">
           <div>
             <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
               <Spark className="size-3.5 text-brand" aria-hidden />
@@ -154,7 +155,7 @@ export function MethodSection() {
             search-and-assistant visibility and a modern martech core built in
             from the start.
           </p>
-        </div>
+        </Reveal>
 
         {/* Operating model — scroll stage on desktop, timeline elsewhere */}
         <MethodStage phases={PHASES} />
