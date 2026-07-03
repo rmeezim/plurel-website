@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Cascade } from "@/components/cascade";
 import { Spark } from "@/components/icons";
 import { ContactForm } from "@/components/contact-form";
 
@@ -40,8 +41,10 @@ export default function ContactPage() {
             id="contact-heading"
             className="mt-5 max-w-[18ch] font-sans text-[clamp(2.5rem,6vw,5.5rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink"
           >
-            Your before-and-after starts{" "}
-            <em className="font-serif italic">here</em>.
+            <Cascade text="Your before-and-after starts" base={0.08} step={0.045} />{" "}
+            <em className="font-serif italic">
+              <Cascade text="here." base={0.08} step={0.045} offset={4} />
+            </em>
           </h1>
           <p className="mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base">
             Book a 30-minute strategy call or request a growth audit &mdash;

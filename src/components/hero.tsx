@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Cascade } from "@/components/cascade";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -262,10 +263,16 @@ export function Hero() {
         <div className="grid grid-cols-1 gap-x-8 gap-y-8 pb-8 pt-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:pb-10 lg:pt-14">
           <h1
             id="hero-heading"
-            className="fade-up font-sans text-[clamp(2.25rem,6.4vw,7.5rem)] font-normal leading-[0.95] tracking-[-0.02em] text-ink"
+            className="font-sans text-[clamp(2.25rem,6.4vw,7.5rem)] font-normal leading-[0.95] tracking-[-0.02em] text-ink"
           >
-            We build the
-            <br className="hidden sm:block" /> visible layer of growth.
+            <Cascade text="We build the" base={0.1} step={0.05} />
+            <br className="hidden sm:block" />{" "}
+            <Cascade
+              text="visible layer of growth."
+              base={0.1}
+              step={0.05}
+              offset={3}
+            />
           </h1>
 
           <ul className="fade-up flex flex-wrap items-center gap-x-6 gap-y-1 text-[11px] font-medium uppercase tracking-[0.18em] text-muted lg:w-44 lg:flex-col lg:items-end lg:gap-0 lg:text-right">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { PostCover } from "@/components/post-cover";
 import { getPost, getRelatedPosts, POSTS, type PostBlock } from "@/lib/posts";
@@ -88,7 +89,7 @@ export default async function ArticlePage(props: PageProps<"/blog/[slug]">) {
               </span>
             </p>
             <h1 className="mt-4 font-serif text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.12] text-ink">
-              {post.title}
+              <Cascade text={post.title} base={0.08} step={0.03} />
             </h1>
             <p className="mt-5 max-w-[62ch] text-[17px] leading-relaxed text-ink/70">
               {post.excerpt}

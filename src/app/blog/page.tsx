@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Cascade } from "@/components/cascade";
 import { Spark } from "@/components/icons";
 import { BlogIndex } from "@/components/blog-index";
 import { POSTS } from "@/lib/posts";
@@ -23,7 +24,10 @@ export default function BlogPage() {
             id="journal-heading"
             className="mt-5 max-w-[16ch] font-sans text-[clamp(2.5rem,6vw,5.5rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink"
           >
-            Notes on staying <em className="font-serif italic">visible</em>.
+            <Cascade text="Notes on staying" base={0.08} step={0.045} />{" "}
+            <em className="font-serif italic">
+              <Cascade text="visible." base={0.08} step={0.045} offset={3} />
+            </em>
           </h1>
           <p className="mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base">
             A point of view on the visible layer of growth &mdash; AI search,

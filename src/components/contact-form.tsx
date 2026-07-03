@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 
 const SERVICES = [
@@ -68,12 +69,15 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div className="self-start rounded-2xl border border-line bg-paper p-8 sm:p-10">
+      <div className="glass-in self-start rounded-2xl border border-line bg-paper p-8 sm:p-10">
         <Spark className="size-5 text-brand" aria-hidden />
         <h3 className="mt-5 font-sans text-2xl font-normal tracking-[-0.01em] text-ink">
-          Your inquiry is drafted.
+          <Cascade text="Your inquiry is drafted." base={0.1} step={0.06} />
         </h3>
-        <p className="mt-3 max-w-[48ch] text-[15px] leading-relaxed text-ink/75">
+        <p
+          className="word-in mt-3 max-w-[48ch] text-[15px] leading-relaxed text-ink/75"
+          style={{ animationDelay: "450ms" }}
+        >
           We&rsquo;ve opened your email app with everything filled in &mdash;
           hit send and we&rsquo;ll reply within one business day. If nothing
           opened, email us directly at{" "}
@@ -85,13 +89,16 @@ export function ContactForm() {
           </a>
           .
         </p>
-        <button
-          type="button"
-          onClick={() => setSent(false)}
-          className="mt-6 text-[11px] font-medium uppercase tracking-[0.18em] text-muted transition-colors hover:text-brand"
-        >
-          &larr; Back to the form
-        </button>
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={() => setSent(false)}
+            className="word-in text-[11px] font-medium uppercase tracking-[0.18em] text-muted transition-colors hover:text-brand"
+            style={{ animationDelay: "620ms" }}
+          >
+            &larr; Back to the form
+          </button>
+        </div>
       </div>
     );
   }

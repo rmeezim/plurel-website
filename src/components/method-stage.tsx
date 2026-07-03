@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Cascade } from "@/components/cascade";
 import { Spark } from "@/components/icons";
 
 export interface MethodOutput {
@@ -43,6 +44,7 @@ const SCENE_GRID =
 export function MethodStage({ phases }: { phases: MethodPhase[] }) {
   const outerRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
+  const [entered, setEntered] = useState(false);
   const [progress, setProgress] = useState(0);
   const [openOutput, setOpenOutput] = useState<string | null>(null);
 
@@ -56,6 +58,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
       const el = outerRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.6) setEntered(true);
       const span = rect.height - window.innerHeight;
       if (span <= 0) return;
       setProgress(Math.round(clamp(-rect.top / span) * 2000) / 2000);
@@ -74,6 +77,11 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
   }, []);
 
   const phaseFloat = progress * phases.length;
+  /** The phase whose scene has begun entering — drives the narrative cascade */
+  const activeIndex = Math.min(
+    phases.length - 1,
+    Math.max(0, Math.floor(phaseFloat + 0.28)),
+  );
 
   return (
     <>
@@ -159,6 +167,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                 const branch = clamp(d / 0.5);
                 const aiReveal = clamp((branch - 0.62) / 0.3);
                 const pop = 0.94 + 0.06 * clamp((d + 0.28) / 0.32);
+                const active = entered && i === activeIndex;
 
                 return (
                   <div
@@ -171,19 +180,36 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                       pointerEvents: opacity === 0 ? "none" : undefined,
                     }}
                   >
-                    {/* Narrative column */}
+                    {/* Narrative column — assembles word by word when the
+                        phase becomes active, renders plain otherwise */}
                     <div>
                       <span className="block text-7xl font-normal leading-none tracking-[-0.02em] text-muted/50">
-                        {phase.number}
+                        {active ? <Cascade text={phase.number} /> : phase.number}
                       </span>
                       <h3 className="mt-5 text-3xl font-normal tracking-[-0.01em] text-ink">
-                        {phase.name}
+                        {active ? (
+                          <Cascade text={phase.name} base={0.06} />
+                        ) : (
+                          phase.name
+                        )}
                       </h3>
                       <p className="mt-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-                        {phase.tagline}
+                        {active ? (
+                          <Cascade text={phase.tagline} base={0.12} step={0.025} />
+                        ) : (
+                          phase.tagline
+                        )}
                       </p>
                       <p className="mt-5 max-w-[40ch] text-[15px] leading-relaxed text-ink/75">
-                        {phase.description}
+                        {active ? (
+                          <Cascade
+                            text={phase.description}
+                            base={0.2}
+                            step={0.014}
+                          />
+                        ) : (
+                          phase.description
+                        )}
                       </p>
                     </div>
 
