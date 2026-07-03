@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowUpRight, CircledArrow, Spark } from "@/components/icons";
+import { ArrowUpRight, Spark } from "@/components/icons";
+import { MethodStage, type MethodPhase } from "@/components/method-stage";
 
-const PHASES = [
+const PHASES: MethodPhase[] = [
   {
     number: "01",
     name: "Diagnose",
@@ -14,6 +15,7 @@ const PHASES = [
       "SEO / AEO baseline",
       "Growth gap report",
     ],
+    ai: "AI visibility scan",
   },
   {
     number: "02",
@@ -27,6 +29,7 @@ const PHASES = [
       "Content architecture",
       "Creative direction",
     ],
+    ai: "Generative concepting",
   },
   {
     number: "03",
@@ -40,6 +43,7 @@ const PHASES = [
       "Tracking & attribution",
       "Launch PR",
     ],
+    ai: "Automation & agent wiring",
   },
   {
     number: "04",
@@ -53,8 +57,9 @@ const PHASES = [
       "PR & reputation",
       "Quarterly strategy",
     ],
+    ai: "Predictive optimization",
   },
-] as const;
+];
 
 export function MethodSection() {
   return (
@@ -87,81 +92,8 @@ export function MethodSection() {
           </p>
         </div>
 
-        {/* System map */}
-        <div className="relative mt-14 lg:mt-24">
-          {/* Flow captions — sit on the rail ends (desktop) */}
-          <p className="mb-6 text-[11px] font-medium uppercase tracking-[0.18em] text-muted lg:absolute lg:-top-9 lg:left-0 lg:mb-0">
-            In &mdash; an outdated presence
-          </p>
-          <p className="hidden text-[11px] font-medium uppercase tracking-[0.18em] text-brand lg:absolute lg:-top-9 lg:right-0 lg:block">
-            Out &mdash; compounding growth
-          </p>
-
-          {/* Horizontal rail (desktop) */}
-          <div
-            aria-hidden
-            className="absolute inset-x-0 top-[7px] hidden h-px bg-line lg:block"
-          />
-          <span
-            aria-hidden
-            className="absolute right-0 top-[7px] hidden -translate-y-1/2 rounded-full bg-paper text-brand lg:block"
-          >
-            <CircledArrow className="size-5" />
-          </span>
-          {/* Vertical rail (mobile / tablet) */}
-          <div
-            aria-hidden
-            className="absolute bottom-2 left-[6px] top-2 w-px bg-line lg:hidden"
-          />
-
-          <ol className="grid grid-cols-1 gap-y-12 lg:grid-cols-4 lg:gap-x-8">
-            {PHASES.map((phase) => (
-              <li key={phase.number} className="group relative pl-10 lg:pl-0 lg:pt-10">
-                {/* Node on the rail */}
-                <span
-                  aria-hidden
-                  className="absolute left-0 top-1 size-3.5 rounded-full bg-brand ring-4 ring-brand/15 lg:top-0"
-                />
-                <span className="block text-4xl font-normal leading-none tracking-[-0.02em] text-muted/60 transition-colors duration-300 group-hover:text-brand">
-                  {phase.number}
-                </span>
-                <h3 className="mt-3 text-2xl font-normal tracking-[-0.01em] text-ink">
-                  {phase.name}
-                </h3>
-                <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-                  {phase.tagline}
-                </p>
-                <p className="mt-4 text-[15px] leading-relaxed text-ink/75">
-                  {phase.description}
-                </p>
-
-                {/* Output cards */}
-                <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-                  Outputs
-                </p>
-                <ul className="mt-3 space-y-2">
-                  {phase.outputs.map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-2.5 rounded-lg border border-line bg-canvas px-3.5 py-2.5 text-sm leading-snug text-ink/80"
-                    >
-                      <span
-                        aria-hidden
-                        className="size-1.5 shrink-0 rounded-full bg-brand"
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ol>
-
-          {/* Mobile flow caption (end) */}
-          <p className="mt-8 pl-10 text-[11px] font-medium uppercase tracking-[0.18em] text-brand lg:hidden">
-            Out &mdash; compounding growth
-          </p>
-        </div>
+        {/* Operating model — scroll stage on desktop, timeline elsewhere */}
+        <MethodStage phases={PHASES} />
 
         {/* Footnote */}
         <div className="mt-14 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-t border-line pt-6">
