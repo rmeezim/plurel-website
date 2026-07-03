@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
+import { ServicesShowcase } from "@/components/services-showcase";
 
 const SERVICES = [
   {
@@ -221,86 +222,90 @@ function ServiceModule({ kind }: { kind: Module }) {
   }
 }
 
+/** Sticky-column intro — server-rendered, passed into the client showcase */
+function Intro() {
+  return (
+    <Reveal>
+      <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+        <Spark className="size-3.5 text-brand" aria-hidden />
+        What we do
+      </p>
+      <h2
+        id="services-heading"
+        className="mt-5 font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
+      >
+        Services that make you the{" "}
+        <em className="font-serif italic">obvious</em> choice.
+      </h2>
+      <p className="mt-6 max-w-[42ch] text-[15px] leading-relaxed text-ink/80">
+        Plurel modernizes how your business looks, communicates, and attracts
+        customers &mdash; one partner for the entire visible layer of your
+        brand.
+      </p>
+      <Link
+        href="/services"
+        className="group mt-8 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
+      >
+        All services
+        <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      </Link>
+    </Reveal>
+  );
+}
+
+/** Plain numbered index — the below-lg / fallback presentation */
+function StaticRows() {
+  return (
+    <ul>
+      {SERVICES.map((service, index) => (
+        <li key={service.number} className="border-t border-line last:border-b">
+          <Reveal sweep delay={Math.min(index * 0.08, 0.4)}>
+            <Link
+              href="/services"
+              className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-x-4 py-6 transition-colors duration-300 hover:bg-paper/60 sm:gap-x-6 sm:py-5"
+            >
+              <span className="text-sm tabular-nums text-muted transition-colors duration-300 group-hover:text-brand">
+                {service.number}
+              </span>
+              <span>
+                <span className="block text-2xl font-normal tracking-[-0.01em] text-ink transition-colors duration-300 group-hover:text-brand sm:text-3xl">
+                  {service.name}
+                </span>
+                <span className="mt-1.5 hidden text-[15px] leading-relaxed text-ink/70 sm:block">
+                  {service.description}
+                </span>
+              </span>
+              <span className="inline-flex size-10 items-center justify-center self-center rounded-full border border-line text-ink transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-paper">
+                <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          </Reveal>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export function ServicesSection() {
   return (
     <section
       id="services"
       aria-labelledby="services-heading"
-      className="border-t border-line"
+      className="overflow-x-clip border-t border-line"
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-        <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-x-16">
-          {/* Left: sticky intro */}
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <Reveal>
-            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-              <Spark className="size-3.5 text-brand" aria-hidden />
-              What we do
-            </p>
-            <h2
-              id="services-heading"
-              className="mt-5 font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
-            >
-              Services that make you the{" "}
-              <em className="font-serif italic">obvious</em> choice.
-            </h2>
-            <p className="mt-6 max-w-[42ch] text-[15px] leading-relaxed text-ink/80">
-              Plurel modernizes how your business looks, communicates, and
-              attracts customers &mdash; one partner for the entire visible
-              layer of your brand.
-            </p>
-            <Link
-              href="/services"
-              className="group mt-8 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
-            >
-              All services
-              <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-            </Reveal>
-          </div>
-
-          {/* Right: numbered index — each row sweeps in from beneath the
-              intro column, staggered down the list */}
-          <ul>
-            {SERVICES.map((service, index) => (
-              <li
-                key={service.number}
-                className="border-t border-line last:border-b"
-              >
-                <Reveal sweep delay={Math.min(index * 0.08, 0.4)}>
-                <Link
-                  href="/services"
-                  className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-x-4 py-6 transition-colors duration-300 hover:bg-paper/60 sm:gap-x-6 sm:py-5 lg:grid-cols-[3rem_minmax(0,1fr)_minmax(0,16rem)_11.5rem_auto]"
-                >
-                  <span className="text-sm tabular-nums text-muted transition-colors duration-300 group-hover:text-brand">
-                    {service.number}
-                  </span>
-                  <span className="text-2xl font-normal tracking-[-0.01em] text-ink transition-[color,transform] duration-300 group-hover:translate-x-1 group-hover:text-brand sm:text-3xl">
-                    {service.name}
-                  </span>
-                  {/* Wraps under the name until lg, then sits in its own column */}
-                  <span className="col-start-2 row-start-2 mt-1.5 hidden text-[15px] leading-relaxed text-ink/70 sm:block lg:col-start-3 lg:row-start-1 lg:mt-0">
-                    {service.description}
-                  </span>
-                  {/* System module — slides out like a pulled sample on hover */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none col-start-4 row-start-1 hidden justify-center lg:flex"
-                  >
-                    <span className="h-[112px] w-[168px] -rotate-3 scale-95 overflow-hidden rounded-xl border border-line opacity-0 shadow-[0_18px_36px_-16px_rgba(17,15,10,0.4)] transition-all duration-300 group-hover:rotate-1 group-hover:scale-100 group-hover:opacity-100">
-                      <ServiceModule kind={service.module} />
-                    </span>
-                  </span>
-                  {/* Circled arrow — fills brand on hover */}
-                  <span className="col-start-3 row-start-1 inline-flex size-10 items-center justify-center self-center rounded-full border border-line text-ink transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-paper lg:col-start-5">
-                    <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </span>
-                </Link>
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ServicesShowcase
+          intro={<Intro />}
+          services={SERVICES.map(({ number, name, description }) => ({
+            number,
+            name,
+            description,
+          }))}
+          modules={SERVICES.map((service) => (
+            <ServiceModule key={service.number} kind={service.module} />
+          ))}
+          fallback={<StaticRows />}
+        />
       </div>
     </section>
   );
