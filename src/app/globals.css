@@ -140,6 +140,18 @@
     transition-delay: var(--reveal-delay, 0s);
   }
 
+  /* Sweep variant — content arrives diagonally from the lower left, as if
+     dispatched from beneath the section intro */
+  .reveal-armed.reveal-sweep {
+    transform: translate(-24px, 40px);
+  }
+
+  @media (min-width: 64rem) {
+    .reveal-armed.reveal-sweep {
+      transform: translate(-88px, 44px);
+    }
+  }
+
   /* Word-by-word cascade inside the glass card */
   @keyframes word-in {
     from {

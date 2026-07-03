@@ -29,6 +29,32 @@ const OUTPUT_Y = [62, 166, 270, 374];
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 const smooth = (t: number) => t * t * (3 - 2 * t);
 
+/* Sequential scene windows: the outgoing scene finishes leaving at d=0.85
+   exactly as the incoming one starts at its d=-0.15, so two phases never
+   share the stage. Shared by the scenes and the stage-panel tints. */
+function sceneWindow(d: number, last: boolean) {
+  if (d < -0.15) return { alpha: 0, tx: 70 };
+  if (d < 0) {
+    const t = smooth((d + 0.15) / 0.15);
+    return { alpha: t, tx: 70 * (1 - t) };
+  }
+  if (d <= 0.7 || last) return { alpha: 1, tx: 0 };
+  if (d <= 0.85) {
+    const t = smooth((d - 0.7) / 0.15);
+    return { alpha: 1 - t, tx: -70 * t };
+  }
+  return { alpha: 0, tx: -70 };
+}
+
+/* The diagram panel warms subtly as the phases advance — canvas, then clay,
+   then terracotta, landing on a faint brand tone for Compound. */
+const PANEL_TINTS = [
+  "rgba(236, 232, 223, 0)",
+  "rgba(199, 180, 157, 0.18)",
+  "rgba(166, 90, 69, 0.1)",
+  "rgba(191, 58, 54, 0.08)",
+];
+
 /** Shared grid template so the static Outputs frame aligns with the scenes */
 const SCENE_GRID =
   "mx-auto grid w-full max-w-[1160px] grid-cols-[minmax(0,400px)_620px] items-center justify-between gap-x-10";
@@ -89,7 +115,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
       {/* Scroll stage — desktop with JS and motion allowed */}
       {mounted && (
         <div ref={outerRef} className="relative hidden h-[380vh] lg:block">
-          <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pb-8 pt-24">
+          <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pb-8 pt-32">
             {/* Progress rail */}
             <div className="flex items-center gap-4">
               <span className="shrink-0 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
@@ -125,7 +151,9 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
 
             {/* Stage area */}
             <div className="relative mt-6 flex-1">
-              {/* Static Outputs frame — persists while scenes change inside it */}
+              {/* Static stage furniture — the split panel the diagram lives
+                  on and the Outputs frame, both persisting while scenes
+                  change inside them */}
               <div
                 aria-hidden
                 className={`pointer-events-none absolute inset-0 ${SCENE_GRID}`}
@@ -135,8 +163,24 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                   className="relative"
                   style={{ width: DIAGRAM_W, height: DIAGRAM_H }}
                 >
+                  {/* Panel — canvas surface, tint crossfading per phase */}
+                  <div className="absolute -inset-y-8 -left-12 -right-8 rounded-[2rem] border border-line/70 bg-canvas">
+                    {phases.map((phase, i) => (
+                      <div
+                        key={phase.number}
+                        className="absolute inset-0 rounded-[2rem]"
+                        style={{
+                          backgroundColor: PANEL_TINTS[i] ?? PANEL_TINTS[0],
+                          opacity: sceneWindow(
+                            phaseFloat - i,
+                            i === phases.length - 1,
+                          ).alpha,
+                        }}
+                      />
+                    ))}
+                  </div>
                   <div className="absolute bottom-[16px] right-0 top-[14px] w-[280px] rounded-3xl border border-dashed border-muted/40">
-                    <span className="absolute -top-2.5 left-6 bg-paper px-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+                    <span className="absolute -top-7 left-5 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
                       Outputs
                     </span>
                   </div>
@@ -147,27 +191,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
               {phases.map((phase, i) => {
                 const d = phaseFloat - i;
                 const last = i === phases.length - 1;
-                /* Sequential handoff: the outgoing scene finishes leaving at
-                   d=0.85 exactly as the incoming one starts at its d=-0.15,
-                   so two phases never share the stage. */
-                let opacity = 0;
-                let tx = 70;
-                if (d < -0.15) {
-                  opacity = 0;
-                  tx = 70;
-                } else if (d < 0) {
-                  const t = smooth((d + 0.15) / 0.15);
-                  opacity = t;
-                  tx = 70 * (1 - t);
-                } else if (d <= 0.7 || last) {
-                  opacity = 1;
-                  tx = 0;
-                } else if (d <= 0.85) {
-                  const t = smooth((d - 0.7) / 0.15);
-                  opacity = 1 - t;
-                  tx = -70 * t;
-                }
-                if (d > 0.85 && !last) opacity = 0;
+                const { alpha: opacity, tx } = sceneWindow(d, last);
                 const branch = clamp(d / 0.5);
                 const aiReveal = clamp((branch - 0.62) / 0.3);
                 const pop = 0.94 + 0.06 * clamp((d + 0.15) / 0.3);
@@ -267,7 +291,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                         style={{ width: CARD_W }}
                       >
                         <div
-                          className="rounded-2xl border border-line bg-canvas p-5 shadow-[0_16px_32px_-20px_rgba(17,15,10,0.4)]"
+                          className="rounded-2xl border border-line bg-paper p-5 shadow-[0_16px_32px_-20px_rgba(17,15,10,0.4)]"
                           style={{ transform: `scale(${pop})` }}
                         >
                           <p className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
@@ -338,7 +362,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                                   current === key ? null : current,
                                 )
                               }
-                              className={`flex w-full cursor-help items-center gap-2.5 rounded-full border bg-canvas px-4 py-3 text-left text-sm leading-snug text-ink/85 shadow-[0_10px_20px_-16px_rgba(17,15,10,0.4)] outline-none transition-colors duration-300 ${
+                              className={`flex w-full cursor-help items-center gap-2.5 rounded-full border bg-paper px-4 py-3 text-left text-sm leading-snug text-ink/85 shadow-[0_10px_20px_-16px_rgba(17,15,10,0.4)] outline-none transition-colors duration-300 ${
                                 open
                                   ? "border-brand/70"
                                   : "border-line"

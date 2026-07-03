@@ -18,10 +18,13 @@ import {
 export function Reveal({
   children,
   delay = 0,
+  sweep = false,
   className,
 }: {
   children: ReactNode;
   delay?: number;
+  /** Arrive diagonally from the lower left instead of straight up */
+  sweep?: boolean;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -52,7 +55,7 @@ export function Reveal({
       ref={ref}
       className={`${state === "armed" ? "reveal-armed" : ""}${
         state === "in" ? "reveal-in" : ""
-      }${className ? ` ${className}` : ""}`}
+      }${sweep ? " reveal-sweep" : ""}${className ? ` ${className}` : ""}`}
       style={{ "--reveal-delay": `${delay}s` } as CSSProperties}
     >
       {children}

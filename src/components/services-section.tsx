@@ -259,14 +259,15 @@ export function ServicesSection() {
             </Reveal>
           </div>
 
-          {/* Right: numbered index with system modules */}
-          <Reveal delay={0.12}>
+          {/* Right: numbered index — each row sweeps in from beneath the
+              intro column, staggered down the list */}
           <ul>
-            {SERVICES.map((service) => (
+            {SERVICES.map((service, index) => (
               <li
                 key={service.number}
                 className="border-t border-line last:border-b"
               >
+                <Reveal sweep delay={Math.min(index * 0.08, 0.4)}>
                 <Link
                   href="/services"
                   className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-x-4 py-6 transition-colors duration-300 hover:bg-paper/60 sm:gap-x-6 sm:py-5 lg:grid-cols-[3rem_minmax(0,1fr)_minmax(0,16rem)_11.5rem_auto]"
@@ -295,10 +296,10 @@ export function ServicesSection() {
                     <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                   </span>
                 </Link>
+                </Reveal>
               </li>
             ))}
           </ul>
-          </Reveal>
         </div>
       </div>
     </section>
