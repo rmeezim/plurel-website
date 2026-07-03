@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight, Spark } from "@/components/icons";
 
 const FEATURED = {
+  slug: "aeo-is-the-new-seo",
   category: "AI Search",
   date: "Jun 12, 2026",
   title: "AEO is the new SEO: how to get chosen by AI assistants",
@@ -12,6 +13,7 @@ const FEATURED = {
 
 const POSTS = [
   {
+    slug: "brand-operating-system",
     category: "Brand Systems",
     date: "May 28, 2026",
     title: "Your brand isn't a logo — it's an operating system",
@@ -19,6 +21,7 @@ const POSTS = [
     thumb: "brand",
   },
   {
+    slug: "presence-audit-12-signals",
     category: "Growth Strategy",
     date: "May 9, 2026",
     title: "The presence audit: 12 signals customers judge before they call",
@@ -26,6 +29,7 @@ const POSTS = [
     thumb: "growth",
   },
   {
+    slug: "minimum-viable-martech-stack",
     category: "Martech",
     date: "Apr 22, 2026",
     title: "The minimum viable martech stack for a premium brand",
@@ -33,6 +37,7 @@ const POSTS = [
     thumb: "martech",
   },
   {
+    slug: "reputation-compounds",
     category: "Reputation",
     date: "Apr 3, 2026",
     title: "Reputation compounds: turning press and proof into a moat",
@@ -146,7 +151,10 @@ export function JournalSection() {
 
         <div className="mt-12 grid grid-cols-1 gap-x-12 gap-y-12 lg:grid-cols-2">
           {/* Featured article */}
-          <Link href="/blog" className="group flex flex-col">
+          <Link
+            href={`/blog/${FEATURED.slug}`}
+            className="group flex flex-col"
+          >
             <span className="relative block overflow-hidden rounded-2xl">
               {/* AI Search cover — query pill, answer lines, rising visibility */}
               <span className="flex aspect-[16/10] flex-col bg-charcoal p-6 pt-16 transition-transform duration-500 group-hover:scale-[1.02]">
@@ -192,7 +200,7 @@ export function JournalSection() {
             {POSTS.map((post, index) => (
               <li key={post.title}>
                 <Link
-                  href="/blog"
+                  href={`/blog/${post.slug}`}
                   className={`group grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-x-5 pb-5 ${
                     index === 0 ? "pt-0" : "pt-5"
                   }`}
