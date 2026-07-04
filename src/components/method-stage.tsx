@@ -22,7 +22,6 @@ export interface MethodPhase {
 const DIAGRAM_W = 620;
 const DIAGRAM_H = 440;
 const CARD_W = 230;
-const BUS_X = 302; // distribution spine — kept clear of the Outputs frame
 const CHIP_LEFT = 374; // where connectors dock into the output nodes
 const OUTPUT_Y = [62, 166, 270, 374];
 
@@ -72,26 +71,76 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
   const outerRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [entered, setEntered] = useState(false);
-  const [progress, setProgress] = useState(0);
+  /* Stepped cadence: scroll position only *selects* a phase; the stage then
+     glides there on its own clock. phasePos parameterizes the whole stage —
+     phase i rests anywhere in [i+0.5, i+0.7] (identical rendering), and
+     tweening across a unit plays the full exit → enter → assemble sequence. */
+  const [phasePos, setPhasePos] = useState(0.5);
+  const posRef = useRef(0.5);
+  const targetRef = useRef(0);
   const [openOutput, setOpenOutput] = useState<string | null>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     setMounted(true);
 
-    let raf = 0;
+    let scrollRaf = 0;
+    let tweenRaf = 0;
+
+    const setPos = (value: number) => {
+      posRef.current = value;
+      setPhasePos(value);
+    };
+    const easeInOut = (t: number) =>
+      t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+    const animateTo = (target: number) => {
+      cancelAnimationFrame(tweenRaf);
+      let from = posRef.current;
+      const forward = target + 0.5 > from;
+      /* If resting, snap (invisibly) to the rest-zone edge facing travel so
+         the tween spends no time in the dead zone. */
+      const zone = Math.floor(from);
+      const frac = from - zone;
+      if (frac >= 0.5 && frac <= 0.7) from = zone + (forward ? 0.7 : 0.5);
+      const to = target + (forward ? 0.5 : 0.7);
+      const dist = Math.abs(to - from);
+      if (dist < 0.001) {
+        setPos(to);
+        return;
+      }
+      const duration = Math.min(1600, 1000 * Math.max(1, dist));
+      const start = performance.now();
+      const step = (now: number) => {
+        const t = Math.min(1, (now - start) / duration);
+        setPos(from + (to - from) * easeInOut(t));
+        if (t < 1) tweenRaf = requestAnimationFrame(step);
+      };
+      tweenRaf = requestAnimationFrame(step);
+    };
+
     const update = () => {
-      raf = 0;
+      scrollRaf = 0;
       const el = outerRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight * 0.6) setEntered(true);
       const span = rect.height - window.innerHeight;
       if (span <= 0) return;
-      setProgress(Math.round(clamp(-rect.top / span) * 2000) / 2000);
+      const zone = clamp(-rect.top / span) * phases.length;
+      const raw = Math.min(phases.length - 1, Math.floor(zone));
+      const current = targetRef.current;
+      let next = current;
+      /* Small hysteresis so trackpad jitter at a boundary can't ping-pong */
+      if (raw > current && zone - raw > 0.08) next = raw;
+      else if (raw < current && zone < current - 0.08) next = raw;
+      if (next !== current) {
+        targetRef.current = next;
+        animateTo(next);
+      }
     };
     const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
+      if (!scrollRaf) scrollRaf = requestAnimationFrame(update);
     };
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -99,11 +148,12 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      if (tweenRaf) cancelAnimationFrame(tweenRaf);
     };
-  }, []);
+  }, [phases.length]);
 
-  const phaseFloat = progress * phases.length;
+  const phaseFloat = phasePos;
   /** The phase whose scene has begun entering — drives the narrative cascade */
   const activeIndex = Math.min(
     phases.length - 1,
@@ -114,7 +164,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
     <>
       {/* Scroll stage — desktop with JS and motion allowed */}
       {mounted && (
-        <div ref={outerRef} className="relative hidden h-[380vh] lg:block">
+        <div ref={outerRef} className="relative hidden h-[280vh] lg:block">
           <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pb-8 pt-32">
             {/* Progress rail */}
             <div className="flex items-center gap-4">
@@ -123,7 +173,7 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
               </span>
               <div className="flex flex-1 items-center gap-3">
                 {phases.map((phase, i) => {
-                  const fill = clamp(phaseFloat - i);
+                  const fill = clamp((phaseFloat - i) / 0.5);
                   const active = phaseFloat >= i && phaseFloat < i + 1;
                   return (
                     <div key={phase.number} className="flex-1">
@@ -256,7 +306,9 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                       >
                         {OUTPUT_Y.map((y, k) => {
                           const reveal = clamp((branch - 0.12 * k) / 0.4);
-                          const d2 = `M${CARD_W} ${DIAGRAM_H / 2} H${BUS_X} V${y} H${CHIP_LEFT}`;
+                          /* Organic S-curve fanning from the card edge into
+                             each output node */
+                          const d2 = `M${CARD_W} ${DIAGRAM_H / 2} C${CARD_W + 66} ${DIAGRAM_H / 2} ${CHIP_LEFT - 74} ${y} ${CHIP_LEFT} ${y}`;
                           return (
                             <g key={y} fill="none" strokeLinecap="round">
                               <path d={d2} stroke="#d8d2c8" strokeWidth="1.5" />
@@ -373,6 +425,23 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                                 className="size-1.5 shrink-0 rounded-full bg-brand"
                               />
                               {output.label}
+                              <span
+                                aria-hidden
+                                className={`ml-auto inline-flex size-4 shrink-0 items-center justify-center text-brand transition-transform duration-300 ${
+                                  open ? "rotate-45" : ""
+                                }`}
+                              >
+                                <svg
+                                  viewBox="0 0 12 12"
+                                  className="size-3"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                >
+                                  <path d="M6 1.5 V10.5 M1.5 6 H10.5" />
+                                </svg>
+                              </span>
                             </span>
                             {open && (
                               <div
