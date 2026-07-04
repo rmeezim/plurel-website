@@ -8,6 +8,9 @@ function CaseCard({
   year,
   metricValue,
   metricLabel,
+  before,
+  built,
+  after,
   children,
 }: {
   name: string;
@@ -15,6 +18,9 @@ function CaseCard({
   year: string;
   metricValue: string;
   metricLabel: string;
+  before: string;
+  built: string;
+  after: string;
   children: React.ReactNode;
 }) {
   return (
@@ -37,14 +43,37 @@ function CaseCard({
           <p className="mt-1 text-[13px] text-muted">
             {services} &mdash; {year}
           </p>
-          {/* Outcome chip — the transformation behind the visual */}
-          <p className="mt-2.5 inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-[11px]">
-            <span className="font-medium text-brand">{metricValue}</span>
-            <span className="text-muted">{metricLabel}</span>
-          </p>
         </div>
         <ArrowUpRight className="mt-1.5 size-5 shrink-0 text-ink transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
       </div>
+
+      {/* Transformation arc — the strategic story behind the visual */}
+      <dl className="mt-3.5 space-y-2 border-t border-line pt-3.5">
+        {[
+          { label: "Before", value: before },
+          { label: "Built", value: built },
+        ].map((row) => (
+          <div key={row.label} className="flex gap-3">
+            <dt className="w-11 shrink-0 pt-px text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
+              {row.label}
+            </dt>
+            <dd className="text-[12.5px] leading-snug text-ink/65">
+              {row.value}
+            </dd>
+          </div>
+        ))}
+        <div className="flex gap-3">
+          <dt className="w-11 shrink-0 pt-px text-[10px] font-semibold uppercase tracking-[0.14em] text-brand">
+            After
+          </dt>
+          <dd className="text-[12.5px] leading-snug text-ink">
+            {after}
+            <span className="mt-1 block text-[11px] font-medium text-brand">
+              {metricValue} {metricLabel}
+            </span>
+          </dd>
+        </div>
+      </dl>
     </Link>
   );
 }
@@ -90,6 +119,9 @@ export function WorkSection() {
             year="2025"
             metricValue="+212%"
             metricLabel="qualified inquiries"
+            before="Dated identity, unclear positioning"
+            built="Brand system, website"
+            after="Premium perception, higher-quality demand"
           >
             <div className="flex h-full flex-col bg-ink p-6 text-paper sm:p-8">
               <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.15em] text-paper/55">
@@ -122,6 +154,9 @@ export function WorkSection() {
             year="2025"
             metricValue="+64%"
             metricLabel="DTC conversion"
+            before="Generic shelf presence, no story"
+            built="Brand, packaging, launch"
+            after="Category-distinct, stronger conversion"
           >
             <div
               className="relative h-full"
@@ -153,6 +188,9 @@ export function WorkSection() {
             year="2024"
             metricValue="+185%"
             metricLabel="search visibility"
+            before="Invisible in search, referral-only"
+            built="Website, AI search, content"
+            after="The answer in its category, steady inbound"
           >
             <div className="flex h-full flex-col bg-paper p-6 sm:p-8">
               <div className="flex items-center justify-between border-b border-line pb-3 text-[9px] uppercase tracking-[0.2em] text-muted">
@@ -183,6 +221,9 @@ export function WorkSection() {
             year="2024"
             metricValue="2.6&times;"
             metricLabel="email-driven revenue"
+            before="Flat brand, weak retention"
+            built="Brand, content, email system"
+            after="Loyal audience, compounding revenue"
           >
             <div className="flex h-full flex-col bg-brand p-6 text-paper sm:p-8">
               <span className="inline-flex size-10 items-center justify-center rounded-full border border-paper/40">
