@@ -11,13 +11,14 @@ export interface ShowcaseService {
 }
 
 /**
- * Editorial service index (lg and up): oversized type rows whose indent is
- * computed from each row's distance to the viewport center, so the list
- * continuously bows right around the sticky intro and relaxes back as rows
- * pass — a lens that follows the scroll. The centered row is "active": it
- * turns brand and its system module + one-liner dock into the left column.
- * Below lg (and for no-JS / reduced motion) the plain `fallback` list is
- * shown and none of this runs.
+ * Editorial service index (lg and up), three columns: the sticky intro,
+ * the type list, and an artifact rail. Each row's indent is computed from
+ * its distance to the viewport center, so the list bows gently toward the
+ * rail and relaxes back as rows pass — a lens that follows the scroll.
+ * The centered row is "active": it turns brand, and its system module and
+ * one-liner ride the right rail, pinned at the viewport's vertical center
+ * so they always sit beside the highlighted row. Below lg (and for no-JS /
+ * reduced motion) the plain `fallback` list is shown and none of this runs.
  */
 export function ServicesShowcase({
   intro,
@@ -44,9 +45,9 @@ export function ServicesShowcase({
       const list = listRef.current;
       if (!list) return;
       const vh = window.innerHeight;
-      /* Bulge amplitude scales with the column, and collapses entirely when
-         the column is too narrow to spare the travel. */
-      const amplitude = Math.max(0, Math.min(list.clientWidth - 500, 140));
+      /* Gentle bow: amplitude scales with the column and collapses when
+         the column has no room to spare. */
+      const amplitude = Math.max(0, Math.min(list.clientWidth - 480, 84));
       let best = 0;
       let bestDist = Infinity;
       const next = rowRefs.current.map((el, i) => {
@@ -77,39 +78,11 @@ export function ServicesShowcase({
   }, []);
 
   return (
-    <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-[400px_minmax(0,1fr)] lg:gap-x-16">
-      {/* Left: sticky intro with the active service's artifact docked below */}
-      <div className="lg:sticky lg:top-28 lg:self-start">
-        {intro}
+    <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_240px] lg:gap-x-10 xl:grid-cols-[minmax(0,340px)_minmax(0,1fr)_280px] xl:gap-x-14">
+      {/* Left: sticky intro */}
+      <div className="lg:sticky lg:top-28 lg:self-start">{intro}</div>
 
-        <div aria-hidden className="relative mt-12 hidden h-[216px] lg:block">
-          {modules.map((node, i) => (
-            <div
-              key={i}
-              className="absolute left-0 top-0 transition-all duration-500"
-              style={{
-                opacity: i === active ? 1 : 0,
-                transform:
-                  i === active
-                    ? "rotate(-2deg) scale(1)"
-                    : "rotate(-5deg) scale(0.95)",
-              }}
-            >
-              <span className="block h-[144px] w-[216px] overflow-hidden rounded-xl border border-line shadow-[0_22px_44px_-24px_rgba(17,15,10,0.5)]">
-                {node}
-              </span>
-            </div>
-          ))}
-          <p
-            key={active}
-            className="glass-in absolute inset-x-0 bottom-0 max-w-[38ch] text-[13px] leading-relaxed text-muted"
-          >
-            {services[active].description}
-          </p>
-        </div>
-      </div>
-
-      {/* Right: the lens list (lg) / plain index (below lg) */}
+      {/* Center: the lens list */}
       <ul ref={listRef} className="hidden lg:block">
         {services.map((service, i) => {
           const isActive = i === active;
@@ -127,21 +100,22 @@ export function ServicesShowcase({
                 style={{ transform: `translateX(${offsets[i] ?? 0}px)` }}
               >
                 <span
-                  className={`pt-1.5 text-[13px] font-semibold tracking-[0.14em] transition-colors duration-300 ${
+                  className={`pt-1.5 text-[12px] font-semibold tracking-[0.14em] transition-colors duration-300 ${
                     isActive ? "text-brand" : "text-muted/70"
                   }`}
                 >
                   {service.number}
                 </span>
                 <span
-                  className={`text-[clamp(2.25rem,3.4vw,3.5rem)] font-normal leading-[1.08] tracking-[-0.02em] transition-colors duration-300 group-hover:text-brand ${
+                  className={`text-[clamp(2rem,2.9vw,3rem)] font-normal leading-[1.1] tracking-[-0.02em] transition-colors duration-300 group-hover:text-brand ${
                     isActive ? "text-brand" : "text-ink/30"
                   }`}
                 >
                   {service.name}
+                  <span className="sr-only"> — {service.description}</span>
                 </span>
                 <ArrowUpRight
-                  className={`mt-3 size-5 shrink-0 transition-opacity duration-300 ${
+                  className={`mt-2.5 size-5 shrink-0 transition-opacity duration-300 ${
                     isActive
                       ? "text-brand opacity-100"
                       : "opacity-0 group-hover:opacity-60"
@@ -152,6 +126,41 @@ export function ServicesShowcase({
           );
         })}
       </ul>
+
+      {/* Right: artifact rail — pinned at the viewport's vertical center so
+          the active service's module and one-liner sit beside its row */}
+      <aside className="relative hidden lg:block">
+        <div className="lg:sticky lg:top-[calc(50vh-132px)]">
+          <div aria-hidden className="relative h-[176px]">
+            {modules.map((node, i) => (
+              <div
+                key={i}
+                className="absolute left-0 top-0 transition-all duration-500"
+                style={{
+                  opacity: i === active ? 1 : 0,
+                  transform:
+                    i === active
+                      ? "rotate(-2deg) scale(1)"
+                      : "rotate(-5deg) scale(0.95)",
+                }}
+              >
+                <span className="block h-[160px] w-[240px] max-w-full overflow-hidden rounded-xl border border-line shadow-[0_22px_44px_-24px_rgba(17,15,10,0.5)]">
+                  {node}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div key={active} className="glass-in mt-5">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand">
+              {services[active].number} &mdash; {services[active].name}
+            </p>
+            <p className="mt-2 max-w-[30ch] text-[13px] leading-relaxed text-muted">
+              {services[active].description}
+            </p>
+          </div>
+        </div>
+      </aside>
+
       <div className="lg:hidden">{fallback}</div>
     </div>
   );
