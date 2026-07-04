@@ -7,6 +7,7 @@ import { PerformanceSection } from "@/components/performance-section";
 import { MethodSection } from "@/components/method-section";
 import { ProofSection } from "@/components/proof-section";
 import { JournalSection } from "@/components/journal-section";
+import { GrowthAuditSection } from "@/components/growth-audit-section";
 import { CtaSection } from "@/components/cta-section";
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       <MethodSection />
       <ProofSection />
       <JournalSection />
+      <GrowthAuditSection />
       <CtaSection />
     </main>
   );
