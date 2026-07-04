@@ -1,6 +1,7 @@
 import { Hero } from "@/components/hero";
 import { ManifestoSection } from "@/components/manifesto-section";
 import { ServicesSection } from "@/components/services-section";
+import { GrowthSystemSection } from "@/components/growth-system-section";
 import { WorkSection } from "@/components/work-section";
 import { MethodSection } from "@/components/method-section";
 import { ProofSection } from "@/components/proof-section";
@@ -13,6 +14,7 @@ export default function Home() {
       <Hero />
       <ManifestoSection />
       <ServicesSection />
+      <GrowthSystemSection />
       <WorkSection />
       <MethodSection />
       <ProofSection />
