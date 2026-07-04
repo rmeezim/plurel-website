@@ -151,7 +151,13 @@ export function ServicesShowcase({
           sits beside the highlighted row */}
       <aside className="relative hidden lg:block">
         <div className="lg:sticky lg:top-[calc(50vh-190px)]">
-          <div aria-hidden className="relative aspect-[12/7] w-full">
+          {/* Faint, desaturated so full-strength brand red stays reserved
+              for the active list row — the schematic reads as ambient
+              blueprint, not a second focal point */}
+          <div
+            aria-hidden
+            className="relative aspect-[12/7] w-full opacity-[0.45] [filter:saturate(0.65)]"
+          >
             {modules.map((node, i) => (
               <div
                 key={i}
