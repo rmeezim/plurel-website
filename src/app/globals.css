@@ -83,7 +83,7 @@
   }
 
   .animate-marquee {
-    animation: marquee 55s linear infinite;
+    animation: marquee 80s linear infinite;
   }
 
   /* Pause the drift while a visitor hovers the rail */

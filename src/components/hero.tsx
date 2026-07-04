@@ -82,6 +82,94 @@ function ShowcaseCards({ prefix, hidden }: { prefix: string; hidden?: boolean })
         </span>
       </article>
 
+      {/* Growth Stack: the operating-system layers */}
+      <article
+        key={`${prefix}-stack`}
+        aria-hidden={ariaHidden}
+        className="mr-4 flex h-full w-[210px] shrink-0 flex-col rounded-2xl border border-line bg-paper p-5 text-ink sm:w-[230px]"
+      >
+        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-muted">
+          <span>Growth stack</span>
+          <span className="text-[11px] font-semibold normal-case tracking-normal text-brand">
+            5 layers
+          </span>
+        </span>
+        <ul className="mt-4 flex flex-col gap-1.5">
+          {[
+            "Brand System",
+            "Website Layer",
+            "Content Engine",
+            "Search Visibility",
+            "Campaign Intelligence",
+          ].map((layer, i) => (
+            <li
+              key={layer}
+              className="flex items-center gap-2.5 rounded-lg border border-line bg-canvas px-3 py-2"
+            >
+              <span className="text-[9px] font-semibold tabular-nums text-muted">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="text-[11px] leading-none text-ink/85">
+                {layer}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <span className="mt-auto flex items-center gap-1.5 pt-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-ink/60">
+          <Spark className="size-3 text-brand" /> Growth Stack
+        </span>
+      </article>
+
+      {/* AI Visibility Scan: multi-engine presence report */}
+      <article
+        key={`${prefix}-aiscan`}
+        aria-hidden={ariaHidden}
+        className="mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-charcoal p-5 text-paper sm:w-[250px]"
+      >
+        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-paper/55">
+          <span>Presence scan</span>
+          <span className="relative flex size-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-60" />
+            <span className="relative inline-flex size-2 rounded-full bg-brand" />
+          </span>
+        </span>
+        <ul className="mt-4 space-y-2">
+          {[
+            { name: "Google", filled: 2 },
+            { name: "ChatGPT", filled: 1 },
+            { name: "Perplexity", filled: 1 },
+            { name: "Gemini", filled: 1 },
+          ].map((row) => (
+            <li key={row.name} className="flex items-center justify-between">
+              <span className="text-[11px] text-paper/80">{row.name}</span>
+              <span className="flex gap-1">
+                {Array.from({ length: 5 }, (_, d) => (
+                  <span
+                    key={d}
+                    className={`size-1.5 rounded-full ${
+                      d < row.filled ? "bg-brand" : "bg-paper/20"
+                    }`}
+                  />
+                ))}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-auto">
+          <span className="flex items-center justify-between border-t border-paper/10 pt-3 text-[10px]">
+            <span className="text-paper/55">Current presence</span>
+            <span className="font-semibold text-paper">Weak</span>
+          </span>
+          <span className="mt-1.5 flex items-center justify-between text-[10px]">
+            <span className="text-paper/55">Opportunity</span>
+            <span className="font-semibold text-brand">High</span>
+          </span>
+        </div>
+        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
+          <Spark className="size-3 text-brand" /> AI Visibility Scan
+        </span>
+      </article>
+
       {/* 2 — Website Experience: dark studio mockup + interior shot */}
       <article
         key={`${prefix}-web`}
@@ -178,12 +266,66 @@ function ShowcaseCards({ prefix, hidden }: { prefix: string; hidden?: boolean })
             />
           ))}
         </span>
-        <span className="mt-3 space-y-1.5">
-          <span className="block h-1.5 w-3/4 rounded-full bg-line" />
-          <span className="block h-1.5 w-1/2 rounded-full bg-line/70" />
+        <span className="mt-3 flex flex-col gap-1">
+          {[
+            { label: "Founder POV", dot: "bg-brand" },
+            { label: "Search Articles", dot: "bg-clay" },
+            { label: "Case Studies", dot: "bg-rust" },
+            { label: "LinkedIn Distribution", dot: "bg-ink/40" },
+          ].map((row) => (
+            <span
+              key={row.label}
+              className="flex items-center gap-1.5 text-[9px] leading-tight text-ink/70"
+            >
+              <span className={`size-1.5 shrink-0 rounded-full ${row.dot}`} />
+              {row.label}
+            </span>
+          ))}
         </span>
         <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-ink/60">
           <Spark className="size-3 text-brand" /> Content Engine
+        </span>
+      </article>
+
+      {/* Conversion Pulse: outcome metric */}
+      <article
+        key={`${prefix}-pulse`}
+        aria-hidden={ariaHidden}
+        className="mr-4 flex h-full w-[210px] shrink-0 flex-col rounded-2xl bg-ink p-5 text-paper sm:w-[230px]"
+      >
+        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-paper/55">
+          <span>Conversion pulse</span>
+          <svg
+            width="34"
+            height="14"
+            viewBox="0 0 34 14"
+            fill="none"
+            className="text-brand"
+            aria-hidden
+          >
+            <path
+              d="M1 12 L9 8 L16 9 L24 4 L33 1"
+              stroke="currentColor"
+              strokeWidth="1.25"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+        <span className="mt-auto flex items-baseline gap-1">
+          <span className="text-[44px] font-normal leading-none tracking-tight text-brand">
+            +38
+          </span>
+          <span className="text-xl font-normal leading-none text-brand">%</span>
+        </span>
+        <span className="mt-2.5 text-[13px] font-medium text-paper">
+          inquiry quality
+        </span>
+        <p className="mt-2 text-[10px] leading-relaxed text-paper/50">
+          after repositioning, web rebuild, and content system launch
+        </p>
+        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
+          <Spark className="size-3 text-brand" /> Conversion Pulse
         </span>
       </article>
 
