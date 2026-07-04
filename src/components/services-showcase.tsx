@@ -149,8 +149,10 @@ export function ServicesShowcase({
           directly on the page surface, unframed and faint, filling the
           column; pinned at the viewport's vertical center so it always
           sits beside the highlighted row */}
-      <aside className="relative hidden lg:block">
-        <div className="lg:sticky lg:top-[calc(50vh-190px)]">
+      <aside className="relative hidden lg:flex lg:items-center">
+        {/* Scrolls with the flow (no pin); right-aligned and sized under the
+            column so the extra space falls as a gap toward the list */}
+        <div className="ml-auto w-[85%]">
           {/* Faint, desaturated so full-strength brand red stays reserved
               for the active list row — the schematic reads as ambient
               blueprint, not a second focal point */}
@@ -174,7 +176,7 @@ export function ServicesShowcase({
               </div>
             ))}
           </div>
-          <div key={active} className="glass-in mt-6 xl:pl-4">
+          <div key={active} className="glass-in mt-6">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand">
               {services[active].number} &mdash; {services[active].name}
             </p>
