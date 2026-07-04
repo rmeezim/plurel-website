@@ -49,7 +49,7 @@ export function ServicesShowcase({
       const vh = window.innerHeight;
       /* Gentle bow: amplitude scales with the column and collapses when
          the column has no room to spare. */
-      const amplitude = Math.max(0, Math.min(list.clientWidth - 560, 84));
+      const amplitude = Math.max(0, Math.min(list.clientWidth - 440, 84));
       let best = 0;
       let bestDist = Infinity;
       const next = rowRefs.current.map((el, i) => {
@@ -82,7 +82,7 @@ export function ServicesShowcase({
   }, []);
 
   return (
-    <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)_240px] lg:gap-x-10 xl:grid-cols-[minmax(0,340px)_minmax(0,1fr)_280px] xl:gap-x-14">
+    <div className="grid grid-cols-1 gap-y-10 lg:grid-cols-[minmax(0,250px)_minmax(0,1fr)_minmax(0,270px)] lg:gap-x-10 xl:grid-cols-[minmax(0,340px)_minmax(0,1fr)_420px] xl:gap-x-12">
       {/* Left: sticky intro */}
       <div className="lg:sticky lg:top-28 lg:self-start">{intro}</div>
 
@@ -124,7 +124,7 @@ export function ServicesShowcase({
                     {service.number}
                   </span>
                   <span
-                    className={`text-[clamp(2rem,2.9vw,3rem)] font-normal leading-[1.1] tracking-[-0.02em] transition-colors duration-300 group-hover:text-brand ${
+                    className={`text-[clamp(1.9rem,2.5vw,2.5rem)] font-normal leading-[1.1] tracking-[-0.02em] transition-colors duration-300 group-hover:text-brand ${
                       isActive ? "text-brand" : "text-ink/30"
                     }`}
                   >
@@ -145,36 +145,34 @@ export function ServicesShowcase({
         </ul>
       </div>
 
-      {/* Right: artifact rail — pinned at the viewport's vertical center so
-          the active service's schematic and one-liner sit beside its row */}
+      {/* Right: artifact zone — the active service's schematic drawn
+          directly on the page surface, unframed and faint, filling the
+          column; pinned at the viewport's vertical center so it always
+          sits beside the highlighted row */}
       <aside className="relative hidden lg:block">
-        <div className="lg:sticky lg:top-[calc(50vh-140px)]">
-          <div aria-hidden className="relative h-[168px]">
+        <div className="lg:sticky lg:top-[calc(50vh-190px)]">
+          <div aria-hidden className="relative aspect-[12/7] w-full">
             {modules.map((node, i) => (
               <div
                 key={i}
-                className="absolute left-0 top-0 w-full transition-all duration-500"
+                className="absolute inset-0 transition-all duration-500"
                 style={{
                   opacity: i === active ? 1 : 0,
                   transform:
-                    i === active ? "translateY(0)" : "translateY(10px)",
+                    i === active
+                      ? "translateY(0) scale(1)"
+                      : "translateY(12px) scale(0.985)",
                 }}
               >
-                <span className="block w-[240px] max-w-full overflow-hidden rounded-lg border border-line bg-paper shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]">
-                  <span className="flex items-center justify-between border-b border-line/70 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-muted">
-                    <span>PLR&mdash;{services[i].number}</span>
-                    <span className="size-1.5 rounded-full bg-brand diagram-blink" />
-                  </span>
-                  <span className="block h-[140px]">{node}</span>
-                </span>
+                {node}
               </div>
             ))}
           </div>
-          <div key={active} className="glass-in mt-5">
+          <div key={active} className="glass-in mt-6 xl:pl-4">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-brand">
               {services[active].number} &mdash; {services[active].name}
             </p>
-            <p className="mt-2 max-w-[30ch] text-[13px] leading-relaxed text-muted">
+            <p className="mt-2 max-w-[36ch] text-sm leading-relaxed text-muted">
               {services[active].description}
             </p>
           </div>
