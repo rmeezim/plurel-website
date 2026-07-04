@@ -57,167 +57,149 @@ const SERVICES = [
 
 type Module = (typeof SERVICES)[number]["module"];
 
-/** Days lit up in the mini editorial calendar */
-const CALENDAR_PUBLISHED = new Set([2, 5, 9, 12, 16, 19, 24]);
-const CALENDAR_DRAFT = 14;
-
 /**
- * Miniature system UI revealed when a service row is hovered — page
- * wireframes, dashboards, graphs. Purely decorative (aria-hidden upstream).
+ * Living schematic for each service — blueprint linework in the same visual
+ * language as the operating-model stage: thin line strokes, ink nodes, and
+ * constant motion (travelling brand pulses, flowing dashes, a scanning beam,
+ * breathing nodes). Purely decorative (aria-hidden upstream); all motion
+ * classes no-op under reduced motion.
  */
 function ServiceModule({ kind }: { kind: Module }) {
   switch (kind) {
     case "web":
-      // Page architecture preview
+      // Page blueprint — pulse traces the frame, flow feeds the side cards
       return (
-        <span className="flex h-full w-full flex-col gap-1.5 bg-paper p-2.5">
-          <span className="flex items-center gap-1">
-            <span className="size-1 rounded-full bg-line" />
-            <span className="size-1 rounded-full bg-line" />
-            <span className="size-1 rounded-full bg-line" />
-            <span className="ml-1 h-1.5 flex-1 rounded-full bg-line/70" />
-          </span>
-          <span className="relative h-7 rounded-[4px] bg-clay/70">
-            <span className="absolute left-1.5 top-2 h-1.5 w-10 rounded-sm bg-ink/75" />
-            <span className="absolute left-1.5 top-4.5 h-1 w-6 rounded-sm bg-ink/40" />
-          </span>
-          <span className="flex flex-1 gap-1.5">
-            <span className="flex-[2] rounded-[4px] bg-line/60" />
-            <span className="flex-1 rounded-[4px] bg-line/40" />
-          </span>
-          <span className="h-2 w-12 self-start rounded-[3px] bg-brand" />
-        </span>
+        <svg viewBox="0 0 240 140" className="h-full w-full">
+          <rect x="16" y="14" width="140" height="112" rx="7" fill="none" stroke="#d8d2c8" strokeWidth="1.25" />
+          <rect x="16" y="14" width="140" height="112" rx="7" fill="none" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" />
+          <line x1="16" y1="34" x2="156" y2="34" stroke="#d8d2c8" strokeWidth="1" />
+          <circle cx="26" cy="24" r="2" fill="#110f0a" opacity="0.25" />
+          <circle cx="34" cy="24" r="2" fill="#110f0a" opacity="0.25" />
+          <rect x="30" y="50" width="66" height="7" rx="3.5" fill="#110f0a" opacity="0.5" />
+          <rect x="30" y="64" width="44" height="5" rx="2.5" fill="#110f0a" opacity="0.18" />
+          <rect x="30" y="94" width="36" height="13" rx="4" fill="#bf3a36" className="diagram-blink" />
+          <path d="M156 70 H172 V49 H186 M172 70 V93 H186" fill="none" stroke="#c7b49d" strokeWidth="1.1" className="diagram-flow" />
+          <rect x="186" y="38" width="38" height="22" rx="4" fill="none" stroke="#d8d2c8" strokeWidth="1.25" />
+          <rect x="186" y="82" width="38" height="22" rx="4" fill="none" stroke="#d8d2c8" strokeWidth="1.25" />
+        </svg>
       );
     case "identity":
-      // Identity system tiles
+      // Identity nucleus radiating to mark, type, and palette
       return (
-        <span className="grid h-full w-full grid-cols-2 gap-1.5 bg-ink p-2">
-          <span className="flex items-center justify-center rounded-[4px] bg-brand">
-            <Spark className="size-4 text-paper" />
-          </span>
-          <span className="flex items-center justify-center rounded-[4px] bg-paper font-serif text-sm leading-none text-ink">
+        <svg viewBox="0 0 240 140" className="h-full w-full">
+          <line x1="78" y1="70" x2="152" y2="30" stroke="#d8d2c8" strokeWidth="1.25" />
+          <line x1="78" y1="70" x2="152" y2="70" stroke="#d8d2c8" strokeWidth="1.25" />
+          <line x1="78" y1="70" x2="152" y2="110" stroke="#d8d2c8" strokeWidth="1.25" />
+          <line x1="78" y1="70" x2="152" y2="30" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-0.4s" }} />
+          <line x1="78" y1="70" x2="152" y2="70" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-1.5s" }} />
+          <line x1="78" y1="70" x2="152" y2="110" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-2.6s" }} />
+          <circle cx="78" cy="70" r="11" fill="none" stroke="#bf3a36" strokeWidth="1.25" />
+          <circle cx="78" cy="70" r="4.5" fill="#bf3a36" className="diagram-blink" />
+          <rect x="152" y="18" width="24" height="24" rx="5" fill="none" stroke="#110f0a" strokeOpacity="0.45" strokeWidth="1.25" />
+          <text x="158" y="77" fontSize="16" fill="#110f0a" fillOpacity="0.75" className="font-serif italic">
             Aa
-          </span>
-          <span className="flex items-center justify-center gap-1 rounded-[4px] bg-charcoal">
-            <span className="size-2 rounded-full bg-brand" />
-            <span className="size-2 rounded-full bg-clay" />
-            <span className="size-2 rounded-full bg-paper" />
-          </span>
-          <span className="flex items-center justify-center rounded-[4px] bg-clay text-[8px] font-semibold tracking-[0.25em] text-ink">
-            PLR
-          </span>
-        </span>
+          </text>
+          <circle cx="158" cy="110" r="4.5" fill="#bf3a36" />
+          <circle cx="170" cy="110" r="4.5" fill="#c7b49d" />
+          <circle cx="182" cy="110" r="4.5" fill="#110f0a" opacity="0.8" />
+        </svg>
       );
     case "search":
-      // Search visibility graph
+      // Answer ranking — a beam scans the results, the query feeds rank #1
       return (
-        <span className="flex h-full w-full flex-col bg-charcoal p-2.5">
-          <span className="flex items-center justify-between">
-            <span className="h-3 w-16 rounded-full bg-paper/15" />
-            <span className="text-[10px] font-medium leading-none text-brand">
-              +185%
-            </span>
-          </span>
-          <span className="mt-auto flex h-12 items-end gap-1.5">
-            {["28%", "42%", "55%", "72%", "100%"].map((h, i) => (
-              <span
-                key={h}
-                style={{ height: h }}
-                className={`flex-1 rounded-t-sm ${i === 4 ? "bg-brand" : "bg-paper/20"}`}
-              />
-            ))}
-          </span>
-        </span>
+        <svg viewBox="0 0 240 140" className="h-full w-full">
+          <rect x="18" y="16" width="130" height="18" rx="9" fill="none" stroke="#d8d2c8" strokeWidth="1.25" />
+          <circle cx="30" cy="25" r="4" fill="none" stroke="#8f8981" strokeWidth="1.25" />
+          <rect x="42" y="23" width="52" height="4" rx="2" fill="#110f0a" opacity="0.15" />
+          <path d="M34 34 V56" fill="none" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" />
+          <rect x="18" y="56" width="150" height="10" rx="5" fill="#bf3a36" opacity="0.85" />
+          <text x="178" y="65" fontSize="10" fill="#bf3a36" className="diagram-blink">
+            #1
+          </text>
+          <rect x="18" y="74" width="118" height="10" rx="5" fill="#110f0a" opacity="0.1" />
+          <rect x="18" y="92" width="96" height="10" rx="5" fill="#110f0a" opacity="0.08" />
+          <rect x="18" y="110" width="70" height="10" rx="5" fill="#110f0a" opacity="0.06" />
+          <line x1="18" y1="50" x2="18" y2="124" stroke="#bf3a36" strokeOpacity="0.4" strokeWidth="1.5" className="diagram-scan" />
+        </svg>
       );
     case "content":
-      // Editorial calendar grid
+      // Editorial conveyor — drafts flow through publish to distribution
       return (
-        <span className="flex h-full w-full flex-col bg-paper p-2.5">
-          <span className="flex items-center justify-between">
-            <span className="text-[9px] font-semibold tracking-[0.2em] text-muted">
-              JUN
-            </span>
-            <span className="size-1.5 rounded-full bg-brand" />
-          </span>
-          <span className="mt-2 grid flex-1 grid-cols-7 gap-[3px]">
-            {Array.from({ length: 28 }, (_, i) => (
-              <span
-                key={i}
-                className={`rounded-[2px] ${
-                  CALENDAR_PUBLISHED.has(i)
-                    ? "bg-brand"
-                    : i === CALENDAR_DRAFT
-                      ? "bg-clay"
-                      : "bg-line/60"
-                }`}
-              />
-            ))}
-          </span>
-        </span>
+        <svg viewBox="0 0 240 140" className="h-full w-full">
+          <line x1="16" y1="92" x2="222" y2="92" stroke="#d8d2c8" strokeWidth="1.25" />
+          <line x1="16" y1="92" x2="222" y2="92" stroke="#c7b49d" strokeWidth="1.25" className="diagram-flow" />
+          <path d="M218 87 L226 92 L218 97" fill="none" stroke="#8f8981" strokeWidth="1.25" />
+          <line x1="56" y1="74" x2="56" y2="88" stroke="#d8d2c8" strokeWidth="1" />
+          <line x1="120" y1="70" x2="120" y2="87" stroke="#d8d2c8" strokeWidth="1" />
+          <line x1="184" y1="74" x2="184" y2="88" stroke="#d8d2c8" strokeWidth="1" />
+          <rect x="48" y="52" width="16" height="21" rx="2.5" fill="none" stroke="#110f0a" strokeOpacity="0.35" strokeWidth="1.1" />
+          <rect x="112" y="48" width="16" height="21" rx="2.5" fill="none" stroke="#bf3a36" strokeWidth="1.1" />
+          <rect x="176" y="52" width="16" height="21" rx="2.5" fill="none" stroke="#110f0a" strokeOpacity="0.35" strokeWidth="1.1" />
+          <circle cx="56" cy="92" r="4" fill="#fbfaf6" stroke="#8f8981" strokeWidth="1.25" />
+          <circle cx="120" cy="92" r="5" fill="#bf3a36" className="diagram-blink" />
+          <circle cx="184" cy="92" r="4" fill="#fbfaf6" stroke="#8f8981" strokeWidth="1.25" />
+        </svg>
       );
     case "ads":
-      // Funnel + campaign dashboard
+      // Channels converge into return — pulses in, compounding out
       return (
-        <span className="flex h-full w-full flex-col bg-ink p-2.5">
-          <span className="flex items-center justify-between">
-            <span className="text-[8px] font-medium uppercase tracking-[0.2em] text-paper/50">
-              Campaign
-            </span>
-            <span className="text-[10px] font-medium leading-none text-brand">
-              4.2&times;
-            </span>
-          </span>
-          <span className="mt-auto flex flex-col items-center gap-1.5">
-            <span className="h-2.5 w-full rounded-full bg-paper/15" />
-            <span className="h-2.5 w-[72%] rounded-full bg-paper/25" />
-            <span className="h-2.5 w-[48%] rounded-full bg-paper/40" />
-            <span className="h-2.5 w-[28%] rounded-full bg-brand" />
-          </span>
-        </span>
+        <svg viewBox="0 0 240 140" className="h-full w-full">
+          <path d="M18 28 C78 28 112 62 156 67" fill="none" stroke="#d8d2c8" strokeWidth="1.25" />
+          <path d="M18 70 H156" fill="none" stroke="#d8d2c8" strokeWidth="1.25" />
+          <path d="M18 112 C78 112 112 78 156 73" fill="none" stroke="#d8d2c8" strokeWidth="1.25" />
+          <path d="M18 28 C78 28 112 62 156 67" fill="none" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-0.3s" }} />
+          <path d="M18 70 H156" fill="none" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-1.4s" }} />
+          <path d="M18 112 C78 112 112 78 156 73" fill="none" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-2.2s" }} />
+          <circle cx="166" cy="70" r="8" fill="#bf3a36" className="diagram-blink" />
+          <line x1="176" y1="70" x2="222" y2="70" stroke="#c7b49d" strokeWidth="1.25" className="diagram-flow" />
+          <path d="M216 65 L224 70 L216 75" fill="none" stroke="#bf3a36" strokeWidth="1.25" />
+        </svg>
       );
     case "pr":
-      // Trust signal map
+      // Reputation constellation — coverage pulses out from the brand
       return (
-        <span className="block h-full w-full bg-charcoal p-1.5">
-          <svg viewBox="0 0 100 64" className="h-full w-full">
-            <g stroke="#fbfaf6" strokeOpacity="0.25" strokeWidth="0.75">
-              <line x1="50" y1="34" x2="15" y2="12" />
-              <line x1="50" y1="34" x2="58" y2="8" />
-              <line x1="50" y1="34" x2="86" y2="14" />
-              <line x1="50" y1="34" x2="89" y2="48" />
-              <line x1="50" y1="34" x2="18" y2="52" />
-            </g>
-            <g fill="#fbfaf6" fillOpacity="0.55">
-              <circle cx="15" cy="12" r="2.4" />
-              <circle cx="58" cy="8" r="2.4" />
-              <circle cx="86" cy="14" r="2.4" />
-              <circle cx="89" cy="48" r="2.4" />
-              <circle cx="18" cy="52" r="2.4" />
-            </g>
-            <circle cx="50" cy="34" r="5.5" fill="#bf3a36" />
-            <circle cx="50" cy="34" r="1.8" fill="#fbfaf6" />
-          </svg>
-        </span>
+        <svg viewBox="0 0 240 140" className="h-full w-full">
+          <line x1="120" y1="72" x2="44" y2="26" stroke="#d8d2c8" strokeWidth="1.25" />
+          <line x1="120" y1="72" x2="186" y2="20" stroke="#d8d2c8" strokeWidth="1.25" />
+          <line x1="120" y1="72" x2="208" y2="96" stroke="#d8d2c8" strokeWidth="1.25" />
+          <line x1="120" y1="72" x2="62" y2="116" stroke="#d8d2c8" strokeWidth="1.25" />
+          <line x1="120" y1="72" x2="44" y2="26" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-0.6s" }} />
+          <line x1="120" y1="72" x2="186" y2="20" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-1.7s" }} />
+          <line x1="120" y1="72" x2="208" y2="96" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-2.8s" }} />
+          <circle cx="44" cy="26" r="3.5" fill="#110f0a" opacity="0.45" />
+          <circle cx="186" cy="20" r="4.5" fill="#bf3a36" className="diagram-blink" />
+          <circle cx="208" cy="96" r="3.5" fill="#110f0a" opacity="0.45" />
+          <circle cx="62" cy="116" r="3.5" fill="#110f0a" opacity="0.45" />
+          <circle cx="120" cy="72" r="8" fill="#110f0a" />
+          <circle cx="120" cy="72" r="2.5" fill="#fbfaf6" />
+        </svg>
       );
     case "creative":
-      // Art-direction frame board
+      // Direction plate — crop marks, grid circle, pulse tracing the frame
       return (
-        <span className="relative block h-full w-full overflow-hidden bg-clay">
-          <span className="absolute left-3 top-3 h-14 w-16 -rotate-[5deg] rounded-[4px] bg-gradient-to-br from-rust to-ink shadow-sm" />
-          <span className="absolute right-4 top-7 h-12 w-12 rotate-[6deg] rounded-[4px] border-2 border-paper" />
-          <Spark className="absolute bottom-2.5 left-4 size-3.5 text-ink/70" />
-        </span>
+        <svg viewBox="0 0 240 140" className="h-full w-full">
+          <path d="M18 28 V16 H30" fill="none" stroke="#110f0a" strokeOpacity="0.4" strokeWidth="1.25" />
+          <path d="M210 16 H222 V28" fill="none" stroke="#110f0a" strokeOpacity="0.4" strokeWidth="1.25" />
+          <path d="M222 112 V124 H210" fill="none" stroke="#110f0a" strokeOpacity="0.4" strokeWidth="1.25" />
+          <path d="M30 124 H18 V112" fill="none" stroke="#110f0a" strokeOpacity="0.4" strokeWidth="1.25" />
+          <rect x="58" y="32" width="124" height="76" fill="none" stroke="#d8d2c8" strokeWidth="1.25" />
+          <rect x="58" y="32" width="124" height="76" fill="none" stroke="#bf3a36" strokeWidth="1.25" pathLength={100} className="method-pulse" style={{ animationDelay: "-1s" }} />
+          <line x1="58" y1="108" x2="182" y2="32" stroke="#110f0a" opacity="0.15" strokeWidth="1" />
+          <circle cx="120" cy="70" r="23" fill="none" stroke="#c7b49d" strokeWidth="1.25" />
+          <circle cx="120" cy="70" r="3" fill="#bf3a36" className="diagram-blink" />
+        </svg>
       );
     case "consulting":
-      // Engagement roadmap
+      // Engagement roadmap — the "now" line crawls across the plan
       return (
-        <span className="relative flex h-full w-full flex-col justify-center gap-2.5 bg-paper p-3">
-          <span className="absolute inset-y-2 left-[58%] w-px bg-ink/15" />
-          <span className="absolute left-[58%] top-2 size-1.5 -translate-x-1/2 rounded-full bg-brand" />
-          <span className="h-2 w-[45%] rounded-full bg-line" />
-          <span className="ml-[18%] h-2 w-[52%] rounded-full bg-clay" />
-          <span className="ml-[42%] h-2 w-[40%] rounded-full bg-brand" />
-        </span>
+        <svg viewBox="0 0 240 140" className="h-full w-full">
+          <rect x="24" y="34" width="104" height="6" rx="3" fill="#110f0a" opacity="0.12" />
+          <rect x="52" y="62" width="128" height="6" rx="3" fill="#c7b49d" opacity="0.75" />
+          <rect x="84" y="90" width="72" height="6" rx="3" fill="#bf3a36" opacity="0.85" />
+          <line x1="150" y1="22" x2="150" y2="112" stroke="#bf3a36" strokeOpacity="0.45" strokeWidth="1.1" className="diagram-flow" />
+          <circle cx="150" cy="93" r="5.5" fill="none" stroke="#bf3a36" strokeWidth="1.25" className="diagram-blink" />
+          <line x1="24" y1="118" x2="216" y2="118" stroke="#d8d2c8" strokeWidth="1.25" />
+        </svg>
       );
   }
 }

@@ -109,6 +109,46 @@
     transition: opacity 0.4s ease;
   }
 
+  /* Living-schematic primitives for the service artifacts */
+  @keyframes diagram-flow {
+    to {
+      stroke-dashoffset: -20;
+    }
+  }
+
+  .diagram-flow {
+    stroke-dasharray: 3 7;
+    animation: diagram-flow 1.5s linear infinite;
+  }
+
+  @keyframes diagram-scan {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(148px);
+    }
+  }
+
+  .diagram-scan {
+    animation: diagram-scan 5s ease-in-out infinite;
+  }
+
+  @keyframes diagram-blink {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .diagram-blink {
+    animation: diagram-blink 2.6s ease-in-out infinite;
+  }
+
   /* Glass detail card entrance */
   @keyframes glass-in {
     from {

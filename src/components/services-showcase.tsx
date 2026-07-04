@@ -15,7 +15,8 @@ export interface ShowcaseService {
  * the type list, and an artifact rail. Each row's indent is computed from
  * its distance to the viewport center, so the list bows gently toward the
  * rail and relaxes back as rows pass — a lens that follows the scroll.
- * The centered row is "active": it turns brand, and its system module and
+ * The centered row is "active": it turns brand, a thumb glides to it on
+ * the progress track beside the list, and its living schematic and
  * one-liner ride the right rail, pinned at the viewport's vertical center
  * so they always sit beside the highlighted row. Below lg (and for no-JS /
  * reduced motion) the plain `fallback` list is shown and none of this runs.
@@ -31,9 +32,10 @@ export function ServicesShowcase({
   modules: ReactNode[];
   fallback: ReactNode;
 }) {
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [active, setActive] = useState(0);
+  const [thumbY, setThumbY] = useState(40);
   const [offsets, setOffsets] = useState<number[]>(() => services.map(() => 0));
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export function ServicesShowcase({
       const vh = window.innerHeight;
       /* Gentle bow: amplitude scales with the column and collapses when
          the column has no room to spare. */
-      const amplitude = Math.max(0, Math.min(list.clientWidth - 480, 84));
+      const amplitude = Math.max(0, Math.min(list.clientWidth - 560, 84));
       let best = 0;
       let bestDist = Infinity;
       const next = rowRefs.current.map((el, i) => {
@@ -63,6 +65,8 @@ export function ServicesShowcase({
       });
       setOffsets(next);
       setActive(best);
+      const bestEl = rowRefs.current[best];
+      if (bestEl) setThumbY(bestEl.offsetTop + bestEl.offsetHeight / 2);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -82,70 +86,86 @@ export function ServicesShowcase({
       {/* Left: sticky intro */}
       <div className="lg:sticky lg:top-28 lg:self-start">{intro}</div>
 
-      {/* Center: the lens list */}
-      <ul ref={listRef} className="hidden lg:block">
-        {services.map((service, i) => {
-          const isActive = i === active;
-          return (
-            <li
-              key={service.number}
-              ref={(el) => {
-                rowRefs.current[i] = el;
-              }}
-              className="py-2"
-            >
-              <Link
-                href="/services"
-                className="group inline-flex w-max items-start gap-4"
-                style={{ transform: `translateX(${offsets[i] ?? 0}px)` }}
+      {/* Center: the lens list, with a progress track the thumb glides on */}
+      <div ref={listRef} className="relative hidden lg:block">
+        <span
+          aria-hidden
+          className="absolute bottom-4 left-[3px] top-4 hidden w-px bg-line xl:block"
+        />
+        <span
+          aria-hidden
+          className="absolute left-0 top-0 hidden h-7 w-[7px] rounded-full bg-brand xl:block"
+          style={{
+            transform: `translateY(${thumbY - 14}px)`,
+            transition: "transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1)",
+          }}
+        />
+        <ul className="xl:pl-20">
+          {services.map((service, i) => {
+            const isActive = i === active;
+            return (
+              <li
+                key={service.number}
+                ref={(el) => {
+                  rowRefs.current[i] = el;
+                }}
+                className="py-2"
               >
-                <span
-                  className={`pt-1.5 text-[12px] font-semibold tracking-[0.14em] transition-colors duration-300 ${
-                    isActive ? "text-brand" : "text-muted/70"
-                  }`}
+                <Link
+                  href="/services"
+                  className="group inline-flex w-max items-start gap-4"
+                  style={{ transform: `translateX(${offsets[i] ?? 0}px)` }}
                 >
-                  {service.number}
-                </span>
-                <span
-                  className={`text-[clamp(2rem,2.9vw,3rem)] font-normal leading-[1.1] tracking-[-0.02em] transition-colors duration-300 group-hover:text-brand ${
-                    isActive ? "text-brand" : "text-ink/30"
-                  }`}
-                >
-                  {service.name}
-                  <span className="sr-only"> — {service.description}</span>
-                </span>
-                <ArrowUpRight
-                  className={`mt-2.5 size-5 shrink-0 transition-opacity duration-300 ${
-                    isActive
-                      ? "text-brand opacity-100"
-                      : "opacity-0 group-hover:opacity-60"
-                  }`}
-                />
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+                  <span
+                    className={`pt-1.5 text-[12px] font-semibold tracking-[0.14em] transition-colors duration-300 ${
+                      isActive ? "text-brand" : "text-muted/70"
+                    }`}
+                  >
+                    {service.number}
+                  </span>
+                  <span
+                    className={`text-[clamp(2rem,2.9vw,3rem)] font-normal leading-[1.1] tracking-[-0.02em] transition-colors duration-300 group-hover:text-brand ${
+                      isActive ? "text-brand" : "text-ink/30"
+                    }`}
+                  >
+                    {service.name}
+                    <span className="sr-only"> &mdash; {service.description}</span>
+                  </span>
+                  <ArrowUpRight
+                    className={`mt-2.5 size-5 shrink-0 transition-opacity duration-300 ${
+                      isActive
+                        ? "text-brand opacity-100"
+                        : "opacity-0 group-hover:opacity-60"
+                    }`}
+                  />
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
 
       {/* Right: artifact rail — pinned at the viewport's vertical center so
-          the active service's module and one-liner sit beside its row */}
+          the active service's schematic and one-liner sit beside its row */}
       <aside className="relative hidden lg:block">
-        <div className="lg:sticky lg:top-[calc(50vh-132px)]">
-          <div aria-hidden className="relative h-[176px]">
+        <div className="lg:sticky lg:top-[calc(50vh-140px)]">
+          <div aria-hidden className="relative h-[168px]">
             {modules.map((node, i) => (
               <div
                 key={i}
-                className="absolute left-0 top-0 transition-all duration-500"
+                className="absolute left-0 top-0 w-full transition-all duration-500"
                 style={{
                   opacity: i === active ? 1 : 0,
                   transform:
-                    i === active
-                      ? "rotate(-2deg) scale(1)"
-                      : "rotate(-5deg) scale(0.95)",
+                    i === active ? "translateY(0)" : "translateY(10px)",
                 }}
               >
-                <span className="block h-[160px] w-[240px] max-w-full overflow-hidden rounded-xl border border-line shadow-[0_22px_44px_-24px_rgba(17,15,10,0.5)]">
-                  {node}
+                <span className="block w-[240px] max-w-full overflow-hidden rounded-lg border border-line bg-paper shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]">
+                  <span className="flex items-center justify-between border-b border-line/70 px-3 py-1.5 text-[9px] font-semibold uppercase tracking-[0.22em] text-muted">
+                    <span>PLR&mdash;{services[i].number}</span>
+                    <span className="size-1.5 rounded-full bg-brand diagram-blink" />
+                  </span>
+                  <span className="block h-[140px]">{node}</span>
                 </span>
               </div>
             ))}
