@@ -627,6 +627,8 @@ function MenuTrigger({
 export function SiteHeader() {
   const [menu, setMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [headerH, setHeaderH] = useState(64);
   const headerRef = useRef<HTMLElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -643,6 +645,31 @@ export function SiteHeader() {
   };
   const toggleMenu = (key: MenuKey) =>
     setMenu((current) => (current === key ? null : key));
+
+  /* Condense into the floating capsule once the page starts moving, and
+     scrub the reading-progress hairline along the capsule's bottom edge */
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      setScrolled(y > 24);
+      const max =
+        document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? Math.round(Math.min(1, y / max) * 500) / 500 : 0);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
 
   useEffect(() => {
     const measure = () => {
@@ -661,73 +688,151 @@ export function SiteHeader() {
       window.removeEventListener("resize", measure);
       window.removeEventListener("keydown", onKey);
     };
-  }, []);
+  }, [scrolled]);
 
   return (
-    <header
-      ref={headerRef}
-      className="sticky top-0 z-50 border-b border-line bg-canvas/90 backdrop-blur-md"
-    >
+    <header ref={headerRef} className="sticky top-0 z-50">
       <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
-        <div className="flex items-center justify-between gap-4 py-4">
-          {/* Brand */}
-          <div className="flex items-center gap-3 lg:flex-1">
-            <Link
-              href="/"
-              className="text-xl font-extrabold tracking-tight text-ink"
-            >
-              PLUREL
-            </Link>
-            <span className="hidden items-center gap-2 border-l border-line pl-3 sm:flex">
-              <Spark className="size-3 text-brand" />
-              <span className="text-sm text-muted">A Northeon division</span>
-            </span>
-          </div>
-
-          {/* Primary nav — mega triggers */}
-          <nav
-            className="hidden items-center gap-1 lg:flex"
-            onMouseLeave={scheduleClose}
+        {/* Morphing shell — flat and merged with the canvas at rest,
+            a floating paper capsule once scrolling */}
+        <div
+          className={`relative transition-all duration-500 [transition-timing-function:cubic-bezier(0.22,0.61,0.36,1)] ${
+            scrolled
+              ? `mt-3 rounded-2xl border border-line bg-paper/90 px-4 shadow-[0_20px_44px_-24px_rgba(17,15,10,0.45)] backdrop-blur-md sm:px-5 ${
+                  mobileOpen ? "" : "overflow-hidden"
+                }`
+              : "mt-0 rounded-none border border-transparent bg-transparent px-0"
+          }`}
+        >
+          <div
+            className={`flex items-center justify-between gap-4 transition-all duration-500 ${
+              scrolled ? "py-2.5" : "py-4"
+            }`}
           >
-            <MenuTrigger
-              label="Services"
-              menuKey="services"
-              active={menu === "services"}
-              onOpen={openMenu}
-              onToggle={toggleMenu}
-            />
-            <MenuTrigger
-              label="Company"
-              menuKey="company"
-              active={menu === "company"}
-              onOpen={openMenu}
-              onToggle={toggleMenu}
-            />
-          </nav>
+            {/* Brand — the division tag folds away as the bar condenses */}
+            <div className="flex min-w-0 items-center gap-3 lg:flex-1">
+              <Link
+                href="/"
+                className="shrink-0 text-xl font-extrabold tracking-tight text-ink"
+              >
+                PLUREL
+              </Link>
+              <span
+                className={`hidden items-center gap-2 overflow-hidden whitespace-nowrap border-l pl-3 transition-all duration-500 sm:flex ${
+                  scrolled
+                    ? "max-w-0 border-transparent opacity-0"
+                    : "max-w-[220px] border-line opacity-100"
+                }`}
+              >
+                <Spark className="size-3 shrink-0 text-brand" />
+                <span className="text-sm text-muted">A Northeon division</span>
+              </span>
+            </div>
 
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-2 lg:flex-1">
-            <Link
-              href="/contact"
-              className="hidden items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-[#a8302c] sm:inline-flex"
+            {/* Primary nav — mega triggers */}
+            <nav
+              className="hidden items-center gap-1 lg:flex"
+              onMouseLeave={scheduleClose}
             >
-              Book Growth Audit
-              <ArrowUpRight className="size-4" />
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMobileOpen((v) => !v)}
-              aria-expanded={mobileOpen}
-              aria-label={mobileOpen ? "Close menu" : "Open menu"}
-              className="inline-flex size-10 items-center justify-center rounded-lg border border-line text-ink transition-colors hover:bg-line/50 lg:hidden"
-            >
-              {mobileOpen ? (
-                <Close className="size-5" />
-              ) : (
-                <Menu className="size-5" />
-              )}
-            </button>
+              <MenuTrigger
+                label="Services"
+                menuKey="services"
+                active={menu === "services"}
+                onOpen={openMenu}
+                onToggle={toggleMenu}
+              />
+              <MenuTrigger
+                label="Company"
+                menuKey="company"
+                active={menu === "company"}
+                onOpen={openMenu}
+                onToggle={toggleMenu}
+              />
+            </nav>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-2 lg:flex-1">
+              <Link
+                href="/contact"
+                className={`hidden items-center gap-2 rounded-lg bg-brand text-sm font-medium text-paper transition-all duration-500 hover:bg-[#a8302c] sm:inline-flex ${
+                  scrolled ? "px-3.5 py-2" : "px-4 py-2.5"
+                }`}
+              >
+                Book Growth Audit
+                <ArrowUpRight className="size-4" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setMobileOpen((v) => !v)}
+                aria-expanded={mobileOpen}
+                aria-label={mobileOpen ? "Close menu" : "Open menu"}
+                className={`inline-flex items-center justify-center rounded-lg border border-line text-ink transition-all duration-500 hover:bg-line/50 lg:hidden ${
+                  scrolled ? "size-9" : "size-10"
+                }`}
+              >
+                {mobileOpen ? (
+                  <Close className="size-5" />
+                ) : (
+                  <Menu className="size-5" />
+                )}
+              </button>
+            </div>
           </div>
+
+          {/* Mobile menu — expands the shell */}
+          {mobileOpen && (
+            <nav className="flex flex-col border-t border-line pb-5 pt-2 lg:hidden">
+              <Link
+                href="/services"
+                onClick={() => setMobileOpen(false)}
+                className="border-b border-line/70 py-3 text-lg text-ink"
+              >
+                Services
+              </Link>
+              <p className="pb-1.5 pt-4 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+                Company
+              </p>
+              {[
+                { name: "About", href: "/about" },
+                { name: "Case Studies", href: "/work" },
+                { name: "Methodology", href: "/#method" },
+                { name: "Studio", href: "/studio" },
+                { name: "Careers", href: "/careers" },
+                { name: "Blog", href: "/blog" },
+                { name: "Contact", href: "/contact" },
+              ].map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="border-b border-line/70 py-3 text-lg text-ink"
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <Link
+                href="/contact"
+                onClick={() => setMobileOpen(false)}
+                className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-3 text-sm font-medium text-paper"
+              >
+                Book Growth Audit
+                <ArrowUpRight className="size-4" />
+              </Link>
+            </nav>
+          )}
+
+          {/* Reading-progress hairline along the capsule's bottom edge */}
+          <span
+            aria-hidden
+            className={`pointer-events-none absolute inset-x-4 bottom-0 h-[2px] overflow-hidden rounded-full transition-opacity duration-500 ${
+              scrolled && !mobileOpen ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <span
+              className="block h-full origin-left rounded-full bg-brand/70"
+              style={{ transform: `scaleX(${progress})` }}
+            />
+          </span>
         </div>
 
         {/* Mega panel */}
@@ -759,50 +864,6 @@ export function SiteHeader() {
           style={{ top: headerH }}
           className="scrim-in fixed inset-x-0 bottom-0 z-30 hidden cursor-default bg-ink/15 backdrop-blur-[2px] lg:block"
         />
-      )}
-
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="border-t border-line bg-canvas lg:hidden">
-          <nav className="mx-auto flex max-w-[1440px] flex-col px-5 py-4 sm:px-8">
-            <Link
-              href="/services"
-              onClick={() => setMobileOpen(false)}
-              className="border-b border-line/70 py-3 text-lg text-ink"
-            >
-              Services
-            </Link>
-            <p className="pb-1.5 pt-4 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-              Company
-            </p>
-            {[
-              { name: "About", href: "/about" },
-              { name: "Case Studies", href: "/work" },
-              { name: "Methodology", href: "/#method" },
-              { name: "Studio", href: "/studio" },
-              { name: "Careers", href: "/careers" },
-              { name: "Blog", href: "/blog" },
-              { name: "Contact", href: "/contact" },
-            ].map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className="border-b border-line/70 py-3 text-lg text-ink"
-              >
-                {item.name}
-              </Link>
-            ))}
-            <Link
-              href="/contact"
-              onClick={() => setMobileOpen(false)}
-              className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-3 text-sm font-medium text-paper"
-            >
-              Book Growth Audit
-              <ArrowUpRight className="size-4" />
-            </Link>
-          </nav>
-        </div>
       )}
     </header>
   );
