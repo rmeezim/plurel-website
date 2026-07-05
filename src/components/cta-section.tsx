@@ -57,7 +57,42 @@ export function CtaSection() {
           </Reveal>
         </div>
 
-        <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
+        {/* What happens when you book — removes the fear of a sales gauntlet */}
+        <div className="mt-9 grid max-w-[880px] grid-cols-1 gap-y-4 border-y border-paper/20 py-5 sm:grid-cols-3 sm:gap-x-8">
+          {[
+            {
+              number: "01",
+              title: "We reply in one business day",
+              detail: "A first read from a person, not a pipeline.",
+            },
+            {
+              number: "02",
+              title: "A 30-minute strategy call",
+              detail: "Where you stand, and what to fix first.",
+            },
+            {
+              number: "03",
+              title: "Your audit & roadmap",
+              detail: "Yours to keep — whatever you decide.",
+            },
+          ].map((step) => (
+            <div key={step.number} className="flex gap-3">
+              <span className="text-[11px] font-semibold tabular-nums text-paper/60">
+                {step.number}
+              </span>
+              <span>
+                <span className="block text-[13.5px] font-medium leading-snug text-paper">
+                  {step.title}
+                </span>
+                <span className="mt-0.5 block text-[12px] leading-snug text-paper/60">
+                  {step.detail}
+                </span>
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-5">
           <Link
             href="/contact"
             className="group inline-flex items-center gap-2 rounded-lg bg-paper px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-canvas"

@@ -1,4 +1,5 @@
 import { Hero } from "@/components/hero";
+import { PartnersStrip } from "@/components/partners-strip";
 import { ManifestoSection } from "@/components/manifesto-section";
 import { ServicesSection } from "@/components/services-section";
 import { GrowthSystemSection } from "@/components/growth-system-section";
@@ -6,7 +7,10 @@ import { WorkSection } from "@/components/work-section";
 import { PerformanceSection } from "@/components/performance-section";
 import { MethodSection } from "@/components/method-section";
 import { ProofSection } from "@/components/proof-section";
+import { CompareSection } from "@/components/compare-section";
 import { JournalSection } from "@/components/journal-section";
+import { FaqSection } from "@/components/faq-section";
+import { FounderNote } from "@/components/founder-note";
 import { GrowthAuditSection } from "@/components/growth-audit-section";
 import { CtaSection } from "@/components/cta-section";
 
@@ -14,6 +18,7 @@ export default function Home() {
   return (
     <main>
       <Hero />
+      <PartnersStrip />
       <ManifestoSection />
       <ServicesSection />
       <GrowthSystemSection />
@@ -21,7 +26,10 @@ export default function Home() {
       <PerformanceSection />
       <MethodSection />
       <ProofSection />
+      <CompareSection />
       <JournalSection />
+      <FaqSection />
+      <FounderNote />
       <GrowthAuditSection />
       <CtaSection />
     </main>
