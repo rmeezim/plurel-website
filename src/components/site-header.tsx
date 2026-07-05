@@ -196,60 +196,60 @@ function CaseVisual() {
   );
 }
 
-function MethodVisual() {
-  const nodes = [30, 100, 170, 230];
+function MethodologyGlyph() {
   return (
-    <div
-      className="relative flex h-full w-full items-center overflow-hidden px-4"
-      style={gridBg}
+    <svg
+      viewBox="0 0 24 24"
+      className="size-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      aria-hidden
     >
-      <svg viewBox="0 0 260 60" className="h-full w-full" aria-hidden>
-        <line
-          x1="30"
-          y1="30"
-          x2="230"
-          y2="30"
-          stroke="#fbfaf6"
-          strokeOpacity="0.15"
-          strokeWidth="1.25"
-        />
-        <line
-          x1="30"
-          y1="30"
-          x2="230"
-          y2="30"
-          stroke="#bf3a36"
-          strokeWidth="1.25"
-          pathLength={100}
-          className="method-pulse"
-        />
-        {nodes.map((x, i) => (
-          <g key={x}>
-            <circle
-              cx={x}
-              cy="30"
-              r={i === nodes.length - 1 ? 5 : 4}
-              fill={i === nodes.length - 1 ? "#bf3a36" : "#17150f"}
-              stroke={i === nodes.length - 1 ? "#bf3a36" : "#fbfaf6"}
-              strokeOpacity={i === nodes.length - 1 ? 1 : 0.5}
-              strokeWidth="1.25"
-            />
-            <text
-              x={x}
-              y="48"
-              textAnchor="middle"
-              fontSize="8"
-              fill="#fbfaf6"
-              fillOpacity="0.35"
-              fontWeight="600"
-            >
-              0{i + 1}
-            </text>
-          </g>
-        ))}
-      </svg>
-      <ScanLine />
-    </div>
+      <line x1="4" y1="12" x2="20" y2="12" />
+      <circle cx="4" cy="12" r="1.7" />
+      <circle cx="9.3" cy="12" r="1.7" />
+      <circle cx="14.6" cy="12" r="1.7" />
+      <circle cx="20" cy="12" r="2" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function StudioGlyph() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="size-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <rect x="4" y="4" width="16" height="16" rx="2.5" />
+      <path d="M12 8.2v7.6M8.2 12h7.6" strokeWidth="1.2" />
+      <path d="M9.6 9.6l4.8 4.8M14.4 9.6l-4.8 4.8" strokeWidth="1" strokeOpacity="0.55" />
+    </svg>
+  );
+}
+
+function CareersGlyph() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="size-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <circle cx="12" cy="8.5" r="3.2" />
+      <path d="M5.5 19a6.5 6.5 0 0 1 13 0" />
+    </svg>
   );
 }
 
@@ -333,37 +333,37 @@ function FeatureCard({
   );
 }
 
-function WideCard({
+function CompactCard({
   title,
   desc,
   href,
-  visual,
+  glyph,
   onNavigate,
 }: {
   title: string;
   desc: string;
   href: string;
-  visual: ReactNode;
+  glyph: ReactNode;
   onNavigate: () => void;
 }) {
   return (
     <Link
       href={href}
       onClick={onNavigate}
-      className="group flex overflow-hidden rounded-xl border border-paper/10 bg-white/[0.02] transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/50 hover:bg-white/[0.05] hover:shadow-[0_18px_44px_-18px_rgba(191,58,54,0.4)]"
+      className="group flex items-start gap-3 rounded-xl border border-paper/10 bg-white/[0.02] p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/50 hover:bg-white/[0.05] hover:shadow-[0_16px_40px_-18px_rgba(191,58,54,0.4)]"
     >
-      <div className="h-[84px] w-[42%] shrink-0">{visual}</div>
-      <div className="flex flex-1 items-center justify-between gap-3 px-4">
-        <div>
-          <p className="text-[14px] font-medium tracking-[-0.01em] text-paper transition-colors group-hover:text-brand">
-            {title}
-          </p>
-          <p className="mt-0.5 text-[11.5px] leading-snug text-paper/45">
-            {desc}
-          </p>
-        </div>
-        <ArrowUpRight className="size-4 shrink-0 -translate-x-1 text-brand opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
-      </div>
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-paper/70 transition-colors group-hover:bg-brand/15 group-hover:text-brand">
+        {glyph}
+      </span>
+      <span className="min-w-0">
+        <span className="flex items-center gap-1.5 text-[13px] font-medium text-paper transition-colors group-hover:text-brand">
+          {title}
+          <ArrowUpRight className="size-3 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
+        </span>
+        <span className="mt-0.5 block text-[11px] leading-snug text-paper/45">
+          {desc}
+        </span>
+      </span>
     </Link>
   );
 }
@@ -458,12 +458,26 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
             onNavigate={onNavigate}
           />
         </div>
-        <div className="mt-3">
-          <WideCard
+        <div className="mt-3 grid grid-cols-3 gap-3">
+          <CompactCard
             title="Methodology"
             desc="The four-phase operating model."
             href="/#method"
-            visual={<MethodVisual />}
+            glyph={<MethodologyGlyph />}
+            onNavigate={onNavigate}
+          />
+          <CompactCard
+            title="Studio"
+            desc="Our creative team and craft."
+            href="/studio"
+            glyph={<StudioGlyph />}
+            onNavigate={onNavigate}
+          />
+          <CompactCard
+            title="Careers"
+            desc="Build with us — open roles."
+            href="/careers"
+            glyph={<CareersGlyph />}
             onNavigate={onNavigate}
           />
         </div>
@@ -771,6 +785,8 @@ export function SiteHeader() {
               { name: "About", href: "/about" },
               { name: "Case Studies", href: "/work" },
               { name: "Methodology", href: "/#method" },
+              { name: "Studio", href: "/studio" },
+              { name: "Careers", href: "/careers" },
               { name: "Blog", href: "/blog" },
               { name: "Contact", href: "/contact" },
             ].map((item) => (
