@@ -6,14 +6,6 @@ import { ArrowUpRight, Close, Menu, Spark } from "@/components/icons";
 
 type MenuKey = "services" | "company";
 
-/* High-tech blueprint texture for the dark visual previews */
-const gridBg: React.CSSProperties = {
-  backgroundColor: "#17150f",
-  backgroundImage:
-    "linear-gradient(rgba(251,250,246,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(251,250,246,0.045) 1px, transparent 1px)",
-  backgroundSize: "22px 22px",
-};
-
 /* ---- Service glyphs (minimal line marks) ---------------------------- */
 
 type ServiceKind =
@@ -32,7 +24,7 @@ function ServiceGlyph({ kind }: { kind: ServiceKind }) {
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: 1.5,
+    strokeWidth: 1.4,
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
     "aria-hidden": true,
@@ -112,90 +104,6 @@ const SERVICES: { name: string; kind: ServiceKind }[] = [
   { name: "Consulting", kind: "consulting" },
 ];
 
-/* ---- Animated visual previews (swap for real imagery later) --------- */
-
-function ScanLine() {
-  return (
-    <span
-      aria-hidden
-      className="pointer-events-none absolute inset-y-0 left-0 w-10 -skew-x-12 bg-gradient-to-r from-transparent via-brand/25 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-    >
-      <span className="mega-scan block h-full w-full bg-gradient-to-r from-transparent via-brand/30 to-transparent" />
-    </span>
-  );
-}
-
-function AboutVisual() {
-  const sats = [
-    [40, 30],
-    [158, 26],
-    [172, 92],
-    [30, 100],
-    [104, 18],
-  ];
-  return (
-    <div className="relative h-full w-full overflow-hidden" style={gridBg}>
-      <svg
-        viewBox="0 0 200 130"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 h-full w-full"
-        aria-hidden
-      >
-        <g stroke="#fbfaf6" strokeOpacity="0.22" strokeWidth="1">
-          {sats.map(([x, y], i) => (
-            <line key={i} x1="100" y1="62" x2={x} y2={y} />
-          ))}
-        </g>
-        {sats.map(([x, y], i) => (
-          <circle
-            key={i}
-            cx={x}
-            cy={y}
-            r="3"
-            fill="#fbfaf6"
-            fillOpacity="0.55"
-            className="diagram-blink"
-            style={{ animationDelay: `${i * 0.4}s` }}
-          />
-        ))}
-        <circle cx="100" cy="62" r="7" fill="#bf3a36" />
-        <circle cx="100" cy="62" r="2.5" fill="#fbfaf6" />
-      </svg>
-      <ScanLine />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
-    </div>
-  );
-}
-
-function CaseVisual() {
-  const bars = ["30%", "46%", "62%", "80%", "100%"];
-  return (
-    <div
-      className="relative flex h-full w-full flex-col justify-end overflow-hidden p-4"
-      style={gridBg}
-    >
-      <div className="absolute inset-x-4 top-3 flex items-center justify-between">
-        <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/40">
-          Aurem
-        </span>
-        <span className="text-[13px] font-medium text-brand">+212%</span>
-      </div>
-      <div className="flex h-[52px] items-end gap-1.5">
-        {bars.map((h, i) => (
-          <span
-            key={h}
-            style={{ height: h }}
-            className={`flex-1 origin-bottom rounded-t-[3px] transition-transform duration-500 group-hover:scale-y-105 ${
-              i === 4 ? "bg-brand" : "bg-paper/20"
-            }`}
-          />
-        ))}
-      </div>
-      <ScanLine />
-    </div>
-  );
-}
-
 function MethodologyGlyph() {
   return (
     <svg
@@ -228,9 +136,11 @@ function StudioGlyph() {
       strokeLinejoin="round"
       aria-hidden
     >
-      <rect x="4" y="4" width="16" height="16" rx="2.5" />
-      <path d="M12 8.2v7.6M8.2 12h7.6" strokeWidth="1.2" />
-      <path d="M9.6 9.6l4.8 4.8M14.4 9.6l-4.8 4.8" strokeWidth="1" strokeOpacity="0.55" />
+      <path d="M8 4H5a1 1 0 0 0-1 1v3" />
+      <path d="M16 4h3a1 1 0 0 1 1 1v3" />
+      <path d="M20 16v3a1 1 0 0 1-1 1h-3" />
+      <path d="M8 20H5a1 1 0 0 1-1-1v-3" />
+      <path d="M12 8.5v7M8.5 12h7" strokeWidth="1.2" />
     </svg>
   );
 }
@@ -253,50 +163,157 @@ function CareersGlyph() {
   );
 }
 
-function GrowthVisual() {
+function BlogGlyph() {
   return (
-    <div className="relative h-full w-full overflow-hidden" style={gridBg}>
-      <svg
-        viewBox="0 0 240 96"
-        preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 h-full w-full"
-        aria-hidden
-      >
-        <line
-          x1="16"
-          y1="48"
-          x2="224"
-          y2="48"
-          stroke="#fbfaf6"
-          strokeOpacity="0.15"
-          strokeWidth="1.25"
+    <svg
+      viewBox="0 0 20 20"
+      className="size-[17px]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      aria-hidden
+    >
+      <rect x="3.5" y="3" width="13" height="14" rx="2" />
+      <line x1="6.5" y1="7" x2="13.5" y2="7" />
+      <line x1="6.5" y1="10" x2="13.5" y2="10" />
+      <line x1="6.5" y1="13" x2="11" y2="13" />
+    </svg>
+  );
+}
+
+function ContactGlyph() {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      className="size-[17px]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5h-6l-3.5 3v-3H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5Z" />
+    </svg>
+  );
+}
+
+/* ---- Schematic visuals — the site's own diagram language ------------ */
+
+function AboutVisual() {
+  const sats: [number, number][] = [
+    [42, 32],
+    [156, 26],
+    [172, 92],
+    [32, 98],
+    [106, 16],
+  ];
+  return (
+    <svg
+      viewBox="0 0 200 130"
+      preserveAspectRatio="xMidYMid slice"
+      className="h-full w-full"
+      aria-hidden
+    >
+      <g stroke="#d8d2c8" strokeWidth="1.1">
+        {sats.map(([x, y], i) => (
+          <line key={i} x1="100" y1="64" x2={x} y2={y} />
+        ))}
+      </g>
+      {sats.map(([x, y], i) => (
+        <circle
+          key={i}
+          cx={x}
+          cy={y}
+          r="3"
+          fill="#110f0a"
+          fillOpacity="0.4"
+          className="diagram-blink"
+          style={{ animationDelay: `${i * 0.45}s` }}
         />
-        <line
-          x1="16"
-          y1="48"
-          x2="224"
-          y2="48"
-          stroke="#bf3a36"
-          strokeWidth="1.25"
-          pathLength={100}
-          className="method-pulse"
-        />
-        {[16, 58, 100, 142, 184, 224].map((x, i) => (
-          <circle
-            key={x}
-            cx={x}
-            cy="48"
-            r={i === 5 ? 4.5 : 3}
-            fill={i === 5 ? "#bf3a36" : "#8f8981"}
+      ))}
+      <circle cx="100" cy="64" r="7.5" fill="#bf3a36" />
+      <circle cx="100" cy="64" r="2.5" fill="#fbfaf6" />
+    </svg>
+  );
+}
+
+function CaseVisual() {
+  const bars = ["32%", "48%", "64%", "82%", "100%"];
+  return (
+    <div className="relative flex h-full w-full flex-col justify-end p-4">
+      <div className="absolute inset-x-4 top-3 flex items-baseline justify-between">
+        <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted">
+          Aurem
+        </span>
+        <span className="text-[13px] font-medium text-brand">+212%</span>
+      </div>
+      <div className="flex h-[52px] items-end gap-1.5">
+        {bars.map((h, i) => (
+          <span
+            key={h}
+            style={{ height: h }}
+            className={`flex-1 origin-bottom rounded-t-[3px] transition-transform duration-500 group-hover:scale-y-105 ${
+              i === 4 ? "bg-brand" : "bg-ink/10"
+            }`}
           />
         ))}
-      </svg>
-      <ScanLine />
+      </div>
     </div>
   );
 }
 
-/* ---- Cards ---------------------------------------------------------- */
+function GrowthVisual() {
+  return (
+    <svg
+      viewBox="0 0 240 96"
+      preserveAspectRatio="xMidYMid slice"
+      className="h-full w-full"
+      aria-hidden
+    >
+      <line
+        x1="16"
+        y1="48"
+        x2="224"
+        y2="48"
+        stroke="#d8d2c8"
+        strokeWidth="1.25"
+      />
+      <line
+        x1="16"
+        y1="48"
+        x2="224"
+        y2="48"
+        stroke="#bf3a36"
+        strokeWidth="1.25"
+        pathLength={100}
+        className="method-pulse"
+      />
+      {[16, 58, 100, 142, 184, 224].map((x, i) => (
+        <circle
+          key={x}
+          cx={x}
+          cy="48"
+          r={i === 5 ? 4.5 : 3}
+          fill={i === 5 ? "#bf3a36" : "#8f8981"}
+          fillOpacity={i === 5 ? 1 : 0.55}
+        />
+      ))}
+    </svg>
+  );
+}
+
+/* ---- Card primitives ------------------------------------------------ */
+
+function Kicker({ children }: { children: ReactNode }) {
+  return (
+    <p className="flex items-center gap-2 px-1 pb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+      <Spark className="size-3 text-brand" aria-hidden />
+      {children}
+    </p>
+  );
+}
 
 function FeatureCard({
   title,
@@ -315,15 +332,19 @@ function FeatureCard({
     <Link
       href={href}
       onClick={onNavigate}
-      className="group flex flex-col overflow-hidden rounded-xl border border-paper/10 bg-white/[0.02] transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/50 hover:bg-white/[0.05] hover:shadow-[0_18px_44px_-18px_rgba(191,58,54,0.4)]"
+      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-paper transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_24px_44px_-26px_rgba(17,15,10,0.5)]"
     >
-      <div className="h-[112px] w-full">{visual}</div>
+      <div className="h-[112px] w-full overflow-hidden border-b border-line bg-canvas">
+        <div className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]">
+          {visual}
+        </div>
+      </div>
       <div className="flex items-center justify-between gap-3 px-4 py-3.5">
         <div>
-          <p className="text-[14px] font-medium tracking-[-0.01em] text-paper transition-colors group-hover:text-brand">
+          <p className="text-[14px] font-medium tracking-[-0.01em] text-ink transition-colors group-hover:text-brand">
             {title}
           </p>
-          <p className="mt-0.5 text-[11.5px] leading-snug text-paper/45">
+          <p className="mt-0.5 text-[11.5px] leading-snug text-muted">
             {desc}
           </p>
         </div>
@@ -350,17 +371,17 @@ function CompactCard({
     <Link
       href={href}
       onClick={onNavigate}
-      className="group flex items-start gap-3 rounded-xl border border-paper/10 bg-white/[0.02] p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/50 hover:bg-white/[0.05] hover:shadow-[0_16px_40px_-18px_rgba(191,58,54,0.4)]"
+      className="group flex items-start gap-3 rounded-xl border border-line bg-canvas p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:bg-paper hover:shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]"
     >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-paper/70 transition-colors group-hover:bg-brand/15 group-hover:text-brand">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-paper text-muted transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-paper">
         {glyph}
       </span>
       <span className="min-w-0">
-        <span className="flex items-center gap-1.5 text-[13px] font-medium text-paper transition-colors group-hover:text-brand">
+        <span className="flex items-center gap-1.5 text-[13px] font-medium text-ink transition-colors group-hover:text-brand">
           {title}
           <ArrowUpRight className="size-3 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
         </span>
-        <span className="mt-0.5 block text-[11px] leading-snug text-paper/45">
+        <span className="mt-0.5 block text-[11px] leading-snug text-muted">
           {desc}
         </span>
       </span>
@@ -385,54 +406,18 @@ function RailRow({
     <Link
       href={href}
       onClick={onNavigate}
-      className="group flex items-center gap-3 rounded-lg border border-transparent p-2.5 transition-colors hover:border-paper/10 hover:bg-white/[0.03]"
+      className="group -mx-1 flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-paper"
     >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/[0.05] text-paper/70 transition-colors group-hover:bg-brand/15 group-hover:text-brand">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-paper text-ink transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-paper">
         {glyph}
       </span>
       <span className="min-w-0">
-        <span className="block text-[13px] font-medium text-paper transition-colors group-hover:text-brand">
+        <span className="block text-[13px] font-medium text-ink transition-colors group-hover:text-brand">
           {title}
         </span>
-        <span className="block truncate text-[11px] text-paper/45">{desc}</span>
+        <span className="block truncate text-[11px] text-muted">{desc}</span>
       </span>
     </Link>
-  );
-}
-
-function BlogGlyph() {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      className="size-[18px]"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      aria-hidden
-    >
-      <rect x="3.5" y="3" width="13" height="14" rx="2" />
-      <line x1="6.5" y1="7" x2="13.5" y2="7" />
-      <line x1="6.5" y1="10" x2="13.5" y2="10" />
-      <line x1="6.5" y1="13" x2="11" y2="13" />
-    </svg>
-  );
-}
-
-function ContactGlyph() {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      className="size-[18px]"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5h-6l-3.5 3v-3H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5Z" />
-    </svg>
   );
 }
 
@@ -440,8 +425,9 @@ function ContactGlyph() {
 
 function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_264px]">
+    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_272px]">
       <div className="p-4 sm:p-5">
+        <Kicker>The company</Kicker>
         <div className="grid grid-cols-2 gap-3">
           <FeatureCard
             title="About"
@@ -483,11 +469,9 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
         </div>
       </div>
 
-      <div className="border-t border-paper/10 bg-black/20 p-4 sm:p-5 lg:border-l lg:border-t-0">
-        <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-paper/40">
-          More
-        </p>
-        <div className="mt-2 space-y-1">
+      <div className="border-t border-line bg-canvas p-4 sm:p-5 lg:border-l lg:border-t-0">
+        <Kicker>More from Plurel</Kicker>
+        <div className="space-y-1">
           <RailRow
             title="Blog"
             desc="Notes on staying visible."
@@ -503,21 +487,23 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
             onNavigate={onNavigate}
           />
         </div>
-        <Link
-          href="/contact"
-          onClick={onNavigate}
-          className="group mt-3 flex items-center justify-between gap-2 rounded-xl bg-brand px-4 py-3 text-paper transition-colors hover:bg-[#a8302c]"
-        >
-          <span>
-            <span className="block text-[13px] font-medium">
-              Book a Growth Audit
+        <div className="mt-3 border-t border-line pt-4">
+          <Link
+            href="/contact"
+            onClick={onNavigate}
+            className="group flex items-center justify-between gap-2 rounded-xl bg-brand px-4 py-3 text-paper transition-colors hover:bg-[#a8302c]"
+          >
+            <span>
+              <span className="block text-[13px] font-medium">
+                Book a Growth Audit
+              </span>
+              <span className="block text-[11px] text-paper/70">
+                A read on where you stand.
+              </span>
             </span>
-            <span className="block text-[11px] text-paper/70">
-              A read on where you stand.
-            </span>
-          </span>
-          <ArrowUpRight className="size-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </Link>
+            <ArrowUpRight className="size-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -525,20 +511,26 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
 
 function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_264px]">
+    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_272px]">
       <div className="p-4 sm:p-5">
+        <Kicker>What we do</Kicker>
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-          {SERVICES.map((service) => (
+          {SERVICES.map((service, i) => (
             <Link
               key={service.name}
               href="/services"
               onClick={onNavigate}
-              className="group flex flex-col gap-3 rounded-xl border border-paper/10 bg-white/[0.02] p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/50 hover:bg-white/[0.05] hover:shadow-[0_16px_40px_-18px_rgba(191,58,54,0.4)]"
+              className="group flex flex-col gap-3 rounded-xl border border-line bg-canvas p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:bg-paper hover:shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]"
             >
-              <span className="flex size-9 items-center justify-center rounded-lg bg-white/[0.05] text-paper/70 transition-colors group-hover:bg-brand/15 group-hover:text-brand">
-                <ServiceGlyph kind={service.kind} />
+              <span className="flex items-start justify-between">
+                <span className="flex size-9 items-center justify-center rounded-full border border-line bg-paper text-muted transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-paper">
+                  <ServiceGlyph kind={service.kind} />
+                </span>
+                <span className="pt-0.5 text-[10px] font-semibold tabular-nums tracking-[0.14em] text-muted/70">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
               </span>
-              <span className="text-[12.5px] font-medium leading-tight text-paper transition-colors group-hover:text-brand">
+              <span className="text-[12.5px] font-medium leading-tight tracking-[-0.01em] text-ink transition-colors group-hover:text-brand">
                 {service.name}
               </span>
             </Link>
@@ -546,35 +538,37 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
         </div>
       </div>
 
-      <div className="border-t border-paper/10 bg-black/20 p-4 sm:p-5 lg:border-l lg:border-t-0">
-        <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-paper/40">
-          Built as a system
-        </p>
+      <div className="border-t border-line bg-canvas p-4 sm:p-5 lg:border-l lg:border-t-0">
+        <Kicker>Built as a system</Kicker>
         <Link
           href="/#growth-system"
           onClick={onNavigate}
-          className="group mt-2 block overflow-hidden rounded-xl border border-paper/10 bg-white/[0.02] transition-all duration-300 hover:border-brand/50 hover:bg-white/[0.05] hover:shadow-[0_16px_40px_-18px_rgba(191,58,54,0.4)]"
+          className="group block overflow-hidden rounded-xl border border-line bg-paper transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]"
         >
-          <div className="h-[76px] w-full">
-            <GrowthVisual />
+          <div className="h-[76px] w-full overflow-hidden border-b border-line bg-canvas">
+            <div className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]">
+              <GrowthVisual />
+            </div>
           </div>
           <div className="px-4 py-3">
-            <p className="text-[13px] font-medium text-paper transition-colors group-hover:text-brand">
+            <p className="text-[13px] font-medium text-ink transition-colors group-hover:text-brand">
               The Growth System
             </p>
-            <p className="mt-0.5 text-[11px] leading-snug text-paper/45">
+            <p className="mt-0.5 text-[11px] leading-snug text-muted">
               How every service compounds into one engine.
             </p>
           </div>
         </Link>
-        <Link
-          href="/services"
-          onClick={onNavigate}
-          className="group mt-3 flex items-center gap-1.5 px-1 text-[12px] font-medium text-paper/70 transition-colors hover:text-brand"
-        >
-          All services
-          <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </Link>
+        <div className="mt-3 border-t border-line pt-3.5">
+          <Link
+            href="/services"
+            onClick={onNavigate}
+            className="group inline-flex items-center gap-1.5 px-1 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
+          >
+            All services
+            <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -736,14 +730,14 @@ export function SiteHeader() {
           </div>
         </div>
 
-        {/* Mega panel — dark, visual */}
+        {/* Mega panel */}
         {menu && (
           <div
             className="absolute inset-x-0 top-full z-40 hidden pt-2 lg:block"
             onMouseEnter={cancelClose}
             onMouseLeave={scheduleClose}
           >
-            <div className="mega-in origin-top overflow-hidden rounded-2xl border border-paper/10 bg-ink text-paper shadow-[0_40px_80px_-30px_rgba(0,0,0,0.7)]">
+            <div className="mega-in origin-top overflow-hidden rounded-2xl border border-line bg-paper shadow-[0_36px_72px_-32px_rgba(17,15,10,0.45)]">
               {menu === "services" ? (
                 <ServicesPanel onNavigate={() => setMenu(null)} />
               ) : (
@@ -763,7 +757,7 @@ export function SiteHeader() {
           onMouseEnter={() => setMenu(null)}
           onClick={() => setMenu(null)}
           style={{ top: headerH }}
-          className="scrim-in fixed inset-x-0 bottom-0 z-30 hidden cursor-default bg-ink/40 backdrop-blur-[2px] lg:block"
+          className="scrim-in fixed inset-x-0 bottom-0 z-30 hidden cursor-default bg-ink/15 backdrop-blur-[2px] lg:block"
         />
       )}
 

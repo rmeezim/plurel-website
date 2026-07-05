@@ -149,20 +149,6 @@
     animation: diagram-blink 2.6s ease-in-out infinite;
   }
 
-  /* Scan line sweeping a mega-menu visual on hover */
-  @keyframes mega-scan {
-    0% {
-      transform: translateX(-40%);
-    }
-    100% {
-      transform: translateX(360%);
-    }
-  }
-
-  .mega-scan {
-    animation: mega-scan 2s linear infinite;
-  }
-
   /* Mega-menu panel + scrim entrance */
   @keyframes mega-in {
     from {
