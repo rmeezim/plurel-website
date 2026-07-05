@@ -627,8 +627,6 @@ function MenuTrigger({
 export function SiteHeader() {
   const [menu, setMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [headerH, setHeaderH] = useState(80);
-  const headerRef = useRef<HTMLElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const openMenu = (key: MenuKey) => {
@@ -645,11 +643,6 @@ export function SiteHeader() {
     setMenu((current) => (current === key ? null : key));
 
   useEffect(() => {
-    const measure = () => {
-      if (headerRef.current) setHeaderH(headerRef.current.offsetHeight);
-    };
-    measure();
-    window.addEventListener("resize", measure);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setMenu(null);
@@ -658,14 +651,13 @@ export function SiteHeader() {
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      window.removeEventListener("resize", measure);
       window.removeEventListener("keydown", onKey);
     };
-  }, [mobileOpen]);
+  }, []);
 
   return (
-    <header ref={headerRef} className="sticky top-0 z-50 pt-4">
-      <div className="relative mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+    <header className="sticky top-0 z-50 pt-4">
+      <div className="relative z-40 mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
         {/* Floating paper bar — one consistent object, no scroll morph */}
         <div className="relative rounded-2xl border border-line bg-paper/90 px-4 shadow-[0_18px_40px_-26px_rgba(17,15,10,0.4)] backdrop-blur-md sm:px-5">
           <div className="flex items-center justify-between gap-4 py-3">
@@ -790,7 +782,8 @@ export function SiteHeader() {
         )}
       </div>
 
-      {/* Scrim */}
+      {/* Scrim — covers the whole viewport so the page dims evenly behind
+          the floating bar and the panel alike */}
       {menu && (
         <button
           type="button"
@@ -798,8 +791,7 @@ export function SiteHeader() {
           tabIndex={-1}
           onMouseEnter={() => setMenu(null)}
           onClick={() => setMenu(null)}
-          style={{ top: headerH }}
-          className="scrim-in fixed inset-x-0 bottom-0 z-30 hidden cursor-default bg-ink/15 backdrop-blur-[2px] lg:block"
+          className="scrim-in fixed inset-0 z-30 hidden cursor-default bg-ink/15 backdrop-blur-[2px] lg:block"
         />
       )}
     </header>
