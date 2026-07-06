@@ -214,11 +214,11 @@ export function MethodStage({ phases }: { phases: MethodPhase[] }) {
                   style={{ width: DIAGRAM_W, height: DIAGRAM_H }}
                 >
                   {/* Panel — canvas surface, tint crossfading per phase */}
-                  <div className="absolute -inset-y-8 -left-12 -right-8 rounded-[2rem] border border-line/70 bg-canvas">
+                  <div className="absolute -inset-y-8 -left-12 -right-8 rounded-3xl border border-line/70 bg-canvas">
                     {phases.map((phase, i) => (
                       <div
                         key={phase.number}
-                        className="absolute inset-0 rounded-[2rem]"
+                        className="absolute inset-0 rounded-3xl"
                         style={{
                           backgroundColor: PANEL_TINTS[i] ?? PANEL_TINTS[0],
                           opacity: sceneWindow(

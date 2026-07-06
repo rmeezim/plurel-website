@@ -16,6 +16,16 @@
   --color-line: #d8d2c8; /* dividers, subtle backgrounds, card borders */
   --color-muted: #8f8981; /* secondary text, metadata, labels, captions */
   --color-clay: #c7b49d; /* image backgrounds, mockups, soft surfaces */
+
+  /*
+    Institutional radius scale — tighter than the Tailwind defaults so
+    surfaces read as drafted panels rather than soft bubbles. Circular
+    pills and chips (rounded-full) are untouched; they carry the warmth.
+  */
+  --radius-lg: 0.375rem; /* 6px — buttons, inputs, small tiles */
+  --radius-xl: 0.5rem; /* 8px — menu cards, medium surfaces */
+  --radius-2xl: 0.625rem; /* 10px — primary cards, the nav bar */
+  --radius-3xl: 0.75rem; /* 12px — large frames and stage panels */
 }
 
 @theme inline {
