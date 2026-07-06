@@ -86,7 +86,7 @@ export function ManifestoStatement() {
             <span
               style={{ opacity }}
               className={`transition-opacity duration-150 ease-linear ${
-                word.accent ? "font-serif italic text-clay" : ""
+                word.accent ? "italic text-clay" : ""
               }`}
             >
               {word.text}

@@ -1,299 +1,157 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Megaphone, Spark, Trend } from "@/components/icons";
+import { Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 
 /*
- * The Plurel Growth System as a vertical circuit. A spine runs down the
- * page; a brand-red fill tracks the visitor's scroll and ignites each
- * layer's node as it passes. Edges carry meaning — a serif flow label
- * between layers names what each one hands to the next — and a dashed
- * return rail climbs the right margin from the last node back to the
- * first, closing the loop the section is about. Reduced-motion and no-JS
- * visitors get the complete, fully-lit diagram with no scroll theatre.
+ * The Plurel Growth System as a ledger and its drawing. The left side is
+ * an editorial index — nine layers as ruled rows, grouped into four
+ * stages, typography doing all the work. The right side is one continuous
+ * drafted panel: a bus with nine junctions, a scroll-driven fill, and a
+ * readout that follows whichever layer the visitor is reading (scroll
+ * focus or hover). The last row closes the loop: 09 returns to 01.
+ * Reduced-motion and no-JS visitors get the finished drawing, fully lit.
  */
 
-type IconProps = React.SVGProps<SVGSVGElement>;
-
-function GlyphSite(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
-      <rect
-        x="4"
-        y="5"
-        width="16"
-        height="14"
-        rx="2"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path d="M4 9h16" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="6.8" cy="7" r="0.9" fill="currentColor" />
-      <path
-        d="M7 13.5h6M7 16h4"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function GlyphSearch(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
-      <circle cx="10.5" cy="10.5" r="5.5" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="m14.8 14.8 4.7 4.7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M10.5 8.2v4.6M8.2 10.5h4.6"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function GlyphContent(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
-      <path
-        d="M5 6h14M5 10.5h14M5 15h9"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M5 19h5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        opacity="0.55"
-      />
-    </svg>
-  );
-}
-
-function GlyphCrm(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
-      <circle cx="7" cy="7.5" r="2.6" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="17" cy="7.5" r="2.6" stroke="currentColor" strokeWidth="1.5" />
-      <circle cx="12" cy="17" r="2.6" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M9.6 7.5h4.8M8.2 9.8l2.4 4.6M15.8 9.8l-2.4 4.6"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-    </svg>
-  );
-}
-
-function GlyphAutomation(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
-      <path
-        d="M19 12a7 7 0 1 1-2.05-4.95"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path
-        d="M17.2 3.6v3.6h-3.6"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="12" cy="12" r="1.6" fill="currentColor" />
-    </svg>
-  );
-}
-
-function GlyphAnalytics(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden {...props}>
-      <path
-        d="M5 19.5v-6M10.5 19.5V9M16 19.5v-8.5M21 19.5v-13"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-type Stage = {
+type Layer = {
   number: string;
   name: string;
-  desc: string;
-  Glyph: (props: IconProps) => React.ReactElement;
-  /** What this layer hands to the next — rendered on the edge below it */
-  flow?: string;
+  role: string;
+  /** What this layer hands to the next; the last layer returns to 01 */
+  out?: string;
+  chips: readonly [string, string, string];
 };
 
-type Group = { numeral: string; name: string; stages: Stage[] };
+type Group = { numeral: string; name: string; layers: Layer[] };
 
 const GROUPS: Group[] = [
   {
     numeral: "I",
     name: "Foundation",
-    stages: [
+    layers: [
       {
         number: "01",
         name: "Brand",
-        desc: "Positioning, identity, narrative",
-        Glyph: Spark,
-        flow: "identity & positioning",
+        role: "Positioning, identity, narrative",
+        out: "identity & positioning",
+        chips: ["Positioning", "Identity system", "Voice"],
       },
       {
         number: "02",
         name: "Website",
-        desc: "Conversion architecture and digital experience",
-        Glyph: GlyphSite,
-        flow: "a conversion-ready home",
+        role: "Conversion architecture and digital experience",
+        out: "a conversion-ready home",
+        chips: ["Conversion architecture", "Design system", "Build"],
       },
     ],
   },
   {
     numeral: "II",
     name: "Demand",
-    stages: [
+    layers: [
       {
         number: "03",
         name: "AI Search",
-        desc: "SEO, AEO, answer-engine visibility",
-        Glyph: GlyphSearch,
-        flow: "machine-readable authority",
+        role: "SEO, AEO, answer-engine visibility",
+        out: "machine-readable authority",
+        chips: ["AEO schema", "Search visibility", "Answer presence"],
       },
       {
         number: "04",
         name: "Content",
-        desc: "Thought leadership and demand creation",
-        Glyph: GlyphContent,
-        flow: "proof & perspective",
+        role: "Thought leadership and demand creation",
+        out: "proof & perspective",
+        chips: ["Editorial engine", "Founder POV", "Case proof"],
       },
       {
         number: "05",
         name: "Paid Growth",
-        desc: "Campaigns, funnels, creative testing",
-        Glyph: Trend,
-        flow: "qualified attention",
+        role: "Campaigns, funnels, creative testing",
+        out: "qualified attention",
+        chips: ["Campaign systems", "Creative testing", "Funnels"],
       },
     ],
   },
   {
     numeral: "III",
     name: "Operations",
-    stages: [
+    layers: [
       {
         number: "06",
         name: "CRM",
-        desc: "Lead capture, routing, follow-up",
-        Glyph: GlyphCrm,
-        flow: "captured demand",
+        role: "Lead capture, routing, follow-up",
+        out: "captured demand",
+        chips: ["Lead capture", "Routing", "Pipeline hygiene"],
       },
       {
         number: "07",
         name: "Automation",
-        desc: "Workflows and marketing operations",
-        Glyph: GlyphAutomation,
-        flow: "follow-through at scale",
+        role: "Workflows and marketing operations",
+        out: "follow-through at scale",
+        chips: ["Lifecycle flows", "Ops workflows", "Integrations"],
       },
     ],
   },
   {
     numeral: "IV",
     name: "Compounding",
-    stages: [
+    layers: [
       {
         number: "08",
         name: "Analytics",
-        desc: "Attribution, reporting, performance insight",
-        Glyph: GlyphAnalytics,
-        flow: "signal on what works",
+        role: "Attribution, reporting, performance insight",
+        out: "signal on what works",
+        chips: ["Attribution", "Dashboards", "Signal reviews"],
       },
       {
         number: "09",
         name: "Reputation",
-        desc: "PR, trust signals, market authority",
-        Glyph: Megaphone,
+        role: "PR, trust signals, market authority",
+        chips: ["PR placements", "Reviews & proof", "Authority signals"],
       },
     ],
   },
 ];
 
-const STAGE_COUNT = GROUPS.reduce((n, g) => n + g.stages.length, 0);
-
-/* Shared row template: 0-width label col on mobile, 210px on desktop;
-   28px spine gutter on mobile, 56px on desktop. The spine line lives at
-   the gutter's center — 14px / 238px from the block's left edge. */
-const ROW_GRID =
-  "grid grid-cols-[0px_28px_minmax(0,1fr)] lg:grid-cols-[210px_56px_minmax(0,1fr)]";
+const LAYERS: Layer[] = GROUPS.flatMap((group) => group.layers);
+const COUNT = LAYERS.length;
 
 export function GrowthSystemSection() {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const nodeRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  /* SSR + reduced motion render the finished diagram: every node lit, no
-     fill. The scroll treatment only arms after hydration. */
-  const [dynamic, setDynamic] = useState(false);
-  const [fill, setFill] = useState(0);
-  const [lit, setLit] = useState<boolean[]>(() =>
-    Array.from({ length: STAGE_COUNT }, () => true),
-  );
-  const [rail, setRail] = useState<{
-    w: number;
-    y1: number;
-    y2: number;
-  } | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const rowRefs = useRef<(HTMLLIElement | null)[]>([]);
+  /* SSR and reduced motion show the finished drawing: bus fully lit,
+     first layer on the readout. Scroll behavior arms after hydration. */
+  const [frac, setFrac] = useState(1);
+  const [active, setActive] = useState(0);
+  const [hover, setHover] = useState<number | null>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    setDynamic(true);
-    setLit(Array.from({ length: STAGE_COUNT }, () => false));
+    setFrac(0);
 
     let raf = 0;
     const measure = () => {
       raf = 0;
-      const el = wrapRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      /* The fill's leading edge rides slightly above the viewport's
-         center, so a node ignites right as its card settles into focus */
-      const front = Math.min(
-        Math.max(window.innerHeight * 0.55 - rect.top, 0),
-        rect.height,
-      );
-      setFill(Math.round(front));
+      const list = listRef.current;
+      if (!list) return;
+      const rect = list.getBoundingClientRect();
+      const vh = window.innerHeight;
+      setFrac(Math.min(Math.max((vh * 0.5 - rect.top) / rect.height, 0), 1));
 
-      const centers = nodeRefs.current.map((node) => {
-        if (!node) return Number.POSITIVE_INFINITY;
-        const r = node.getBoundingClientRect();
-        return r.top + r.height / 2 - rect.top;
+      const focus = vh * 0.45;
+      let best = 0;
+      let bestDist = Number.POSITIVE_INFINITY;
+      rowRefs.current.forEach((row, i) => {
+        if (!row) return;
+        const r = row.getBoundingClientRect();
+        const dist = Math.abs(r.top + r.height / 2 - focus);
+        if (dist < bestDist) {
+          bestDist = dist;
+          best = i;
+        }
       });
-      setLit((prev) => {
-        const next = centers.map((c) => c <= front);
-        return next.every((v, i) => v === prev[i]) ? prev : next;
-      });
-
-      const y1 = centers[0];
-      const y2 = centers[centers.length - 1];
-      if (Number.isFinite(y1) && Number.isFinite(y2)) {
-        setRail((prev) =>
-          prev &&
-          Math.abs(prev.w - rect.width) < 1 &&
-          Math.abs(prev.y1 - y1) < 1 &&
-          Math.abs(prev.y2 - y2) < 1
-            ? prev
-            : { w: rect.width, y1, y2 },
-        );
-      }
+      setActive((prev) => (prev === best ? prev : best));
     };
     const schedule = () => {
       if (!raf) raf = requestAnimationFrame(measure);
@@ -308,19 +166,12 @@ export function GrowthSystemSection() {
     };
   }, []);
 
-  /* Return rail geometry — from the last node, out to the right margin,
-     up, and back into the first node. Drawn start-to-end so the travelling
-     pulse climbs the rail in the compounding direction. */
-  const railX = rail ? rail.w - 8 : 0;
-  const railPath = rail
-    ? `M 238 ${rail.y2} H ${railX - 28} Q ${railX} ${rail.y2} ${railX} ${
-        rail.y2 - 28
-      } V ${rail.y1 + 28} Q ${railX} ${rail.y1} ${railX - 28} ${
-        rail.y1
-      } H 246`
-    : "";
+  const shown = hover ?? active;
+  const shownLayer = LAYERS[shown];
+  /* Junction y as a fraction of the panel's circuit area */
+  const junctionY = (i: number) => ((i + 0.5) / COUNT) * 100;
 
-  let stageIndex = -1;
+  let flatIndex = -1;
 
   return (
     <section
@@ -329,213 +180,260 @@ export function GrowthSystemSection() {
       className="overflow-x-clip border-t border-line"
     >
       <div className="mx-auto w-full max-w-[1440px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-        {/* Header — centered */}
-        <Reveal className="mx-auto max-w-[680px] text-center">
-          <p className="flex items-center justify-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-            <Spark className="size-3.5 text-brand" aria-hidden />
-            The system behind the brand
-          </p>
-          <h2
-            id="growth-heading"
-            className="mt-5 font-sans text-[clamp(2rem,4.4vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
-          >
-            The Plurel <em className="font-serif italic">Growth System</em>
-          </h2>
-          <p className="mx-auto mt-5 max-w-[54ch] text-[15px] leading-relaxed text-ink/75 sm:text-base">
-            Not a funnel &mdash; a circuit. Nine layers, each feeding the
-            next, for how modern companies are found, trusted, chosen, and
-            remembered.
-          </p>
-        </Reveal>
-
-        {/* The circuit */}
-        <div
-          ref={wrapRef}
-          className="relative mx-auto mt-12 w-full max-w-[1120px] sm:mt-16"
-        >
-          {/* Spine track */}
-          <div
-            aria-hidden
-            className="absolute bottom-3 top-1 w-px bg-line left-[14px] lg:left-[238px]"
-          />
-          {/* Scroll fill + playhead */}
-          {dynamic && (
-            <div
-              aria-hidden
-              className="absolute top-1 w-[1.5px] bg-brand left-[13.5px] lg:left-[237.5px]"
-              style={{ height: fill }}
+        {/* Header — ledger-left, drawing title block right */}
+        <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-8">
+          <Reveal className="max-w-[640px]">
+            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+              <Spark className="size-3.5 text-brand" aria-hidden />
+              The system behind the brand
+            </p>
+            <h2
+              id="growth-heading"
+              className="mt-5 font-sans text-[clamp(2rem,4.2vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
             >
-              <span
-                className="absolute -bottom-1 left-1/2 size-2 -translate-x-1/2 rounded-full bg-brand shadow-[0_0_10px_rgba(191,58,54,0.55)]"
-                style={{ opacity: fill > 0 ? 1 : 0 }}
-              />
-            </div>
-          )}
+              The Plurel Growth System
+            </h2>
+            <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-ink/75 sm:text-base">
+              Not a funnel &mdash; a circuit. Nine layers in four stages,
+              wired so each one feeds the next and the last feeds the first:
+              how modern companies are found, trusted, chosen, and
+              remembered.
+            </p>
+          </Reveal>
 
-          {/* Return rail — desktop only, measured after mount */}
-          {rail && (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 hidden lg:block"
+          {/* Title block, like the corner of a technical drawing */}
+          <Reveal delay={0.12} className="hidden sm:block">
+            <dl
+              aria-label="System summary"
+              className="w-[248px] rounded-xl border border-line bg-paper text-[10px] font-semibold uppercase tracking-[0.16em]"
             >
-              <svg
-                className="absolute inset-0 h-full w-full"
-                fill="none"
-                aria-hidden
-              >
-                <path
-                  d={railPath}
-                  stroke="var(--color-line)"
-                  strokeWidth="1"
-                  strokeDasharray="3 7"
-                />
-                <path
-                  d={railPath}
-                  className="method-pulse"
-                  pathLength={100}
-                  stroke="var(--color-brand)"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  opacity="0.8"
-                  style={{
-                    strokeDasharray: "4 100",
-                    animationDuration: "7s",
-                  }}
-                />
-                {/* Arrowhead feeding back into Brand */}
-                <path
-                  d={`M 249 ${rail.y1 - 3.5} L 242 ${rail.y1} L 249 ${
-                    rail.y1 + 3.5
-                  }`}
-                  stroke="var(--color-muted)"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span
-                className="absolute flex -translate-x-1/2 -translate-y-1/2 items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1.5 font-serif text-[12.5px] italic text-muted"
-                style={{ left: railX, top: (rail.y1 + rail.y2) / 2 }}
-              >
-                <span aria-hidden className="not-italic">
-                  &#8634;
-                </span>
-                compounds
-              </span>
-            </div>
-          )}
+              <div className="flex items-center justify-between px-4 py-2.5">
+                <dt className="text-muted">System map</dt>
+                <dd className="flex items-center gap-1.5 text-ink">
+                  <Spark className="size-3 text-brand" aria-hidden />
+                  SYS&middot;09
+                </dd>
+              </div>
+              <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
+                <dt className="text-muted">Layers</dt>
+                <dd className="tabular-nums text-ink">09</dd>
+              </div>
+              <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
+                <dt className="text-muted">Stages</dt>
+                <dd className="text-ink">I &ndash; IV</dd>
+              </div>
+              <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
+                <dt className="text-muted">Loop</dt>
+                <dd className="text-brand">Compounding</dd>
+              </div>
+            </dl>
+          </Reveal>
+        </div>
 
-          {/* Layers, grouped */}
-          {GROUPS.map((group, groupIdx) => (
-            <div key={group.numeral} className={groupIdx > 0 ? "mt-2" : ""}>
-              {/* Stage kicker — left of the spine on desktop, above on mobile */}
-              <Reveal className={ROW_GRID}>
-                <p className="hidden pr-6 pt-1 text-right text-[10px] font-semibold uppercase tracking-[0.2em] text-muted lg:col-start-1 lg:block">
+        <div className="mt-12 items-stretch gap-x-12 sm:mt-14 lg:grid lg:grid-cols-12">
+          {/* The ledger */}
+          <div ref={listRef} className="border-b border-line lg:col-span-7">
+            {GROUPS.map((group) => (
+              <Reveal key={group.numeral}>
+                <p className="flex items-baseline gap-2 border-t border-ink/25 pb-2.5 pt-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
                   <span className="text-brand">{group.numeral}</span>
-                  <span className="px-1.5 text-line">&mdash;</span>
                   {group.name}
                 </p>
-                <p className="col-start-3 pb-3 pl-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted lg:hidden">
-                  <span className="text-brand">{group.numeral}</span>
-                  <span className="px-1.5 text-line">&mdash;</span>
-                  {group.name}
-                </p>
-              </Reveal>
-
-              <ol>
-                {group.stages.map((stage) => {
-                  stageIndex += 1;
-                  const index = stageIndex;
-                  const isLit = lit[index];
-                  return (
-                    <li key={stage.number}>
-                      <div className={`relative ${ROW_GRID}`}>
-                        {/* Node on the spine */}
-                        <span aria-hidden className="relative col-start-2 block">
-                          <span
-                            ref={(el) => {
-                              nodeRefs.current[index] = el;
-                            }}
-                            className={`absolute left-1/2 top-6 size-3 -translate-x-1/2 rounded-full border-[1.5px] transition-all duration-500 ${
-                              isLit
-                                ? "border-brand bg-brand shadow-[0_0_0_5px_rgba(191,58,54,0.12)]"
-                                : "border-line bg-canvas"
-                            }`}
-                          />
-                        </span>
-                        {/* Connector, spine → card */}
+                <ol>
+                  {group.layers.map((layer) => {
+                    flatIndex += 1;
+                    const index = flatIndex;
+                    const isShown = shown === index;
+                    return (
+                      <li
+                        key={layer.number}
+                        ref={(el) => {
+                          rowRefs.current[index] = el;
+                        }}
+                        onMouseEnter={() => setHover(index)}
+                        onMouseLeave={() =>
+                          setHover((h) => (h === index ? null : h))
+                        }
+                        className="relative grid grid-cols-[2.75rem_minmax(0,1fr)] border-t border-line py-4 sm:grid-cols-[3.25rem_minmax(0,1fr)_auto] sm:gap-x-6 sm:py-5"
+                      >
+                        {/* Focus tick */}
                         <span
                           aria-hidden
-                          className={`absolute top-[30px] border-t border-dashed transition-colors duration-500 left-[14px] w-[30px] lg:left-[238px] lg:w-[52px] ${
-                            isLit ? "border-brand/50" : "border-line"
+                          className={`absolute left-0 top-1/2 h-6 w-[2.5px] -translate-y-1/2 bg-brand transition-all duration-300 ${
+                            isShown ? "opacity-100" : "scale-y-0 opacity-0"
                           }`}
                         />
-                        {/* Card */}
-                        <div className="col-start-3 min-w-0 pb-4 pl-4 lg:pl-6">
-                          <Reveal>
-                            <div
-                              className={`flex max-w-[560px] items-start justify-between gap-4 rounded-2xl border bg-paper p-5 shadow-[0_14px_30px_-24px_rgba(17,15,10,0.4)] transition-colors duration-500 ${
-                                isLit ? "border-ink/15" : "border-line"
-                              }`}
-                            >
-                              <div className="min-w-0">
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
-                                  {stage.number}
-                                </p>
-                                <p className="mt-1.5 text-[16px] font-medium leading-tight tracking-[-0.01em] text-ink sm:text-[17px]">
-                                  {stage.name}
-                                </p>
-                                <p className="mt-1 text-[13px] leading-snug text-muted">
-                                  {stage.desc}
-                                </p>
-                              </div>
-                              <span
-                                aria-hidden
-                                className={`grid size-11 shrink-0 place-items-center rounded-full border bg-canvas transition-colors duration-500 ${
-                                  isLit
-                                    ? "border-brand/40 text-brand"
-                                    : "border-line text-ink/70"
-                                }`}
-                              >
-                                <stage.Glyph className="size-[18px]" />
-                              </span>
-                            </div>
-                          </Reveal>
-                        </div>
-                      </div>
+                        <span
+                          className={`pl-3 pt-[0.4em] text-[12px] font-semibold tabular-nums tracking-[0.08em] transition-colors duration-300 ${
+                            isShown ? "text-brand" : "text-muted"
+                          }`}
+                        >
+                          {layer.number}
+                        </span>
+                        <span className="min-w-0">
+                          <span
+                            className={`block text-[clamp(1.3rem,1.9vw,1.65rem)] font-normal leading-tight tracking-[-0.01em] transition-colors duration-300 ${
+                              isShown ? "text-ink" : "text-ink/45"
+                            }`}
+                          >
+                            {layer.name}
+                          </span>
+                          <span
+                            className={`mt-1 block text-[13px] leading-snug transition-colors duration-300 ${
+                              isShown ? "text-muted" : "text-muted/70"
+                            }`}
+                          >
+                            {layer.role}
+                          </span>
+                          {/* Hand-off, inline on small screens */}
+                          <span
+                            className={`mt-2 block text-[9.5px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 sm:hidden ${
+                              isShown ? "text-brand" : "text-muted/60"
+                            }`}
+                          >
+                            {layer.out
+                              ? `→ ${layer.out}`
+                              : "↺ returns to 01 — compounds"}
+                          </span>
+                        </span>
+                        {/* Hand-off annotation, right column */}
+                        <span
+                          className={`hidden self-center text-right text-[10px] font-semibold uppercase tracking-[0.16em] transition-colors duration-300 sm:block ${
+                            isShown ? "text-brand" : "text-muted/60"
+                          }`}
+                        >
+                          {layer.out
+                            ? `→ ${layer.out}`
+                            : "↺ returns to 01"}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </Reveal>
+            ))}
+          </div>
 
-                      {/* Edge — what this layer hands to the next */}
-                      {stage.flow && (
-                        <Reveal className={ROW_GRID} delay={0.08}>
-                          <p className="hidden pb-4 pr-6 pt-1 text-right font-serif text-[13px] italic leading-snug text-muted lg:col-start-1 lg:block">
-                            {stage.flow}
-                            <span aria-hidden className="pl-1.5 not-italic">
-                              &darr;
-                            </span>
-                          </p>
-                          <p className="col-start-3 pb-5 pl-4 font-serif text-[13px] italic text-muted lg:hidden">
-                            <span aria-hidden className="pr-1.5 not-italic">
-                              &darr;
-                            </span>
-                            {stage.flow}
-                          </p>
-                        </Reveal>
-                      )}
-                    </li>
-                  );
-                })}
-              </ol>
+          {/* The drawing — one continuous drafted panel */}
+          <Reveal
+            aria-hidden
+            delay={0.15}
+            className="hidden lg:col-span-5 lg:block"
+          >
+            <div className="flex h-full flex-col rounded-3xl border border-line bg-paper">
+              {/* Panel title strip */}
+              <div className="flex items-center justify-between border-b border-line px-5 py-3.5 text-[10px] font-semibold uppercase tracking-[0.18em]">
+                <span className="text-muted">
+                  Plurel Growth System &mdash; schematic
+                </span>
+                <span className="flex items-center gap-1.5 text-ink">
+                  <Spark className="size-3 text-brand" />
+                  SYS&middot;09
+                </span>
+              </div>
+
+              {/* Circuit */}
+              <div className="relative flex-1">
+                <div className="absolute inset-x-6 inset-y-7">
+                  {/* Bus */}
+                  <span className="absolute bottom-0 left-[5px] top-0 w-px bg-line" />
+                  {/* Scroll fill + playhead */}
+                  <span
+                    className="absolute left-[4.5px] top-0 w-[1.5px] bg-brand transition-[height] duration-150 ease-linear"
+                    style={{ height: `${frac * 100}%` }}
+                  >
+                    <span
+                      className="absolute -bottom-1 left-1/2 size-2 -translate-x-1/2 rounded-full bg-brand shadow-[0_0_10px_rgba(191,58,54,0.55)]"
+                      style={{ opacity: frac > 0 && frac < 1 ? 1 : 0 }}
+                    />
+                  </span>
+
+                  {/* Junctions */}
+                  {LAYERS.map((layer, i) => {
+                    const lit = (i + 0.5) / COUNT <= frac;
+                    const isShown = shown === i;
+                    return (
+                      <span key={layer.number}>
+                        <span
+                          className={`absolute left-[5px] size-[9px] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-all duration-300 ${
+                            isShown
+                              ? "border-brand bg-brand shadow-[0_0_0_4px_rgba(191,58,54,0.14)]"
+                              : lit
+                                ? "border-brand bg-brand"
+                                : "border-line bg-paper"
+                          }`}
+                          style={{ top: `${junctionY(i)}%` }}
+                        />
+                        <span
+                          onMouseEnter={() => setHover(i)}
+                          onMouseLeave={() =>
+                            setHover((h) => (h === i ? null : h))
+                          }
+                          className={`absolute left-7 flex -translate-y-1/2 items-baseline gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] transition-opacity duration-200 ${
+                            isShown ? "opacity-0" : "opacity-100"
+                          } ${lit ? "text-ink/70" : "text-muted/70"}`}
+                          style={{ top: `${junctionY(i)}%` }}
+                        >
+                          <span className="tabular-nums text-muted">
+                            {layer.number}
+                          </span>
+                          {layer.name}
+                        </span>
+                      </span>
+                    );
+                  })}
+
+                  {/* Readout connector */}
+                  <span
+                    className="absolute left-[5px] right-[47%] border-t border-dashed border-brand/60 transition-[top] duration-300"
+                    style={{ top: `${junctionY(shown)}%` }}
+                  />
+                  {/* Readout — follows the shown layer */}
+                  <div
+                    className="absolute right-0 w-[45%] -translate-y-1/2 transition-[top] duration-300"
+                    style={{
+                      top: `min(max(${junctionY(shown)}%, 72px), calc(100% - 72px))`,
+                    }}
+                  >
+                    <div
+                      key={shown}
+                      className="glass-in rounded-xl border border-line bg-canvas p-4"
+                    >
+                      <p className="flex items-baseline gap-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">
+                        <span className="tabular-nums text-brand">
+                          {shownLayer.number}
+                        </span>
+                        {shownLayer.name}
+                      </p>
+                      <ul className="mt-3 flex flex-wrap gap-1.5">
+                        {shownLayer.chips.map((chip) => (
+                          <li
+                            key={chip}
+                            className="rounded-full border border-line bg-paper px-2.5 py-1 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-ink/70"
+                          >
+                            {chip}
+                          </li>
+                        ))}
+                      </ul>
+                      <p className="mt-3 border-t border-line pt-2.5 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-muted">
+                        {shownLayer.out
+                          ? `→ ${shownLayer.out}`
+                          : "↺ returns to 01"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Panel footer — the loop, stated */}
+              <div className="flex items-center justify-between border-t border-line px-5 py-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
+                <span>
+                  <span className="pr-1.5 text-brand">&#8634;</span>
+                  09 feeds 01
+                </span>
+                <span>The loop compounds</span>
+              </div>
             </div>
-          ))}
-
-          {/* The loop, spelled out where the rail can't be drawn */}
-          <Reveal className={`${ROW_GRID} lg:hidden`}>
-            <p className="col-start-3 pl-4 pt-2 font-serif text-[13px] italic text-muted">
-              <span aria-hidden className="pr-1.5 not-italic">
-                &#8634;
-              </span>
-              trust feeds back into the brand &mdash; the loop compounds
-            </p>
           </Reveal>
         </div>
       </div>

@@ -48,7 +48,7 @@ export function CompareSection() {
               className="mt-5 max-w-[16ch] font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
             >
               Decoration is not a{" "}
-              <em className="font-serif italic">growth strategy</em>.
+              <em className="italic">growth strategy</em>.
             </h2>
             <p className="mt-6 max-w-[42ch] text-[15px] leading-relaxed text-ink/80">
               Most agencies are built to produce deliverables. Plurel is built

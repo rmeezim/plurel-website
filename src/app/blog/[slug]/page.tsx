@@ -148,7 +148,7 @@ export default async function ArticlePage(props: PageProps<"/blog/[slug]">) {
         <div className="mx-auto w-full max-w-[1440px] px-5 py-12 sm:px-8 lg:px-12 lg:py-16">
           <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
             <h2 className="font-sans text-2xl font-normal tracking-[-0.01em] text-ink sm:text-3xl">
-              Keep <em className="font-serif italic">reading</em>.
+              Keep <em className="italic">reading</em>.
             </h2>
           </div>
           <ul className="mt-8 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2">

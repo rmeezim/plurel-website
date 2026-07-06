@@ -92,7 +92,7 @@ export function WorkSection() {
               id="work-heading"
               className="mt-4 font-sans text-[clamp(2rem,4.5vw,3.75rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink"
             >
-              Recent <span className="font-serif italic">transformations</span>.
+              Recent <span className="italic">transformations</span>.
             </h2>
           </div>
           <div className="lg:pb-1.5 lg:text-right">

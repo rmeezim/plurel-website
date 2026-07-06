@@ -178,7 +178,7 @@ export function PerformanceSection() {
             id="performance-heading"
             className="mt-5 font-sans text-[clamp(2rem,4.4vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em]"
           >
-            Performance, <em className="font-serif italic text-clay">instrumented</em>.
+            Performance, <em className="italic text-clay">instrumented</em>.
           </h2>
           <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/70 sm:text-base">
             Every engagement is wired to a set of living signals &mdash; so

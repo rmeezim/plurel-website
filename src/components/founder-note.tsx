@@ -25,7 +25,7 @@ export function FounderNote() {
               id="founder-heading"
               className="mt-5 font-sans text-[clamp(2.2rem,4.6vw,3.5rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
             >
-              Our <em className="font-serif italic">conviction</em>
+              Our <em className="italic">conviction</em>
             </h2>
           </Reveal>
 

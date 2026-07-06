@@ -64,17 +64,17 @@ function PostThumb({ kind }: { kind: Thumb }) {
     case "brand":
       return (
         <span className="grid h-full w-full grid-cols-2 gap-1 bg-ink p-1.5">
-          <span className="flex items-center justify-center rounded-[5px] bg-brand">
+          <span className="flex items-center justify-center rounded-[3px] bg-brand">
             <Spark className="size-3.5 text-paper" />
           </span>
-          <span className="flex items-center justify-center rounded-[5px] bg-paper font-serif text-[11px] leading-none text-ink">
+          <span className="flex items-center justify-center rounded-[3px] bg-paper font-serif text-[11px] leading-none text-ink">
             Aa
           </span>
-          <span className="flex items-center justify-center gap-1 rounded-[5px] bg-charcoal">
+          <span className="flex items-center justify-center gap-1 rounded-[3px] bg-charcoal">
             <span className="size-1.5 rounded-full bg-clay" />
             <span className="size-1.5 rounded-full bg-paper" />
           </span>
-          <span className="rounded-[5px] bg-clay" />
+          <span className="rounded-[3px] bg-clay" />
         </span>
       );
     case "growth":
@@ -137,8 +137,7 @@ export function JournalSection() {
               id="journal-heading"
               className="mt-5 font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
             >
-              Notes on staying{" "}
-              <em className="font-serif italic">visible</em>.
+              Notes on staying <em className="italic">visible</em>.
             </h2>
           </div>
           <Link

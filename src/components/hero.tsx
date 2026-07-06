@@ -507,27 +507,27 @@ export function Hero() {
               <Link
                 href="/contact"
                 aria-label="Book Strategy Call"
-                className="group pointer-events-auto relative block rounded-tl-[19px] bg-canvas pl-[9px] pt-[9px] [filter:drop-shadow(-6px_-6px_10px_rgba(17,15,10,0.22))]"
+                className="group pointer-events-auto relative block rounded-tl-[15px] bg-canvas pl-[9px] pt-[9px] [filter:drop-shadow(-6px_-6px_10px_rgba(17,15,10,0.22))]"
               >
                 {/* Concave fillets — page-colored quarter-curves that blend
                     the tab into the slider's right and bottom edges */}
                 <span
                   aria-hidden
-                  className="absolute -top-4 right-0 size-4"
+                  className="absolute -top-3 right-0 size-3"
                   style={{
                     background:
-                      "radial-gradient(circle 16px at 0 0, transparent 15px, var(--color-canvas) 16px)",
+                      "radial-gradient(circle 12px at 0 0, transparent 11px, var(--color-canvas) 12px)",
                   }}
                 />
                 <span
                   aria-hidden
-                  className="absolute -left-4 bottom-0 size-4"
+                  className="absolute -left-3 bottom-0 size-3"
                   style={{
                     background:
-                      "radial-gradient(circle 16px at 0 0, transparent 15px, var(--color-canvas) 16px)",
+                      "radial-gradient(circle 12px at 0 0, transparent 11px, var(--color-canvas) 12px)",
                   }}
                 />
-                <span className="relative block h-[100px] w-[284px] rounded-[10px] bg-brand transition-colors duration-300 group-hover:bg-[#b0332f] sm:h-[112px] sm:w-[316px]">
+                <span className="relative block h-[100px] w-[284px] rounded-[6px] bg-brand transition-colors duration-300 group-hover:bg-[#b0332f] sm:h-[112px] sm:w-[316px]">
                   {/* Plurel mark, subtle, top-right */}
                   <Spark className="absolute right-5 top-4 size-3.5 text-paper/70" />
                   {/* Label, left-aligned */}

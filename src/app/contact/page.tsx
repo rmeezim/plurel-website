@@ -42,7 +42,7 @@ export default function ContactPage() {
             className="mt-5 max-w-[18ch] font-sans text-[clamp(2.5rem,6vw,5.5rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink"
           >
             <Cascade text="Your before-and-after starts" base={0.08} step={0.045} />{" "}
-            <em className="font-serif italic">
+            <em className="italic">
               <Cascade text="here." base={0.08} step={0.045} offset={4} />
             </em>
           </h1>

@@ -70,7 +70,7 @@ export function ProofSection() {
             className="mt-5 max-w-[20ch] font-sans text-[clamp(2rem,4.4vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em]"
           >
             Transformation you can{" "}
-            <em className="font-serif italic text-clay">measure</em>.
+            <em className="italic text-clay">measure</em>.
           </h2>
         </Reveal>
 

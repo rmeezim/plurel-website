@@ -27,7 +27,7 @@ export function CtaSection() {
             className="mt-6 max-w-[16ch] font-sans text-[clamp(2.5rem,6.4vw,5.5rem)] font-normal leading-[1.02] tracking-[-0.02em]"
           >
             Let&rsquo;s build what{" "}
-            <em className="font-serif italic">sets you apart</em>.
+            <em className="italic">sets you apart</em>.
           </h2>
           <p className="mt-6 max-w-[52ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
             Book a 30-minute strategy call. You&rsquo;ll leave with a sharper

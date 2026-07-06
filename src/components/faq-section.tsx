@@ -66,7 +66,7 @@ export function FaqSection() {
               id="faq-heading"
               className="mt-5 max-w-[14ch] font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
             >
-              Questions, <em className="font-serif italic">answered</em>.
+              Questions, <em className="italic">answered</em>.
             </h2>
             <p className="mt-6 max-w-[40ch] text-[15px] leading-relaxed text-ink/80">
               The things most teams want to know before they talk to us. If

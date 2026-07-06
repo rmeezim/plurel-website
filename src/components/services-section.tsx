@@ -217,7 +217,7 @@ function Intro() {
         className="mt-5 font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
       >
         Services that make you the{" "}
-        <em className="font-serif italic">obvious</em> choice.
+        <em className="italic">obvious</em> choice.
       </h2>
       <p className="mt-6 max-w-[42ch] text-[15px] leading-relaxed text-ink/80">
         Plurel modernizes how your business looks, communicates, and attracts

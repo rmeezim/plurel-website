@@ -146,7 +146,7 @@ export function MethodSection() {
               className="mt-5 max-w-[22ch] font-sans text-[clamp(2rem,4.4vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
             >
               One methodology &mdash; from outdated to{" "}
-              <em className="font-serif italic">unmissable</em>.
+              <em className="italic">unmissable</em>.
             </h2>
           </div>
           <p className="max-w-[46ch] text-[15px] leading-relaxed text-ink/80 lg:justify-self-end">

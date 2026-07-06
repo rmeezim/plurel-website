@@ -83,8 +83,7 @@ export function GrowthAuditSection() {
                   id="growth-audit-heading"
                   className="font-sans text-[clamp(1.75rem,3.4vw,2.75rem)] font-normal leading-[1.08] tracking-[-0.02em] text-ink"
                 >
-                  Your Growth Audit{" "}
-                  <em className="font-serif italic">reviews</em>
+                  Your Growth Audit <em className="italic">reviews</em>
                 </h2>
                 <p className="mt-5 max-w-[42ch] text-[15px] leading-relaxed text-ink/75">
                   A clear read on where your presence stands today &mdash;
