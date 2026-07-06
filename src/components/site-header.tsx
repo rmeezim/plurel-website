@@ -448,7 +448,7 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
           <CompactCard
             title="Methodology"
             desc="The four-phase operating model."
-            href="/#method"
+            href="/methodology"
             glyph={<MethodologyGlyph />}
             onNavigate={onNavigate}
           />
@@ -737,7 +737,7 @@ export function SiteHeader() {
               {[
                 { name: "About", href: "/about" },
                 { name: "Case Studies", href: "/work" },
-                { name: "Methodology", href: "/#method" },
+                { name: "Methodology", href: "/methodology" },
                 { name: "Studio", href: "/studio" },
                 { name: "Careers", href: "/careers" },
                 { name: "Blog", href: "/blog" },

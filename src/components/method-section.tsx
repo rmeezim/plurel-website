@@ -166,13 +166,22 @@ export function MethodSection() {
             Built AI-era ready &mdash; AEO, martech, and growth systems are
             part of the method, not an add-on.
           </p>
-          <Link
-            href="/contact"
-            className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
-          >
-            Start with a diagnosis
-            <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </Link>
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+            <Link
+              href="/methodology"
+              className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
+            >
+              Read the full methodology
+              <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+            <Link
+              href="/contact"
+              className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
+            >
+              Start with a diagnosis
+              <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+          </div>
         </div>
       </div>
     </section>
