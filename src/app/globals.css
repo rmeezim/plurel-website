@@ -188,20 +188,6 @@
     animation: scrim-in 0.2s ease both;
   }
 
-  /* Soft pulse sweeping along the growth-system spine */
-  @keyframes growth-pulse {
-    from {
-      left: -7rem;
-    }
-    to {
-      left: 100%;
-    }
-  }
-
-  .growth-pulse {
-    animation: growth-pulse 6s linear infinite;
-  }
-
   /* Glass detail card entrance */
   @keyframes glass-in {
     from {
