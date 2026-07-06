@@ -124,7 +124,6 @@ export function GrowthSystemSection() {
      first layer on the readout. Scroll behavior arms after hydration. */
   const [frac, setFrac] = useState(1);
   const [active, setActive] = useState(0);
-  const [hover, setHover] = useState<number | null>(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -166,7 +165,8 @@ export function GrowthSystemSection() {
     };
   }, []);
 
-  const shown = hover ?? active;
+  /* Scroll position alone selects the layer in focus */
+  const shown = active;
   const shownLayer = LAYERS[shown];
   /* Junction y as a fraction of the panel's circuit area */
   const junctionY = (i: number) => ((i + 0.5) / COUNT) * 100;
@@ -250,10 +250,6 @@ export function GrowthSystemSection() {
                         ref={(el) => {
                           rowRefs.current[index] = el;
                         }}
-                        onMouseEnter={() => setHover(index)}
-                        onMouseLeave={() =>
-                          setHover((h) => (h === index ? null : h))
-                        }
                         className="relative grid grid-cols-[2.75rem_minmax(0,1fr)] border-t border-line py-4 sm:grid-cols-[3.25rem_minmax(0,1fr)_auto] sm:gap-x-6 sm:py-5"
                       >
                         {/* Focus tick */}
@@ -365,10 +361,6 @@ export function GrowthSystemSection() {
                           style={{ top: `${junctionY(i)}%` }}
                         />
                         <span
-                          onMouseEnter={() => setHover(i)}
-                          onMouseLeave={() =>
-                            setHover((h) => (h === i ? null : h))
-                          }
                           className={`absolute left-7 flex -translate-y-1/2 items-baseline gap-2 text-[10px] font-semibold uppercase tracking-[0.14em] transition-opacity duration-200 ${
                             isShown ? "opacity-0" : "opacity-100"
                           } ${lit ? "text-ink/70" : "text-muted/70"}`}
