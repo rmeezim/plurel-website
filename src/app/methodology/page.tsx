@@ -382,7 +382,7 @@ function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
             {phase.name}
           </h2>
           <p
-            className={`mt-4 font-serif text-[clamp(1.4rem,2.8vw,2.1rem)] italic leading-snug ${
+            className={`mt-4 font-sans text-[clamp(1.4rem,2.8vw,2.1rem)] font-normal italic leading-snug tracking-[-0.01em] ${
               dark ? "text-clay" : "text-rust"
             }`}
           >
@@ -526,11 +526,11 @@ export default function MethodologyPage() {
             <span>Four phases &middot; one system</span>
           </div>
 
-          {/* The claim — serif, at display scale */}
+          {/* The claim — sans display, matching the homepage headline system */}
           <div className="py-16 sm:py-20">
             <h1
               id="method-hero-heading"
-              className="max-w-[12ch] font-serif text-[clamp(3.25rem,9vw,8.5rem)] leading-[1.0] tracking-[-0.015em] text-paper"
+              className="max-w-[14ch] font-sans text-[clamp(3rem,8vw,7.5rem)] font-normal leading-[0.95] tracking-[-0.02em] text-paper"
             >
               Presence, <em className="italic text-clay">engineered.</em>
             </h1>
@@ -575,7 +575,7 @@ export default function MethodologyPage() {
       <section aria-label="Why a method exists" className="border-t border-paper/10">
         <div className="mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-32">
           <Reveal className="max-w-[880px]">
-            <p className="font-serif text-[clamp(1.9rem,4.6vw,3.75rem)] leading-[1.18] tracking-[-0.01em] text-paper">
+            <p className="font-sans text-[clamp(1.9rem,4.6vw,3.75rem)] font-normal leading-[1.15] tracking-[-0.02em] text-paper">
               Deliverables don&rsquo;t compound.{" "}
               <em className="italic text-clay">Systems do.</em>
             </p>
@@ -625,7 +625,7 @@ export default function MethodologyPage() {
                     {law.code}
                   </span>
                   <span>
-                    <span className="block font-serif text-[1.6rem] leading-tight text-paper sm:text-[1.75rem]">
+                    <span className="block font-sans text-[1.5rem] font-normal leading-tight tracking-[-0.01em] text-paper sm:text-[1.7rem]">
                       {law.name}
                     </span>
                     <span className="mt-2 block max-w-[52ch] text-[13.5px] leading-relaxed text-paper/55">
@@ -662,7 +662,7 @@ export default function MethodologyPage() {
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted">
               WK 05 &mdash; the system goes live
             </p>
-            <p className="mx-auto mt-5 max-w-[24ch] font-serif text-[clamp(1.9rem,4.6vw,3.5rem)] italic leading-[1.15] text-ink">
+            <p className="mx-auto mt-5 max-w-[22ch] font-sans text-[clamp(1.9rem,4.6vw,3.5rem)] font-normal italic leading-[1.1] tracking-[-0.02em] text-ink">
               This is where you become visible.
             </p>
           </Reveal>
