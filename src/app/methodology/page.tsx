@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { MethodHud } from "@/components/method-hud";
 import { Reveal } from "@/components/reveal";
@@ -532,9 +533,17 @@ export default function MethodologyPage() {
               id="method-hero-heading"
               className="max-w-[14ch] font-sans text-[clamp(3rem,8vw,7.5rem)] font-normal leading-[0.95] tracking-[-0.02em] text-paper"
             >
-              Presence, <em className="italic text-clay">engineered.</em>
+              <Cascade text="Presence," base={0.08} step={0.045} />{" "}
+              <em className="italic text-clay">
+                <Cascade
+                  text="engineered."
+                  base={0.08}
+                  step={0.045}
+                  offset={1}
+                />
+              </em>
             </h1>
-            <p className="mt-8 max-w-[56ch] text-[15px] leading-relaxed text-paper/65 sm:text-base">
+            <p className="fade-up mt-8 max-w-[56ch] text-[15px] leading-relaxed text-paper/65 sm:text-base [animation-delay:250ms]">
               The Plurel Method is the operating model behind every
               engagement: four phases that take a business from an outdated
               presence to a compounding growth system &mdash; diagnosed like

@@ -29,7 +29,7 @@ export default function BlogPage() {
               <Cascade text="visible." base={0.08} step={0.045} offset={3} />
             </em>
           </h1>
-          <p className="mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base">
+          <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
             A point of view on the visible layer of growth &mdash; AI search,
             brand systems, growth strategy, martech, and reputation. Written
             from client work, not theory.

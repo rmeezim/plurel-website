@@ -46,7 +46,7 @@ export default function ContactPage() {
               <Cascade text="here." base={0.08} step={0.045} offset={4} />
             </em>
           </h1>
-          <p className="mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base">
+          <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
             Book a 30-minute strategy call or request a growth audit &mdash;
             either way, you&rsquo;ll leave with a sharper read on your brand,
             your visibility, and your next move.
