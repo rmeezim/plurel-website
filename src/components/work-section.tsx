@@ -29,7 +29,7 @@ function CaseCard({
           the link's accessible name stays the meta row */}
       <div
         aria-hidden
-        className="overflow-hidden rounded-2xl border border-line"
+        className="grain relative overflow-hidden rounded-2xl border border-line"
       >
         <div className="aspect-[4/3] w-full transition-transform duration-500 group-hover:scale-[1.02]">
           {children}

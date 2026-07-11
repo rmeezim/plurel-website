@@ -4,6 +4,7 @@ import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StatementSection } from "@/components/statement-section";
+import { VisualPlate } from "@/components/visual-plate";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -191,30 +192,32 @@ export default function AboutPage() {
             </Reveal>
             <Reveal
               delay={0.1}
-              className="grid grid-cols-1 gap-x-10 gap-y-6 sm:grid-cols-2 lg:col-span-8"
+              className="space-y-6 text-[15px] leading-[1.75] text-ink/85 sm:text-base lg:col-span-4"
             >
-              <div className="space-y-6 text-[15px] leading-[1.75] text-ink/85 sm:text-base">
-                <p>
-                  Good businesses kept losing to visible ones &mdash; great
-                  work buried on page four, real results told to no one. The
-                  cause was structural: presence built in pieces, with nobody
-                  accountable for the whole.
-                </p>
-                <p>
-                  So Northeon built the division it kept wishing existed: one
-                  senior team, one method, one scoreboard &mdash; the whole
-                  visible layer, engineered as a single compounding system.
-                </p>
-              </div>
-              <div className="space-y-6 text-[15px] leading-[1.75] text-ink/85 sm:text-base">
-                <p>
-                  And because buying now begins inside AI answers as often as
-                  search results, that&rsquo;s the direction we build in:
-                  Plurel is becoming Northeon&rsquo;s global AI and
-                  technology division for martech, marketing, and growth
-                  transformations.
-                </p>
-              </div>
+              <p>
+                Good businesses kept losing to visible ones &mdash; great
+                work buried on page four, real results told to no one. The
+                cause was structural: presence built in pieces, with nobody
+                accountable for the whole.
+              </p>
+              <p>
+                So Northeon built the division it kept wishing existed: one
+                senior team, one method, one scoreboard &mdash; the whole
+                visible layer, engineered as a single compounding system.
+              </p>
+              <p>
+                And because buying now begins inside AI answers as often as
+                search results, that&rsquo;s the direction we build in:
+                Plurel is becoming Northeon&rsquo;s global AI and technology
+                division for martech, marketing, and growth transformations.
+              </p>
+            </Reveal>
+            <Reveal delay={0.18} className="lg:col-span-4">
+              <VisualPlate
+                kind="room"
+                label="Plurel — a Northeon division"
+                className="aspect-[16/10] w-full lg:aspect-[4/5]"
+              />
             </Reveal>
           </div>
         </div>

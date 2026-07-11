@@ -271,7 +271,7 @@ function CaseChapter({ cs, flip }: { cs: CaseStudy; flip: boolean }) {
         >
           <div
             aria-hidden
-            className="overflow-hidden rounded-2xl border border-line"
+            className="grain relative overflow-hidden rounded-2xl border border-line"
           >
             <div className="aspect-[4/3] w-full">
               <CaseVisual slug={cs.slug} />

@@ -514,7 +514,7 @@ export default function MethodologyPage() {
       {/* ------------------------------------------------ The cover */}
       <section
         aria-labelledby="method-hero-heading"
-        className="relative overflow-hidden"
+        className="grain relative overflow-hidden"
       >
         <div className="relative mx-auto flex min-h-[86vh] w-full max-w-[1440px] flex-col justify-between px-5 pb-10 pt-14 sm:px-8 lg:px-12 lg:pt-20">
           {/* Manual meta line */}

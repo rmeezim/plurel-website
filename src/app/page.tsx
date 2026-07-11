@@ -9,6 +9,7 @@ import { MethodSection } from "@/components/method-section";
 import { ProofSection } from "@/components/proof-section";
 import { CompareSection } from "@/components/compare-section";
 import { StatementSection } from "@/components/statement-section";
+import { TickerStrip } from "@/components/ticker-strip";
 import { JournalSection } from "@/components/journal-section";
 import { FaqSection } from "@/components/faq-section";
 import { FounderNote } from "@/components/founder-note";
@@ -27,6 +28,10 @@ export default function Home() {
       <PerformanceSection />
       <MethodSection />
       <ProofSection />
+      <TickerStrip
+        items={["Found", "Trusted", "Chosen", "Remembered"]}
+        filledIndex={2}
+      />
       <CompareSection />
       <StatementSection
         kicker="The AI-era standard"

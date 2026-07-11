@@ -4,6 +4,7 @@ import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StatementSection } from "@/components/statement-section";
+import { VisualPlate } from "@/components/visual-plate";
 
 export const metadata: Metadata = {
   title: "Careers — Plurel",
@@ -174,10 +175,23 @@ export default function CareersPage() {
         </div>
       </section>
 
+      {/* ------------------------------------------- The room */}
+      <section aria-hidden className="pb-4">
+        <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
+          <Reveal>
+            <VisualPlate
+              kind="room"
+              label="The studio — seats open"
+              className="aspect-[16/9] w-full sm:aspect-[21/8]"
+            />
+          </Reveal>
+        </div>
+      </section>
+
       {/* ------------------------------------------ How we work */}
       <section
         aria-labelledby="how-we-work-heading"
-        className="border-t border-line bg-paper"
+        className="mt-12 border-t border-line bg-paper sm:mt-14"
       >
         <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <Reveal className="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">

@@ -15,25 +15,25 @@ const SURFACES: Record<
   { section: string; kicker: string; spark: string; note: string }
 > = {
   ink: {
-    section: "bg-ink text-paper",
+    section: "material-backstage material-drift grain text-paper",
     kicker: "text-paper/50",
     spark: "text-paper/[0.05]",
     note: "text-paper/40",
   },
   charcoal: {
-    section: "bg-charcoal text-paper",
+    section: "material-backstage material-drift grain text-paper",
     kicker: "text-paper/50",
     spark: "text-paper/[0.05]",
     note: "text-paper/40",
   },
   brand: {
-    section: "bg-brand text-paper",
+    section: "material-heat material-drift grain text-paper",
     kicker: "text-paper/70",
     spark: "text-paper/10",
     note: "text-paper/60",
   },
   clay: {
-    section: "bg-clay text-ink",
+    section: "material-warmth material-drift grain text-ink",
     kicker: "text-ink/55",
     spark: "text-ink/[0.06]",
     note: "text-ink/50",

@@ -4,6 +4,7 @@ import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StatementSection } from "@/components/statement-section";
+import { VisualPlate } from "@/components/visual-plate";
 
 export const metadata: Metadata = {
   title: "The Studio — Plurel",
@@ -174,57 +175,26 @@ export default function StudioPage() {
             </p>
           </Reveal>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {/* Identity surface */}
             <Reveal>
-              <div
-                aria-hidden
-                className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-ink"
-              >
-                <Spark className="absolute -right-12 -top-16 size-[240px] rotate-12 text-paper/[0.07]" />
-                <p className="absolute left-6 top-6 font-serif text-3xl leading-[1.05] text-paper">
-                  Aa
-                </p>
-                <span className="absolute bottom-5 left-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-paper/45">
-                  Identity &mdash; systems, not logos
-                </span>
-              </div>
+              <VisualPlate
+                kind="identity"
+                label="Identity — systems, not logos"
+                className="aspect-[4/5]"
+              />
             </Reveal>
-            {/* Light study */}
             <Reveal delay={0.08}>
-              <div
-                aria-hidden
-                className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-clay"
-              >
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(112deg, rgba(251,250,246,0.55) 0%, rgba(251,250,246,0.14) 36%, rgba(251,250,246,0) 58%), linear-gradient(to top, rgba(17,15,10,0.18), rgba(17,15,10,0) 44%)",
-                  }}
-                />
-                <span className="absolute bottom-5 left-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-ink/55">
-                  The room &mdash; work in progress
-                </span>
-              </div>
+              <VisualPlate
+                kind="room"
+                label="The room — work in progress"
+                className="aspect-[4/5]"
+              />
             </Reveal>
-            {/* Campaign surface */}
             <Reveal delay={0.16}>
-              <div
-                aria-hidden
-                className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-line bg-brand"
-              >
-                <span className="absolute left-6 top-6 inline-flex size-10 items-center justify-center rounded-full border border-paper/40">
-                  <Spark className="size-5 text-paper" />
-                </span>
-                <p className="absolute bottom-14 left-6 font-serif text-3xl leading-[1.05] text-paper">
-                  Made to
-                  <br />
-                  be kept.
-                </p>
-                <span className="absolute bottom-5 left-6 text-[10px] font-semibold uppercase tracking-[0.2em] text-paper/60">
-                  Campaigns &mdash; with a point of view
-                </span>
-              </div>
+              <VisualPlate
+                kind="campaign"
+                label="Campaigns — with a point of view"
+                className="aspect-[4/5]"
+              />
             </Reveal>
           </div>
         </div>

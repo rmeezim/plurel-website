@@ -99,7 +99,7 @@ export function FounderNote() {
           <Reveal delay={0.2} className="lg:col-span-8 lg:col-start-5">
             <div
               aria-hidden
-              className="relative aspect-[16/9] overflow-hidden rounded-xl border border-line bg-clay sm:aspect-[21/9]"
+              className="material-warmth material-drift grain relative aspect-[16/9] overflow-hidden rounded-xl border border-line sm:aspect-[21/9]"
             >
               {/* Morning light across a clay wall */}
               <div

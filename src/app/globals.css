@@ -54,6 +54,48 @@
   }
 }
 
+/*
+  Materials — the surface layer of the design system. Flat hex reads as
+  plain; grained gradient reads as paper and film. Every composed surface
+  (plates, statements, dark panels) carries a material + grain.
+*/
+.material-daylight {
+  background-image: linear-gradient(135deg, #ece8df 0%, #dcd2c0 48%, #c7b49d 100%);
+}
+.material-warmth {
+  background-image: linear-gradient(165deg, #d8cdbb 0%, #c7b49d 55%, #a65a45 100%);
+}
+.material-backstage {
+  background-image: linear-gradient(150deg, #262019 0%, #110f0a 55%, #201812 100%);
+}
+.material-heat {
+  background-image: linear-gradient(140deg, #bf3a36 0%, #ab4038 55%, #934d3c 100%);
+}
+
+/* Film grain — subtle tiled turbulence over any relative surface */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.07;
+  mix-blend-mode: soft-light;
+}
+
+/* Outlined display type — a graphic device, not a text style. Ticker and
+   ghost words only; never body or headings. */
+.text-outline-ink {
+  -webkit-text-stroke: 1.5px rgba(17, 15, 10, 0.32);
+  color: transparent;
+}
+.text-outline-paper {
+  -webkit-text-stroke: 1.5px rgba(251, 250, 246, 0.38);
+  color: transparent;
+}
+
 /* Hide scrollbars on the horizontal showcase rail while keeping it scrollable */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -99,6 +141,23 @@
   /* Pause the drift while a visitor hovers the rail */
   .marquee-mask:hover .animate-marquee {
     animation-play-state: paused;
+  }
+
+  /* Slow gradient drift inside material surfaces — ambient life for the
+     big plates and statements. The gradient oversizes, then wanders. */
+  @keyframes material-drift {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .material-drift {
+    background-size: 170% 170%;
+    animation: material-drift 16s ease-in-out infinite;
   }
 
   /* Same-thickness pulse sliding along the operating-model connector paths.
