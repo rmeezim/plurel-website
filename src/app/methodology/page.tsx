@@ -24,32 +24,32 @@ const LAWS = [
   {
     code: "L·01",
     name: "Ground truth first",
-    rule: "Nothing is designed until the diagnosis is signed. Opinions lose to evidence.",
+    rule: "Nothing is designed until the diagnosis is signed.",
   },
   {
     code: "L·02",
     name: "Systems over pieces",
-    rule: "No deliverable ships disconnected. Everything plugs into the nine-layer system.",
+    rule: "No deliverable ships disconnected from the nine-layer system.",
   },
   {
     code: "L·03",
     name: "Ship weekly",
-    rule: "Momentum is a deliverable. Every week ends with something live — and a note that says so.",
+    rule: "Every week ends with something live — and a note that says so.",
   },
   {
     code: "L·04",
     name: "Machine-readable by default",
-    rule: "Every asset is built twice: once for people, once for the engines answering them.",
+    rule: "Built once for people, once for the engines answering them.",
   },
   {
     code: "L·05",
     name: "Instrument everything",
-    rule: "A signal that can't be seen can't be steered. Six signals, live from launch.",
+    rule: "Unseen signals can't be steered. Six run from launch.",
   },
   {
     code: "L·06",
     name: "Compound, don't campaign",
-    rule: "We favor assets that appreciate. What compounds gets scaled; what doesn't gets cut.",
+    rule: "What compounds gets scaled; what doesn't gets cut.",
   },
 ];
 
@@ -634,10 +634,10 @@ export default function MethodologyPage() {
                     {law.code}
                   </span>
                   <span>
-                    <span className="block font-sans text-[1.5rem] font-normal leading-tight tracking-[-0.01em] text-paper sm:text-[1.7rem]">
+                    <span className="block font-sans text-[clamp(1.6rem,2.6vw,2.1rem)] font-normal leading-tight tracking-[-0.015em] text-paper">
                       {law.name}
                     </span>
-                    <span className="mt-2 block max-w-[52ch] text-[13.5px] leading-relaxed text-paper/55">
+                    <span className="mt-2 block max-w-[46ch] text-[14px] leading-relaxed text-paper/55">
                       {law.rule}
                     </span>
                   </span>

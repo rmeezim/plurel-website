@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
+import { StatementSection } from "@/components/statement-section";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -23,27 +24,27 @@ const BELIEFS = [
   {
     code: "B·01",
     name: "Presence is infrastructure",
-    rule: "Not a campaign or a coat of paint — the operating layer buyers actually meet. It deserves engineering.",
+    rule: "The operating layer buyers actually meet — it deserves engineering.",
   },
   {
     code: "B·02",
     name: "The front door moved",
-    rule: "Buying begins inside search and AI answers. Brands that machines can't read don't get chosen.",
+    rule: "Buying begins in AI answers; unreadable brands don't get chosen.",
   },
   {
     code: "B·03",
     name: "Taste is a growth lever",
-    rule: "Premium look and feel changes what buyers assume about price, quality, and risk — before a word is read.",
+    rule: "Look and feel set price expectations before a word is read.",
   },
   {
     code: "B·04",
     name: "Proof compounds",
-    rule: "Results, reviews, and reputation feed back into brand. The loop, not the logo, is the moat.",
+    rule: "Reputation feeds back into brand — the loop is the moat.",
   },
   {
     code: "B·05",
     name: "One owner beats five vendors",
-    rule: "Accountability for the whole system is the difference between deliverables and growth.",
+    rule: "Whole-system accountability is the difference between deliverables and growth.",
   },
 ];
 
@@ -192,35 +193,26 @@ export default function AboutPage() {
               delay={0.1}
               className="grid grid-cols-1 gap-x-10 gap-y-6 sm:grid-cols-2 lg:col-span-8"
             >
-              <div className="space-y-6 text-[15px] leading-[1.75] text-ink/85">
+              <div className="space-y-6 text-[15px] leading-[1.75] text-ink/85 sm:text-base">
                 <p>
-                  Good businesses kept losing to visible ones. Excellent work
-                  buried on page four; real results told to no one; buyers
-                  deciding shortlists in moments the business never even
-                  appeared in.
+                  Good businesses kept losing to visible ones &mdash; great
+                  work buried on page four, real results told to no one. The
+                  cause was structural: presence built in pieces, with nobody
+                  accountable for the whole.
                 </p>
-                <p>
-                  The cause was structural, not effort. Presence gets built
-                  in pieces &mdash; a website from one vendor, content from
-                  another, ads from a third &mdash; and nobody is accountable
-                  for how it performs as a whole. Pieces don&rsquo;t
-                  compound. Systems do.
-                </p>
-              </div>
-              <div className="space-y-6 text-[15px] leading-[1.75] text-ink/85">
                 <p>
                   So Northeon built the division it kept wishing existed: one
-                  senior team, one method, one scoreboard &mdash; brand,
-                  website, AI search, content, campaigns, and the martech
-                  underneath, engineered as a single compounding system.
+                  senior team, one method, one scoreboard &mdash; the whole
+                  visible layer, engineered as a single compounding system.
                 </p>
+              </div>
+              <div className="space-y-6 text-[15px] leading-[1.75] text-ink/85 sm:text-base">
                 <p>
                   And because buying now begins inside AI answers as often as
                   search results, that&rsquo;s the direction we build in:
                   Plurel is becoming Northeon&rsquo;s global AI and
                   technology division for martech, marketing, and growth
-                  transformations &mdash; the systems layer for how modern
-                  companies grow.
+                  transformations.
                 </p>
               </div>
             </Reveal>
@@ -350,10 +342,10 @@ export default function AboutPage() {
                     {belief.code}
                   </span>
                   <span>
-                    <span className="block text-[19px] font-normal tracking-[-0.01em] text-ink sm:text-[21px]">
+                    <span className="block text-[clamp(1.5rem,2.4vw,2rem)] font-normal leading-tight tracking-[-0.01em] text-ink">
                       {belief.name}
                     </span>
-                    <span className="mt-1.5 block max-w-[52ch] text-[13.5px] leading-relaxed text-muted">
+                    <span className="mt-2 block max-w-[46ch] text-[14px] leading-relaxed text-muted">
                       {belief.rule}
                     </span>
                   </span>
@@ -363,6 +355,16 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* ------------------------------------------- The mandate */}
+      <StatementSection
+        kicker="The mandate"
+        note="Found · Trusted · Chosen · Remembered"
+        surface="ink"
+      >
+        Good business, made{" "}
+        <em className="italic text-clay">impossible to miss</em>.
+      </StatementSection>
 
       {/* ------------------------------------------ The standards */}
       <section

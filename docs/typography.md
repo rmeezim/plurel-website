@@ -66,6 +66,26 @@ Everything else — including the methodology page's hero claim, conviction
 line, phase intents, operating-law names, and the week-5 bridge line — is
 sans.
 
+## Density & pacing
+
+Text-heavy is a failure mode. Pages alternate **organs** (ledgers,
+consoles, chapters — information) with **rests** (statement sections,
+visuals — breathing room), and the type floors below keep the organs
+legible:
+
+- **Statement sections** (`statement-section.tsx`): a tall surface, one
+  line under ~8 words at display scale, at most a kicker + micro note.
+  Place one between any two dense organs; every page gets at least one
+  rest between hero and CTA.
+- **Budget the motifs**: at most one ledger and one console per page.
+  A second list of anything becomes a statement, a trio, or gets cut.
+- **Ledger rows**: names at `clamp(1.5rem…2rem)`+; the explanation is one
+  clause (≈10 words), `14px` minimum — or absent.
+- **Type floors**: micro-labels ≥10px, detail/annotation text ≥13px,
+  ledger rules ≥14px, body 15–16px.
+- **Intros**: 1–2 sentences. If a paragraph explains what the next
+  section already shows, delete it.
+
 ## Rationale
 
 The serif is a *voice*, not a *decoration*. It reads as human/editorial

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, CircledX, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
+import { StatementSection } from "@/components/statement-section";
 
 export const metadata: Metadata = {
   title: "Case Studies — Plurel",
@@ -49,11 +50,11 @@ const CASES: CaseStudy[] = [
     scope: "Brand identity · Website · AI search",
     line: "A studio whose work outclassed its presence.",
     before:
-      "A strong portfolio behind a dated identity and positioning that read like everyone else's. Referrals converted; strangers bounced, and search never surfaced them.",
+      "A strong portfolio behind a dated identity — referrals converted, strangers bounced, search never surfaced them.",
     built:
-      "A full identity system, an editorial website with conversion architecture, and a machine-readable case library — every project structured for the engines that answer buyers.",
+      "An identity system, an editorial website, and a machine-readable case library built for the engines that answer buyers.",
     after:
-      "Premium perception the work always deserved. Qualified inquiries up 212% across two quarters — and a noticeably better-fit pipeline.",
+      "Premium perception, better-fit pipeline — qualified inquiries up 212% in two quarters.",
     metricValue: "+212%",
     metricLabel: "qualified inquiries",
     facts: ["Launch in seven weeks", "Cited case library, AEO-ready"],
@@ -72,11 +73,11 @@ const CASES: CaseStudy[] = [
     scope: "Brand · Packaging · Launch campaign",
     line: "A better formula stuck on a generic shelf.",
     before:
-      "A genuinely better product with no story on the shelf or the site — generic packaging, flat product pages, paid spend buying attention the brand couldn't hold.",
+      "A better product with generic packaging, flat pages, and paid spend buying attention the brand couldn't hold.",
     built:
-      "A brand world and packaging system, art direction for launch, and a conversion pass across the DTC funnel — offer clarity, proof placement, landing pages built to learn.",
+      "A brand world, a packaging system, launch art direction, and a conversion pass across the DTC funnel.",
     after:
-      "Category-distinct at arm's length. DTC conversion up 64% after launch, with paid efficiency improving as the brand did the holding.",
+      "Category-distinct at arm's length — DTC conversion up 64% after launch.",
     metricValue: "+64%",
     metricLabel: "DTC conversion",
     facts: ["Launch in nine weeks", "Creative-testing harness live"],
@@ -95,11 +96,11 @@ const CASES: CaseStudy[] = [
     scope: "Website · AEO/SEO · Editorial",
     line: "Sixty years of counsel, invisible to anyone who searched.",
     before:
-      "A referral-only pipeline and page-four rankings. When clients asked an AI assistant who to call, the firm was never the answer — sixty years of authority, unreadable to machines.",
+      "Referral-only pipeline, page-four rankings — sixty years of authority, unreadable to machines.",
     built:
-      "A new website with a full schema layer, an answer-engine optimization program, and a monthly counsel-led editorial cycle that turns expertise into citable proof.",
+      "A new website with a full schema layer, an AEO program, and counsel-led monthly editorial.",
     after:
-      "The cited answer for core practice queries in its region. Search visibility up 185%, with inbound now carrying roughly half of new matters.",
+      "The cited answer in its region — visibility up 185%, inbound carrying half of new matters.",
     metricValue: "+185%",
     metricLabel: "search visibility",
     facts: ["Cited by AI assistants", "Inbound ≈ half of new matters"],
@@ -118,11 +119,11 @@ const CASES: CaseStudy[] = [
     scope: "Brand · Content · Email & CRM",
     line: "Beautiful product, a brand too flat to keep anyone.",
     before:
-      "One-time buyers and an email list treated as a discount channel. No voice, no world to belong to — retention was a coupon, not a relationship.",
+      "One-time buyers and an email list treated as a discount channel — no voice, no world to belong to.",
     built:
-      "A brand voice and campaign system, an editorial content engine, and lifecycle email wired into the CRM — welcome, post-purchase, and seasonal flows with a point of view.",
+      "A brand voice and campaign system, an editorial engine, and lifecycle email wired into the CRM.",
     after:
-      "An audience that stays. Email-driven revenue at 2.6× within a year, with retention compounding instead of being bought back each season.",
+      "An audience that stays — email revenue at 2.6× in a year, retention compounding.",
     metricValue: "2.6×",
     metricLabel: "email-driven revenue",
     facts: ["Lifecycle flows live in-house", "Retention compounding"],
@@ -460,42 +461,22 @@ export default function WorkPage() {
       </section>
 
       {/* ------------------------------------------ The pattern */}
-      <section aria-labelledby="pattern-heading" className="bg-ink text-paper">
-        <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-          <div className="grid grid-cols-1 items-end gap-x-16 gap-y-10 lg:grid-cols-12">
-            <Reveal className="lg:col-span-7">
-              <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/50">
-                <Spark className="size-3.5 text-brand" aria-hidden />
-                The pattern
-              </p>
-              <h2
-                id="pattern-heading"
-                className="mt-5 max-w-[24ch] font-sans text-[clamp(2rem,4.4vw,3.5rem)] font-normal leading-[1.08] tracking-[-0.02em]"
-              >
-                Different sectors, same system &mdash;{" "}
-                <em className="italic text-clay">
-                  diagnosed, designed, deployed, compounding
-                </em>
-                .
-              </h2>
-            </Reveal>
-            <Reveal delay={0.1} className="lg:col-span-5">
-              <p className="max-w-[46ch] text-[14.5px] leading-relaxed text-paper/65">
-                None of these started with a rebrand or a website. Every one
-                started with the audit &mdash; and became whichever layers
-                the evidence called for. That&rsquo;s the method working.
-              </p>
-              <Link
-                href="/methodology"
-                className="group mt-6 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper transition-colors hover:text-clay"
-              >
-                Read the full methodology
-                <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
-            </Reveal>
-          </div>
-        </div>
-      </section>
+      <StatementSection
+        kicker="The pattern"
+        note="Every case began with the audit"
+        surface="ink"
+        footer={
+          <Link
+            href="/methodology"
+            className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper transition-colors hover:text-clay"
+          >
+            Read the full methodology
+            <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </Link>
+        }
+      >
+        Different sectors. <em className="italic text-clay">Same system.</em>
+      </StatementSection>
 
       {/* ------------------------------------------------ Closing */}
       <section

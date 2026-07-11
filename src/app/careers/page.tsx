@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
+import { StatementSection } from "@/components/statement-section";
 
 export const metadata: Metadata = {
   title: "Careers — Plurel",
@@ -15,27 +16,27 @@ const PRINCIPLES = [
   {
     code: "W·01",
     name: "Small and senior",
-    rule: "No bench, no account layer. The person in the room is the person doing the work.",
+    rule: "No bench, no account layer — the person in the room does the work.",
   },
   {
     code: "W·02",
     name: "The method is the manager",
-    rule: "Four phases, gates, weekly ships — the same operating model clients buy is the one we run on.",
+    rule: "The same model clients buy runs us — phases, gates, weekly ships.",
   },
   {
     code: "W·03",
     name: "Writing over meetings",
-    rule: "Ship notes beat standups. The work is the update, and the calendar stays yours.",
+    rule: "Ship notes beat standups. The work is the update.",
   },
   {
     code: "W·04",
     name: "Craft is the bar",
-    rule: "Everything we make ships publicly, with our name near it. Portfolio-grade or it doesn't go out.",
+    rule: "Everything ships publicly. Portfolio-grade or it doesn't go out.",
   },
   {
     code: "W·05",
     name: "Compound yourself",
-    rule: "Time and budget to learn and publish — your own visibility is an asset we invest in.",
+    rule: "Time and budget to learn and publish — your visibility compounds too.",
   },
 ];
 
@@ -209,10 +210,10 @@ export default function CareersPage() {
                     {principle.code}
                   </span>
                   <span>
-                    <span className="block text-[19px] font-normal tracking-[-0.01em] text-ink sm:text-[21px]">
+                    <span className="block text-[clamp(1.5rem,2.4vw,2rem)] font-normal leading-tight tracking-[-0.01em] text-ink">
                       {principle.name}
                     </span>
-                    <span className="mt-1.5 block max-w-[52ch] text-[13.5px] leading-relaxed text-muted">
+                    <span className="mt-2 block max-w-[46ch] text-[14px] leading-relaxed text-muted">
                       {principle.rule}
                     </span>
                   </span>
@@ -274,6 +275,16 @@ export default function CareersPage() {
           </div>
         </div>
       </section>
+
+      {/* --------------------------------------------- The deal */}
+      <StatementSection
+        kicker="The deal"
+        note="W·01–05 — how we work, in practice"
+        surface="ink"
+      >
+        No bench. No layers.{" "}
+        <em className="italic text-clay">No busywork.</em>
+      </StatementSection>
 
       {/* ------------------------------------------- Open roles */}
       <section
