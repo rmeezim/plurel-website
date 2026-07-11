@@ -91,9 +91,21 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      /* Lets the router force an instant jump to top on page navigations
+         while keeping smooth scrolling for in-page anchors */
+      data-scroll-behavior="smooth"
       className={`${inter.variable} ${fraunces.variable} antialiased`}
     >
       <body className="min-h-screen">
+        {/* Reloads always start at the top — pages open on the headline
+            cascade, never mid-scroll. Runs before the browser restores
+            the previous scroll position. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}",
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
