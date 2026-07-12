@@ -10,12 +10,12 @@ const EXPLORE = [
 ];
 
 const SERVICES = [
-  "Website Design",
-  "Brand Identity",
-  "AEO / SEO",
-  "Content Marketing",
-  "Paid Ads",
-  "PR & Reputation",
+  { label: "Website Design", slug: "website-design" },
+  { label: "Brand Identity", slug: "brand-identity" },
+  { label: "AEO / SEO", slug: "aeo-seo" },
+  { label: "Content Marketing", slug: "content-marketing" },
+  { label: "Paid Ads", slug: "paid-ads" },
+  { label: "PR & Reputation", slug: "pr-reputation" },
 ];
 
 export function SiteFooter() {
@@ -64,12 +64,12 @@ export function SiteFooter() {
             </p>
             <ul className="mt-4 space-y-2.5">
               {SERVICES.map((item) => (
-                <li key={item}>
+                <li key={item.slug}>
                   <Link
-                    href="/services"
+                    href={`/services/${item.slug}`}
                     className="text-sm text-paper/80 transition-colors hover:text-paper"
                   >
-                    {item}
+                    {item.label}
                   </Link>
                 </li>
               ))}

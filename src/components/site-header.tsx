@@ -93,15 +93,15 @@ function ServiceGlyph({ kind }: { kind: ServiceKind }) {
   }
 }
 
-const SERVICES: { name: string; kind: ServiceKind }[] = [
-  { name: "Website Design", kind: "web" },
-  { name: "Brand Identity", kind: "brand" },
-  { name: "AI Search & SEO", kind: "search" },
-  { name: "Content Marketing", kind: "content" },
-  { name: "Paid Ads", kind: "ads" },
-  { name: "PR & Reputation", kind: "pr" },
-  { name: "Creative Direction", kind: "creative" },
-  { name: "Consulting", kind: "consulting" },
+const SERVICES: { name: string; kind: ServiceKind; slug: string }[] = [
+  { name: "Website Design", kind: "web", slug: "website-design" },
+  { name: "Brand Identity", kind: "brand", slug: "brand-identity" },
+  { name: "AI Search & SEO", kind: "search", slug: "aeo-seo" },
+  { name: "Content Marketing", kind: "content", slug: "content-marketing" },
+  { name: "Paid Ads", kind: "ads", slug: "paid-ads" },
+  { name: "PR & Reputation", kind: "pr", slug: "pr-reputation" },
+  { name: "Creative Direction", kind: "creative", slug: "creative-direction" },
+  { name: "Consulting", kind: "consulting", slug: "martech-consulting" },
 ];
 
 function MethodologyGlyph() {
@@ -518,7 +518,7 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
           {SERVICES.map((service, i) => (
             <Link
               key={service.name}
-              href="/services"
+              href={`/services/${service.slug}`}
               onClick={onNavigate}
               className="group flex flex-col gap-3 rounded-xl border border-line bg-canvas p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:bg-paper hover:shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]"
             >
