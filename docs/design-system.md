@@ -68,7 +68,7 @@ keep at least one red room on every page.
 
 | Role | Face | Recipe |
 | --- | --- | --- |
-| Display (h1) | Inter 400 | `text-[clamp(3rem,7.4vw,7.5rem)] leading-[0.92] tracking-[-0.045em]` |
+| Display (h1) | Inter 400 | `text-[clamp(3rem,min(8vw,13.5svh),7.25rem)] leading-[0.9] tracking-[-0.05em]` |
 | Chapter (h2) | Inter 400 | `text-[clamp(2.25rem,5vw,5rem)] leading-[0.98] tracking-[-0.04em]` |
 | Big numbers | Inter 300 | `font-light leading-[0.85] tracking-[-0.05em]` |
 | Body | Inter 400 | 15 to 19px, `leading-relaxed`, 40 to 52ch |
@@ -79,8 +79,7 @@ keep at least one red room on every page.
 - Headlines are never bold. Size and tight tracking carry them.
 - One `<Accent>` per headline, on the word that carries the feeling
   ("*visible* layer", "*presence* problem", "*obvious* choice").
-- The hero's last line dims to `text-blush/75`, the family's dimmed-line
-  device.
+- In the home hero the second line is the serif accent in `text-blush`.
 - Parentheticals are Meta: `(01)`, `(Selected clients)`, `(Services)`.
 
 ## Grid
@@ -130,13 +129,38 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
 
 - **Hero load (flagship only):** grid guides draw down (`guide-draw`,
   staggered by column), headline lines rise out of their masks
-  (`line-rise`, 120ms apart), the red rule draws (`rule-draw`), then copy,
-  actions, and the index fade up (`fade-up`).
+  (`line-rise`, 140ms apart), then copy, actions, and the distribution
+  wall fade up (`fade-up`).
 - **Scroll:** `Reveal` only; stagger siblings 0.08s.
 - **Hover:** service rows flood red from the floor (`scale-y`, 500ms);
   case cards push in 4%; arrows nudge diagonally.
-- **Ambient:** the hero film, or the stand-in scene (`scene-drift-*`,
-  `scene-sweep`). Nothing else moves on its own.
+- **Ambient:** the hero film, the distribution wall's drift
+  (`wall-drift`, 120s per loop, pauses on hover), or the stand-in scene
+  (`scene-drift-*`, `scene-sweep`). One control pauses all of it.
+  Nothing else moves on its own.
+
+## The home hero: red room and distribution wall
+
+Plurel is the creative and distribution division, so its hero shows the
+work traveling rather than a single photograph. That is also what sets
+it apart from the sister divisions' heroes.
+
+- **Statement:** "Made to be seen. *Everywhere.*" Two lines, the second in
+  the serif accent and blush. Copy and both actions sit to the right.
+- **The room:** `bg-brand` with `hero-scene-red`, the hero film blurred
+  and graded red behind everything, grain, and drawn grid guides.
+- **The wall** (`hero-wall.tsx`): seven prints bottom-aligned like a
+  contact sheet, each captioned in Meta with its index, format, and
+  channel. Reel (Social), Search (Rank #1), Brand film (Web), AI answer
+  (Cited), Feed (Paid), Press (Earned), Out of home (OOH). The subject on
+  every surface is "Your Brand": the promise is what Plurel does for the
+  visitor's brand. Sizes are in `--u` (scales with width, and with height
+  on desktop), type inside a print is in em.
+- **One film, many crops** (`hero-motion.tsx`): a single `<video>` plays
+  behind the room; `FilmCanvas` frames mirror it live, cropped around a
+  focal point, only while on screen.
+- **Running foot:** "One story · seven surfaces · owned, earned, paid" and
+  the one pause control.
 
 ## Imagery
 

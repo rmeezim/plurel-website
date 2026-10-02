@@ -108,6 +108,43 @@
   );
 }
 
+/* Hero red room: the lit red wall the distribution prints hang on */
+.hero-scene-red {
+  background:
+    radial-gradient(60% 55% at 70% 72%, rgba(255, 196, 178, 0.28), transparent 70%),
+    radial-gradient(55% 60% at 0% 0%, rgba(94, 26, 23, 0.55), transparent 70%),
+    linear-gradient(175deg, #c4403a 0%, #b6372f 50%, #8f2925 100%);
+}
+
+/* Hero film behind the wall: softened so the prints stay the focus */
+.hero-film {
+  filter: blur(14px) saturate(1.1);
+  transform: scale(1.08);
+}
+
+/* Distribution wall: every frame is sized in --u, so the wall scales as
+   one piece. */
+.wall {
+  --u: 0.56px;
+}
+@media (min-width: 40rem) {
+  .wall {
+    --u: 0.74px;
+  }
+}
+/* Desktop: scale with the viewport's height too, so the wall stays in
+   the first screen on short laptops without shrinking past legibility */
+@media (min-width: 64rem) {
+  .wall {
+    --u: clamp(0.72px, calc((100svh - 470px) / 400), 1px);
+  }
+}
+@media (min-width: 100rem) {
+  .wall {
+    --u: clamp(0.72px, calc((100svh - 470px) / 400), 1.2px);
+  }
+}
+
 /*
   Materials — the surface layer of the design system. Flat hex reads as
   plain; grained gradient reads as paper and film. Every composed surface
@@ -471,5 +508,17 @@
   }
   .scene-sweep {
     animation: scene-sweep 16s ease-in-out infinite alternate;
+  }
+
+  /* Distribution wall drift: one slow loop, pausable */
+  .wall-drift {
+    animation: marquee 120s linear infinite;
+  }
+  .wall:hover .wall-drift,
+  [data-paused="true"] .wall-drift,
+  [data-paused="true"] .scene-drift-a,
+  [data-paused="true"] .scene-drift-b,
+  [data-paused="true"] .scene-sweep {
+    animation-play-state: paused;
   }
 }

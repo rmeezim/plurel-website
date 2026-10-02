@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import Link from "next/link";
-import { HeroMedia, type HeroSource } from "@/components/hero-media";
+import { HeroMotion, MotionControl, type HeroSource } from "@/components/hero-motion";
+import { DistributionWall } from "@/components/hero-wall";
 import {
   Accent,
   CONTAINER,
@@ -16,13 +16,15 @@ import { AUDIT_HREF } from "@/lib/nav";
 import { asset } from "@/lib/site";
 
 /*
-  Home hero: Cinematic Red x Swiss Systems, in the Northeon family layout.
+  Home hero: the red room and the distribution wall.
 
-  A looping film fills the frame, graded red; the Swiss grid draws in over
-  it; the headline rises line by line. The film is picked up from
-  public/video at build time (see docs/hero-video.md). Until it exists,
-  the hero plays a drifting-light red scene, so the page is finished
-  either way.
+  Plurel is the creative and distribution division, so the hero shows
+  the work traveling: one story, cut for seven surfaces, hanging on a
+  red wall and drifting past. The hero film plays behind everything,
+  softened and graded red, and the film frames on the wall mirror it
+  live. The film is picked up from public/video at build time (see
+  docs/hero-video.md); until it exists, the room and the frames run a
+  drifting-light stand-in, so the page is finished either way.
 */
 
 const VIDEO_DIR = path.join(process.cwd(), "public", "video");
@@ -57,33 +59,6 @@ function heroFilm(): { sources: HeroSource[]; poster?: string } | null {
   };
 }
 
-/** Stand-in scene: warm light drifting through a red room */
-function FallbackScene() {
-  return (
-    <div aria-hidden className="hero-scene absolute inset-0 z-0 overflow-hidden">
-      <div className="hero-scene-light scene-drift-a absolute left-[38%] top-[-10%] h-[110%] w-[70%]" />
-      <div className="hero-scene-light scene-drift-b absolute -left-[15%] top-[35%] h-[90%] w-[55%] opacity-50" />
-      <div className="hero-scene-sweep scene-sweep absolute inset-y-0 -left-1/4 w-[150%]" />
-    </div>
-  );
-}
-
-const INDEX = [
-  { label: "Brand identity", href: "/services/brand-identity" },
-  { label: "Websites", href: "/services/website-design" },
-  { label: "AI search & SEO", href: "/services/aeo-seo" },
-  { label: "Content & PR", href: "/services/content-marketing" },
-  { label: "Growth systems", href: "/services/martech-consulting" },
-];
-
-const INDEX_VISIBILITY = [
-  "block",
-  "block",
-  "hidden sm:block",
-  "hidden lg:block",
-  "hidden lg:block",
-];
-
 /** Staggered line reveal: each line rises out of its own mask */
 function Line({
   children,
@@ -95,11 +70,8 @@ function Line({
   className?: string;
 }) {
   return (
-    <span className="-mb-[0.1em] block overflow-hidden pb-[0.1em] pr-[0.08em]">
-      <span
-        className={`line-rise ${className}`}
-        style={{ animationDelay: `${delay}ms` }}
-      >
+    <span className="-mb-[0.12em] block overflow-hidden pb-[0.12em] pr-[0.1em]">
+      <span className={`line-rise ${className}`} style={{ animationDelay: `${delay}ms` }}>
         {children}
       </span>
     </span>
@@ -110,115 +82,94 @@ export function Hero() {
   const film = heroFilm();
 
   return (
-    <section
-      aria-labelledby="hero-heading"
-      className="grain relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-oxblood text-paper"
+    <HeroMotion
+      sources={film?.sources ?? null}
+      poster={film?.poster}
+      labelledBy="hero-heading"
+      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-brand text-paper"
     >
-      <FallbackScene />
-      {film && <HeroMedia sources={film.sources} poster={film.poster} />}
+      {/* The red room: stand-in light, then the film over it */}
+      <div aria-hidden className="hero-scene-red absolute inset-0 z-0 overflow-hidden">
+        <div className="hero-scene-light scene-drift-a absolute left-[30%] top-[35%] h-[90%] w-[70%]" />
+        <div className="hero-scene-light scene-drift-b absolute -left-[20%] -top-[30%] h-[80%] w-[60%] opacity-40" />
+        <div className="hero-scene-sweep scene-sweep absolute inset-y-0 -left-1/4 w-[150%]" />
+      </div>
 
-      {/* Grade and legibility: red multiply over the film, then shade
-          toward the copy column and the floor */}
+      {/* Grade: keep the film red, the top quiet for the bar, the floor
+          dark enough to ground the wall */}
       {film && (
-        <div aria-hidden className="absolute inset-0 z-[1] bg-brand opacity-45 mix-blend-multiply" />
+        <div aria-hidden className="absolute inset-0 z-[2] bg-brand opacity-60 mix-blend-multiply" />
       )}
       <div
         aria-hidden
-        className="absolute inset-0 z-[1] bg-gradient-to-r from-oxblood/90 via-oxblood/50 to-transparent lg:via-oxblood/35"
+        className="absolute inset-x-0 top-0 z-[2] h-48 bg-gradient-to-b from-oxblood/45 to-transparent"
       />
       <div
         aria-hidden
-        className="absolute inset-x-0 bottom-0 z-[1] h-1/2 bg-gradient-to-t from-oxblood/85 to-transparent"
+        className="absolute inset-x-0 bottom-0 z-[2] h-[55%] bg-gradient-to-t from-oxblood/70 via-oxblood/25 to-transparent"
       />
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 z-[1] h-40 bg-gradient-to-b from-black/35 to-transparent"
-      />
-      <GridGuides tone="dark" animated className="z-[1]" />
+      <div aria-hidden className="grain pointer-events-none absolute inset-0 z-[3]" />
+      <GridGuides tone="red" animated className="z-[3]" />
 
-      {/* Copy */}
-      <div
-        className={`${CONTAINER} relative z-[2] flex flex-1 flex-col justify-end pb-8 pt-32 sm:pb-10 lg:pb-10 lg:pt-36`}
-      >
-        <div className={`${GRID} gap-y-10`}>
-          <div className="col-span-4 sm:col-span-6 lg:col-span-9">
+      {/* Statement */}
+      <div className={`${CONTAINER} relative z-[4] pt-28 sm:pt-32`}>
+        <div className={`${GRID} gap-y-8`}>
+          <div className="col-span-4 sm:col-span-6 lg:col-span-8">
             <div className="fade-up" style={{ animationDelay: "60ms" }}>
-              <Kicker tone="red">Creative &amp; growth partner</Kicker>
+              <Kicker tone="red">Creative · Content · Distribution</Kicker>
             </div>
-
             <h1
               id="hero-heading"
-              className="mt-8 text-[clamp(3rem,7.4vw,7.5rem)] font-normal leading-[0.92] tracking-[-0.045em] lg:mt-10"
+              className="mt-7 text-[clamp(3rem,min(8vw,13.5svh),7.25rem)] font-normal leading-[0.9] tracking-[-0.05em] lg:mt-8"
             >
-              <Line delay={150}>We build the</Line>
-              <Line delay={270}>
-                <Accent>visible</Accent> layer
-              </Line>
-              <Line delay={390} className="text-blush/75">
-                of growth.
+              <Line delay={150}>Made to be seen.</Line>
+              <Line delay={290} className="text-blush">
+                <Accent>Everywhere.</Accent>
               </Line>
             </h1>
+          </div>
 
-            <span
-              aria-hidden
-              className="rule-draw mt-8 block h-[2px] w-14 bg-signal lg:mt-9"
-              style={{ animationDelay: "650ms" }}
-            />
-
-            <p
-              className="fade-up mt-7 max-w-[52ch] text-[17px] leading-relaxed text-paper/80 lg:text-[19px]"
-              style={{ animationDelay: "700ms" }}
-            >
-              Plurel is Northeon&apos;s creative and growth division. We design
-              the brand, website, and AI-search presence that make you easy to
-              find, trust, and choose, then wire the growth system underneath.
+          <div
+            className="fade-up col-span-4 self-end sm:col-span-5 lg:col-span-4 lg:pb-3"
+            style={{ animationDelay: "560ms" }}
+          >
+            <p className="max-w-[40ch] text-[15px] leading-relaxed text-paper/90 sm:text-[16px] lg:text-[17px]">
+              Plurel makes the brand, the film, and the content, then puts it
+              in front of the right people: in search, in AI answers, in
+              feeds, and in the press. One story, every surface.
             </p>
-
-            <div
-              className="fade-up mt-9 flex flex-wrap items-center gap-x-10 gap-y-6"
-              style={{ animationDelay: "820ms" }}
-            >
-              <CtaLink href={AUDIT_HREF}>Book a growth audit</CtaLink>
-              <TextLink href="/work" tone="dark">
+            <div className="mt-7 flex flex-wrap items-center gap-x-8 gap-y-5">
+              <CtaLink href={AUDIT_HREF} variant="paper">
+                Book a growth audit
+              </CtaLink>
+              <TextLink href="/work" tone="red">
                 See the work
               </TextLink>
             </div>
           </div>
-
-          <div
-            className="fade-up hidden self-end lg:col-span-3 lg:block"
-            style={{ animationDelay: "980ms" }}
-          >
-            <Kicker tone="dark">The growth audit</Kicker>
-            <p className="mt-4 max-w-[30ch] text-[15px] leading-relaxed text-paper/70">
-              Six dimensions. About one business day. A prioritized read on
-              your presence, from a strategist.
-            </p>
-          </div>
         </div>
-
-        {/* Swiss index of the disciplines */}
-        <nav
-          aria-label="Disciplines"
-          className={`${GRID} fade-up mt-12 border-t border-paper/20 pt-4 lg:mt-14`}
-          style={{ animationDelay: "1100ms" }}
-        >
-          {INDEX.map((item, i) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`group col-span-2 ${INDEX_VISIBILITY[i]}`}
-            >
-              <Meta className="text-blush/70 transition-colors group-hover:text-paper">
-                ({String(i + 1).padStart(2, "0")})
-              </Meta>
-              <span className="mt-1 block text-[14px] text-paper/85 transition-colors group-hover:text-paper">
-                {item.label}
-              </span>
-            </Link>
-          ))}
-        </nav>
       </div>
-    </section>
+
+      {/* The wall, full bleed */}
+      <div className="relative z-[4] mt-10 flex flex-1 flex-col justify-end lg:mt-12">
+        <DistributionWall film={!!film} />
+      </div>
+
+      {/* Running foot */}
+      <div className={`${CONTAINER} relative z-[4] pb-5 pt-4`}>
+        <div
+          className="fade-up flex items-center justify-between gap-6 border-t border-paper/25 pt-4"
+          style={{ animationDelay: "900ms" }}
+        >
+          <Meta className="text-blush">
+            One story <span aria-hidden>·</span> seven surfaces{" "}
+            <span className="hidden sm:inline">
+              <span aria-hidden>·</span> owned, earned, paid
+            </span>
+          </Meta>
+          <MotionControl />
+        </div>
+      </div>
+    </HeroMotion>
   );
 }
