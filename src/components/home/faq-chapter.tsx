@@ -5,7 +5,6 @@ import {
   ChapterHead,
   CONTAINER,
   GRID,
-  GridGuides,
 } from "@/components/system";
 import { FAQS } from "@/lib/home";
 import { CONTACT_EMAIL } from "@/lib/nav";
@@ -33,7 +32,6 @@ export function FaqChapter() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_JSON_LD) }}
       />
-      <GridGuides tone="paper" />
       <div className={`${CONTAINER} relative py-24 lg:py-36`}>
         <ChapterHead index="07" label="Questions" meta="Asked before every engagement" />
 

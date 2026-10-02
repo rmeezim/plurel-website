@@ -22,10 +22,11 @@ Creative Direction, and consulting.
 ## Design language: Cinematic Red x Swiss Systems
 
 Read `docs/design-system.md` before building any page. In short: red is
-the environment (red-graded hero film, lit red chapters, oxblood footer),
-structure is Swiss (visible 12-column grid, numbered chapters, mono
-metadata), and the layout follows the Northeon family shared with the
-sister divisions. Primitives live in `src/components/system.tsx`; the
+the environment (red-graded hero film, flat red chapters, oxblood footer),
+surfaces are flat color with no gradients or drawn grid lines, structure
+is Swiss (a strict 12-column grid that is felt, not drawn, numbered
+chapters, mono metadata), and the layout follows the Northeon family
+shared with the sister divisions. Primitives live in `src/components/system.tsx`; the
 homepage (`src/components/home/`) is the reference build. The hero film
 brief and Higgsfield prompts are in `docs/hero-video.md`.
 
@@ -46,7 +47,7 @@ brief and Higgsfield prompts are in `docs/hero-video.md`.
 
 Legacy tokens (`canvas`, `clay`, `rust`) remain only for interior pages
 that haven't moved to the new system. Use the generated utilities
-(`bg-brand`, `text-ink`, `border-line`, `surface-red`, etc.) rather than
+(`bg-brand`, `bg-oxblood`, `text-ink`, `border-line`, etc.) rather than
 hardcoded hex values.
 
 ## Positioning (long-term)

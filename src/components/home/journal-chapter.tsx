@@ -6,7 +6,6 @@ import {
   ChapterHead,
   CONTAINER,
   GRID,
-  GridGuides,
   Meta,
   TextLink,
 } from "@/components/system";
@@ -20,7 +19,6 @@ export function JournalChapter() {
       aria-labelledby="journal-heading"
       className="relative bg-paper text-ink"
     >
-      <GridGuides tone="paper" />
       <div className={`${CONTAINER} relative pt-24 lg:pt-36`}>
         <ChapterHead index="06" label="Journal" meta="Notes on staying visible" />
         <div className={`${GRID} mt-14 gap-y-10 lg:mt-20`}>

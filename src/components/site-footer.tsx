@@ -4,7 +4,6 @@ import { Logo } from "@/components/logo";
 import {
   CONTAINER,
   GRID,
-  GridGuides,
   Kicker,
   Meta,
 } from "@/components/system";
@@ -16,10 +15,9 @@ import { COMPANY, CONTACT_EMAIL, SERVICES } from "@/lib/nav";
 */
 export function SiteFooter() {
   return (
-    <footer className="surface-oxblood grain relative overflow-hidden text-paper">
-      <GridGuides tone="dark" />
+    <footer className="bg-oxblood text-paper">
 
-      <div className={`${CONTAINER} relative z-[2] pt-20 lg:pt-28`}>
+      <div className={`${CONTAINER} pt-20 lg:pt-28`}>
         <div className={`${GRID} gap-y-14`}>
           {/* Invitation */}
           <div className="col-span-4 sm:col-span-6 lg:col-span-5">

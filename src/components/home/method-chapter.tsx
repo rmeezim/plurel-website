@@ -4,7 +4,6 @@ import {
   ChapterHead,
   CONTAINER,
   GRID,
-  GridGuides,
   Meta,
   TextLink,
 } from "@/components/system";
@@ -18,7 +17,6 @@ export function MethodChapter() {
       aria-labelledby="method-heading"
       className="relative bg-paper text-ink"
     >
-      <GridGuides tone="paper" />
       <div className={`${CONTAINER} relative py-24 lg:py-36`}>
         <ChapterHead index="03" label="Method" meta="Four phases · One operating model" />
 

@@ -7,7 +7,6 @@ import {
   CONTAINER,
   CtaLink,
   GRID,
-  GridGuides,
   Kicker,
   Meta,
   TextLink,
@@ -20,11 +19,11 @@ import { asset } from "@/lib/site";
 
   Plurel is the creative and distribution division, so the hero shows
   the work traveling: one story, cut for seven surfaces, hanging on a
-  red wall and drifting past. The hero film plays behind everything,
-  softened and graded red, and the film frames on the wall mirror it
-  live. The film is picked up from public/video at build time (see
-  docs/hero-video.md); until it exists, the room and the frames run a
-  drifting-light stand-in, so the page is finished either way.
+  flat red wall and drifting past. The hero film plays behind
+  everything, softened and graded red, and the film frames on the wall
+  mirror it live. The film is picked up from public/video at build time
+  (see docs/hero-video.md); until it exists, the film frames show flat
+  color stills, so the page is finished either way.
 */
 
 const VIDEO_DIR = path.join(process.cwd(), "public", "video");
@@ -88,28 +87,11 @@ export function Hero() {
       labelledBy="hero-heading"
       className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-brand text-paper"
     >
-      {/* The red room: stand-in light, then the film over it */}
-      <div aria-hidden className="hero-scene-red absolute inset-0 z-0 overflow-hidden">
-        <div className="hero-scene-light scene-drift-a absolute left-[30%] top-[35%] h-[90%] w-[70%]" />
-        <div className="hero-scene-light scene-drift-b absolute -left-[20%] -top-[30%] h-[80%] w-[60%] opacity-40" />
-        <div className="hero-scene-sweep scene-sweep absolute inset-y-0 -left-1/4 w-[150%]" />
-      </div>
-
-      {/* Grade: keep the film red, the top quiet for the bar, the floor
-          dark enough to ground the wall */}
+      {/* The room is flat Plurel red. When the film exists it plays
+          behind everything, softened and graded back to the same red. */}
       {film && (
         <div aria-hidden className="absolute inset-0 z-[2] bg-brand opacity-60 mix-blend-multiply" />
       )}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 top-0 z-[2] h-48 bg-gradient-to-b from-oxblood/45 to-transparent"
-      />
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 z-[2] h-[55%] bg-gradient-to-t from-oxblood/70 via-oxblood/25 to-transparent"
-      />
-      <div aria-hidden className="grain pointer-events-none absolute inset-0 z-[3]" />
-      <GridGuides tone="red" animated className="z-[3]" />
 
       {/* Statement */}
       <div className={`${CONTAINER} relative z-[4] pt-28 sm:pt-32`}>

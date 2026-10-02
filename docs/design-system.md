@@ -6,11 +6,15 @@ regular weight, square-marker kickers in tracked caps, sharp blocks for
 actions, diagonal arrows) and adds two things of its own:
 
 - **Cinematic Red.** Red is the environment, not an accent. The hero is a
-  red-graded film; whole chapters are lit red rooms; the footer is oxblood.
-  This is what makes the site feel alive, human, and inviting.
-- **Swiss Systems.** Structure is visible. A 12-column grid is drawn
-  behind every chapter, chapters are numbered, metadata is set in mono,
-  and the logo's own 3x3 grid is the source of all of it.
+  red room with a red-graded film; whole chapters are flat red; the footer
+  is oxblood. This is what makes the site feel alive, human, and inviting.
+- **Swiss Systems.** Structure is strict but never drawn. A 12-column grid
+  sets every edge, chapters are numbered, metadata is set in mono, and
+  the logo's own 3x3 grid is the source of all of it.
+
+**Flat, not lit.** Every surface is one flat color. No gradients, no
+glows, no vignettes, no grain, no drawn column lines. The color, the type
+and the alignment do the work.
 
 This document is the contract for every page. The homepage
 (`src/app/page.tsx`, `src/components/home/`) is the reference build.
@@ -56,13 +60,11 @@ Three tones, and every chapter is exactly one of them:
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
 | paper | `bg-paper` | ink | Reading chapters: services, method, journal, FAQ |
-| red | `surface-red grain` | paper, blush | Thesis, results, the closing invitation |
-| dark | `surface-oxblood grain` | paper, signal | Hero base, work, footer |
+| red | `bg-brand` | paper, blush | Hero, thesis, results, the closing invitation |
+| dark | `bg-oxblood` | paper, signal | Work, footer |
 
-`surface-red` and `surface-oxblood` are lit gradients (key light upper
-left, vignette to the floor), never flat fills. Always pair them with
-`grain`. Alternate tones so no two red or dark chapters touch, and
-keep at least one red room on every page.
+All three are flat fills. Alternate tones so no two red or dark chapters
+touch, and keep at least one red room on every page.
 
 ## Type
 
@@ -88,13 +90,11 @@ keep at least one red room on every page.
 
 - `CONTAINER`: `max-w-[1440px]`, 20 / 32 / 48px side padding.
 - `GRID`: 4 columns (base), 6 (sm), 12 (lg), with 20 / 24 / 32px gutters.
-- `<GridGuides tone>`: the visible column lines, aligned to `GRID`.
-  Place it as the first child of any chapter with `relative`; content
-  goes in a `relative z-[2]` wrapper on red and dark surfaces (above the
-  grain).
-- Lay every chapter's content on `GRID` spans so it lines up with the
-  guides. Common spans at lg: headline 7 or 8, aside 3 or 4 starting at
-  column 9 or 10, four-up items 3 each.
+- The grid is never drawn. It shows through alignment, the single hairline
+  under each chapter's running head, and the mono indexes.
+- Lay every chapter's content on `GRID` spans so edges line up from one
+  chapter to the next. Common spans at lg: headline 7 or 8, aside 3 or 4
+  starting at column 9 or 10, four-up items 3 each.
 
 ## Chapter anatomy
 
@@ -127,17 +127,15 @@ Content on GRID
 Everything sits inside `prefers-reduced-motion: no-preference` in
 `globals.css`, so reduced-motion visitors get the finished page.
 
-- **Hero load (flagship only):** grid guides draw down (`guide-draw`,
-  staggered by column), headline lines rise out of their masks
+- **Hero load (flagship only):** headline lines rise out of their masks
   (`line-rise`, 140ms apart), then copy, actions, and the distribution
   wall fade up (`fade-up`).
 - **Scroll:** `Reveal` only; stagger siblings 0.08s.
 - **Hover:** service rows flood red from the floor (`scale-y`, 500ms);
-  case cards push in 4%; arrows nudge diagonally.
-- **Ambient:** the hero film, the distribution wall's drift
-  (`wall-drift`, 120s per loop, pauses on hover), or the stand-in scene
-  (`scene-drift-*`, `scene-sweep`). One control pauses all of it.
-  Nothing else moves on its own.
+  case posters brighten slightly; arrows nudge diagonally.
+- **Ambient:** the hero film and the distribution wall's drift
+  (`wall-drift`, 120s per loop, pauses on hover). One control pauses
+  both. Nothing else moves on its own.
 
 ## The home hero: red room and distribution wall
 
@@ -147,8 +145,9 @@ it apart from the sister divisions' heroes.
 
 - **Statement:** "Made to be seen. *Everywhere.*" Two lines, the second in
   the serif accent and blush. Copy and both actions sit to the right.
-- **The room:** `bg-brand` with `hero-scene-red`, the hero film blurred
-  and graded red behind everything, grain, and drawn grid guides.
+- **The room:** flat `bg-brand`. When the film exists it plays behind
+  everything, blurred and graded back to the same red. Until then the
+  film prints on the wall show flat color stills.
 - **The wall** (`hero-wall.tsx`): seven prints bottom-aligned like a
   contact sheet, each captioned in Meta with its index, format, and
   channel. Reel (Social), Search (Rank #1), Brand film (Web), AI answer
@@ -165,9 +164,10 @@ it apart from the sister divisions' heroes.
 ## Imagery
 
 - The hero film is generated in Higgsfield; see `docs/hero-video.md`.
-- Case studies use title cards (`work-chapter.tsx`): a lit color field,
-  the client set large with an accent line, the result as the loudest
-  number. Real stills go in the same frame when they exist.
+- Case studies are flat color posters (`work-chapter.tsx`): one field of
+  red, ink, blush or ember, the client set large with an accent line,
+  the result as the loudest number. Real stills go in the same frame
+  when they exist.
 - Photography direction for stills matches the film: people at work,
   crimson and oxblood light, warm skin tones, shallow depth of field,
   grain, nothing staged at the camera.

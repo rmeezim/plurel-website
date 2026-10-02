@@ -6,7 +6,8 @@ import { ArrowRight, ArrowUpRight } from "@/components/icons";
   Plurel system primitives: Cinematic Red x Swiss Systems.
 
   - CONTAINER and GRID are the Swiss frame. Every chapter lays its content
-    on GRID so it lines up with the visible GridGuides behind it.
+    on GRID. The grid is never drawn: it shows through alignment, the
+    hairline running heads, and the mono indexes.
   - Kicker is the Northeon family label (square marker, tracked caps).
   - Meta is Plurel's own Swiss metadata voice (mono, small caps).
   - Tones: "paper" (light chapters), "red" (brand chapters, hero),
@@ -18,63 +19,6 @@ export const GRID =
   "grid grid-cols-4 gap-x-5 sm:grid-cols-6 sm:gap-x-6 lg:grid-cols-12 lg:gap-x-8";
 
 export type Tone = "paper" | "red" | "dark";
-
-const GUIDE_TONE: Record<Tone, string> = {
-  paper: "border-ink/[0.07]",
-  red: "border-paper/[0.14]",
-  dark: "border-paper/[0.08]",
-};
-
-/* Which guide shows at which breakpoint (4 / 6 / 12 columns), and which
-   one closes the frame with a right edge */
-const GUIDE_COLUMN = Array.from({ length: 12 }, (_, i) => {
-  const show = i < 4 ? "block" : i < 6 ? "hidden sm:block" : "hidden lg:block";
-  const close =
-    i === 3
-      ? "border-r sm:border-r-0"
-      : i === 5
-        ? "sm:border-r lg:border-r-0"
-        : i === 11
-          ? "lg:border-r"
-          : "";
-  return `${show} ${close}`;
-});
-
-/** Visible column guides, aligned to GRID inside CONTAINER */
-export function GridGuides({
-  tone = "paper",
-  animated = false,
-  className = "",
-}: {
-  tone?: Tone;
-  /** Draw the lines in on load (hero only) */
-  animated?: boolean;
-  className?: string;
-}) {
-  const line = GUIDE_TONE[tone];
-  return (
-    <div
-      aria-hidden
-      className={`pointer-events-none absolute inset-0 ${className}`}
-    >
-      <div className={`${CONTAINER} h-full`}>
-        <div className={`${GRID} h-full`}>
-          {Array.from({ length: 12 }, (_, i) => (
-            <span
-              key={i}
-              className={`h-full border-l ${line} ${GUIDE_COLUMN[i]} ${
-                animated ? "guide-draw" : ""
-              }`}
-              style={
-                animated ? { animationDelay: `${120 + i * 45}ms` } : undefined
-              }
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 const KICKER_TONE: Record<Tone, { text: string; mark: string }> = {
   paper: { text: "text-ink/70", mark: "bg-brand" },

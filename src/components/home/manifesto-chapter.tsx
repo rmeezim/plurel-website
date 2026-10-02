@@ -4,7 +4,6 @@ import {
   ChapterHead,
   CONTAINER,
   GRID,
-  GridGuides,
   Meta,
 } from "@/components/system";
 import { PILLARS } from "@/lib/home";
@@ -14,10 +13,9 @@ export function ManifestoChapter() {
   return (
     <section
       aria-labelledby="manifesto-heading"
-      className="surface-red grain relative overflow-hidden text-paper"
+      className="bg-brand text-paper"
     >
-      <GridGuides tone="red" />
-      <div className={`${CONTAINER} relative z-[2] py-24 lg:py-36`}>
+      <div className={`${CONTAINER} py-24 lg:py-36`}>
         <ChapterHead index="01" label="Why Plurel" meta="The AI-era standard" tone="red" />
 
         <Reveal>

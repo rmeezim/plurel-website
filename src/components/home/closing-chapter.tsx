@@ -4,7 +4,6 @@ import {
   CONTAINER,
   CtaLink,
   GRID,
-  GridGuides,
   Kicker,
   Meta,
   TextLink,
@@ -17,10 +16,9 @@ export function ClosingChapter() {
   return (
     <section
       aria-labelledby="closing-heading"
-      className="surface-red grain relative overflow-hidden text-paper"
+      className="bg-brand text-paper"
     >
-      <GridGuides tone="red" />
-      <div className={`${CONTAINER} relative z-[2] py-28 lg:py-40`}>
+      <div className={`${CONTAINER} py-28 lg:py-40`}>
         <Kicker tone="red">Start a growth transformation</Kicker>
         <Reveal>
           <h2

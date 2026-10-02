@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { FilmCanvas } from "@/components/hero-motion";
 
 /*
@@ -25,7 +25,7 @@ function Frame({ index, caption, channel, w, h, className = "", children }: Fram
   return (
     <figure className="m-0 shrink-0" style={{ width: `calc(var(--u) * ${w})` }}>
       <div
-        className={`relative overflow-hidden shadow-[0_28px_60px_-28px_rgba(42,13,11,0.75)] ${className}`}
+        className={`relative overflow-hidden shadow-[0_18px_40px_-24px_rgba(42,13,11,0.6)] ${className}`}
         style={{ height: `calc(var(--u) * ${h})`, fontSize: "calc(var(--u) * 14)" }}
       >
         {children}
@@ -40,27 +40,22 @@ function Frame({ index, caption, channel, w, h, className = "", children }: Fram
   );
 }
 
-/** Film stand-in until the Higgsfield film exists: the red room, cropped */
-function SceneCrop({ light }: { light: CSSProperties }) {
-  return (
-    <div aria-hidden className="hero-scene-red absolute inset-0">
-      <div className="hero-scene-light scene-drift-a absolute h-[120%] w-[120%]" style={light} />
-    </div>
-  );
-}
-
+/**
+ * A film print: a flat color still until the Higgsfield film exists, then
+ * the live film cropped around `focus`. `still` is a background utility.
+ */
 function Media({
   film,
   focus,
-  light,
+  still,
 }: {
   film: boolean;
   focus: { x: number; y: number };
-  light: CSSProperties;
+  still: string;
 }) {
   return (
     <>
-      <SceneCrop light={light} />
+      <div aria-hidden className={`absolute inset-0 ${still}`} />
       {film && <FilmCanvas focus={focus} />}
     </>
   );
@@ -70,7 +65,7 @@ function Avatar() {
   return (
     <span
       aria-hidden
-      className="inline-block size-[1.9em] shrink-0 rounded-full bg-[conic-gradient(from_200deg,#bf3a36,#f2c9bf,#8e2824,#bf3a36)] ring-[0.15em] ring-paper/90"
+      className="inline-block size-[1.9em] shrink-0 rounded-full bg-brand ring-[0.15em] ring-paper/90"
     />
   );
 }
@@ -78,8 +73,8 @@ function Avatar() {
 function Reel({ film }: { film: boolean }) {
   return (
     <Frame index="01" caption="Reel · 9:16" channel="Social" w={200} h={356} className="bg-oxblood text-paper">
-      <Media film={film} focus={{ x: 0.5, y: 0.35 }} light={{ left: "-30%", top: "-20%" }} />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,15,10,0.35)_0%,transparent_30%,transparent_55%,rgba(17,15,10,0.7)_100%)]" />
+      <Media film={film} focus={{ x: 0.5, y: 0.35 }} still="bg-ember" />
+      {film && <div className="absolute inset-0 bg-ink/25" />}
       <div className="absolute inset-x-[0.8em] top-[0.8em] flex gap-[0.3em]">
         <span className="h-[2px] flex-1 bg-paper" />
         <span className="relative h-[2px] flex-1 bg-paper/35">
@@ -135,8 +130,16 @@ function Search() {
 function Film({ film }: { film: boolean }) {
   return (
     <Frame index="03" caption="Brand film · 16:9" channel="Web" w={480} h={270} className="bg-oxblood text-paper">
-      <Media film={film} focus={{ x: 0.5, y: 0.5 }} light={{ left: "10%", top: "-35%" }} />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(17,15,10,0.65)_100%)]" />
+      <Media film={film} focus={{ x: 0.5, y: 0.5 }} still="bg-oxblood" />
+      {!film && (
+        <span
+          aria-hidden
+          className="absolute left-1/2 top-1/2 inline-flex size-[3.4em] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-paper/50 pl-[0.2em] text-[1em] text-paper/80"
+        >
+          ▶
+        </span>
+      )}
+      {film && <div className="absolute inset-x-0 bottom-0 h-[30%] bg-ink/45" />}
       <span className="absolute left-[1em] top-[0.9em] font-mono text-[0.72em] uppercase tracking-[0.06em] text-paper/80">
         ● Brand film
       </span>
@@ -184,7 +187,14 @@ function Feed({ film }: { film: boolean }) {
         <span className="text-[0.72em] text-muted">Sponsored</span>
       </div>
       <div className="absolute inset-x-0 bottom-0 top-[3.2em] overflow-hidden">
-        <Media film={film} focus={{ x: 0.62, y: 0.45 }} light={{ right: "-40%", top: "-10%" }} />
+        <Media film={film} focus={{ x: 0.62, y: 0.45 }} still="bg-blush" />
+        {!film && (
+          <p className="absolute left-[0.8em] top-[0.6em] font-serif text-[2.6em] italic leading-[0.95] text-brand">
+            Seen,
+            <br />
+            again.
+          </p>
+        )}
         <div className="absolute inset-x-0 bottom-0 flex items-center justify-between bg-paper/92 px-[0.9em] py-[0.6em] text-[0.78em]">
           <span>See the work</span>
           <span aria-hidden>→</span>
@@ -222,7 +232,7 @@ function Billboard({ film }: { film: boolean }) {
   return (
     <Frame index="07" caption="Out of home · 48-sheet" channel="OOH" w={480} h={160} className="bg-oxblood text-paper">
       <div className="absolute inset-y-0 right-0 w-[48%] overflow-hidden">
-        <Media film={film} focus={{ x: 0.5, y: 0.3 }} light={{ left: "-20%", top: "-30%" }} />
+        <Media film={film} focus={{ x: 0.5, y: 0.3 }} still="bg-ink" />
       </div>
       <div className="absolute inset-y-0 left-0 flex w-[52%] flex-col justify-between bg-brand p-[1em]">
         <span className="font-mono text-[0.62em] uppercase tracking-[0.06em] text-blush">yourbrand.com</span>

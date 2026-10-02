@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/reveal";
-import { ChapterHead, CONTAINER, GRID, GridGuides, Meta } from "@/components/system";
+import { ChapterHead, CONTAINER, GRID, Meta } from "@/components/system";
 import { STATS, VOICES } from "@/lib/home";
 
 /** (05) The numbers, then the people behind them, in a red room */
@@ -8,10 +8,9 @@ export function ResultsChapter() {
   return (
     <section
       aria-labelledby="results-heading"
-      className="surface-red grain relative overflow-hidden text-paper"
+      className="bg-brand text-paper"
     >
-      <GridGuides tone="red" />
-      <div className={`${CONTAINER} relative z-[2] py-24 lg:py-36`}>
+      <div className={`${CONTAINER} py-24 lg:py-36`}>
         <ChapterHead
           index="05"
           label="Results"

@@ -128,10 +128,10 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
       <Link
         href={AUDIT_HREF}
         onClick={onNavigate}
-        className="surface-red grain group relative col-span-4 flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3"
+        className="group relative col-span-4 bg-brand flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3"
       >
-        <Meta className="relative z-[2] text-blush">(Free) · ~1 business day</Meta>
-        <span className="relative z-[2]">
+        <Meta className="relative text-blush">(Free) · ~1 business day</Meta>
+        <span className="relative">
           <span className="block text-[26px] leading-[1.05] tracking-[-0.02em]">
             The Growth Audit
           </span>
@@ -182,9 +182,9 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
         ))}
       </ul>
 
-      <div className="surface-oxblood grain relative col-span-4 flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3">
-        <Meta className="relative z-[2] text-paper/55">(Northeon)</Meta>
-        <p className="relative z-[2] text-[15px] leading-relaxed text-paper/85">
+      <div className="relative col-span-4 bg-oxblood flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3">
+        <Meta className="relative text-paper/55">(Northeon)</Meta>
+        <p className="relative text-[15px] leading-relaxed text-paper/85">
           Plurel is Northeon&apos;s creative and growth division: brand, web,
           AI search, and the martech underneath, built as one system.
         </p>
@@ -358,9 +358,9 @@ export function SiteHeader() {
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          className="surface-red grain scrim-in fixed inset-0 z-[60] flex flex-col overflow-y-auto text-paper lg:hidden"
+          className="scrim-in fixed inset-0 bg-brand z-[60] flex flex-col overflow-y-auto text-paper lg:hidden"
         >
-          <div className={`${CONTAINER} relative z-[2] flex shrink-0 items-center justify-between ${BAR_HEIGHT}`}>
+          <div className={`${CONTAINER} relative flex shrink-0 items-center justify-between ${BAR_HEIGHT}`}>
             <Link href="/" onClick={closeAll} aria-label="Plurel home">
               <Logo className="h-[22px] w-auto" />
             </Link>
@@ -376,7 +376,7 @@ export function SiteHeader() {
 
           <nav
             aria-label="Mobile"
-            className={`${CONTAINER} relative z-[2] flex-1 border-t border-paper/20 pt-4`}
+            className={`${CONTAINER} relative flex-1 border-t border-paper/20 pt-4`}
           >
             <ul>
               {MOBILE_NAV.map((item, i) => (
@@ -398,7 +398,7 @@ export function SiteHeader() {
             </ul>
           </nav>
 
-          <div className={`${CONTAINER} relative z-[2] shrink-0 space-y-5 py-8`}>
+          <div className={`${CONTAINER} relative shrink-0 space-y-5 py-8`}>
             <Link
               href={AUDIT_HREF}
               onClick={closeAll}

@@ -6,55 +6,31 @@ import {
   ChapterHead,
   CONTAINER,
   GRID,
-  GridGuides,
   Meta,
   TextLink,
 } from "@/components/system";
 import { CASES, type CaseScene } from "@/lib/home";
 
 /*
-  Case frames are title cards: a lit color field, the client set large,
-  the result as the loudest number. They stand in for case photography
-  and footage, and keep the same frame when real stills arrive.
+  Case frames are flat color posters: one field of color, the client set
+  large, the result as the loudest number. They stand in for case
+  photography and footage, and keep the same frame when real stills
+  arrive.
 */
-const SCENE: Record<CaseScene, { bg: string; light: string; text: string; sub: string }> = {
-  red: {
-    bg: "bg-[linear-gradient(160deg,#cf4640_0%,#b3352f_55%,#7d2421_100%)]",
-    light: "bg-[radial-gradient(closest-side,rgba(255,200,182,0.45),transparent)]",
-    text: "text-paper",
-    sub: "text-blush",
-  },
-  night: {
-    bg: "bg-[linear-gradient(165deg,#1d0807_0%,#110f0a_60%,#2a0d0b_100%)]",
-    light: "bg-[radial-gradient(closest-side,rgba(232,86,78,0.5),transparent)]",
-    text: "text-paper",
-    sub: "text-signal",
-  },
-  blush: {
-    bg: "bg-[linear-gradient(160deg,#f6ddd5_0%,#efc7bc_55%,#e3a99a_100%)]",
-    light: "bg-[radial-gradient(closest-side,rgba(255,255,255,0.65),transparent)]",
-    text: "text-ink",
-    sub: "text-brand",
-  },
-  ember: {
-    bg: "bg-[linear-gradient(150deg,#8e2824_0%,#5e1a17_55%,#2a0d0b_100%)]",
-    light: "bg-[radial-gradient(closest-side,rgba(242,201,191,0.35),transparent)]",
-    text: "text-paper",
-    sub: "text-blush",
-  },
+const SCENE: Record<CaseScene, { bg: string; text: string; sub: string }> = {
+  red: { bg: "bg-brand", text: "text-paper", sub: "text-blush" },
+  night: { bg: "bg-ink", text: "text-paper", sub: "text-signal" },
+  blush: { bg: "bg-blush", text: "text-ink", sub: "text-brand" },
+  ember: { bg: "bg-ember", text: "text-paper", sub: "text-blush" },
 };
 
 function TitleCard({ c, index }: { c: (typeof CASES)[number]; index: number }) {
   const s = SCENE[c.scene];
   return (
-    <div className={`grain relative h-[420px] overflow-hidden sm:h-[480px] lg:h-[560px] ${s.text}`}>
-      <div
-        className={`absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-[1.04] ${s.bg}`}
-      >
-        <div className={`absolute -right-[10%] -top-[20%] h-[90%] w-[75%] ${s.light}`} />
-      </div>
-
-      <div className="relative z-[2] flex h-full flex-col justify-between p-6 sm:p-8">
+    <div
+      className={`relative h-[420px] overflow-hidden transition-[filter] duration-500 group-hover:brightness-[1.06] sm:h-[480px] lg:h-[560px] ${s.bg} ${s.text}`}
+    >
+      <div className="relative flex h-full flex-col justify-between p-6 sm:p-8">
         <div className="flex items-start justify-between gap-4">
           <Meta className="opacity-70">Case {String(index + 1).padStart(2, "0")}</Meta>
           <Meta className="opacity-70">{c.year}</Meta>
@@ -95,10 +71,9 @@ export function WorkChapter() {
     <section
       id="work"
       aria-labelledby="work-heading"
-      className="surface-oxblood grain relative overflow-hidden text-paper"
+      className="relative bg-oxblood text-paper"
     >
-      <GridGuides tone="dark" />
-      <div className={`${CONTAINER} relative z-[2] py-24 lg:py-36`}>
+      <div className={`${CONTAINER} py-24 lg:py-36`}>
         <ChapterHead
           index="04"
           label="Selected work"
