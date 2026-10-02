@@ -29,6 +29,8 @@ they are rebuilt on this one.
 
 - `<Logo />` is the lockup; `variant="upper"` ("Plurel", default) or
   `"lower"` ("plurel"). `<LogoMark />` is the grid on its own.
+- `MARK_CELLS` (`src/lib/mark.ts`) exports the geometry; the services fold
+  animates exactly these cells and hands off to `LogoMark` at rest.
 - The mark is exact geometry on a 10-unit square: 2-unit corners and
   edges, a 4-unit center, 1-unit gutters. It paints in `currentColor`.
 - `animated` staggers the nine cells in (flagship moments only).
@@ -64,7 +66,9 @@ Three tones, and every chapter is exactly one of them:
 | dark | `bg-oxblood` | paper, signal | Work, footer |
 
 All three are flat fills. Alternate tones so no two red or dark chapters
-touch, and keep at least one red room on every page.
+touch, and keep at least one red room on every page. The one exception is
+the services fold, where the manifesto's red room continues into (02) and
+folds into the mark: one room, not two red chapters.
 
 ## Type
 
@@ -133,7 +137,8 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
 - **Hero load (flagship only):** headline lines rise out of their masks
   (`line-rise`, 140ms apart), then copy, actions, and the distribution
   wall fade up (`fade-up`).
-- **Scroll:** `Reveal` only; stagger siblings 0.08s.
+- **Scroll:** `Reveal`, staggering siblings 0.08s. The one scroll-scrubbed
+  moment is the services fold; nothing else is driven by scroll position.
 - **Hover:** service rows flood red from the floor (`scale-y`, 500ms);
   case posters brighten slightly; arrows nudge diagonally.
 - **Ambient:** the hero film and the distribution wall's drift
@@ -164,6 +169,39 @@ it apart from the sister divisions' heroes.
   focal point, only while on screen.
 - **Running foot:** "One story · seven surfaces · owned, earned, paid" and
   the one pause control.
+
+## The services fold
+
+The homepage's one scroll-scrubbed moment (`services-fold.tsx`, markup in
+`home/services-chapter.tsx`, timeline in `lib/fold.ts`). As the visitor
+leaves the red manifesto, the red continues into (02) Services:
+
+1. **Room.** One flat red screen reading "*Your brand.*"
+2. **Plan.** Paper gutters cut it into nine panels at the mark's 2:4:2
+   proportions, landing exactly on GRID columns (lg 1-3 | 4-9 | 10-12,
+   base 1 | 2-3 | 4). The eight disciplines label themselves clockwise
+   around "Your brand", the same order as the rows below.
+3. **Mark.** The panels fold into the exact Plurel mark beside the
+   headline; the (02) running head fades in and its column ticks register
+   on the edges the panels just used. At rest the mark is a pointer index:
+   hovering a cell floods it ink and names the discipline; a click opens it.
+
+Rules:
+- It moves only with the visitor's own scroll and stops when they stop.
+  Native scroll only: no wheel or touch handlers, no snap, no smoothing.
+- The gate (`FOLD_QUERY` in `lib/fold.ts`, mirrored in `globals.css`):
+  motion only with no reduced-motion preference, no forced colors, at least
+  32rem tall and 22.5rem wide, with JS. Everything else, and a failed fit
+  check, gets the finished static figure: the mark with indexes 01-08
+  around "Your brand", captioned "Fig. 02".
+- The pinned track is sized in CSS from `html[data-js]` (set by the inline
+  script in `layout.tsx` before first paint), so there is no layout shift
+  and deep links land correctly. `#services` points at the resolved frame.
+- Sticky breaks silently if `main`, `#main`, `body` or the section ever
+  gets `overflow: hidden/clip` or a transform. Never wrap anything inside
+  the stage in `Reveal`.
+- The hot path reads only `scrollY` and writes cached transform/opacity
+  strings; all layout reads happen in `measure()`.
 
 ## Imagery
 

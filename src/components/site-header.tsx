@@ -254,7 +254,7 @@ export function SiteHeader() {
       <header
         className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
           solid
-            ? "border-b border-ink/10 bg-paper/92 text-ink backdrop-blur-md"
+            ? "border-b border-ink/10 bg-paper text-ink"
             : "border-b border-paper/15 bg-transparent text-paper"
         }`}
         onMouseLeave={scheduleClose}

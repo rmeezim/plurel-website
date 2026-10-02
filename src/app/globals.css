@@ -50,7 +50,13 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
+  }
+
+  /* Anchor jumps glide only for visitors who are fine with motion */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
@@ -65,6 +71,157 @@
   ::selection {
     background-color: var(--color-brand);
     color: #fff;
+  }
+}
+
+/*
+  Services fold (src/components/services-fold.tsx).
+
+  Unlayered on purpose, so these rules beat Tailwind's layered utilities.
+  By default the chapter is static: no track height, no moving layer. The
+  gate below pins it only when JS is present (html[data-js], set before
+  first paint) and FOLD_QUERY matches. FOLD_QUERY must stay identical to
+  the media query below (src/lib/fold.ts).
+*/
+.fold {
+  --fold-pad: 8px;
+  --fold-travel: 200svh;
+}
+@media (min-width: 40rem) {
+  .fold {
+    --fold-pad: 12px;
+  }
+}
+@media (min-width: 64rem) {
+  .fold {
+    --fold-pad: 16px;
+    --fold-travel: 220svh;
+  }
+}
+.fold-fx,
+.fold-foot,
+.fold-skip {
+  display: none;
+}
+
+/* FOLD_QUERY */
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-height: 32rem) and (min-width: 22.5rem) {
+  html[data-js] .fold:not([data-off]) .fold-track {
+    height: calc(100vh + var(--fold-travel));
+    height: calc(100lvh + var(--fold-travel));
+  }
+  html[data-js] .fold:not([data-off]) .fold-anchor {
+    top: auto;
+    bottom: 0;
+    height: 100vh;
+    height: 100lvh;
+  }
+  html[data-js] .fold:not([data-off]) .fold-skip {
+    display: block;
+  }
+  /* The stage is the full (lvh) screen, so the red reaches the floor when
+     mobile toolbars collapse; the content box is the visible (svh) part,
+     so nothing sits under a toolbar. */
+  html[data-js] .fold:not([data-off]) .fold-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100lvh;
+    overflow: clip;
+    contain: layout paint;
+  }
+  html[data-js] .fold:not([data-off]) .fold-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 6rem;
+    padding-bottom: 1.25rem;
+  }
+  html[data-js] .fold:not([data-off]) .fold-body {
+    flex: 1 1 0;
+    min-height: 0;
+    margin-top: 2rem;
+    row-gap: 1.25rem;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  html[data-js] .fold:not([data-off]) .fold-slot {
+    align-self: stretch;
+    container-type: size;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  /* The resting mark is as large as its columns allow, but never taller
+     than the space left for it and its caption */
+  html[data-js] .fold:not([data-off]) .fold-fig {
+    width: min(100cqw, 100cqh - 2.75rem);
+  }
+  html[data-js] .fold:not([data-off]) .fold-foot {
+    top: calc(100vh - 3.25rem);
+    top: calc(100svh - 3.25rem);
+    bottom: auto;
+  }
+  @media (min-width: 64rem) {
+    html[data-js] .fold:not([data-off]) .fold-content {
+      padding-top: 108px;
+    }
+    html[data-js] .fold:not([data-off]) .fold-body {
+      margin-top: 3rem;
+      grid-template-rows: minmax(0, 1fr);
+    }
+    html[data-js] .fold:not([data-off]) .fold-slot {
+      justify-content: flex-end;
+    }
+  }
+
+  /* Armed: the moving layer shows, the resolved frame starts hidden (the
+     component writes every value inline from here on) */
+  html[data-js] .fold[data-armed] .fold-fx,
+  html[data-js] .fold[data-armed] .fold-foot {
+    display: block;
+  }
+  .fold[data-armed] [data-fold-head],
+  .fold[data-armed] [data-fold-h2],
+  .fold[data-armed] [data-fold-art],
+  .fold[data-armed] [data-fold-caption] {
+    opacity: 0;
+  }
+  .fold[data-armed]:not([data-rest]) .fold-hit {
+    pointer-events: none;
+  }
+  .fold[data-active] :is(.fold-cell, .fold-label, .fold-room, [data-fold-center]) {
+    will-change: transform, opacity;
+  }
+}
+
+/* Under forced colors the mark paints in system colors; its small
+   overlay labels would not hold contrast, so they step aside */
+@media (forced-colors: active) {
+  .fold-mark-label {
+    display: none;
+  }
+}
+
+/* The mark as a pointer index: hovering a cell names that discipline */
+@media (hover: hover) {
+  .fold-fig:has(.fold-hit:hover) [data-readout="default"] {
+    opacity: 0;
+  }
+  .fold-fig:has(.fold-hit[data-i="01"]:hover) [data-readout="01"],
+  .fold-fig:has(.fold-hit[data-i="02"]:hover) [data-readout="02"],
+  .fold-fig:has(.fold-hit[data-i="03"]:hover) [data-readout="03"],
+  .fold-fig:has(.fold-hit[data-i="04"]:hover) [data-readout="04"],
+  .fold-fig:has(.fold-hit[data-i="05"]:hover) [data-readout="05"],
+  .fold-fig:has(.fold-hit[data-i="06"]:hover) [data-readout="06"],
+  .fold-fig:has(.fold-hit[data-i="07"]:hover) [data-readout="07"],
+  .fold-fig:has(.fold-hit[data-i="08"]:hover) [data-readout="08"] {
+    opacity: 1;
   }
 }
 

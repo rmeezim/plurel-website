@@ -64,7 +64,8 @@ never buzzwordy.
   add `"use client"` only when interactivity is required (e.g. the header menu).
 - Keep animations light and tasteful, all gated behind
   `prefers-reduced-motion` in `globals.css`. The hero load sequence is the
-  one orchestrated moment; elsewhere use `Reveal`. No heavy 3D yet.
+  one orchestrated load moment and the services fold (`services-fold.tsx`)
+  is the one scroll-scrubbed moment; elsewhere use `Reveal`. No heavy 3D yet.
 - The hero film autoplays muted, pauses off screen, and always has a
   pause control. Never ship auto-moving media without one.
 - Design for mobile first; the layout must hold up from 360px to wide desktop.

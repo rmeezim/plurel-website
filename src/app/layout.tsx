@@ -99,6 +99,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      /* The inline script below adds data-js before first paint, so the
+         services fold can size its track in CSS with no layout shift */
+      suppressHydrationWarning
       /* Lets the router force an instant jump to top on page navigations
          while keeping smooth scrolling for in-page anchors */
       data-scroll-behavior="smooth"
@@ -113,11 +116,13 @@ export default function RootLayout({
         </a>
         {/* Reloads always start at the top — pages open on the headline
             cascade, never mid-scroll. Runs before the browser restores
-            the previous scroll position. */}
+            the previous scroll position. Also marks html[data-js] so
+            scroll-driven layout (the services fold) is sized in CSS
+            before first paint. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}",
+              "try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}document.documentElement.setAttribute('data-js','')",
           }}
         />
         <script

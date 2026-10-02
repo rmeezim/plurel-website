@@ -186,7 +186,7 @@ export function ChapterHead({
   const t = HEAD_TONE[tone];
   return (
     <div className={`${GRID} relative items-center border-t pt-5 ${t.rule}`}>
-      <div aria-hidden className={`${GRID} pointer-events-none absolute inset-x-0 top-0`}>
+      <div aria-hidden data-ticks="" className={`${GRID} pointer-events-none absolute inset-x-0 top-0`}>
         {TICK_COLUMN.map((cls, i) => (
           <span key={i} className={`h-[6px] border-l ${t.tick} ${cls}`} />
         ))}

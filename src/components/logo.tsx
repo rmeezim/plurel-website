@@ -1,4 +1,5 @@
 import type { SVGProps } from "react";
+import { MARK_CELLS } from "@/lib/mark";
 
 /*
   Plurel logo, traced from the master artwork.
@@ -11,21 +12,9 @@ import type { SVGProps } from "react";
   spacing at any size. Everything paints in currentColor.
 */
 
+/** Master units: 1 grid unit = 19.2 viewBox units; corner radius 2.6 */
 const U = 19.2;
 const R = 2.6;
-
-/** Mark cells as [x, y, w, h] in grid units */
-const CELLS: [number, number, number, number][] = [
-  [0, 0, 2, 2],
-  [3, 0, 4, 2],
-  [8, 0, 2, 2],
-  [0, 3, 2, 4],
-  [3, 3, 4, 4],
-  [8, 3, 2, 4],
-  [0, 8, 2, 2],
-  [3, 8, 4, 2],
-  [8, 8, 2, 2],
-];
 
 const WORDMARK = {
   /** "Plurel", cap height aligned inside the mark */
@@ -45,7 +34,7 @@ const WORDMARK = {
 function Cells({ y = 0, animated = false }: { y?: number; animated?: boolean }) {
   return (
     <>
-      {CELLS.map(([cx, cy, w, h], i) => (
+      {MARK_CELLS.map(([cx, cy, w, h], i) => (
         <rect
           key={i}
           x={cx * U}

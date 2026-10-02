@@ -4,20 +4,21 @@
   Names and taglines mirror SERVICE_PAGES in services-pages.ts.
 */
 const SERVICE_LIST = [
-  ["Website Design", "website-design", "The one asset every buyer meets."],
-  ["Brand Identity", "brand-identity", "Look like the choice before you say a word."],
-  ["AI Search & SEO", "aeo-seo", "Be the answer, wherever the question is asked."],
-  ["Content Marketing", "content-marketing", "Proof and perspective, published on a system."],
-  ["Paid Ads", "paid-ads", "Buy attention a system can hold."],
-  ["PR & Reputation", "pr-reputation", "What the world says when you're not in the room."],
-  ["Creative Direction", "creative-direction", "Taste, applied consistently."],
-  ["Martech & Consulting", "martech-consulting", "The machinery under the marketing."],
+  ["Website Design", "website-design", "The one asset every buyer meets.", "Web"],
+  ["Brand Identity", "brand-identity", "Look like the choice before you say a word.", "Brand"],
+  ["AI Search & SEO", "aeo-seo", "Be the answer, wherever the question is asked.", "Search"],
+  ["Content Marketing", "content-marketing", "Proof and perspective, published on a system.", "Content"],
+  ["Paid Ads", "paid-ads", "Buy attention a system can hold.", "Paid"],
+  ["PR & Reputation", "pr-reputation", "What the world says when you're not in the room.", "PR"],
+  ["Creative Direction", "creative-direction", "Taste, applied consistently.", "Creative"],
+  ["Martech & Consulting", "martech-consulting", "The machinery under the marketing.", "Martech"],
 ] as const;
 
 /** The eight disciplines, in the order the site presents them */
-export const SERVICES = SERVICE_LIST.map(([name, slug, tagline], i) => ({
+export const SERVICES = SERVICE_LIST.map(([name, slug, tagline, short], i) => ({
   index: String(i + 1).padStart(2, "0"),
   name,
+  short,
   slug,
   tagline,
   href: `/services/${slug}`,
