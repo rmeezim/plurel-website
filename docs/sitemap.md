@@ -7,8 +7,9 @@ visitor at a different entry point (blog posts, the growth-audit landing
 page). Every page ends in the same two doors: book a strategy call, or
 request the growth audit.
 
-Conventions that apply to every page: editorial layout on the brand
-canvas, mobile-first from 360px, section kickers with the Spark mark,
+Conventions that apply to every page: the Cinematic Red x Swiss Systems
+language (`docs/design-system.md`), mobile-first from 360px, numbered
+chapters with `ChapterHead`,
 JSON-LD where a schema.org type fits, canonical + OG metadata, and one
 primary CTA per page (the audit or the call — never both competing).
 
@@ -16,11 +17,13 @@ primary CTA per page (the audit or the call — never both competing).
 
 ## Live
 
-### `/` — Home ✅
+### `/` — Home ✅ (Cinematic Red x Swiss Systems)
 
-The arc: Hero → Partners → Manifesto → Services → Growth System → Work →
-Performance → Method → Proof → Compare → Journal → FAQ → Founder note →
-Audit preview → CTA. Finalize before building outward.
+The arc: Hero film → Selected clients → (01) Why Plurel [red] →
+(02) Services [paper] → (03) Method [paper] → (04) Selected work [dark] →
+(05) Results [red] → (06) Journal [paper] → (07) Questions [paper] →
+Closing invitation [red] → Footer [oxblood]. This is the reference build
+for every interior page.
 
 ### `/blog` — Journal index ✅
 

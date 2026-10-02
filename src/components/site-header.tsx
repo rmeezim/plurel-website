@@ -1,632 +1,205 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Close, Menu, Spark } from "@/components/icons";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { CityClock } from "@/components/city-clock";
+import { ArrowUpRight, Close, Menu } from "@/components/icons";
+import { Logo } from "@/components/logo";
+import { CONTAINER, GRID, Kicker, Meta } from "@/components/system";
+import {
+  AUDIT_HREF,
+  COMPANY,
+  CONTACT_EMAIL,
+  MOBILE_NAV,
+  OVERLAY_ROUTES,
+  SERVICES,
+} from "@/lib/nav";
 
 type MenuKey = "services" | "company";
 
-/* ---- Service glyphs (minimal line marks) ---------------------------- */
+/*
+  The header is one fixed bar in two states. Over a cinematic hero it is
+  transparent with paper type and a hairline (overlay); everywhere else,
+  and as soon as the page scrolls, it is a paper bar with ink type (solid).
+  Desktop menus drop a full-width Swiss panel; mobile opens a full-screen
+  red index.
+*/
 
-type ServiceKind =
-  | "web"
-  | "brand"
-  | "search"
-  | "content"
-  | "ads"
-  | "pr"
-  | "creative"
-  | "consulting";
+const BAR_HEIGHT = "h-[72px] lg:h-[84px]";
 
-function ServiceGlyph({ kind }: { kind: ServiceKind }) {
-  const p = {
-    className: "size-5",
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.4,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-    "aria-hidden": true,
-  };
-  switch (kind) {
-    case "web":
-      return (
-        <svg {...p}>
-          <rect x="3" y="5" width="18" height="14" rx="2" />
-          <path d="M3 9h18" />
-          <circle cx="6" cy="7" r="0.6" fill="currentColor" stroke="none" />
-        </svg>
-      );
-    case "brand":
-      return (
-        <svg {...p}>
-          <circle cx="9.5" cy="12.5" r="5" />
-          <rect x="11" y="6" width="9" height="9" rx="1.5" />
-        </svg>
-      );
-    case "search":
-      return (
-        <svg {...p}>
-          <circle cx="10" cy="10" r="6" />
-          <path d="M14.5 14.5 19 19" />
-          <path d="M10 8v4M8 10h4" strokeWidth="1.1" />
-        </svg>
-      );
-    case "content":
-      return (
-        <svg {...p}>
-          <path d="M7 3h7l4 4v14H7z" />
-          <path d="M14 3v4h4" />
-          <path d="M10 12h5M10 15h5M10 18h3" strokeWidth="1.1" />
-        </svg>
-      );
-    case "ads":
-      return (
-        <svg {...p}>
-          <path d="M4 5h16l-6 7v5l-4 2v-7z" />
-        </svg>
-      );
-    case "pr":
-      return (
-        <svg {...p}>
-          <path d="M4 10v4l10 4V6z" />
-          <path d="M14 8.5a3.5 3.5 0 0 1 0 7" />
-        </svg>
-      );
-    case "creative":
-      return (
-        <svg {...p}>
-          <path d="M8 4H5a1 1 0 0 0-1 1v3" />
-          <path d="M16 4h3a1 1 0 0 1 1 1v3" />
-          <path d="M20 16v3a1 1 0 0 1-1 1h-3" />
-          <path d="M8 20H5a1 1 0 0 1-1-1v-3" />
-          <circle cx="12" cy="12" r="2.5" />
-        </svg>
-      );
-    case "consulting":
-      return (
-        <svg {...p}>
-          <path d="M5 5h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-8l-4 3v-3H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
-        </svg>
-      );
-  }
-}
-
-const SERVICES: { name: string; kind: ServiceKind; slug: string }[] = [
-  { name: "Website Design", kind: "web", slug: "website-design" },
-  { name: "Brand Identity", kind: "brand", slug: "brand-identity" },
-  { name: "AI Search & SEO", kind: "search", slug: "aeo-seo" },
-  { name: "Content Marketing", kind: "content", slug: "content-marketing" },
-  { name: "Paid Ads", kind: "ads", slug: "paid-ads" },
-  { name: "PR & Reputation", kind: "pr", slug: "pr-reputation" },
-  { name: "Creative Direction", kind: "creative", slug: "creative-direction" },
-  { name: "Consulting", kind: "consulting", slug: "martech-consulting" },
-];
-
-function MethodologyGlyph() {
+function NavLink({
+  href,
+  children,
+  onNavigate,
+}: {
+  href: string;
+  children: React.ReactNode;
+  onNavigate?: () => void;
+}) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      aria-hidden
+    <Link
+      href={href}
+      onClick={onNavigate}
+      className="px-3 py-2 text-[12px] font-medium uppercase tracking-[0.18em] opacity-80 transition-opacity hover:opacity-100 xl:px-4"
     >
-      <line x1="4" y1="12" x2="20" y2="12" />
-      <circle cx="4" cy="12" r="1.7" />
-      <circle cx="9.3" cy="12" r="1.7" />
-      <circle cx="14.6" cy="12" r="1.7" />
-      <circle cx="20" cy="12" r="2" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
-
-function StudioGlyph() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M8 4H5a1 1 0 0 0-1 1v3" />
-      <path d="M16 4h3a1 1 0 0 1 1 1v3" />
-      <path d="M20 16v3a1 1 0 0 1-1 1h-3" />
-      <path d="M8 20H5a1 1 0 0 1-1-1v-3" />
-      <path d="M12 8.5v7M8.5 12h7" strokeWidth="1.2" />
-    </svg>
-  );
-}
-
-function CareersGlyph() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className="size-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="12" cy="8.5" r="3.2" />
-      <path d="M5.5 19a6.5 6.5 0 0 1 13 0" />
-    </svg>
-  );
-}
-
-function BlogGlyph() {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      className="size-[17px]"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.3"
-      strokeLinecap="round"
-      aria-hidden
-    >
-      <rect x="3.5" y="3" width="13" height="14" rx="2" />
-      <line x1="6.5" y1="7" x2="13.5" y2="7" />
-      <line x1="6.5" y1="10" x2="13.5" y2="10" />
-      <line x1="6.5" y1="13" x2="11" y2="13" />
-    </svg>
-  );
-}
-
-function ContactGlyph() {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      className="size-[17px]"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.3"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5h-6l-3.5 3v-3H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5Z" />
-    </svg>
-  );
-}
-
-/* ---- Schematic visuals — the site's own diagram language ------------ */
-
-function AboutVisual() {
-  const sats: [number, number][] = [
-    [42, 32],
-    [156, 26],
-    [172, 92],
-    [32, 98],
-    [106, 16],
-  ];
-  return (
-    <svg
-      viewBox="0 0 200 130"
-      preserveAspectRatio="xMidYMid slice"
-      className="h-full w-full"
-      aria-hidden
-    >
-      <g stroke="#d8d2c8" strokeWidth="1.1">
-        {sats.map(([x, y], i) => (
-          <line key={i} x1="100" y1="64" x2={x} y2={y} />
-        ))}
-      </g>
-      {sats.map(([x, y], i) => (
-        <circle
-          key={i}
-          cx={x}
-          cy={y}
-          r="3"
-          fill="#110f0a"
-          fillOpacity="0.4"
-          className="diagram-blink"
-          style={{ animationDelay: `${i * 0.45}s` }}
-        />
-      ))}
-      <circle cx="100" cy="64" r="7.5" fill="#bf3a36" />
-      <circle cx="100" cy="64" r="2.5" fill="#fbfaf6" />
-    </svg>
-  );
-}
-
-function CaseVisual() {
-  const bars = ["32%", "48%", "64%", "82%", "100%"];
-  return (
-    <div className="relative flex h-full w-full flex-col justify-end p-4">
-      <div className="absolute inset-x-4 top-3 flex items-baseline justify-between">
-        <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-muted">
-          Aurem
-        </span>
-        <span className="text-[13px] font-medium text-brand">+212%</span>
-      </div>
-      <div className="flex h-[52px] items-end gap-1.5">
-        {bars.map((h, i) => (
-          <span
-            key={h}
-            style={{ height: h }}
-            className={`flex-1 origin-bottom rounded-t-[3px] transition-transform duration-500 group-hover:scale-y-105 ${
-              i === 4 ? "bg-brand" : "bg-ink/10"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function GrowthVisual() {
-  return (
-    <svg
-      viewBox="0 0 240 96"
-      preserveAspectRatio="xMidYMid slice"
-      className="h-full w-full"
-      aria-hidden
-    >
-      <line
-        x1="16"
-        y1="48"
-        x2="224"
-        y2="48"
-        stroke="#d8d2c8"
-        strokeWidth="1.25"
-      />
-      <line
-        x1="16"
-        y1="48"
-        x2="224"
-        y2="48"
-        stroke="#bf3a36"
-        strokeWidth="1.25"
-        pathLength={100}
-        className="method-pulse"
-      />
-      {[16, 58, 100, 142, 184, 224].map((x, i) => (
-        <circle
-          key={x}
-          cx={x}
-          cy="48"
-          r={i === 5 ? 4.5 : 3}
-          fill={i === 5 ? "#bf3a36" : "#8f8981"}
-          fillOpacity={i === 5 ? 1 : 0.55}
-        />
-      ))}
-    </svg>
-  );
-}
-
-/* ---- Card primitives ------------------------------------------------ */
-
-function Kicker({ children }: { children: ReactNode }) {
-  return (
-    <p className="flex items-center gap-2 px-1 pb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
-      <Spark className="size-3 text-brand" aria-hidden />
       {children}
-    </p>
-  );
-}
-
-function FeatureCard({
-  title,
-  desc,
-  href,
-  visual,
-  onNavigate,
-}: {
-  title: string;
-  desc: string;
-  href: string;
-  visual: ReactNode;
-  onNavigate: () => void;
-}) {
-  return (
-    <Link
-      href={href}
-      onClick={onNavigate}
-      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-paper transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_24px_44px_-26px_rgba(17,15,10,0.5)]"
-    >
-      <div className="h-[112px] w-full overflow-hidden border-b border-line bg-canvas">
-        <div className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]">
-          {visual}
-        </div>
-      </div>
-      <div className="flex items-center justify-between gap-3 px-4 py-3.5">
-        <div>
-          <p className="text-[14px] font-medium tracking-[-0.01em] text-ink transition-colors group-hover:text-brand">
-            {title}
-          </p>
-          <p className="mt-0.5 text-[11.5px] leading-snug text-muted">
-            {desc}
-          </p>
-        </div>
-        <ArrowUpRight className="size-4 shrink-0 -translate-x-1 text-brand opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
-      </div>
     </Link>
-  );
-}
-
-function CompactCard({
-  title,
-  desc,
-  href,
-  glyph,
-  onNavigate,
-}: {
-  title: string;
-  desc: string;
-  href: string;
-  glyph: ReactNode;
-  onNavigate: () => void;
-}) {
-  return (
-    <Link
-      href={href}
-      onClick={onNavigate}
-      className="group flex items-start gap-3 rounded-xl border border-line bg-canvas p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:bg-paper hover:shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]"
-    >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-paper text-muted transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-paper">
-        {glyph}
-      </span>
-      <span className="min-w-0">
-        <span className="flex items-center gap-1.5 text-[13px] font-medium text-ink transition-colors group-hover:text-brand">
-          {title}
-          <ArrowUpRight className="size-3 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
-        </span>
-        <span className="mt-0.5 block text-[11px] leading-snug text-muted">
-          {desc}
-        </span>
-      </span>
-    </Link>
-  );
-}
-
-function RailRow({
-  title,
-  desc,
-  href,
-  glyph,
-  onNavigate,
-}: {
-  title: string;
-  desc: string;
-  href: string;
-  glyph: ReactNode;
-  onNavigate: () => void;
-}) {
-  return (
-    <Link
-      href={href}
-      onClick={onNavigate}
-      className="group -mx-1 flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-paper"
-    >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-paper text-ink transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-paper">
-        {glyph}
-      </span>
-      <span className="min-w-0">
-        <span className="block text-[13px] font-medium text-ink transition-colors group-hover:text-brand">
-          {title}
-        </span>
-        <span className="block truncate text-[11px] text-muted">{desc}</span>
-      </span>
-    </Link>
-  );
-}
-
-/* ---- Panels --------------------------------------------------------- */
-
-function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_272px]">
-      <div className="p-4 sm:p-5">
-        <Kicker>The company</Kicker>
-        <div className="grid grid-cols-2 gap-3">
-          <FeatureCard
-            title="About"
-            desc="Our story, team, and standard."
-            href="/about"
-            visual={<AboutVisual />}
-            onNavigate={onNavigate}
-          />
-          <FeatureCard
-            title="Case Studies"
-            desc="Transformations, with the numbers."
-            href="/work"
-            visual={<CaseVisual />}
-            onNavigate={onNavigate}
-          />
-        </div>
-        <div className="mt-3 grid grid-cols-3 gap-3">
-          <CompactCard
-            title="Methodology"
-            desc="The four-phase operating model."
-            href="/methodology"
-            glyph={<MethodologyGlyph />}
-            onNavigate={onNavigate}
-          />
-          <CompactCard
-            title="Studio"
-            desc="Our creative team and craft."
-            href="/studio"
-            glyph={<StudioGlyph />}
-            onNavigate={onNavigate}
-          />
-          <CompactCard
-            title="Careers"
-            desc="Build with us — open roles."
-            href="/careers"
-            glyph={<CareersGlyph />}
-            onNavigate={onNavigate}
-          />
-        </div>
-      </div>
-
-      <div className="border-t border-line bg-canvas p-4 sm:p-5 lg:border-l lg:border-t-0">
-        <Kicker>More from Plurel</Kicker>
-        <div className="space-y-1">
-          <RailRow
-            title="Blog"
-            desc="Notes on staying visible."
-            href="/blog"
-            glyph={<BlogGlyph />}
-            onNavigate={onNavigate}
-          />
-          <RailRow
-            title="Contact"
-            desc="Start a conversation."
-            href="/contact"
-            glyph={<ContactGlyph />}
-            onNavigate={onNavigate}
-          />
-        </div>
-        <div className="mt-3 border-t border-line pt-4">
-          <Link
-            href="/contact"
-            onClick={onNavigate}
-            className="group flex items-center justify-between gap-2 rounded-xl bg-brand px-4 py-3 text-paper transition-colors hover:bg-[#a8302c]"
-          >
-            <span>
-              <span className="block text-[13px] font-medium">
-                Book a Growth Audit
-              </span>
-              <span className="block text-[11px] text-paper/70">
-                A read on where you stand.
-              </span>
-            </span>
-            <ArrowUpRight className="size-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_272px]">
-      <div className="p-4 sm:p-5">
-        <Kicker>What we do</Kicker>
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-          {SERVICES.map((service, i) => (
-            <Link
-              key={service.name}
-              href={`/services/${service.slug}`}
-              onClick={onNavigate}
-              className="group flex flex-col gap-3 rounded-xl border border-line bg-canvas p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:bg-paper hover:shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]"
-            >
-              <span className="flex items-start justify-between">
-                <span className="flex size-9 items-center justify-center rounded-full border border-line bg-paper text-muted transition-colors duration-300 group-hover:border-brand group-hover:bg-brand group-hover:text-paper">
-                  <ServiceGlyph kind={service.kind} />
-                </span>
-                <span className="pt-0.5 text-[10px] font-semibold tabular-nums tracking-[0.14em] text-muted/70">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-              </span>
-              <span className="text-[12.5px] font-medium leading-tight tracking-[-0.01em] text-ink transition-colors group-hover:text-brand">
-                {service.name}
-              </span>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="border-t border-line bg-canvas p-4 sm:p-5 lg:border-l lg:border-t-0">
-        <Kicker>Built as a system</Kicker>
-        <Link
-          href="/#growth-system"
-          onClick={onNavigate}
-          className="group block overflow-hidden rounded-xl border border-line bg-paper transition-all duration-300 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_18px_36px_-24px_rgba(17,15,10,0.45)]"
-        >
-          <div className="h-[76px] w-full overflow-hidden border-b border-line bg-canvas">
-            <div className="h-full w-full transition-transform duration-500 group-hover:scale-[1.03]">
-              <GrowthVisual />
-            </div>
-          </div>
-          <div className="px-4 py-3">
-            <p className="text-[13px] font-medium text-ink transition-colors group-hover:text-brand">
-              The Growth System
-            </p>
-            <p className="mt-0.5 text-[11px] leading-snug text-muted">
-              How every service compounds into one engine.
-            </p>
-          </div>
-        </Link>
-        <div className="mt-3 border-t border-line pt-3.5">
-          <Link
-            href="/services"
-            onClick={onNavigate}
-            className="group inline-flex items-center gap-1.5 px-1 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
-          >
-            All services
-            <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ---- Trigger + header ---------------------------------------------- */
-
-function Chevron({ active }: { active: boolean }) {
-  return (
-    <svg
-      viewBox="0 0 12 12"
-      className={`size-3 transition-transform duration-200 ${active ? "rotate-180" : ""}`}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M2.5 4.5 6 8l3.5-3.5" />
-    </svg>
   );
 }
 
 function MenuTrigger({
   label,
   menuKey,
-  active,
+  open,
   onOpen,
   onToggle,
 }: {
   label: string;
   menuKey: MenuKey;
-  active: boolean;
+  open: boolean;
   onOpen: (key: MenuKey) => void;
   onToggle: (key: MenuKey) => void;
 }) {
   return (
     <button
       type="button"
-      aria-haspopup="true"
-      aria-expanded={active}
+      aria-expanded={open}
+      aria-controls={`menu-${menuKey}`}
       onMouseEnter={() => onOpen(menuKey)}
-      onFocus={() => onOpen(menuKey)}
       onClick={() => onToggle(menuKey)}
-      className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm transition-colors ${
-        active ? "bg-line/70 text-ink" : "text-ink/75 hover:text-ink"
+      className={`flex items-center gap-2 px-3 py-2 text-[12px] font-medium uppercase tracking-[0.18em] transition-opacity xl:px-4 ${
+        open ? "opacity-100" : "opacity-80 hover:opacity-100"
       }`}
     >
       {label}
-      <Chevron active={active} />
+      <span
+        aria-hidden
+        className={`size-[5px] bg-current transition-transform duration-300 ${
+          open ? "rotate-45" : ""
+        }`}
+      />
     </button>
   );
 }
 
+function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
+  return (
+    <div className={`${GRID} gap-y-8 py-10`}>
+      <div className="col-span-4 sm:col-span-6 lg:col-span-3">
+        <Kicker>Services</Kicker>
+        <p className="mt-5 max-w-[26ch] text-[22px] leading-[1.15] tracking-[-0.02em] text-ink">
+          Eight disciplines, run as one growth system.
+        </p>
+        <Link
+          href="/services"
+          onClick={onNavigate}
+          className="group mt-6 inline-flex items-center gap-2 border-b border-brand pb-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-ink"
+        >
+          All services
+          <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </Link>
+      </div>
+
+      <ul className="col-span-4 grid grid-cols-1 sm:col-span-6 sm:grid-cols-2 lg:col-span-6 lg:gap-x-8">
+        {SERVICES.map((s) => (
+          <li key={s.slug} className="border-t border-ink/10">
+            <Link
+              href={s.href}
+              onClick={onNavigate}
+              className="group grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-2 py-3.5"
+            >
+              <Meta className="pt-1 text-muted transition-colors group-hover:text-brand">
+                {s.index}
+              </Meta>
+              <span>
+                <span className="block text-[15px] text-ink transition-colors group-hover:text-brand">
+                  {s.name}
+                </span>
+                <span className="mt-0.5 block text-[12.5px] leading-snug text-muted">
+                  {s.tagline}
+                </span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <Link
+        href={AUDIT_HREF}
+        onClick={onNavigate}
+        className="surface-red grain group relative col-span-4 flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3"
+      >
+        <Meta className="relative z-[2] text-blush">(Free) · ~1 business day</Meta>
+        <span className="relative z-[2]">
+          <span className="block text-[26px] leading-[1.05] tracking-[-0.02em]">
+            The Growth Audit
+          </span>
+          <span className="mt-2 block text-[13px] leading-relaxed text-paper/80">
+            A strategist&apos;s read on your brand, site, and AI visibility.
+          </span>
+          <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em]">
+            Request it
+            <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </span>
+        </span>
+      </Link>
+    </div>
+  );
+}
+
+function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
+  return (
+    <div className={`${GRID} gap-y-8 py-10`}>
+      <div className="col-span-4 sm:col-span-6 lg:col-span-3">
+        <Kicker>Company</Kicker>
+        <p className="mt-5 max-w-[26ch] text-[22px] leading-[1.15] tracking-[-0.02em] text-ink">
+          A senior team, accountable for the whole system.
+        </p>
+      </div>
+
+      <ul className="col-span-4 grid grid-cols-1 sm:col-span-6 sm:grid-cols-2 lg:col-span-6 lg:gap-x-8">
+        {COMPANY.map((item, i) => (
+          <li key={item.href} className="border-t border-ink/10">
+            <Link
+              href={item.href}
+              onClick={onNavigate}
+              className="group grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-2 py-3.5"
+            >
+              <Meta className="pt-1 text-muted transition-colors group-hover:text-brand">
+                {String(i + 1).padStart(2, "0")}
+              </Meta>
+              <span>
+                <span className="block text-[15px] text-ink transition-colors group-hover:text-brand">
+                  {item.name}
+                </span>
+                <span className="mt-0.5 block text-[12.5px] text-muted">
+                  {item.desc}
+                </span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <div className="surface-oxblood grain relative col-span-4 flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3">
+        <Meta className="relative z-[2] text-paper/55">(Northeon)</Meta>
+        <p className="relative z-[2] text-[15px] leading-relaxed text-paper/85">
+          Plurel is Northeon&apos;s creative and growth division: brand, web,
+          AI search, and the martech underneath, built as one system.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function SiteHeader() {
+  const pathname = usePathname();
+  const overlayRoute = OVERLAY_ROUTES.has(pathname);
+
   const [menu, setMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const openMenu = (key: MenuKey) => {
@@ -634,13 +207,24 @@ export function SiteHeader() {
     setMenu(key);
   };
   const scheduleClose = () => {
-    closeTimer.current = setTimeout(() => setMenu(null), 130);
+    closeTimer.current = setTimeout(() => setMenu(null), 140);
   };
   const cancelClose = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
   };
   const toggleMenu = (key: MenuKey) =>
     setMenu((current) => (current === key ? null : key));
+  const closeAll = () => {
+    setMenu(null);
+    setMobileOpen(false);
+  };
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -650,140 +234,112 @@ export function SiteHeader() {
       }
     };
     window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-    };
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // The full-screen mobile index owns the viewport while open
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileOpen]);
+
+  const solid = !overlayRoute || scrolled || menu !== null;
+
   return (
-    <header className="sticky top-0 z-50 pt-4">
-      <div className="relative z-40 mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
-        {/* Floating paper bar — one consistent object, no scroll morph */}
-        <div className="relative rounded-2xl border border-line bg-paper/90 px-4 shadow-[0_18px_40px_-26px_rgba(17,15,10,0.4)] backdrop-blur-md sm:px-5">
-          <div className="flex items-center justify-between gap-4 py-3">
-            {/* Brand */}
-            <div className="flex min-w-0 items-center gap-3 lg:flex-1">
-              <Link
-                href="/"
-                className="shrink-0 text-xl font-extrabold tracking-tight text-ink"
-              >
-                PLUREL
-              </Link>
-              <span className="hidden items-center gap-2 whitespace-nowrap border-l border-line pl-3 sm:flex">
-                <Spark className="size-3 shrink-0 text-brand" />
-                <span className="text-sm text-muted">A Northeon division</span>
-              </span>
-            </div>
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
+          solid
+            ? "border-b border-ink/10 bg-paper/92 text-ink backdrop-blur-md"
+            : "border-b border-paper/15 bg-transparent text-paper"
+        }`}
+        onMouseLeave={scheduleClose}
+      >
+        <div className={`${CONTAINER} flex items-center justify-between gap-6 ${BAR_HEIGHT}`}>
+          <Link href="/" onClick={closeAll} className="shrink-0" aria-label="Plurel home">
+            <Logo className="h-[22px] w-auto lg:h-[24px]" />
+          </Link>
 
-            {/* Primary nav — mega triggers */}
-            <nav
-              className="hidden items-center gap-1 lg:flex"
-              onMouseLeave={scheduleClose}
+          <nav aria-label="Primary" className="hidden items-center lg:flex">
+            <MenuTrigger
+              label="Services"
+              menuKey="services"
+              open={menu === "services"}
+              onOpen={openMenu}
+              onToggle={toggleMenu}
+            />
+            <NavLink href="/work" onNavigate={closeAll}>
+              Work
+            </NavLink>
+            <NavLink href="/methodology" onNavigate={closeAll}>
+              Method
+            </NavLink>
+            <MenuTrigger
+              label="Company"
+              menuKey="company"
+              open={menu === "company"}
+              onOpen={openMenu}
+              onToggle={toggleMenu}
+            />
+            <NavLink href="/blog" onNavigate={closeAll}>
+              Journal
+            </NavLink>
+          </nav>
+
+          <div className="flex items-center gap-5">
+            <Meta className="hidden opacity-70 xl:block">
+              <CityClock />
+            </Meta>
+            <Link
+              href={AUDIT_HREF}
+              onClick={closeAll}
+              className={`group hidden h-11 items-center gap-3 border px-5 text-[11px] font-medium uppercase tracking-[0.18em] transition-colors duration-300 sm:inline-flex ${
+                solid
+                  ? "border-ink/25 hover:border-brand hover:bg-brand hover:text-paper"
+                  : "border-paper/40 hover:border-paper hover:bg-paper hover:text-ink"
+              }`}
             >
-              <MenuTrigger
-                label="Services"
-                menuKey="services"
-                active={menu === "services"}
-                onOpen={openMenu}
-                onToggle={toggleMenu}
-              />
-              <MenuTrigger
-                label="Company"
-                menuKey="company"
-                active={menu === "company"}
-                onOpen={openMenu}
-                onToggle={toggleMenu}
-              />
-            </nav>
-
-            {/* Actions */}
-            <div className="flex items-center justify-end gap-2 lg:flex-1">
-              <Link
-                href="/contact"
-                className="hidden items-center gap-2 rounded-lg bg-brand px-4 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-[#a8302c] sm:inline-flex"
-              >
-                Book Growth Audit
-                <ArrowUpRight className="size-4" />
-              </Link>
-              <button
-                type="button"
-                onClick={() => setMobileOpen((v) => !v)}
-                aria-expanded={mobileOpen}
-                aria-label={mobileOpen ? "Close menu" : "Open menu"}
-                className="inline-flex size-10 items-center justify-center rounded-lg border border-line text-ink transition-colors hover:bg-line/50 lg:hidden"
-              >
-                {mobileOpen ? (
-                  <Close className="size-5" />
-                ) : (
-                  <Menu className="size-5" />
-                )}
-              </button>
-            </div>
+              Growth audit
+              <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(true)}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
+              aria-label="Open menu"
+              className={`inline-flex size-11 items-center justify-center border transition-colors lg:hidden ${
+                solid ? "border-ink/25" : "border-paper/40"
+              }`}
+            >
+              <Menu className="size-5" />
+            </button>
           </div>
-
-          {/* Mobile menu — expands the bar into a card */}
-          {mobileOpen && (
-            <nav className="flex flex-col border-t border-line pb-5 pt-2 lg:hidden">
-              <Link
-                href="/services"
-                onClick={() => setMobileOpen(false)}
-                className="border-b border-line/70 py-3 text-lg text-ink"
-              >
-                Services
-              </Link>
-              <p className="pb-1.5 pt-4 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-                Company
-              </p>
-              {[
-                { name: "About", href: "/about" },
-                { name: "Case Studies", href: "/work" },
-                { name: "Methodology", href: "/methodology" },
-                { name: "Studio", href: "/studio" },
-                { name: "Careers", href: "/careers" },
-                { name: "Blog", href: "/blog" },
-                { name: "Contact", href: "/contact" },
-              ].map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="border-b border-line/70 py-3 text-lg text-ink"
-                >
-                  {item.name}
-                </Link>
-              ))}
-              <Link
-                href="/contact"
-                onClick={() => setMobileOpen(false)}
-                className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-brand px-4 py-3 text-sm font-medium text-paper"
-              >
-                Book Growth Audit
-                <ArrowUpRight className="size-4" />
-              </Link>
-            </nav>
-          )}
         </div>
 
-        {/* Mega panel */}
+        {/* Desktop menu panel */}
         {menu && (
           <div
-            className="absolute inset-x-0 top-full z-40 hidden pt-2 lg:block"
+            id={`menu-${menu}`}
+            className="mega-in hidden border-t border-ink/10 bg-paper text-ink lg:block"
             onMouseEnter={cancelClose}
-            onMouseLeave={scheduleClose}
           >
-            <div className="mega-in origin-top overflow-hidden rounded-2xl border border-line bg-paper shadow-[0_36px_72px_-32px_rgba(17,15,10,0.45)]">
+            <div className={CONTAINER}>
               {menu === "services" ? (
-                <ServicesPanel onNavigate={() => setMenu(null)} />
+                <ServicesPanel onNavigate={closeAll} />
               ) : (
-                <CompanyPanel onNavigate={() => setMenu(null)} />
+                <CompanyPanel onNavigate={closeAll} />
               )}
             </div>
           </div>
         )}
-      </div>
+      </header>
 
-      {/* Scrim — covers the whole viewport so the page dims evenly behind
-          the floating bar and the panel alike */}
+      {/* Scrim behind an open desktop menu */}
       {menu && (
         <button
           type="button"
@@ -791,9 +347,78 @@ export function SiteHeader() {
           tabIndex={-1}
           onMouseEnter={() => setMenu(null)}
           onClick={() => setMenu(null)}
-          className="scrim-in fixed inset-0 z-30 hidden cursor-default bg-ink/15 backdrop-blur-[2px] lg:block"
+          className="scrim-in fixed inset-0 z-40 hidden cursor-default bg-ink/30 backdrop-blur-[2px] lg:block"
         />
       )}
-    </header>
+
+      {/* Mobile: full-screen red index */}
+      {mobileOpen && (
+        <div
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          className="surface-red grain scrim-in fixed inset-0 z-[60] flex flex-col overflow-y-auto text-paper lg:hidden"
+        >
+          <div className={`${CONTAINER} relative z-[2] flex shrink-0 items-center justify-between ${BAR_HEIGHT}`}>
+            <Link href="/" onClick={closeAll} aria-label="Plurel home">
+              <Logo className="h-[22px] w-auto" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close menu"
+              className="inline-flex size-11 items-center justify-center border border-paper/40"
+            >
+              <Close className="size-5" />
+            </button>
+          </div>
+
+          <nav
+            aria-label="Mobile"
+            className={`${CONTAINER} relative z-[2] flex-1 border-t border-paper/20 pt-4`}
+          >
+            <ul>
+              {MOBILE_NAV.map((item, i) => (
+                <li key={item.href} className="border-b border-paper/20">
+                  <Link
+                    href={item.href}
+                    onClick={closeAll}
+                    className="flex items-baseline gap-4 py-3"
+                  >
+                    <Meta className="w-8 text-blush">
+                      {String(i + 1).padStart(2, "0")}
+                    </Meta>
+                    <span className="text-[clamp(2rem,9vw,3rem)] leading-none tracking-[-0.03em]">
+                      {item.name}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className={`${CONTAINER} relative z-[2] shrink-0 space-y-5 py-8`}>
+            <Link
+              href={AUDIT_HREF}
+              onClick={closeAll}
+              className="flex h-14 items-center justify-between bg-paper px-6 text-[12px] font-medium uppercase tracking-[0.18em] text-ink"
+            >
+              Book a growth audit
+              <ArrowUpRight className="size-4" />
+            </Link>
+            <div className="flex flex-wrap items-center justify-between gap-3 text-blush">
+              <Meta>
+                <CityClock />
+              </Meta>
+              <Meta>{CONTACT_EMAIL}</Meta>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pages without a cinematic hero start below the bar */}
+      {!overlayRoute && <div aria-hidden className={BAR_HEIGHT} />}
+    </>
   );
 }

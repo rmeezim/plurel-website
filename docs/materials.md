@@ -1,5 +1,9 @@
 # Plurel — materials & visual objects
 
+> **Legacy.** This describes the previous system, still used by interior
+> pages until they are rebuilt. New work follows
+> [`design-system.md`](./design-system.md).
+
 The third layer of the design system, after typography and motion. Flat
 hex fields read as plain; the site's surfaces are **materials** (grained
 gradients with ambient drift) and its imagery slots are **plates**

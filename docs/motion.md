@@ -1,5 +1,9 @@
 # Plurel — motion system
 
+> **Legacy.** This describes the previous system, still used by interior
+> pages until they are rebuilt. New work follows
+> [`design-system.md`](./design-system.md).
+
 One vocabulary, site-wide. Every animation on the site comes from this
 fixed set; new pages compose these — they do not invent new keyframes.
 Everything lives in `globals.css` inside the

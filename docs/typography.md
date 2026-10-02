@@ -1,5 +1,9 @@
 # Plurel — typographic system
 
+> **Legacy.** This describes the previous system, still used by interior
+> pages until they are rebuilt. New work follows
+> [`design-system.md`](./design-system.md).
+
 One system, site-wide. Two families, each with a fixed job. This was
 audited across every component and page; the rules below are the contract
 every new page must follow.

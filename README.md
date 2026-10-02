@@ -9,7 +9,7 @@ reputation, and creative direction.
 
 - [Next.js 16](https://nextjs.org) (App Router) + React 19 + TypeScript
 - [Tailwind CSS v4](https://tailwindcss.com) (CSS-first theme in `src/app/globals.css`)
-- Fonts via `next/font/google`: **Inter** (UI/body) and **Fraunces** (serif accents)
+- Fonts via `next/font/google`: **Inter** (everything), **Instrument Serif** (italic accents), **Geist Mono** (metadata)
 
 ## Getting started
 
@@ -46,9 +46,10 @@ src/
 
 ## Design system
 
-Brand colors are exposed as Tailwind tokens (e.g. `bg-canvas`, `text-ink`,
-`text-brand`, `border-line`). See `AGENTS.md` for the full palette and
-conventions.
+Cinematic Red x Swiss Systems. Brand colors are exposed as Tailwind tokens
+(e.g. `bg-brand`, `bg-oxblood`, `text-ink`, `border-line`). See
+`docs/design-system.md` for the full system and `docs/hero-video.md` for
+the hero film brief and Higgsfield prompts.
 
 ## Status
 

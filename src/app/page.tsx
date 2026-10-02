@@ -1,50 +1,31 @@
 import { Hero } from "@/components/hero";
-import { PartnersStrip } from "@/components/partners-strip";
-import { ManifestoSection } from "@/components/manifesto-section";
-import { ServicesSection } from "@/components/services-section";
-import { GrowthSystemSection } from "@/components/growth-system-section";
-import { WorkSection } from "@/components/work-section";
-import { PerformanceSection } from "@/components/performance-section";
-import { MethodSection } from "@/components/method-section";
-import { ProofSection } from "@/components/proof-section";
-import { CompareSection } from "@/components/compare-section";
-import { StatementSection } from "@/components/statement-section";
-import { TickerStrip } from "@/components/ticker-strip";
-import { JournalSection } from "@/components/journal-section";
-import { FaqSection } from "@/components/faq-section";
-import { FounderNote } from "@/components/founder-note";
-import { GrowthAuditSection } from "@/components/growth-audit-section";
-import { CtaSection } from "@/components/cta-section";
+import { ClientsStrip } from "@/components/home/clients-strip";
+import { ClosingChapter } from "@/components/home/closing-chapter";
+import { FaqChapter } from "@/components/home/faq-chapter";
+import { JournalChapter } from "@/components/home/journal-chapter";
+import { ManifestoChapter } from "@/components/home/manifesto-chapter";
+import { MethodChapter } from "@/components/home/method-chapter";
+import { ResultsChapter } from "@/components/home/results-chapter";
+import { ServicesChapter } from "@/components/home/services-chapter";
+import { WorkChapter } from "@/components/home/work-chapter";
 
+/*
+  Home: the film, then seven numbered chapters alternating paper, red and
+  oxblood, ending in one red invitation and the footer.
+*/
 export default function Home() {
   return (
     <main>
       <Hero />
-      <PartnersStrip />
-      <ManifestoSection />
-      <ServicesSection />
-      <GrowthSystemSection />
-      <WorkSection />
-      <PerformanceSection />
-      <MethodSection />
-      <ProofSection />
-      <TickerStrip
-        items={["Found", "Trusted", "Chosen", "Remembered"]}
-        filledIndex={2}
-      />
-      <CompareSection />
-      <StatementSection
-        kicker="The AI-era standard"
-        note="AEO — built into every engagement"
-        surface="ink"
-      >
-        Be the <em className="italic text-clay">answer</em>, not the ad.
-      </StatementSection>
-      <JournalSection />
-      <FaqSection />
-      <FounderNote />
-      <GrowthAuditSection />
-      <CtaSection />
+      <ClientsStrip />
+      <ManifestoChapter />
+      <ServicesChapter />
+      <MethodChapter />
+      <WorkChapter />
+      <ResultsChapter />
+      <JournalChapter />
+      <FaqChapter />
+      <ClosingChapter />
     </main>
   );
 }

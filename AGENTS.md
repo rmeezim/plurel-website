@@ -15,24 +15,39 @@ Creative Direction, and consulting.
 
 - Next.js 16 (App Router) + React 19 + TypeScript
 - Tailwind CSS v4 (CSS-first config in `src/app/globals.css` via `@theme`)
-- Fonts via `next/font/google`: Inter (`--font-sans`), Fraunces (`--font-serif`)
+- Fonts via `next/font/google`: Inter (`--font-sans`, everything),
+  Instrument Serif italic (`--font-serif`, one accent phrase per headline),
+  Geist Mono (`--font-mono`, Swiss metadata)
+
+## Design language: Cinematic Red x Swiss Systems
+
+Read `docs/design-system.md` before building any page. In short: red is
+the environment (red-graded hero film, lit red chapters, oxblood footer),
+structure is Swiss (visible 12-column grid, numbered chapters, mono
+metadata), and the layout follows the Northeon family shared with the
+sister divisions. Primitives live in `src/components/system.tsx`; the
+homepage (`src/components/home/`) is the reference build. The hero film
+brief and Higgsfield prompts are in `docs/hero-video.md`.
 
 ## Brand tokens (defined in `globals.css` `@theme`)
 
-| Token            | Hex       | Usage                                                    |
-| ---------------- | --------- | -------------------------------------------------------- |
-| `canvas`         | `#ece8df` | Main website background                                  |
-| `paper`          | `#fbfaf6` | Clean sections, cards, contrast on dark                  |
-| `ink`            | `#110f0a` | Main typography, dark cards, premium black               |
-| `charcoal`       | `#20201e` | Dark cards, footer, showcase panels                      |
-| `brand`          | `#bf3a36` | CTAs, icons, highlights, selected states, campaign cards |
-| `rust`           | `#a65a45` | Photo overlays, hover states, secondary badges           |
-| `line`           | `#d8d2c8` | Dividers, subtle backgrounds, card borders               |
-| `muted`          | `#8f8981` | Secondary text, metadata, labels, captions               |
-| `clay`           | `#c7b49d` | Image backgrounds, mockups, soft premium surfaces        |
+| Token      | Hex       | Usage                                                        |
+| ---------- | --------- | ------------------------------------------------------------ |
+| `brand`    | `#bf3a36` | Plurel red: red chapters, primary actions, markers on paper  |
+| `ember`    | `#8e2824` | Deep red: hover on red, gradient floors                      |
+| `oxblood`  | `#2a0d0b` | Cinematic shadow: hero base, dark chapters, footer           |
+| `blush`    | `#f2c9bf` | Rose: secondary text and dimmed lines on red and dark        |
+| `signal`   | `#e8564e` | Bright red: markers, rules, indexes on dark                  |
+| `paper`    | `#fbfaf6` | Light chapters; text on red and dark                         |
+| `ink`      | `#110f0a` | Type on paper                                                |
+| `charcoal` | `#20201e` | Dark panels                                                  |
+| `line`     | `#d8d2c8` | Hairlines on paper                                           |
+| `muted`    | `#8f8981` | Secondary text, metadata, captions                           |
 
-Use the generated utilities (`bg-canvas`, `text-ink`, `border-line`,
-`text-brand`, etc.) rather than hardcoded hex values.
+Legacy tokens (`canvas`, `clay`, `rust`) remain only for interior pages
+that haven't moved to the new system. Use the generated utilities
+(`bg-brand`, `text-ink`, `border-line`, `surface-red`, etc.) rather than
+hardcoded hex values.
 
 ## Positioning (long-term)
 
@@ -46,6 +61,9 @@ never buzzwordy.
 
 - Reusable UI lives in `src/components/`. Keep server components by default;
   add `"use client"` only when interactivity is required (e.g. the header menu).
-- Keep animations light and tasteful (`.fade-up` in `globals.css`, gated behind
-  `prefers-reduced-motion`). No heavy 3D yet.
+- Keep animations light and tasteful, all gated behind
+  `prefers-reduced-motion` in `globals.css`. The hero load sequence is the
+  one orchestrated moment; elsewhere use `Reveal`. No heavy 3D yet.
+- The hero film autoplays muted, pauses off screen, and always has a
+  pause control. Never ship auto-moving media without one.
 - Design for mobile first; the layout must hold up from 360px to wide desktop.

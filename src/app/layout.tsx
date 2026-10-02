@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Geist_Mono, Instrument_Serif, Inter } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SITE_URL } from "@/lib/site";
@@ -11,9 +11,17 @@ const inter = Inter({
   display: "swap",
 });
 
-const fraunces = Fraunces({
+const instrument = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
@@ -94,9 +102,15 @@ export default function RootLayout({
       /* Lets the router force an instant jump to top on page navigations
          while keeping smooth scrolling for in-page anchors */
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${fraunces.variable} antialiased`}
+      className={`${inter.variable} ${instrument.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="min-h-screen">
+      <body id="top" className="min-h-screen">
+        <a
+          href="#main"
+          className="sr-only z-[70] bg-ink px-4 py-3 text-sm text-paper focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        >
+          Skip to content
+        </a>
         {/* Reloads always start at the top — pages open on the headline
             cascade, never mid-scroll. Runs before the browser restores
             the previous scroll position. */}
@@ -111,7 +125,9 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
         />
         <SiteHeader />
-        {children}
+        <div id="main" tabIndex={-1} className="outline-none">
+          {children}
+        </div>
         <SiteFooter />
       </body>
     </html>

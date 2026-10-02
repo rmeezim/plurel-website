@@ -1,21 +1,29 @@
 @import "tailwindcss";
 
 /*
-  Plurel design system
-  --------------------
-  Brand palette is exposed as Tailwind v4 theme tokens so utilities like
-  `bg-canvas`, `text-ink`, `border-line`, `text-brand`, etc. are generated.
+  Plurel design system: Cinematic Red x Swiss Systems
+  ---------------------------------------------------
+  Red is the environment, not an accent: full-bleed red chapters, red-graded
+  footage, deep oxblood shadows. Structure is Swiss: a visible 12-column
+  grid, numbered chapters, mono metadata. Palette is exposed as Tailwind v4
+  theme tokens so utilities like `bg-brand`, `text-ink`, `border-line` exist.
 */
 @theme {
-  --color-canvas: #ece8df; /* main website background */
-  --color-paper: #fbfaf6; /* clean sections, cards, contrast on dark */
-  --color-ink: #110f0a; /* main typography, dark cards, premium black */
-  --color-charcoal: #20201e; /* dark cards, footer, showcase panels */
-  --color-brand: #bf3a36; /* CTAs, icons, highlights, selected states */
-  --color-rust: #a65a45; /* photo overlays, hover states, secondary badges */
-  --color-line: #d8d2c8; /* dividers, subtle backgrounds, card borders */
-  --color-muted: #8f8981; /* secondary text, metadata, labels, captions */
-  --color-clay: #c7b49d; /* image backgrounds, mockups, soft surfaces */
+  --color-paper: #fbfaf6; /* light chapters, cards, text on red and dark */
+  --color-ink: #110f0a; /* main typography, premium black */
+  --color-charcoal: #20201e; /* dark panels */
+  --color-brand: #bf3a36; /* Plurel red: red chapters, CTAs, markers */
+  --color-ember: #8e2824; /* deep red: hover on red, gradient floor */
+  --color-oxblood: #2a0d0b; /* cinematic shadow red, footer, dark chapters */
+  --color-blush: #f2c9bf; /* rose: secondary text and dimmed lines on red */
+  --color-signal: #e8564e; /* bright red: markers and numbers on dark */
+  --color-line: #d8d2c8; /* hairlines and dividers on paper */
+  --color-muted: #8f8981; /* secondary text, metadata, captions */
+
+  /* Legacy surfaces: still used by interior pages until they move over */
+  --color-canvas: #ece8df;
+  --color-rust: #a65a45;
+  --color-clay: #c7b49d;
 
   /*
     Institutional radius scale — sharp enough to read as drafted panels,
@@ -29,8 +37,12 @@
 }
 
 @theme inline {
+  /* Inter carries everything: the same face as the rest of the Northeon
+     family. Instrument Serif italic is the human accent (one phrase per
+     headline, never body). Geist Mono is Swiss metadata only. */
   --font-sans: var(--font-inter);
-  --font-serif: var(--font-fraunces);
+  --font-serif: var(--font-instrument);
+  --font-mono: var(--font-geist-mono);
 }
 
 @layer base {
@@ -40,7 +52,7 @@
   }
 
   body {
-    background-color: var(--color-canvas);
+    background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -52,6 +64,48 @@
     background-color: var(--color-brand);
     color: #fff;
   }
+}
+
+/*
+  Cinematic surfaces. A red chapter is never flat red: it carries a soft
+  key light from the upper left, a vignette toward the floor, and film
+  grain (add `.grain`), so it reads as lit space rather than a fill.
+*/
+.surface-red {
+  background-color: var(--color-brand);
+  background-image:
+    radial-gradient(70% 90% at 12% 0%, rgba(255, 196, 178, 0.22), transparent 60%),
+    radial-gradient(90% 70% at 100% 100%, rgba(42, 13, 11, 0.55), transparent 65%),
+    linear-gradient(180deg, #c23d38 0%, #b3352f 60%, #9a2d29 100%);
+}
+.surface-oxblood {
+  background-color: var(--color-oxblood);
+  background-image:
+    radial-gradient(60% 80% at 85% 10%, rgba(191, 58, 54, 0.38), transparent 65%),
+    radial-gradient(70% 60% at 0% 100%, rgba(142, 40, 36, 0.35), transparent 70%),
+    linear-gradient(170deg, #34100e 0%, #200a09 55%, #140706 100%);
+}
+
+/* Hero fallback scene: drifting warm light in a red room. Stands in for
+   the Higgsfield loop until public/video/plurel-hero.mp4 exists. */
+.hero-scene {
+  background:
+    radial-gradient(45% 55% at 70% 38%, rgba(232, 86, 78, 0.55), transparent 70%),
+    radial-gradient(35% 45% at 28% 72%, rgba(142, 40, 36, 0.7), transparent 70%),
+    linear-gradient(160deg, #6e1c19 0%, #3a100e 45%, #170605 100%);
+}
+.hero-scene-light {
+  background: radial-gradient(closest-side, rgba(255, 190, 168, 0.45), rgba(255, 190, 168, 0) 70%);
+}
+.hero-scene-sweep {
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 214, 196, 0.1) 45%,
+    rgba(255, 214, 196, 0.16) 50%,
+    rgba(255, 214, 196, 0.1) 55%,
+    transparent 70%
+  );
 }
 
 /*
@@ -307,5 +361,115 @@
   .word-in {
     display: inline-block;
     animation: word-in 0.5s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+  }
+
+  /* ---------- Cinematic x Swiss load sequence (hero, flagship only) ---------- */
+
+  /* Logo mark: the nine cells settle into the grid, corners first */
+  @keyframes mark-cell {
+    from {
+      opacity: 0;
+      transform: scale(0.35);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .mark-cell {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: mark-cell 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  /* Headline lines rise out of their own baseline mask. Wrap each line in
+     `.line-mask` (overflow hidden) and the text in `.line-rise`. */
+  @keyframes line-rise {
+    from {
+      transform: translateY(108%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  .line-rise {
+    display: inline-block;
+    animation: line-rise 1.05s cubic-bezier(0.19, 1, 0.22, 1) both;
+  }
+
+  /* Red rule and grid guides draw in */
+  @keyframes rule-draw {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .rule-draw {
+    transform-origin: left center;
+    animation: rule-draw 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+
+  @keyframes guide-draw {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+  .guide-draw {
+    transform-origin: top center;
+    animation: guide-draw 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  }
+
+  @keyframes soft-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .soft-in {
+    animation: soft-in 1.4s ease both;
+  }
+
+  /* Fallback scene: slow drifting light, one sweep across the room */
+  @keyframes scene-drift-a {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-6%, 4%, 0) scale(1.12);
+    }
+  }
+  @keyframes scene-drift-b {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1.05);
+    }
+    50% {
+      transform: translate3d(8%, -5%, 0) scale(0.92);
+    }
+  }
+  @keyframes scene-sweep {
+    from {
+      transform: translateX(-70%);
+    }
+    to {
+      transform: translateX(70%);
+    }
+  }
+  .scene-drift-a {
+    animation: scene-drift-a 22s ease-in-out infinite;
+  }
+  .scene-drift-b {
+    animation: scene-drift-b 28s ease-in-out infinite;
+  }
+  .scene-sweep {
+    animation: scene-sweep 16s ease-in-out infinite alternate;
   }
 }

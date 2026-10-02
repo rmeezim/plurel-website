@@ -1,564 +1,223 @@
+import fs from "node:fs";
+import path from "node:path";
 import Link from "next/link";
-import { Cascade } from "@/components/cascade";
+import { HeroMedia, type HeroSource } from "@/components/hero-media";
 import {
-  ArrowDownRight,
-  ArrowUpRight,
-  CircledX,
-  Globe,
-  Layers,
-  Megaphone,
-  Spark,
-  Trend,
-} from "@/components/icons";
+  Accent,
+  CONTAINER,
+  CtaLink,
+  GRID,
+  GridGuides,
+  Kicker,
+  Meta,
+  TextLink,
+} from "@/components/system";
+import { AUDIT_HREF } from "@/lib/nav";
+import { asset } from "@/lib/site";
 
-/** Days lit up in the Content Engine card's mini calendar */
-const HERO_CALENDAR_PUBLISHED = new Set([1, 4, 8, 11, 15, 22, 25]);
+/*
+  Home hero: Cinematic Red x Swiss Systems, in the Northeon family layout.
 
-const SIDE_LABELS = ["Brand Systems", "Web Design", "Content / PR"];
+  A looping film fills the frame, graded red; the Swiss grid draws in over
+  it; the headline rises line by line. The film is picked up from
+  public/video at build time (see docs/hero-video.md). Until it exists,
+  the hero plays a drifting-light red scene, so the page is finished
+  either way.
+*/
 
-const SERVICES = [
-  { label: "Brand Identity", icon: "brand" },
-  { label: "Web Design", icon: "web" },
-  { label: "Content Systems", icon: "content" },
-  { label: "Paid Media", icon: "paid" },
-  { label: "PR", icon: "pr" },
-] as const;
+const VIDEO_DIR = path.join(process.cwd(), "public", "video");
 
-function ServiceIcon({ kind }: { kind: (typeof SERVICES)[number]["icon"] }) {
-  switch (kind) {
-    case "brand":
-      return (
-        <span className="relative inline-flex">
-          <Spark className="size-7 text-ink" />
-          <Spark className="absolute -right-1.5 -top-1.5 size-3 text-brand" />
-        </span>
-      );
-    case "web":
-      return <Globe className="size-7 text-ink" />;
-    case "content":
-      return <Layers className="size-7 text-ink" />;
-    case "paid":
-      return <Trend className="size-7 text-ink" />;
-    case "pr":
-      return <Megaphone className="size-7 text-ink" />;
+const FILES = {
+  mp4: "plurel-hero.mp4",
+  webm: "plurel-hero.webm",
+  mobile: "plurel-hero-mobile.mp4",
+  poster: "plurel-hero-poster.jpg",
+};
+
+function heroFilm(): { sources: HeroSource[]; poster?: string } | null {
+  const has = (file: string) => fs.existsSync(path.join(VIDEO_DIR, file));
+  const sources: HeroSource[] = [];
+  if (has(FILES.mobile)) {
+    sources.push({
+      src: asset(`/video/${FILES.mobile}`),
+      type: "video/mp4",
+      media: "(max-width: 767px)",
+    });
   }
+  if (has(FILES.webm)) {
+    sources.push({ src: asset(`/video/${FILES.webm}`), type: "video/webm" });
+  }
+  if (has(FILES.mp4)) {
+    sources.push({ src: asset(`/video/${FILES.mp4}`), type: "video/mp4" });
+  }
+  if (!sources.length) return null;
+  return {
+    sources,
+    poster: has(FILES.poster) ? asset(`/video/${FILES.poster}`) : undefined,
+  };
 }
 
-/**
- * One set of showcase cards — each represents a capability of the Plurel
- * operating system, tagged consistently. Rendered twice (back to back) inside
- * the marquee track so the loop is seamless. Each card carries its own right
- * margin so the -50% translate lands exactly on the duplicate. The second set
- * is aria-hidden.
- */
-function ShowcaseCards({ prefix, hidden }: { prefix: string; hidden?: boolean }) {
-  const ariaHidden = hidden || undefined;
+/** Stand-in scene: warm light drifting through a red room */
+function FallbackScene() {
   return (
-    <>
-      {/* 1 — Brand System: identity tiles */}
-      <article
-        key={`${prefix}-brand`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[210px] shrink-0 flex-col overflow-hidden rounded-2xl bg-ink p-4 sm:w-[230px]"
-      >
-        <span className="grid flex-1 grid-cols-2 gap-2">
-          <span className="flex items-center justify-center rounded-lg bg-brand">
-            <Spark className="size-6 text-paper" />
-          </span>
-          <span className="flex items-center justify-center rounded-lg bg-paper font-serif text-3xl leading-none text-ink">
-            Aa
-          </span>
-          <span className="flex items-center justify-center gap-1.5 rounded-lg bg-charcoal">
-            <span className="size-2.5 rounded-full bg-brand" />
-            <span className="size-2.5 rounded-full bg-clay" />
-            <span className="size-2.5 rounded-full bg-paper" />
-          </span>
-          <span className="flex items-center justify-center rounded-lg bg-clay text-[10px] font-semibold tracking-[0.3em] text-ink">
-            PLU
-          </span>
-        </span>
-        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
-          <Spark className="size-3 text-brand" /> Brand System
-        </span>
-      </article>
+    <div aria-hidden className="hero-scene absolute inset-0 z-0 overflow-hidden">
+      <div className="hero-scene-light scene-drift-a absolute left-[38%] top-[-10%] h-[110%] w-[70%]" />
+      <div className="hero-scene-light scene-drift-b absolute -left-[15%] top-[35%] h-[90%] w-[55%] opacity-50" />
+      <div className="hero-scene-sweep scene-sweep absolute inset-y-0 -left-1/4 w-[150%]" />
+    </div>
+  );
+}
 
-      {/* Growth Stack: the operating-system layers */}
-      <article
-        key={`${prefix}-stack`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[210px] shrink-0 flex-col rounded-2xl border border-line bg-paper p-5 text-ink sm:w-[230px]"
-      >
-        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-muted">
-          <span>Growth stack</span>
-          <span className="text-[11px] font-semibold normal-case tracking-normal text-brand">
-            5 layers
-          </span>
-        </span>
-        <ul className="mt-4 flex flex-col gap-1.5">
-          {[
-            "Brand System",
-            "Website Layer",
-            "Content Engine",
-            "Search Visibility",
-            "Campaign Intelligence",
-          ].map((layer, i) => (
-            <li
-              key={layer}
-              className="flex items-center gap-2.5 rounded-lg border border-line bg-canvas px-3 py-2"
-            >
-              <span className="text-[9px] font-semibold tabular-nums text-muted">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span className="text-[11px] leading-none text-ink/85">
-                {layer}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <span className="mt-auto flex items-center gap-1.5 pt-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-ink/60">
-          <Spark className="size-3 text-brand" /> Growth Stack
-        </span>
-      </article>
+const INDEX = [
+  { label: "Brand identity", href: "/services/brand-identity" },
+  { label: "Websites", href: "/services/website-design" },
+  { label: "AI search & SEO", href: "/services/aeo-seo" },
+  { label: "Content & PR", href: "/services/content-marketing" },
+  { label: "Growth systems", href: "/services/martech-consulting" },
+];
 
-      {/* AI Visibility Scan: multi-engine presence report */}
-      <article
-        key={`${prefix}-aiscan`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-charcoal p-5 text-paper sm:w-[250px]"
-      >
-        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-paper/55">
-          <span>Presence scan</span>
-          <span className="relative flex size-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-60" />
-            <span className="relative inline-flex size-2 rounded-full bg-brand" />
-          </span>
-        </span>
-        <ul className="mt-4 space-y-2">
-          {[
-            { name: "Google", filled: 2 },
-            { name: "ChatGPT", filled: 1 },
-            { name: "Perplexity", filled: 1 },
-            { name: "Gemini", filled: 1 },
-          ].map((row) => (
-            <li key={row.name} className="flex items-center justify-between">
-              <span className="text-[11px] text-paper/80">{row.name}</span>
-              <span className="flex gap-1">
-                {Array.from({ length: 5 }, (_, d) => (
-                  <span
-                    key={d}
-                    className={`size-1.5 rounded-full ${
-                      d < row.filled ? "bg-brand" : "bg-paper/20"
-                    }`}
-                  />
-                ))}
-              </span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-auto">
-          <span className="flex items-center justify-between border-t border-paper/10 pt-3 text-[10px]">
-            <span className="text-paper/55">Current presence</span>
-            <span className="font-semibold text-paper">Weak</span>
-          </span>
-          <span className="mt-1.5 flex items-center justify-between text-[10px]">
-            <span className="text-paper/55">Opportunity</span>
-            <span className="font-semibold text-brand">High</span>
-          </span>
-        </div>
-        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
-          <Spark className="size-3 text-brand" /> AI Visibility Scan
-        </span>
-      </article>
+const INDEX_VISIBILITY = [
+  "block",
+  "block",
+  "hidden sm:block",
+  "hidden lg:block",
+  "hidden lg:block",
+];
 
-      {/* 2 — Website Experience: dark studio mockup + interior shot */}
-      <article
-        key={`${prefix}-web`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[340px] shrink-0 overflow-hidden rounded-2xl bg-ink text-paper sm:w-[420px]"
+/** Staggered line reveal: each line rises out of its own mask */
+function Line({
+  children,
+  delay,
+  className = "",
+}: {
+  children: React.ReactNode;
+  delay: number;
+  className?: string;
+}) {
+  return (
+    <span className="-mb-[0.1em] block overflow-hidden pb-[0.1em] pr-[0.08em]">
+      <span
+        className={`line-rise ${className}`}
+        style={{ animationDelay: `${delay}ms` }}
       >
-        <div className="flex w-[60%] flex-col p-5 sm:p-6">
-          <div className="flex items-center justify-between text-[9px] uppercase tracking-[0.15em] text-paper/55">
-            <span className="flex items-center gap-1.5 font-semibold text-paper">
-              <CircledX className="size-4" /> Aurem
-            </span>
-            <span className="hidden gap-2.5 sm:flex">
-              <span>Work</span>
-              <span>About</span>
-              <span>Journal</span>
-            </span>
-          </div>
-          <div className="mt-auto">
-            <h3 className="font-serif text-[26px] leading-[1.05] sm:text-3xl">
-              Strategic<span className="text-brand">*</span>
-              <br />
-              by design.
-            </h3>
-            <p className="mt-3 max-w-[26ch] text-xs leading-relaxed text-paper/60">
-              A branding and digital studio crafting considered experiences for
-              forward-thinking companies.
-            </p>
-            <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
-              <Spark className="size-3 text-brand" /> Website Experience
-            </span>
-          </div>
-        </div>
-        {/* Placeholder interior photograph */}
-        <div
-          aria-hidden
-          className="w-[40%]"
-          style={{
-            backgroundImage:
-              "linear-gradient(155deg, #c7b49d 0%, #a65a45 70%, #4a342b 100%)",
-          }}
-        />
-      </article>
-
-      {/* 3 — AI Search Visibility: rising query graph */}
-      <article
-        key={`${prefix}-search`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-charcoal p-5 text-paper sm:w-[250px]"
-      >
-        <span className="flex h-9 items-center gap-2 rounded-full bg-paper/10 px-3">
-          <span className="size-2.5 rounded-full border border-paper/50" />
-          <span className="h-1.5 w-20 rounded-full bg-paper/25" />
-        </span>
-        <span className="mt-3 text-right text-sm font-medium leading-none text-brand">
-          +185%
-        </span>
-        <span className="mt-auto flex h-28 items-end gap-2">
-          {["30%", "44%", "58%", "76%", "100%"].map((h, i) => (
-            <span
-              key={h}
-              style={{ height: h }}
-              className={`flex-1 rounded-t-md ${i === 4 ? "bg-brand" : "bg-paper/20"}`}
-            />
-          ))}
-        </span>
-        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
-          <Spark className="size-3 text-brand" /> AI Search Visibility
-        </span>
-      </article>
-
-      {/* 4 — Content Engine: editorial calendar */}
-      <article
-        key={`${prefix}-content`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[210px] shrink-0 flex-col rounded-2xl border border-line bg-paper p-5 text-ink sm:w-[230px]"
-      >
-        <span className="flex items-center justify-between">
-          <span className="text-[10px] font-semibold tracking-[0.25em] text-muted">
-            JUL
-          </span>
-          <span className="size-2 rounded-full bg-brand" />
-        </span>
-        <span className="mt-3 grid flex-1 grid-cols-7 content-start gap-1.5">
-          {Array.from({ length: 28 }, (_, i) => (
-            <span
-              key={i}
-              className={`aspect-square rounded-[3px] ${
-                HERO_CALENDAR_PUBLISHED.has(i)
-                  ? "bg-brand"
-                  : i === 17
-                    ? "bg-clay"
-                    : "bg-line/70"
-              }`}
-            />
-          ))}
-        </span>
-        <span className="mt-3 flex flex-col gap-1">
-          {[
-            { label: "Founder POV", dot: "bg-brand" },
-            { label: "Search Articles", dot: "bg-clay" },
-            { label: "Case Studies", dot: "bg-rust" },
-            { label: "LinkedIn Distribution", dot: "bg-ink/40" },
-          ].map((row) => (
-            <span
-              key={row.label}
-              className="flex items-center gap-1.5 text-[9px] leading-tight text-ink/70"
-            >
-              <span className={`size-1.5 shrink-0 rounded-full ${row.dot}`} />
-              {row.label}
-            </span>
-          ))}
-        </span>
-        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-ink/60">
-          <Spark className="size-3 text-brand" /> Content Engine
-        </span>
-      </article>
-
-      {/* Conversion Pulse: outcome metric */}
-      <article
-        key={`${prefix}-pulse`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[210px] shrink-0 flex-col rounded-2xl bg-ink p-5 text-paper sm:w-[230px]"
-      >
-        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-paper/55">
-          <span>Conversion pulse</span>
-          <svg
-            width="34"
-            height="14"
-            viewBox="0 0 34 14"
-            fill="none"
-            className="text-brand"
-            aria-hidden
-          >
-            <path
-              d="M1 12 L9 8 L16 9 L24 4 L33 1"
-              stroke="currentColor"
-              strokeWidth="1.25"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
-        <span className="mt-auto flex items-baseline gap-1">
-          <span className="text-[44px] font-normal leading-none tracking-tight text-brand">
-            +38
-          </span>
-          <span className="text-xl font-normal leading-none text-brand">%</span>
-        </span>
-        <span className="mt-2.5 text-[13px] font-medium text-paper">
-          inquiry quality
-        </span>
-        <p className="mt-2 text-[10px] leading-relaxed text-paper/50">
-          after repositioning, web rebuild, and content system launch
-        </p>
-        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/70">
-          <Spark className="size-3 text-brand" /> Conversion Pulse
-        </span>
-      </article>
-
-      {/* 5 — Campaign Intelligence: funnel + return stat */}
-      <article
-        key={`${prefix}-campaign`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[230px] shrink-0 flex-col rounded-2xl bg-brand p-5 text-paper sm:w-[250px]"
-      >
-        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-paper/70">
-          <span>Q3 &mdash; Awareness</span>
-          <span className="text-sm font-semibold normal-case tracking-normal text-paper">
-            4.2&times;
-          </span>
-        </span>
-        <h3 className="mt-4 font-serif text-[26px] leading-[1.08]">
-          Clarity Builds
-          <br />
-          Confidence.
-        </h3>
-        <span className="mt-auto flex flex-col gap-1.5">
-          <span className="h-2.5 w-full rounded-full bg-paper/25" />
-          <span className="h-2.5 w-[70%] rounded-full bg-paper/40" />
-          <span className="h-2.5 w-[44%] rounded-full bg-paper/60" />
-          <span className="h-2.5 w-[26%] rounded-full bg-paper" />
-        </span>
-        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/80">
-          <Spark className="size-3 text-paper" /> Campaign Intelligence
-        </span>
-      </article>
-
-      {/* 6 — Reputation Layer: trust signal map */}
-      <article
-        key={`${prefix}-reputation`}
-        aria-hidden={ariaHidden}
-        className="mr-4 flex h-full w-[210px] shrink-0 flex-col rounded-2xl bg-rust p-5 text-paper sm:w-[230px]"
-      >
-        <span className="flex items-center justify-between text-[9px] font-medium uppercase tracking-[0.2em] text-paper/70">
-          <span>Signals</span>
-          <span className="text-sm font-semibold normal-case tracking-normal text-paper">
-            40+
-          </span>
-        </span>
-        <span className="my-auto block">
-          <svg viewBox="0 0 100 70" className="w-full">
-            <g stroke="#fbfaf6" strokeOpacity="0.35" strokeWidth="0.75">
-              <line x1="50" y1="37" x2="14" y2="14" />
-              <line x1="50" y1="37" x2="56" y2="8" />
-              <line x1="50" y1="37" x2="87" y2="16" />
-              <line x1="50" y1="37" x2="90" y2="52" />
-              <line x1="50" y1="37" x2="16" y2="58" />
-            </g>
-            <g fill="#fbfaf6" fillOpacity="0.7">
-              <circle cx="14" cy="14" r="2.6" />
-              <circle cx="56" cy="8" r="2.6" />
-              <circle cx="87" cy="16" r="2.6" />
-              <circle cx="90" cy="52" r="2.6" />
-              <circle cx="16" cy="58" r="2.6" />
-            </g>
-            <circle cx="50" cy="37" r="6" fill="#110f0a" />
-            <circle cx="50" cy="37" r="2" fill="#fbfaf6" />
-          </svg>
-        </span>
-        <span className="mt-4 flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-paper/80">
-          <Spark className="size-3 text-paper" /> Reputation Layer
-        </span>
-      </article>
-    </>
+        {children}
+      </span>
+    </span>
   );
 }
 
 export function Hero() {
+  const film = heroFilm();
+
   return (
-    <section aria-labelledby="hero-heading">
-      <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
-        {/* Headline + vertical service labels */}
-        <div className="grid grid-cols-1 gap-x-8 gap-y-8 pb-8 pt-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:pb-10 lg:pt-14">
-          <h1
-            id="hero-heading"
-            className="font-sans text-[clamp(2.25rem,6.4vw,7.5rem)] font-normal leading-[0.95] tracking-[-0.02em] text-ink"
-          >
-            <Cascade text="We build the" base={0.1} step={0.05} />
-            <br className="hidden sm:block" />{" "}
-            <Cascade
-              text="visible layer of growth."
-              base={0.1}
-              step={0.05}
-              offset={3}
-            />
-          </h1>
+    <section
+      aria-labelledby="hero-heading"
+      className="grain relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-oxblood text-paper"
+    >
+      <FallbackScene />
+      {film && <HeroMedia sources={film.sources} poster={film.poster} />}
 
-          <ul className="fade-up flex flex-wrap items-center gap-x-6 gap-y-1 text-[11px] font-medium uppercase tracking-[0.18em] text-muted lg:w-44 lg:flex-col lg:items-end lg:gap-0 lg:text-right">
-            {SIDE_LABELS.map((label) => (
-              <li
-                key={label}
-                className="lg:w-full lg:border-t lg:border-line lg:py-3"
-              >
-                {label}
-              </li>
-            ))}
-          </ul>
-        </div>
+      {/* Grade and legibility: red multiply over the film, then shade
+          toward the copy column and the floor */}
+      {film && (
+        <div aria-hidden className="absolute inset-0 z-[1] bg-brand opacity-45 mix-blend-multiply" />
+      )}
+      <div
+        aria-hidden
+        className="absolute inset-0 z-[1] bg-gradient-to-r from-oxblood/90 via-oxblood/50 to-transparent lg:via-oxblood/35"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 bottom-0 z-[1] h-1/2 bg-gradient-to-t from-oxblood/85 to-transparent"
+      />
+      <div
+        aria-hidden
+        className="absolute inset-x-0 top-0 z-[1] h-40 bg-gradient-to-b from-black/35 to-transparent"
+      />
+      <GridGuides tone="dark" animated className="z-[1]" />
 
-        {/* Intro column + work showcase rail */}
-        <div className="grid grid-cols-1 gap-10 border-t border-line py-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-12 lg:py-10">
-          {/* Left: intro + selected work stat */}
-          <div className="flex flex-col">
-            <div className="flex items-center gap-3">
-              {/* Placeholder avatar — swap for a real headshot */}
-              <span
-                aria-hidden
-                className="size-12 shrink-0 rounded-full bg-clay ring-1 ring-line"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle at 50% 35%, #d8c7b0 0 30%, #b79f86 31% 60%, #8f8981 61%)",
-                }}
-              />
-              <span className="inline-flex size-12 shrink-0 items-center justify-center rounded-full border border-brand text-brand">
-                <ArrowDownRight className="size-5" />
-              </span>
+      {/* Copy */}
+      <div
+        className={`${CONTAINER} relative z-[2] flex flex-1 flex-col justify-end pb-8 pt-32 sm:pb-10 lg:pb-10 lg:pt-36`}
+      >
+        <div className={`${GRID} gap-y-10`}>
+          <div className="col-span-4 sm:col-span-6 lg:col-span-9">
+            <div className="fade-up" style={{ animationDelay: "60ms" }}>
+              <Kicker tone="red">Creative &amp; growth partner</Kicker>
             </div>
 
-            <p className="mt-6 max-w-[34ch] text-[15px] leading-relaxed text-ink/80">
-              Plurel is Northeon&rsquo;s creative division &mdash; shaping brand
-              identity, websites, content systems, paid campaigns, and PR assets
-              that make companies look sharper, more trusted, and easier to
-              choose.
+            <h1
+              id="hero-heading"
+              className="mt-8 text-[clamp(3rem,7.4vw,7.5rem)] font-normal leading-[0.92] tracking-[-0.045em] lg:mt-10"
+            >
+              <Line delay={150}>We build the</Line>
+              <Line delay={270}>
+                <Accent>visible</Accent> layer
+              </Line>
+              <Line delay={390} className="text-blush/75">
+                of growth.
+              </Line>
+            </h1>
+
+            <span
+              aria-hidden
+              className="rule-draw mt-8 block h-[2px] w-14 bg-signal lg:mt-9"
+              style={{ animationDelay: "650ms" }}
+            />
+
+            <p
+              className="fade-up mt-7 max-w-[52ch] text-[17px] leading-relaxed text-paper/80 lg:text-[19px]"
+              style={{ animationDelay: "700ms" }}
+            >
+              Plurel is Northeon&apos;s creative and growth division. We design
+              the brand, website, and AI-search presence that make you easy to
+              find, trust, and choose, then wire the growth system underneath.
             </p>
 
-            <div className="mt-auto border-t border-line pt-6">
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <div className="flex items-start gap-1">
-                    <span className="text-6xl font-normal leading-none tracking-tight text-ink">
-                      120
-                    </span>
-                    <span className="text-2xl font-normal leading-none text-brand">
-                      +
-                    </span>
-                  </div>
-                  <p className="mt-2 font-medium text-brand">Selected Work</p>
-                </div>
-                <span className="mb-1 flex items-center gap-2 text-ink">
-                  <span className="h-px w-10 bg-ink/30" />
-                  <ArrowUpRight className="size-6" />
-                </span>
-              </div>
+            <div
+              className="fade-up mt-9 flex flex-wrap items-center gap-x-10 gap-y-6"
+              style={{ animationDelay: "820ms" }}
+            >
+              <CtaLink href={AUDIT_HREF}>Book a growth audit</CtaLink>
+              <TextLink href="/work" tone="dark">
+                See the work
+              </TextLink>
             </div>
           </div>
 
-          {/* Right: infinite marquee of work + anchored primary CTA */}
-          <div className="min-w-0">
-            <div className="fade-up relative">
-              <div className="marquee-mask relative h-[320px] overflow-hidden sm:h-[350px]">
-                <div className="animate-marquee flex h-full w-max will-change-transform">
-                  <ShowcaseCards prefix="a" />
-                  <ShowcaseCards prefix="b" hidden />
-                </div>
-                {/* Raised-edge shadows — the page surface on either side reads
-                    as a layer sitting above the cards passing beneath it */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-y-0 left-0 w-5 bg-gradient-to-r from-ink/35 via-ink/10 via-45% to-transparent"
-                />
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-y-0 right-0 w-5 bg-gradient-to-l from-ink/35 via-ink/10 via-45% to-transparent"
-                />
-              </div>
-
-              {/* Primary CTA — a folder-tab corner. The panel is carved into
-                  the slider's bottom-right corner: a canvas mask pads its top
-                  and left edges, and two concave fillets weld the cutout into
-                  the slider's bottom and right boundaries, so the page surface
-                  flows around it like the raised tab of a folder. The outer
-                  wrapper clips the cast shadow so it falls only up/left onto
-                  the cards — never onto the page below or right of the tab. */}
-              <div className="pointer-events-none absolute bottom-0 right-0 z-20 overflow-hidden pl-12 pt-12">
-              <Link
-                href="/contact"
-                aria-label="Book Strategy Call"
-                className="group pointer-events-auto relative block rounded-tl-[15px] bg-canvas pl-[9px] pt-[9px] [filter:drop-shadow(-6px_-6px_10px_rgba(17,15,10,0.22))]"
-              >
-                {/* Concave fillets — page-colored quarter-curves that blend
-                    the tab into the slider's right and bottom edges */}
-                <span
-                  aria-hidden
-                  className="absolute -top-3 right-0 size-3"
-                  style={{
-                    background:
-                      "radial-gradient(circle 12px at 0 0, transparent 11px, var(--color-canvas) 12px)",
-                  }}
-                />
-                <span
-                  aria-hidden
-                  className="absolute -left-3 bottom-0 size-3"
-                  style={{
-                    background:
-                      "radial-gradient(circle 12px at 0 0, transparent 11px, var(--color-canvas) 12px)",
-                  }}
-                />
-                <span className="relative block h-[100px] w-[284px] rounded-[6px] bg-brand transition-colors duration-300 group-hover:bg-[#b0332f] sm:h-[112px] sm:w-[316px]">
-                  {/* Plurel mark, subtle, top-right */}
-                  <Spark className="absolute right-5 top-4 size-3.5 text-paper/70" />
-                  {/* Label, left-aligned */}
-                  <span className="absolute bottom-4 left-6 font-sans text-[21px] font-medium leading-[1.16] tracking-[-0.01em] text-paper sm:text-[24px]">
-                    Book
-                    <br />
-                    Strategy Call
-                  </span>
-                  {/* Diagonal arrow, right */}
-                  <ArrowUpRight className="absolute bottom-4 right-5 size-5 text-paper transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </span>
-              </Link>
-              </div>
-            </div>
+          <div
+            className="fade-up hidden self-end lg:col-span-3 lg:block"
+            style={{ animationDelay: "980ms" }}
+          >
+            <Kicker tone="dark">The growth audit</Kicker>
+            <p className="mt-4 max-w-[30ch] text-[15px] leading-relaxed text-paper/70">
+              Six dimensions. About one business day. A prioritized read on
+              your presence, from a strategist.
+            </p>
           </div>
         </div>
 
-        {/* Services strip */}
-        <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-          {SERVICES.map((service) => (
-            <li
-              key={service.label}
-              className="flex flex-col items-center justify-center gap-3 border-l border-t border-line px-4 py-8 text-center odd:border-l-0 sm:odd:border-l sm:[&:nth-child(3n+1)]:border-l-0 lg:[&:nth-child(3n+1)]:border-l lg:[&:nth-child(5n+1)]:border-l-0"
+        {/* Swiss index of the disciplines */}
+        <nav
+          aria-label="Disciplines"
+          className={`${GRID} fade-up mt-12 border-t border-paper/20 pt-4 lg:mt-14`}
+          style={{ animationDelay: "1100ms" }}
+        >
+          {INDEX.map((item, i) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`group col-span-2 ${INDEX_VISIBILITY[i]}`}
             >
-              <ServiceIcon kind={service.icon} />
-              <span className="text-sm font-medium text-ink sm:text-base">
-                {service.label}
+              <Meta className="text-blush/70 transition-colors group-hover:text-paper">
+                ({String(i + 1).padStart(2, "0")})
+              </Meta>
+              <span className="mt-1 block text-[14px] text-paper/85 transition-colors group-hover:text-paper">
+                {item.label}
               </span>
-            </li>
+            </Link>
           ))}
-        </ul>
+        </nav>
       </div>
     </section>
   );

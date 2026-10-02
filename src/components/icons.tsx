@@ -20,6 +20,15 @@ export function ArrowUpRight(props: IconProps) {
   );
 }
 
+export function ArrowRight(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M4 12h15" />
+      <path d="m13 6 6 6-6 6" />
+    </svg>
+  );
+}
+
 export function ArrowDownRight(props: IconProps) {
   return (
     <svg {...base} {...props}>
@@ -114,6 +123,30 @@ export function Close(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <path d="M6 6l12 12M18 6 6 18" />
+    </svg>
+  );
+}
+
+export function Play(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M8 5.5v13l10-6.5-10-6.5z" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function Pause(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M8 5v14M16 5v14" strokeWidth={2.4} strokeLinecap="butt" />
+    </svg>
+  );
+}
+
+export function Plus(props: IconProps) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 5v14M5 12h14" />
     </svg>
   );
 }
