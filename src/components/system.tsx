@@ -143,11 +143,28 @@ export function TextLink({
   );
 }
 
-const HEAD_TONE: Record<Tone, { rule: string; index: string; meta: string }> = {
-  paper: { rule: "border-ink/15", index: "text-brand", meta: "text-muted" },
-  red: { rule: "border-paper/25", index: "text-paper", meta: "text-blush" },
-  dark: { rule: "border-paper/15", index: "text-signal", meta: "text-paper/50" },
+const HEAD_TONE: Record<Tone, { rule: string; tick: string; index: string; meta: string }> = {
+  paper: { rule: "border-ink/15", tick: "border-ink/30", index: "text-brand", meta: "text-muted" },
+  red: { rule: "border-paper/25", tick: "border-paper/50", index: "text-paper", meta: "text-blush" },
+  dark: { rule: "border-paper/15", tick: "border-paper/35", index: "text-signal", meta: "text-paper/50" },
 };
+
+/* Column ticks: one short mark per grid column on the running-head
+   hairline, like registration marks on a print. The only place the grid
+   is ever drawn. Which ticks show follows GRID (4 / 6 / 12 columns), and
+   the last visible column also marks its right edge. */
+const TICK_COLUMN = Array.from({ length: 12 }, (_, i) => {
+  const show = i < 4 ? "block" : i < 6 ? "hidden sm:block" : "hidden lg:block";
+  const close =
+    i === 3
+      ? "border-r sm:border-r-0"
+      : i === 5
+        ? "sm:border-r lg:border-r-0"
+        : i === 11
+          ? "lg:border-r"
+          : "";
+  return `${show} ${close}`;
+});
 
 /**
  * Chapter header: the Swiss running head that opens every section.
@@ -168,7 +185,12 @@ export function ChapterHead({
 }) {
   const t = HEAD_TONE[tone];
   return (
-    <div className={`${GRID} items-center border-t pt-5 ${t.rule}`}>
+    <div className={`${GRID} relative items-center border-t pt-5 ${t.rule}`}>
+      <div aria-hidden className={`${GRID} pointer-events-none absolute inset-x-0 top-0`}>
+        {TICK_COLUMN.map((cls, i) => (
+          <span key={i} className={`h-[6px] border-l ${t.tick} ${cls}`} />
+        ))}
+      </div>
       <Meta className={`col-span-1 sm:col-span-1 lg:col-span-2 ${t.index}`}>
         ({index})
       </Meta>

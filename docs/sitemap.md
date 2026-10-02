@@ -21,7 +21,7 @@ primary CTA per page (the audit or the call — never both competing).
 
 The arc: Hero film → Selected clients → (01) Why Plurel [red] →
 (02) Services [paper] → (03) Method [paper] → (04) Selected work [dark] →
-(05) Results [red] → (06) Journal [paper] → (07) Questions [paper] →
+(05) Results [paper, red numbers] → (06) Journal [paper] → (07) Questions [paper] →
 Closing invitation [red] → Footer [oxblood]. This is the reference build
 for every interior page.
 

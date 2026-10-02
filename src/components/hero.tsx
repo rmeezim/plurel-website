@@ -90,7 +90,11 @@ export function Hero() {
       {/* The room is flat Plurel red. When the film exists it plays
           behind everything, softened and graded back to the same red. */}
       {film && (
-        <div aria-hidden className="absolute inset-0 z-[2] bg-brand opacity-60 mix-blend-multiply" />
+        <>
+          <div aria-hidden className="absolute inset-0 z-[2] bg-brand opacity-60 mix-blend-multiply" />
+          {/* Film grain lives on the film only, so it reads as shot */}
+          <div aria-hidden className="grain pointer-events-none absolute inset-0 z-[2]" />
+        </>
       )}
 
       {/* Statement */}

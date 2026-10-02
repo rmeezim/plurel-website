@@ -42,7 +42,8 @@ function Frame({ index, caption, channel, w, h, className = "", children }: Fram
 
 /**
  * A film print: a flat color still until the Higgsfield film exists, then
- * the live film cropped around `focus`. `still` is a background utility.
+ * the live film cropped around `focus`, with film grain on the film only.
+ * `still` is a background utility.
  */
 function Media({
   film,
@@ -56,7 +57,12 @@ function Media({
   return (
     <>
       <div aria-hidden className={`absolute inset-0 ${still}`} />
-      {film && <FilmCanvas focus={focus} />}
+      {film && (
+        <>
+          <FilmCanvas focus={focus} />
+          <span aria-hidden className="grain pointer-events-none absolute inset-0 z-0" />
+        </>
+      )}
     </>
   );
 }

@@ -59,8 +59,8 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| paper | `bg-paper` | ink | Reading chapters: services, method, journal, FAQ |
-| red | `bg-brand` | paper, blush | Hero, thesis, results, the closing invitation |
+| paper | `bg-paper` | ink | Reading chapters: services, method, results, journal, FAQ |
+| red | `bg-brand` | paper, blush | Hero, thesis, the closing invitation |
 | dark | `bg-oxblood` | paper, signal | Work, footer |
 
 All three are flat fills. Alternate tones so no two red or dark chapters
@@ -90,8 +90,11 @@ touch, and keep at least one red room on every page.
 
 - `CONTAINER`: `max-w-[1440px]`, 20 / 32 / 48px side padding.
 - `GRID`: 4 columns (base), 6 (sm), 12 (lg), with 20 / 24 / 32px gutters.
-- The grid is never drawn. It shows through alignment, the single hairline
-  under each chapter's running head, and the mono indexes.
+- The grid is never drawn as lines. It shows through alignment, the
+  single hairline under each chapter's running head, and the mono
+  indexes. The one exception is the column ticks: `ChapterHead` puts a
+  6px mark on its hairline at every column edge (4 / 6 / 12 by
+  breakpoint), like registration marks on a print.
 - Lay every chapter's content on `GRID` spans so edges line up from one
   chapter to the next. Common spans at lg: headline 7 or 8, aside 3 or 4
   starting at column 9 or 10, four-up items 3 each.
@@ -147,7 +150,8 @@ it apart from the sister divisions' heroes.
   the serif accent and blush. Copy and both actions sit to the right.
 - **The room:** flat `bg-brand`. When the film exists it plays behind
   everything, blurred and graded back to the same red. Until then the
-  film prints on the wall show flat color stills.
+  film prints on the wall show flat color stills. Film grain appears on
+  the film only (the room and the film prints), never on flat surfaces.
 - **The wall** (`hero-wall.tsx`): seven prints bottom-aligned like a
   contact sheet, each captioned in Meta with its index, format, and
   channel. Reel (Social), Search (Rank #1), Brand film (Web), AI answer
