@@ -50,7 +50,7 @@ they are rebuilt on this one.
 | `ink` | `#110f0a` | Type on paper |
 | `charcoal` | `#20201e` | Dark panels |
 | `line` | `#d8d2c8` | Hairlines on paper (most hairlines use `ink/10` to `ink/15`) |
-| `muted` | `#8f8981` | Secondary text and metadata on paper |
+| `muted` | `#736d66` | Secondary text and metadata on paper (4.9:1, AA) |
 
 Legacy tokens `canvas`, `clay`, `rust` remain for interior pages until
 they move over. Don't use them in new work.
@@ -193,7 +193,12 @@ Rules:
   motion only with no reduced-motion preference, no forced colors, at least
   32rem tall and 22.5rem wide, with JS. Everything else, and a failed fit
   check, gets the finished static figure: the mark with indexes 01-08
-  around "Your brand", captioned "Fig. 02".
+  around "Your brand", captioned "Fig. 02". A failed fit is retried on
+  resize; if the pin switches off mid-fold, the visitor lands on the
+  static chapter.
+- While the fold is live, anchor jumps and focus scrolls are instant
+  (`scroll-behavior: auto`): a smooth scroll would play the fold on its
+  own, faster than any hand.
 - The pinned track is sized in CSS from `html[data-js]` (set by the inline
   script in `layout.tsx` before first paint), so there is no layout shift
   and deep links land correctly. `#services` points at the resolved frame.

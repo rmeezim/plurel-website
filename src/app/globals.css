@@ -20,7 +20,7 @@
   --color-blush: #f2c9bf; /* rose: secondary text and dimmed lines on red */
   --color-signal: #e8564e; /* bright red: markers and numbers on dark */
   --color-line: #d8d2c8; /* hairlines and dividers on paper */
-  --color-muted: #8f8981; /* secondary text, metadata, captions */
+  --color-muted: #736d66; /* secondary text, metadata, captions */
 
   /* Legacy surfaces: still used by interior pages until they move over */
   --color-canvas: #ece8df;
@@ -106,6 +106,11 @@
 
 /* FOLD_QUERY */
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-height: 32rem) and (min-width: 22.5rem) {
+  /* While the fold is live, anchor jumps and focus scrolls land at once.
+     A smooth scroll would play the fold by itself, faster than any hand. */
+  html[data-js]:has(.fold:not([data-off])) {
+    scroll-behavior: auto;
+  }
   html[data-js] .fold:not([data-off]) .fold-track {
     height: calc(100vh + var(--fold-travel));
     height: calc(100lvh + var(--fold-travel));
@@ -155,12 +160,12 @@
     min-height: 0;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: flex-end;
   }
   /* The resting mark is as large as its columns allow, but never taller
-     than the space left for it and its caption */
+     than the space left for it and a caption of up to three Meta lines */
   html[data-js] .fold:not([data-off]) .fold-fig {
-    width: min(100cqw, 100cqh - 2.75rem);
+    width: min(100cqw, 100cqh - 3.75rem);
   }
   html[data-js] .fold:not([data-off]) .fold-foot {
     top: calc(100vh - 3.25rem);
@@ -174,9 +179,6 @@
     html[data-js] .fold:not([data-off]) .fold-body {
       margin-top: 3rem;
       grid-template-rows: minmax(0, 1fr);
-    }
-    html[data-js] .fold:not([data-off]) .fold-slot {
-      justify-content: flex-end;
     }
   }
 

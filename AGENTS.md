@@ -43,7 +43,7 @@ brief and Higgsfield prompts are in `docs/hero-video.md`.
 | `ink`      | `#110f0a` | Type on paper                                                |
 | `charcoal` | `#20201e` | Dark panels                                                  |
 | `line`     | `#d8d2c8` | Hairlines on paper                                           |
-| `muted`    | `#8f8981` | Secondary text, metadata, captions                           |
+| `muted`    | `#736d66` | Secondary text, metadata, captions                           |
 
 Legacy tokens (`canvas`, `clay`, `rust`) remain only for interior pages
 that haven't moved to the new system. Use the generated utilities

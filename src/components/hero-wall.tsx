@@ -25,7 +25,7 @@ function Frame({ index, caption, channel, w, h, className = "", children }: Fram
   return (
     <figure className="m-0 shrink-0" style={{ width: `calc(var(--u) * ${w})` }}>
       <div
-        className={`relative overflow-hidden shadow-[0_18px_40px_-24px_rgba(42,13,11,0.6)] ${className}`}
+        className={`relative overflow-hidden ${className}`}
         style={{ height: `calc(var(--u) * ${h})`, fontSize: "calc(var(--u) * 14)" }}
       >
         {children}

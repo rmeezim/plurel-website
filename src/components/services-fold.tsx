@@ -35,7 +35,7 @@ import { MARK_CELLS } from "@/lib/mark";
     scrollY and writes cached transform/opacity strings.
   - It moves only with the visitor's own scroll. Reduced motion, forced
     colors, short or narrow windows, and a failed fit check all leave the
-    static chapter in place.
+    static chapter in place (a failed fit is retried on resize).
 */
 
 const px = (v: number) => v.toFixed(2);
@@ -90,6 +90,7 @@ export function ServicesFold({ children }: { children: ReactNode }) {
     let restOn = false;
     let raf = 0;
     let measureRaf = 0;
+    let retryRaf = 0;
 
     // Every write goes through a cache of the last value per node and
     // property, so unchanged values never touch the DOM.
@@ -201,8 +202,14 @@ export function ServicesFold({ children }: { children: ReactNode }) {
         room: { w: room.offsetWidth, h: room.offsetHeight },
       };
 
+      // The figure sits at the foot of its slot, so a caption that runs
+      // long pushes it up into the headline rather than off the bottom
+      const fig = art.parentElement;
+      const slot = fig?.parentElement;
       const fits =
+        !!fig && !!slot &&
         artRect.w >= 120 &&
+        fig.getBoundingClientRect().top >= slot.getBoundingClientRect().top - 0.5 &&
         caption.getBoundingClientRect().bottom <= content.getBoundingClientRect().bottom + 0.5;
       return fits;
     };
@@ -246,11 +253,14 @@ export function ServicesFold({ children }: { children: ReactNode }) {
     /** The hot path: one scrollY read, then cached writes */
     const tick = (force = false) => {
       if (!L) return;
-      const p = clamp((window.scrollY - top) / travel);
-      if (!force) {
-        if (p === lastP) return;
-        if (Math.abs(p - lastP) < 0.0005 && p > 0 && p < 1) return;
+      // Moving to a screen with another pixel ratio changes the pixel grid
+      // the panels snap to, often without any resize
+      if ((window.devicePixelRatio || 1) !== L.dpr) {
+        remeasure();
+        return;
       }
+      const p = clamp((window.scrollY - top) / travel);
+      if (!force && p === lastP) return;
       lastP = p;
       apply(frameAt(p, L), L);
     };
@@ -279,7 +289,9 @@ export function ServicesFold({ children }: { children: ReactNode }) {
 
     // Only listen to scroll while the track is within a viewport of view
     const io = new IntersectionObserver(
-      ([entry]) => {
+      (entries) => {
+        // One callback can carry several changes; the newest one is current
+        const entry = entries[entries.length - 1];
         if (!entry || !armed) return;
         tick(true);
         listen(entry.isIntersecting);
@@ -311,10 +323,19 @@ export function ServicesFold({ children }: { children: ReactNode }) {
       clearInline();
     };
 
-    /** Collapse to the static chapter until the next media change or reload */
+    /** Mid-fold when the pin collapses: land on the static chapter, not
+        wherever the shorter track leaves the scroll position */
+    const keepPlace = (wasMid: boolean) => {
+      if (!wasMid) return;
+      window.scrollTo({ top: section.getBoundingClientRect().top + window.scrollY, behavior: "instant" });
+    };
+
+    /** Collapse to the static chapter. A later resize retries (onResize). */
     const goStatic = () => {
+      const wasMid = lastP > 0 && lastP < 1;
       disarm();
       section.setAttribute("data-off", "");
+      keepPlace(wasMid);
     };
 
     const remeasure = () => {
@@ -329,7 +350,10 @@ export function ServicesFold({ children }: { children: ReactNode }) {
 
     const arm = () => {
       if (armed) return;
-      if (!mq.matches || !document.documentElement.hasAttribute("data-js")) return;
+      // The inline script in layout.tsx sets this before first paint; pages
+      // rendered on the client (a dynamic-route 404) never run it
+      document.documentElement.setAttribute("data-js", "");
+      if (!mq.matches) return;
       section.removeAttribute("data-off");
       section.setAttribute("data-armed", "");
       if (!measure()) {
@@ -351,8 +375,18 @@ export function ServicesFold({ children }: { children: ReactNode }) {
         section.removeAttribute("data-off");
         arm();
       } else {
+        const wasMid = armed && lastP > 0 && lastP < 1;
         disarm();
+        keepPlace(wasMid);
       }
+    };
+    // A failed fit check is retried once the window changes size
+    const onResize = () => {
+      if (armed || retryRaf || !section.hasAttribute("data-off") || !mq.matches) return;
+      retryRaf = requestAnimationFrame(() => {
+        retryRaf = 0;
+        arm();
+      });
     };
     const onShow = (e: PageTransitionEvent) => {
       if (e.persisted) remeasure();
@@ -360,6 +394,7 @@ export function ServicesFold({ children }: { children: ReactNode }) {
 
     mq.addEventListener("change", onMedia);
     window.addEventListener("pageshow", onShow);
+    window.addEventListener("resize", onResize);
     let alive = true;
     document.fonts?.ready.then(() => {
       if (alive) remeasure();
@@ -371,6 +406,8 @@ export function ServicesFold({ children }: { children: ReactNode }) {
       alive = false;
       mq.removeEventListener("change", onMedia);
       window.removeEventListener("pageshow", onShow);
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(retryRaf);
       disarm();
       io.disconnect();
       section.removeAttribute("data-off");

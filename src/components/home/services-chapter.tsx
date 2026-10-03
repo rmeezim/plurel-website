@@ -109,7 +109,7 @@ export function ServicesChapter() {
                     data-fold-art
                     className="fold-mark relative aspect-square w-full [container-type:inline-size]"
                   >
-                    <LogoMark className="block size-full text-brand" title={MARK_NAME} />
+                    <LogoMark className="block size-full text-brand forced-colors:text-[CanvasText]" title={MARK_NAME} />
 
                     {/* Pointer index: each outer cell opens its service.
                         Keyboard and screen readers use the rows below. */}
@@ -148,7 +148,7 @@ export function ServicesChapter() {
                             className="fold-mark-label pointer-events-none absolute text-paper"
                             style={{ left: `calc(${cx * 10}% + 6px)`, top: `calc(${cy * 10}% + 6px)` }}
                           >
-                            <Meta>{s.index}</Meta>
+                            <Meta className="block">{s.index}</Meta>
                           </span>
                         );
                       })}
@@ -162,7 +162,7 @@ export function ServicesChapter() {
                     </div>
                   </div>
 
-                  <figcaption data-fold-caption className="mt-3 grid text-ink/60">
+                  <figcaption data-fold-caption className="mt-3 grid text-[11px] leading-snug text-ink/60">
                     <span data-readout="default" className="[grid-area:1/1]">
                       <Meta>Fig. 02 · Eight disciplines around one brand</Meta>
                     </span>
@@ -213,7 +213,7 @@ export function ServicesChapter() {
       <ul className="relative mt-16 border-b border-ink/15 lg:mt-24">
         {SERVICES.map((s) => (
           <li key={s.slug} className="border-t border-ink/15">
-            <Link href={s.href} className="group relative block overflow-hidden outline-none">
+            <Link href={s.href} className="group relative block overflow-hidden outline-hidden">
               <span
                 aria-hidden
                 className="absolute inset-0 origin-bottom scale-y-0 bg-brand transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-y-100 group-focus-visible:scale-y-100"
@@ -227,7 +227,7 @@ export function ServicesChapter() {
                     <span className="block text-[clamp(1.5rem,3.2vw,2.75rem)] leading-none tracking-[-0.03em] transition-colors group-hover:text-paper group-focus-visible:text-paper">
                       {s.name}
                     </span>
-                    <span className="mt-2 block text-[13px] text-muted transition-colors group-hover:text-paper/85 sm:hidden">
+                    <span className="mt-2 block text-[13px] text-muted transition-colors group-hover:text-paper/85 group-focus-visible:text-paper/85 sm:hidden">
                       {s.tagline}
                     </span>
                   </span>
