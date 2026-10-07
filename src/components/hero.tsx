@@ -244,9 +244,13 @@ export function Hero() {
       <div className={`${CONTAINER} pt-32 sm:pt-36 lg:pt-40`}>
         <div className={`${GRID} gap-y-9 lg:items-end`}>
           <div className="col-span-4 sm:col-span-6 lg:col-span-8">
-            <p className="fade-up flex items-center gap-2.5 text-[13px] font-medium" style={{ animationDelay: "60ms" }}>
-              <i aria-hidden className="block size-[7px] bg-signal" />
-              Brand, demand and distribution <span className="text-fog">· A Northeon company</span>
+            {/* One flowing line; on narrow phones the Northeon tag drops whole to a second */}
+            <p className="fade-up flex items-start gap-2.5 text-[13px] font-medium leading-[1.5]" style={{ animationDelay: "60ms" }}>
+              <i aria-hidden className="mt-[6px] block size-[7px] shrink-0 bg-signal" />
+              <span>
+                Brand, demand and distribution{" "}
+                <span className="whitespace-nowrap text-fog">· A Northeon company</span>
+              </span>
             </p>
             <h1 id="hero-heading" className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98]">
               <Line delay={150}>Made to be</Line>

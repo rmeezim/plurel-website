@@ -9,23 +9,29 @@
   arrives soft), otherwise a stand-in drawn in the palette.
 */
 
-export type GlassProfile = "rise" | "retract";
+export type GlassProfile = "rise" | "arc";
 
 const smooth = (p: number) => p * p * (3 - 2 * p);
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 /**
+ * The finished shape of flute i (0..n-1), as a share of the drop below the
+ * rest line. "rise": a staircase climbing left to right (the hero). "arc":
+ * a symmetric curve, deepest at the center flute (the closing edge).
+ */
+function fluteShape(i: number, n: number, profile: GlassProfile): number {
+  if (profile === "rise") return (i + 1) / n;
+  const a = Math.pow(1 - Math.abs((i + 0.5) / n - 0.5) * 2, 1.1);
+  return 0.12 + 0.88 * a;
+}
+
+/**
  * Height of flute i (0..n-1) as a fraction of the band, for scroll progress
- * p (0..1). "rise": a rest line that steps into a rising staircase as the
- * visitor scrolls on (the hero). "retract": the staircase the hero ended
- * on, lifting back to a short fringe as the visitor scrolls on (the
- * closing edge, so the page ends where it began).
+ * p (0..1): every flute starts on the rest line and drops into the
+ * profile's shape as the visitor scrolls on.
  */
 export function fluteHeight(i: number, n: number, p: number, profile: GlassProfile, rest: number): number {
-  const step = (i + 1) / n;
-  const stair = rest + (1 - rest) * step;
-  const e = smooth(clamp01(p));
-  return profile === "rise" ? rest + (stair - rest) * e : stair + (rest - stair) * e;
+  return rest + (1 - rest) * fluteShape(i, n, profile) * smooth(clamp01(p));
 }
 
 /** Hover reach: the flute under the pointer, a little of its neighbours */
@@ -41,7 +47,7 @@ export const GLASS_FRAG = `
 precision highp float;
 varying vec2 v;
 uniform vec2 uRes;
-uniform float uT, uP, uN, uRest, uAspect, uHover, uHoverK, uRetract, uUseVideo;
+uniform float uT, uP, uN, uRest, uAspect, uHover, uHoverK, uArc, uUseVideo;
 uniform vec3 uDark, uRed, uEmber, uBlush, uPaper;
 uniform sampler2D uVideo;
 uniform vec2 uVideoScale, uVideoOffset;
@@ -69,9 +75,10 @@ vec3 film(vec2 p, float t) {
   return standIn(p, t);
 }
 float height(float i, float n, float p) {
-  float stair = uRest + (1.0 - uRest) * ((i + 1.0) / n);
+  float shape = (i + 1.0) / n;
+  if (uArc > 0.5) shape = 0.12 + 0.88 * pow(1.0 - abs((i + 0.5) / n - 0.5) * 2.0, 1.1);
   float e = clamp(p, 0.0, 1.0); e = e * e * (3.0 - 2.0 * e);
-  return uRetract > 0.5 ? mix(stair, uRest, e) : mix(uRest, stair, e);
+  return uRest + (1.0 - uRest) * shape * e;
 }
 void main() {
   vec2 uv = vec2(v.x, 1.0 - v.y);

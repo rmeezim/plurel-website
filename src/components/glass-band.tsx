@@ -49,8 +49,12 @@ type Props = {
   caption?: ReactNode;
   /** Colour of the caption, index and control: on graphite or on paper */
   tone?: "dark" | "light";
-  /** Where the caption and pause control sit: just under the glass at rest, or at the band's foot */
-  foot?: "rest" | "bottom";
+  /**
+   * Where the caption and pause control sit: just under the glass at rest,
+   * or in a row below the band (the parent leaves room for it), clear of
+   * any profile's deepest flute.
+   */
+  foot?: "rest" | "below";
   className?: string;
 };
 
@@ -63,7 +67,7 @@ export function GlassBand({
   end = 0.2,
   caption,
   tone = "dark",
-  foot = "bottom",
+  foot = "below",
   className = "",
 }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
@@ -113,7 +117,7 @@ export function GlassBand({
     const U = (name: string) => gl.getUniformLocation(prog, name);
     const u = {
       res: U("uRes"), t: U("uT"), p: U("uP"), n: U("uN"), rest: U("uRest"), aspect: U("uAspect"),
-      hover: U("uHover"), hoverK: U("uHoverK"), retract: U("uRetract"), useVideo: U("uUseVideo"),
+      hover: U("uHover"), hoverK: U("uHoverK"), arc: U("uArc"), useVideo: U("uUseVideo"),
       scale: U("uVideoScale"), offset: U("uVideoOffset"),
     };
     gl.uniform3fv(U("uDark"), COLORS.dark);
@@ -123,7 +127,7 @@ export function GlassBand({
     gl.uniform3fv(U("uPaper"), COLORS.paper);
     gl.uniform1f(u.n, N);
     gl.uniform1f(u.rest, rest);
-    gl.uniform1f(u.retract, profile === "retract" ? 1 : 0);
+    gl.uniform1f(u.arc, profile === "arc" ? 1 : 0);
 
     // The film: one small video, drawn into a tiny canvas and uploaded as a
     // texture each frame. Reduced motion uses the poster as a still.
@@ -387,8 +391,8 @@ export function GlassBand({
         className={`pointer-events-none absolute left-0 top-0 font-mono text-[11px] tracking-[0.03em] opacity-0 ${ink}`}
       />
       <div
-        className={`pointer-events-none absolute inset-x-0 flex items-center gap-4 px-5 sm:px-8 lg:px-12 ${foot === "bottom" ? "bottom-3" : ""} ${sub}`}
-        style={foot === "rest" ? { top: `calc(${rest * 100}% + 14px)` } : undefined}
+        className={`pointer-events-none absolute inset-x-0 flex items-center gap-4 px-5 sm:px-8 lg:px-12 ${sub}`}
+        style={{ top: foot === "rest" ? `calc(${rest * 100}% + 14px)` : "calc(100% + 6px)" }}
       >
         <div className="mr-auto">{caption}</div>
         <button

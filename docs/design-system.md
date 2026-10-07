@@ -165,9 +165,10 @@ arrives soft. Until the Higgsfield film exists, a palette stand-in is
 drawn in the shader.
 
 - **Profiles.** `rise` (the hero): a low rest line that steps into a
-  staircase as the visitor scrolls away. `retract` (the bottom edge of the
-  closing chapter): the same staircase lifting back to a fringe, so the
-  page ends where it began.
+  staircase as the visitor scrolls away. `arc` (the bottom edge of the
+  closing chapter): a short fringe that drops into a symmetric arc,
+  deepest at the center flute, as the footer comes up. Its pause control
+  takes a 48px row under the glass (`foot="below"`), clear of the arc.
 - **Hover.** The flute under a pointer (never touch) clears, lifts one
   step and shows a paper edge; its neighbours follow a little.
 - **Rules.** It draws only while on screen, at most 1.5x DPR. It always
@@ -250,7 +251,7 @@ Rules:
   Swiss panel; mobile opens a full-screen red index.
 - Footer (`site-footer.tsx`): paper, brand-red lockup, Swiss link
   columns, the Northeon line (Plurel beside its sister, Kelwin), live
-  studio clock. The closing chapter's `retract` glass sits right above it.
+  studio clock. The closing chapter's `arc` glass sits right above it.
 
 ## Positioning in the homepage
 
