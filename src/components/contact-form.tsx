@@ -60,7 +60,7 @@ export function ContactForm() {
       `${data.get("message")}`,
     ];
     const subject = encodeURIComponent(
-      `Growth audit request — ${data.get("name")}`,
+      `Diagnostic request — ${data.get("name")}`,
     );
     const body = encodeURIComponent(lines.join("\n"));
     window.location.href = `mailto:hello@plurel.com?subject=${subject}&body=${body}`;
@@ -230,7 +230,7 @@ export function ContactForm() {
           type="submit"
           className="group inline-flex items-center gap-2 rounded-lg bg-brand px-6 py-3.5 text-sm font-medium text-paper transition-colors hover:bg-[#a8302c]"
         >
-          Request Growth Audit
+          Request a diagnostic
           <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </button>
       </div>

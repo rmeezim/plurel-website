@@ -6,8 +6,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Plurel — project standards
 
-Plurel is Northeon's brand, demand and distribution company: marketing
-and distribution, rebuilt as one system. Services: Website Design, Brand
+Plurel is Northeon's distribution engineering company: marketing and
+distribution, rebuilt as one system. Services: Website Design, Brand
 Identity, AI Search & SEO, Content Marketing, Paid Ads, PR & Reputation,
 Creative Direction, and Martech & Consulting. Its sister division Kelwin
 (RevOps and go-to-market) turns that demand into revenue.
@@ -59,11 +59,16 @@ hardcoded hex values.
 
 Plurel sells integration, not a menu of services: one narrative, one
 creative engine, one set of numbers and one accountable team across every
-relevant channel (never "every channel"). The thesis: "Your marketing
-shouldn't be ten companies." The best fit is growth-stage companies whose
-marketing has fragmented across suppliers. Engagements start with a
-diagnostic of where the system breaks and run as an integrated monthly
-partnership. Frame them as growth transformations, and treat AI-era
+relevant channel (never "every channel"). The category it names is
+distribution engineering. The thesis: "Your marketing shouldn't be ten
+companies." The best fit is growth-stage companies, B2B and B2C, whose
+marketing has fragmented across suppliers; the outcome is qualified demand
+(never "inquiries" or "pipeline" alone, so it reads for both). Engagements
+start with the Diagnostic (the Plurel Distribution Diagnostic: six parts
+scored and a prioritized read within a business day; the action is
+"Request a diagnostic") and run as an integrated monthly partnership.
+Approved for later: a recurring teardown series in the journal, and
+pricing the system as integrated monthly tiers, never per-channel items. Frame them as growth transformations, and treat AI-era
 visibility (AEO), martech and measurement as part of the method:
 confident and premium, never buzzwordy. `docs/design-system.md` maps the
 argument onto the homepage chapters.
@@ -74,8 +79,10 @@ argument onto the homepage chapters.
   add `"use client"` only when interactivity is required (e.g. the header menu).
 - Keep animations light and tasteful, all gated behind
   `prefers-reduced-motion` in `globals.css`. The hero load sequence is the
-  one orchestrated load moment and the services fold (`services-fold.tsx`)
-  is the one scroll-scrubbed chapter. The fluted glass (`glass-band.tsx`)
+  one orchestrated load moment; the Attention Field (`home/attention-field.tsx`)
+  and the services fold (`services-fold.tsx`) are the two pinned,
+  scroll-scrubbed chapters, and the manifesto's braid strip is scrubbed
+  without pinning. The fluted glass (`glass-band.tsx`)
   is the one WebGL surface; elsewhere use `Reveal`. No heavy 3D.
 - The film behind the glass loops muted with no control (the owner's
   call); it stops off screen and in hidden tabs, and reduced motion or

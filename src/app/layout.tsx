@@ -31,7 +31,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Plurel — Marketing and distribution, rebuilt as one system",
   description:
-    "Plurel is Northeon's brand, demand and distribution company. Narrative, brand, website, AI search and SEO, content, paid, PR, and measurement, run as one system for growth-stage companies.",
+    "Plurel is Northeon's distribution engineering company. Narrative, brand, website, AI search and SEO, content, creators, paid, PR and measurement, run as one system for growth-stage companies.",
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
   openGraph: {
@@ -69,7 +69,7 @@ const ORG_JSON_LD = {
       name: "Plurel",
       url: `${SITE_URL}/`,
       description:
-        "Plurel is Northeon's brand, demand and distribution company: narrative, brand identity, website design, AI search visibility (AEO/SEO), content, paid media, PR, and measurement, run as one marketing system.",
+        "Plurel is Northeon's distribution engineering company: narrative, brand identity, website design, AI search visibility (AEO/SEO), content, creators and UGC, paid media, PR, and measurement, run as one marketing system.",
       email: "hello@plurel.com",
       image: `${SITE_URL}/og.png`,
       parentOrganization: { "@type": "Organization", name: "Northeon" },

@@ -22,7 +22,8 @@ type MenuKey = "services" | "company";
   The header is a slim bar that becomes a floating glass pill. At the top
   of the page it spans the width: transparent with paper type over a
   cinematic hero, a paper bar everywhere else. Once the page scrolls it
-  squeezes into a narrower, shorter pill of frosted glass with a lit edge,
+  squeezes into a narrower, shorter, square-cornered pill of frosted glass
+  with a lit edge,
   like the hero's flutes, whose tint follows whatever sits behind it (dark
   glass and paper type over graphite or red, light glass and ink over
   paper).
@@ -176,7 +177,7 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
         <Meta className="relative text-blush">(Free) · ~1 business day</Meta>
         <span className="relative">
           <span className="block text-[26px] leading-[1.05] tracking-[-0.02em]">
-            The Growth Audit
+            The Distribution Diagnostic
           </span>
           <span className="mt-2 block text-[13px] leading-relaxed text-paper/80">
             A strategist&apos;s read on where your marketing system breaks.
@@ -228,9 +229,9 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
       <div className="relative col-span-4 bg-graphite flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3">
         <Meta className="relative text-fog">(Northeon)</Meta>
         <p className="relative text-[15px] leading-relaxed text-paper/85">
-          Plurel is Northeon&apos;s distribution company: every relevant
-          channel, run as one system. Its sister, Kelwin, turns that demand
-          into revenue.
+          Plurel is Northeon&apos;s distribution engineering company: every
+          relevant channel, run as one system. Its sister, Kelwin, turns that
+          demand into revenue.
         </p>
       </div>
     </div>
@@ -323,7 +324,7 @@ export function SiteHeader() {
       ? "border-ink/10 bg-paper text-ink"
       : "border-paper/15 bg-transparent text-paper";
   const shape = pill
-    ? "mt-2.5 h-12 w-[calc(100%-1.5rem)] max-w-[1080px] rounded-[12px] border backdrop-blur-xl backdrop-saturate-150"
+    ? "mt-2.5 h-12 w-[calc(100%-1.5rem)] max-w-[1080px] rounded-[2px] border backdrop-blur-xl backdrop-saturate-150"
     : `mt-0 ${BAR_HEIGHT} w-full max-w-[100vw] rounded-none border-b`;
 
   return (
@@ -376,7 +377,7 @@ export function SiteHeader() {
                 href={AUDIT_HREF}
                 onClick={closeAll}
                 className={`group hidden items-center gap-3 border text-[11px] font-medium uppercase tracking-[0.18em] transition-[height,padding,background-color,border-color,color] duration-300 sm:inline-flex ${
-                  pill ? "h-8 rounded-[7px] px-3.5" : "h-10 px-4"
+                  pill ? "h-8 rounded-[1px] px-3.5" : "h-10 px-4"
                 } ${
                   tone === "light"
                     ? "border-ink/25 hover:border-brand hover:bg-brand hover:text-paper"
@@ -393,7 +394,7 @@ export function SiteHeader() {
                 aria-controls="mobile-menu"
                 aria-label="Open menu"
                 className={`inline-flex items-center justify-center border transition-[width,height,border-color] duration-300 lg:hidden ${
-                  pill ? "size-9 rounded-[7px]" : "size-10"
+                  pill ? "size-9 rounded-[1px]" : "size-10"
                 } ${tone === "light" ? "border-ink/25" : "border-paper/40"}`}
               >
                 <Menu className="size-5" />
@@ -408,7 +409,7 @@ export function SiteHeader() {
             id={`menu-${menu}`}
             className={`mega-in mx-auto hidden bg-paper text-ink lg:block ${
               pill
-                ? "mt-2 w-[calc(100%-1.5rem)] max-w-[1080px] rounded-[12px] border border-ink/10 px-6"
+                ? "mt-2 w-[calc(100%-1.5rem)] max-w-[1080px] rounded-[2px] border border-ink/10 px-6"
                 : "border-b border-ink/10"
             }`}
             onMouseEnter={cancelClose}

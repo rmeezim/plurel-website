@@ -135,8 +135,8 @@ Content on GRID
   case, diagonal arrow. `solid` (red) on paper and dark, `paper` on red.
 - `<TextLink>`: secondary. Sentence case on an underline, straight arrow.
 - Header CTA is outlined: "Get in touch". The hero's primary action is
-  "Request a diagnostic"; the closing chapter still offers the Growth
-  Audit as the primary door and the strategy call as the secondary one.
+  "Request a diagnostic"; the closing chapter offers the Diagnostic
+  ("Request your diagnostic") and the strategy call as the secondary door.
 
 ## Motion
 
@@ -256,7 +256,7 @@ Rules:
 - Header (`site-header.tsx`): fixed and slim (56px, 64px at lg). At the
   top of the page it spans the width: transparent with paper type over a
   cinematic hero, a paper bar elsewhere. After 24px of scroll it squeezes
-  into a floating pill (48px tall, 12px corners, at most 1080px wide) of
+  into a floating pill (48px tall, 2px corners, at most 1080px wide) of
   frosted glass with a lit top edge, whose tint follows what sits behind
   it: dark glass with paper type over graphite or red, light glass with
   ink over paper (sampled under the bar each frame). The clock beside

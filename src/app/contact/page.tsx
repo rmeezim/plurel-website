@@ -6,7 +6,7 @@ import { ContactForm } from "@/components/contact-form";
 export const metadata: Metadata = {
   title: "Contact — Plurel",
   description:
-    "Book a strategy call or request a growth audit. Tell us where your presence is today — we'll map what it could be doing for you.",
+    "Book a strategy call or request a diagnostic. Tell us where your distribution stands today — we'll map what it could be doing for you.",
 };
 
 const NEXT_STEPS = [
@@ -22,7 +22,7 @@ const NEXT_STEPS = [
   },
   {
     number: "03",
-    title: "Your growth audit & roadmap",
+    title: "Your diagnostic & roadmap",
     detail: "What to fix first, what it costs, and what it should return.",
   },
 ] as const;
@@ -47,7 +47,7 @@ export default function ContactPage() {
             </em>
           </h1>
           <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-            Book a 30-minute strategy call or request a growth audit &mdash;
+            Book a 30-minute strategy call or request a diagnostic &mdash;
             either way, you&rsquo;ll leave with a sharper read on your brand,
             your visibility, and your next move.
           </p>

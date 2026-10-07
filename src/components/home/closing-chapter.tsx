@@ -7,11 +7,11 @@ import { heroFilm } from "@/lib/film";
 import { NEXT_STEPS } from "@/lib/home";
 import { AUDIT_HREF } from "@/lib/nav";
 
-/* What the audit hands back: the Diagnose phase's own promise
+/* What the diagnostic hands back: the Diagnose phase's own promise
    ("where you win, where you leak, and what to fix first"). */
 const OUTPUT = ["Where you win.", "Where you leak.", "What to fix first."];
 
-/* The last step of the engagement path: "Your audit & roadmap" */
+/* The last step of the engagement path: "Your diagnostic & roadmap" */
 const KEEP = NEXT_STEPS[NEXT_STEPS.length - 1].detail;
 
 /* Column ticks on the running-head hairline, following GRID
@@ -44,7 +44,7 @@ export function ClosingChapter() {
   return (
     <section aria-labelledby="closing-heading" className="relative bg-brand text-paper">
       <div className={`${CONTAINER} pt-24 pb-28 sm:pt-28 sm:pb-32 lg:pt-38 lg:pb-40`}>
-        {/* Running head: the invitation and the audit's three facts */}
+        {/* Running head: the invitation and the diagnostic's three facts */}
         <div className="relative border-t border-paper/30 pt-4.5">
           <div
             aria-hidden
@@ -71,7 +71,7 @@ export function ClosingChapter() {
             id="closing-heading"
             className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none"
           >
-            The Growth Audit.
+            The Diagnostic.
           </h2>
         </Reveal>
 
@@ -86,7 +86,7 @@ export function ClosingChapter() {
                 href={AUDIT_HREF}
                 className={`group col-span-4 flex h-16 items-center justify-between gap-6 bg-paper px-6 text-[17px] font-medium tracking-[-0.01em] text-ink transition-colors duration-300 hover:bg-blush ${FOCUS}`}
               >
-                Book a growth audit
+                Request your diagnostic
                 <ArrowUpRight
                   aria-hidden
                   className="size-4 shrink-0 transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"

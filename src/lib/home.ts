@@ -190,8 +190,8 @@ export const FAQS = [
     a: "Our best fit is growth-stage companies whose marketing has outgrown one person and fragmented across suppliers: Series A to C technology companies, and established businesses modernizing how they show up. The problem is the same in SaaS, fintech, healthcare, or professional services: everything works, and nothing works together.",
   },
   {
-    q: "What exactly is the Growth Audit, and why is it free?",
-    a: "A strategist reviews six parts of your marketing system (market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement) and returns a prioritized read within about a business day. It's free because it's the fastest way for both of us to see whether there's a real system to build.",
+    q: "What exactly is the Diagnostic, and why is it free?",
+    a: "A strategist scores six parts of your distribution system (market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement) and returns a prioritized read within about a business day. It's free because it's the fastest way for both of us to see whether there's a real system to build.",
   },
   {
     q: "Who actually does the work?",
@@ -202,5 +202,5 @@ export const FAQS = [
 export const NEXT_STEPS = [
   { title: "We reply in one business day", detail: "A first read from a person, not a pipeline." },
   { title: "A 30-minute strategy call", detail: "Where you stand, and what to fix first." },
-  { title: "Your audit & roadmap", detail: "Yours to keep, whatever you decide." },
+  { title: "Your diagnostic & roadmap", detail: "Yours to keep, whatever you decide." },
 ];

@@ -52,7 +52,7 @@ export function SiteFooter() {
             <div className="col-span-4 flex flex-col justify-between gap-6 sm:col-span-6 lg:col-span-4">
               <Logo className="block h-auto w-[148px] text-brand" title="Plurel" />
               <p className="max-w-[320px] text-[14px] leading-[22px] text-muted lg:mb-1">
-                Plurel is Northeon&rsquo;s brand, demand and distribution company:
+                Plurel is Northeon&rsquo;s distribution engineering company:
                 every relevant channel, run as one system. Its sister, Kelwin, turns
                 that demand into revenue.
               </p>
@@ -115,7 +115,7 @@ export function SiteFooter() {
                 </li>
                 <li className="flex">
                   <Link href={AUDIT_HREF} className={`group gap-2 ${LINK}`}>
-                    The Growth Audit
+                    The Diagnostic
                     <ArrowUpRight
                       aria-hidden
                       strokeWidth={2.4}

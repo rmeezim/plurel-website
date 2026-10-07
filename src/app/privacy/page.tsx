@@ -18,7 +18,7 @@ const SECTIONS = [
   {
     heading: "Information you give us",
     body: [
-      "When you contact us, book a strategy call, or request a growth audit, we collect what you provide: your name, email address, company, and anything you include in your message. We use it to respond, to prepare for conversations you've asked for, and to run any engagement that follows.",
+      "When you contact us, book a strategy call, or request a diagnostic, we collect what you provide: your name, email address, company, and anything you include in your message. We use it to respond, to prepare for conversations you've asked for, and to run any engagement that follows.",
       "We never sell this information, and we don't add you to a mailing list you didn't ask for.",
     ],
   },

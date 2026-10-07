@@ -32,7 +32,7 @@ const RULE = "border-ink/15";
   The ledger's four topics. Questions are matched by their text in FAQS
   and keep the FAQS order inside a topic. A question that no topic lists
   joins CATCH_ALL, so everything in the JSON-LD stays visible on the page.
-  The Growth Audit lifts its parenthetical list of dimensions out of the
+  The Diagnostic lifts its parenthetical list of dimensions out of the
   answer and sets it as a numbered index.
 */
 const TOPICS = [
@@ -60,8 +60,8 @@ const TOPICS = [
     ],
   },
   {
-    title: "The Growth Audit",
-    questions: ["What exactly is the Growth Audit, and why is it free?"],
+    title: "The Diagnostic",
+    questions: ["What exactly is the Diagnostic, and why is it free?"],
     dimensions: true,
   },
 ];
