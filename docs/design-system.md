@@ -134,8 +134,9 @@ Content on GRID
 - `<CtaLink>`: the one primary action per view. Sharp block, sentence
   case, diagonal arrow. `solid` (red) on paper and dark, `paper` on red.
 - `<TextLink>`: secondary. Sentence case on an underline, straight arrow.
-- Header CTA is outlined. Every page offers the Growth Audit as the
-  primary door and the strategy call as the secondary one.
+- Header CTA is outlined: "Get in touch". The hero's primary action is
+  "Request a diagnostic"; the closing chapter still offers the Growth
+  Audit as the primary door and the strategy call as the secondary one.
 
 ## Motion
 
@@ -149,44 +150,53 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
   the one scroll-scrubbed chapter. The two glass bands (below) follow
   scroll too, but only as a height profile; nothing else is driven by
   scroll position.
-- **Hover:** glass flutes clear and lift under the pointer; contents rows
+- **Hover:** a pointer pours light into the glass (below); contents rows
   take a red top rule; arrows nudge diagonally.
-- **Ambient:** only the film behind the glass. Each band has its own
-  pause control. Nothing else moves on its own.
+- **Ambient:** the film behind the glass (no control, by the owner's
+  call: it loops while on screen and stops in hidden tabs) and the
+  selected-clients marquee (paused on hover). Nothing else moves on its
+  own; both sit still for reduced motion.
 
 ## Fluted glass
 
 `src/components/glass-band.tsx` (client), with the shader and the height
 math in `src/lib/glass.ts`. Nine vertical flutes, one per cell of the
-mark, each a cylinder lens over the hero film: a magnified, shifted
-slice, darker seams, a thin highlight and a faint chromatic fringe. The
-film is drawn into a 192px canvas before it reaches the shader, so it
-arrives soft. Until the Higgsfield film exists, a palette stand-in is
-drawn in the shader.
+mark, each a cylinder lens over the hero film: the scene just behind it,
+flipped, magnified at the centre and squeezed toward the edges, bowed
+vertically, with a crisp lit edge, a faint warm/cool fringe and a lit
+bottom edge. It reads as glass because the film has lines and points of
+light for the flutes to bend. The film is drawn into a 192px canvas
+before it reaches the shader, so it arrives soft. Until the Higgsfield
+film exists, a stand-in studio (red key light, cool fill, a window,
+bokeh, people crossing) is drawn in the shader.
 
 - **Profiles.** `rise` (the hero): a low rest line that steps into a
   staircase as the visitor scrolls away. `arc` (the bottom edge of the
   closing chapter): a short fringe that drops into a symmetric arc,
-  deepest at the center flute, as the footer comes up. Its pause control
-  takes a 48px row under the glass (`foot="below"`), clear of the arc.
-- **Hover.** The flute under a pointer (never touch) clears, lifts one
-  step and shows a paper edge; its neighbours follow a little.
-- **Rules.** It draws only while on screen, at most 1.5x DPR. It always
-  has a pause control (`aria-pressed`). Reduced motion or data saver get a
-  still frame (the poster when there is one). Without WebGL it falls back
-  to flat brand and ember bars.
+  deepest at the center flute, as the footer comes up.
+- **Hover: poured light** (after Athena). A mouse or pen (never touch)
+  leaves a splat every ~34px of travel, tinted by its direction: right
+  signal red, up warm paper, left cool fog, down blush. Splats drift on
+  with the pointer's momentum, spread and fade over 1.8s, and are sampled
+  through the same lens as the film, so each flute bends them into its
+  own liquid shape. Up to 16 at once (`MAX_SPLATS`).
+- **Rules.** No caption, no pause control. It draws only while on screen,
+  at most 1.5x DPR, and the film stops in hidden tabs. Reduced motion or
+  data saver get a still frame (the poster when there is one) and a
+  short-lived glow. Without WebGL it falls back to flat brand and ember
+  bars.
 
 ## The home hero
 
 Graphite, statement left, one line of copy and the primary action right,
 then the glass, then the exhibit:
 
-- **Kicker:** "Brand, demand and distribution · A Northeon company".
+- **Kicker:** "Distribution, engineered · A Northeon company".
 - **Statement:** "Made to be / seen. *Everywhere.*", the accent in fog.
-  Copy: "One story, cut for every surface: owned, earned and paid."
-- **Glass:** the `rise` band, set well below the actions, captioned
-  "Fig. 00 · One film, nine panes" with its pause control on the rest
-  line, so both are on the first screen.
+  Copy: "High-caliber clients now find firms through distribution, not
+  chance. Plurel builds your narrative, makes the content and runs it
+  across the channels your buyers trust." Action: "Request a diagnostic".
+- **Glass:** the `rise` band, set well below the actions, uncaptioned.
 - **Exhibit:** "Fig. 01", one story distributed to seven surfaces grouped
   as owned, earned and paid. A scaled drawing at lg, a grouped list below.
 
@@ -243,15 +253,21 @@ Rules:
 
 ## Header and footer
 
-- Header (`site-header.tsx`): fixed. Over a cinematic hero it is
-  transparent with paper type and a hairline; everywhere else, and after
-  24px of scroll, it is a paper bar. Routes with a cinematic hero are
-  listed in `OVERLAY_ROUTES` (`src/lib/nav.ts`); other routes get a
-  spacer so content starts below the bar. Desktop menus open a full-width
-  Swiss panel; mobile opens a full-screen red index.
+- Header (`site-header.tsx`): fixed and slim (56px, 64px at lg). At the
+  top of the page it spans the width: transparent with paper type over a
+  cinematic hero, a paper bar elsewhere. After 24px of scroll it squeezes
+  into a floating pill (48px tall, 12px corners, at most 1080px wide) of
+  frosted glass with a lit top edge, whose tint follows what sits behind
+  it: dark glass with paper type over graphite or red, light glass with
+  ink over paper (sampled under the bar each frame). The clock beside
+  the CTA shows the visitor's own time zone, labelled with its city.
+  Routes with a cinematic hero are listed in `OVERLAY_ROUTES`
+  (`src/lib/nav.ts`); other routes get a spacer so content starts below
+  the bar. Desktop menus open a Swiss panel (a card under the pill);
+  mobile opens a full-screen red index.
 - Footer (`site-footer.tsx`): paper, brand-red lockup, Swiss link
   columns, the Northeon line (Plurel beside its sister, Kelwin), live
-  studio clock. The closing chapter's `arc` glass sits right above it.
+  studio clock (New York). The closing chapter's `arc` glass sits right above it.
 
 ## Positioning in the homepage
 

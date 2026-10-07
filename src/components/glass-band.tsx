@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
-import { GLASS_FRAG, GLASS_VERT, fluteHeight, type GlassProfile } from "@/lib/glass";
+import { useEffect, useRef, useState } from "react";
+import { GLASS_FRAG, GLASS_VERT, MAX_SPLATS, fluteHeight, type GlassProfile } from "@/lib/glass";
 import type { Film } from "@/lib/film";
 
 /*
   A band of nine glass flutes over the film (shader and profiles in
-  lib/glass.ts). Scrolling moves the flute bottoms; hovering a flute clears
-  its glass and lowers it a step. The film plays only while the band is on
-  screen and always has a pause control; reduced motion and data saver get
-  a still frame and the finished profile.
+  lib/glass.ts). Scrolling moves the flute bottoms. A mouse or pen pours
+  light into the scene behind the glass: each stretch of travel leaves a
+  splat, tinted by its direction, that drifts on, spreads and fades, so
+  the flutes refract it into liquid shapes. The film loops while the band
+  is on screen and the tab is visible; reduced motion and data saver get a
+  still frame, the finished profile and a shorter-lived glow.
 
   progress "page": 0 at the top of the page, 1 once the band's top has
   scrolled up to `end` of the viewport (the hero). progress "viewport": 0
@@ -27,17 +29,22 @@ const COLORS = {
 
 const N = 9;
 
-// Reduced motion or data saver: start on a still frame
+// Reduced motion or data saver: a still frame
 const STILL_QUERY = "(prefers-reduced-motion: reduce)";
-const subscribeStill = (cb: () => void) => {
-  const mq = window.matchMedia(STILL_QUERY);
-  mq.addEventListener("change", cb);
-  return () => mq.removeEventListener("change", cb);
-};
 const readStill = () =>
   window.matchMedia(STILL_QUERY).matches ||
   Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
 const FILM_W = 192; // the film is drawn this small, so it arrives soft
+
+/** Seconds a splat of poured light lives (shorter under reduced motion) */
+const SPLAT_LIFE = 1.8;
+const SPLAT_LIFE_STILL = 0.7;
+/** Pixels of pointer travel between splats */
+const SPLAT_GAP = 34;
+/** Starting radius in pixels; a splat spreads to 1.9x as it fades */
+const SPLAT_R = 42;
+
+type Splat = { x: number; y: number; vx: number; vy: number; hue: number; s: number; age: number };
 
 type Props = {
   film: Film;
@@ -46,47 +53,21 @@ type Props = {
   progress: "page" | "viewport";
   start?: number;
   end?: number;
-  caption?: ReactNode;
-  /** Colour of the caption, index and control: on graphite or on paper */
-  tone?: "dark" | "light";
-  /**
-   * Where the caption and pause control sit: just under the glass at rest,
-   * or in a row below the band (the parent leaves room for it), clear of
-   * any profile's deepest flute.
-   */
-  foot?: "rest" | "below";
   className?: string;
 };
 
-export function GlassBand({
-  film,
-  profile,
-  rest,
-  progress,
-  start = 0.85,
-  end = 0.2,
-  caption,
-  tone = "dark",
-  foot = "below",
-  className = "",
-}: Props) {
+export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0.2, className = "" }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
-  const index = useRef<HTMLSpanElement>(null);
-  const still = useSyncExternalStore(subscribeStill, readStill, () => false);
-  const [override, setOverride] = useState<boolean | null>(null);
-  const paused = override ?? still;
   const [noGl, setNoGl] = useState(false);
-  const pausedRef = useRef(paused);
-  const toggleRef = useRef<((v: boolean) => void) | null>(null);
 
   useEffect(() => {
     const box = wrap.current;
     const cv = canvas.current;
-    const idx = index.current;
-    if (!box || !cv || !idx) return;
+    if (!box || !cv) return;
 
     const still = readStill();
+    const life = still ? SPLAT_LIFE_STILL : SPLAT_LIFE;
 
     const gl = cv.getContext("webgl", { premultipliedAlpha: false, antialias: false, alpha: true });
     if (!gl) {
@@ -117,8 +98,8 @@ export function GlassBand({
     const U = (name: string) => gl.getUniformLocation(prog, name);
     const u = {
       res: U("uRes"), t: U("uT"), p: U("uP"), n: U("uN"), rest: U("uRest"), aspect: U("uAspect"),
-      hover: U("uHover"), hoverK: U("uHoverK"), arc: U("uArc"), useVideo: U("uUseVideo"),
-      scale: U("uVideoScale"), offset: U("uVideoOffset"),
+      arc: U("uArc"), useVideo: U("uUseVideo"), scale: U("uVideoScale"), offset: U("uVideoOffset"),
+      spN: U("uSpN"), sp: U("uSp"), spHue: U("uSpHue"),
     };
     gl.uniform3fv(U("uDark"), COLORS.dark);
     gl.uniform3fv(U("uRed"), COLORS.red);
@@ -132,7 +113,6 @@ export function GlassBand({
     // The film: one small video, drawn into a tiny canvas and uploaded as a
     // texture each frame. Reduced motion uses the poster as a still.
     let video: HTMLVideoElement | null = null;
-    let still2d: HTMLImageElement | null = null;
     let haveFrame = false;
     let filmAspect = 16 / 9;
     const small = document.createElement("canvas");
@@ -154,12 +134,13 @@ export function GlassBand({
       haveFrame = true;
     };
     if (film && still && film.poster) {
-      still2d = new Image();
-      still2d.onload = () => {
-        if (still2d) upload(still2d, still2d.naturalWidth, still2d.naturalHeight);
+      const img = new Image();
+      img.onload = () => {
+        upload(img, img.naturalWidth, img.naturalHeight);
         dirty = true;
+        kick();
       };
-      still2d.src = film.poster;
+      img.src = film.poster;
     } else if (film && !still) {
       video = document.createElement("video");
       video.muted = true;
@@ -181,13 +162,14 @@ export function GlassBand({
     let dirty = true;
     let t = 7;
     let p = 0;
-    let hover = -1;
-    let hoverTarget = 0;
-    let hoverK = 0;
     let raf = 0;
     let last = performance.now();
     let W = 0;
     let H = 0;
+    const splats: Splat[] = [];
+    const spA = new Float32Array(MAX_SPLATS * 4);
+    const spH = new Float32Array(MAX_SPLATS);
+    let lastPt: { x: number; y: number; at: number } | null = null;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -208,20 +190,17 @@ export function GlassBand({
       return Math.min(1, Math.max(0, (start * vh - r.top) / Math.max(1, (start - end) * vh)));
     };
     const play = () => {
-      if (video && visible && !pausedRef.current) void video.play().catch(() => {});
+      if (video && visible && !document.hidden) void video.play().catch(() => {});
     };
     const stop = () => video?.pause();
 
     const draw = () => {
-      const useVideo = haveFrame ? 1 : 0;
       gl.viewport(0, 0, cv.width, cv.height);
       gl.uniform2f(u.res, cv.width, cv.height);
       gl.uniform1f(u.t, t);
       gl.uniform1f(u.p, p);
       gl.uniform1f(u.aspect, cv.width / cv.height);
-      gl.uniform1f(u.hover, hover);
-      gl.uniform1f(u.hoverK, hoverK);
-      gl.uniform1f(u.useVideo, useVideo);
+      gl.uniform1f(u.useVideo, haveFrame ? 1 : 0);
       const band = cv.width / cv.height;
       if (band > filmAspect) {
         const s = filmAspect / band;
@@ -232,18 +211,24 @@ export function GlassBand({
         gl.uniform2f(u.scale, s, 1);
         gl.uniform2f(u.offset, 0.5 - 0.5 * s, 0);
       }
+      // Splats: position in band space, radius in band heights, weight
+      // rising over 80ms and falling as it spreads
+      splats.forEach((s, k) => {
+        const a = s.age / life;
+        spA[k * 4] = s.x;
+        spA[k * 4 + 1] = s.y;
+        spA[k * 4 + 2] = (SPLAT_R * (1 + 0.9 * a)) / Math.max(1, H);
+        spA[k * 4 + 3] = s.s * Math.min(1, s.age / 0.08) * Math.pow(1 - a, 1.6);
+        spH[k] = s.hue;
+      });
+      gl.uniform1f(u.spN, splats.length);
+      if (splats.length) {
+        gl.uniform4fv(u.sp, spA);
+        gl.uniform4fv(u.spHue, spH);
+      }
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      // The hovered flute's index rides just under its bottom edge
-      if (hover >= 0 && hoverK > 0.02) {
-        const h = Math.min(1, fluteHeight(hover, N, p, profile, rest) + 0.07 * hoverK);
-        idx.style.opacity = String(hoverK);
-        idx.style.transform = `translate3d(${((hover + 0.5) / N) * W}px, ${h * H + 8}px, 0) translateX(-50%)`;
-        idx.textContent = String(hover + 1).padStart(2, "0");
-      } else {
-        idx.style.opacity = "0";
-      }
     };
 
     const frame = (now: number) => {
@@ -256,20 +241,23 @@ export function GlassBand({
         p = np;
         dirty = true;
       }
-      if (!pausedRef.current) {
+      if (!still) {
         t += dt;
         dirty = true;
       }
-      const k = still ? hoverTarget : hoverK + (hoverTarget - hoverK) * Math.min(1, dt * 10);
-      if (Math.abs(k - hoverK) > 0.001) {
-        hoverK = k;
-        dirty = true;
-      } else if (hoverK !== hoverTarget && Math.abs(hoverTarget - hoverK) <= 0.001) {
-        hoverK = hoverTarget;
-        if (hoverK === 0) hover = -1;
+      if (splats.length) {
+        const damp = Math.exp(-2.5 * dt);
+        for (const s of splats) {
+          s.age += dt;
+          s.x += s.vx * dt;
+          s.y += s.vy * dt;
+          s.vx *= damp;
+          s.vy *= damp;
+        }
+        for (let k = splats.length - 1; k >= 0; k--) if (splats[k].age >= life) splats.splice(k, 1);
         dirty = true;
       }
-      if (video && video.readyState >= 2 && !pausedRef.current) upload(video, video.videoWidth, video.videoHeight);
+      if (video && video.readyState >= 2 && !video.paused) upload(video, video.videoWidth, video.videoHeight);
       if (dirty) {
         draw();
         dirty = false;
@@ -306,47 +294,61 @@ export function GlassBand({
     ro.observe(box);
     resize();
 
+    // The cursor pours light: one splat per stretch of travel over the glass,
+    // carrying the direction (its tint) and a little of the speed (its drift)
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
       const r = box.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width;
       const y = (e.clientY - r.top) / r.height;
       const i = Math.min(N - 1, Math.max(0, Math.floor(x * N)));
-      const inside = y >= 0 && y <= fluteHeight(i, N, p, profile, rest) + 0.07;
-      if (inside) {
-        if (i !== hover) hoverK = hover >= 0 ? hoverK * 0.4 : hoverK;
-        hover = i;
-        hoverTarget = 1;
-      } else {
-        hoverTarget = 0;
+      if (x < 0 || x > 1 || y < 0 || y > fluteHeight(i, N, p, profile, rest) + 0.02) {
+        lastPt = null;
+        return;
       }
+      const now = performance.now();
+      if (!lastPt) {
+        lastPt = { x: e.clientX, y: e.clientY, at: now };
+        return;
+      }
+      const dx = e.clientX - lastPt.x;
+      const dy = e.clientY - lastPt.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist < SPLAT_GAP * 0.5) return;
+      const secs = Math.max(0.016, (now - lastPt.at) / 1000);
+      const hue = (((Math.atan2(-dy, dx) / (2 * Math.PI)) % 1) + 1) % 1;
+      const strength = Math.min(1, Math.max(0.45, dist / 60));
+      const vx = Math.max(-0.4, Math.min(0.4, (dx / r.width / secs) * 0.12));
+      const vy = Math.max(-0.4, Math.min(0.4, (dy / r.height / secs) * 0.12));
+      const steps = Math.min(4, Math.max(1, Math.round(dist / SPLAT_GAP)));
+      const x0 = (lastPt.x - r.left) / r.width;
+      const y0 = (lastPt.y - r.top) / r.height;
+      for (let k = 1; k <= steps; k++) {
+        const f = k / steps;
+        splats.push({ x: x0 + (x - x0) * f, y: y0 + (y - y0) * f, vx, vy, hue, s: strength, age: 0 });
+      }
+      while (splats.length > MAX_SPLATS) splats.shift();
+      lastPt = { x: e.clientX, y: e.clientY, at: now };
       kick();
     };
     const onLeave = () => {
-      hoverTarget = 0;
-      kick();
+      lastPt = null;
     };
     box.addEventListener("pointermove", onMove);
     box.addEventListener("pointerleave", onLeave);
     const onScroll = () => kick();
     window.addEventListener("scroll", onScroll, { passive: true });
-
-    toggleRef.current = (v: boolean) => {
-      pausedRef.current = v;
-      if (v) stop();
-      else play();
-      dirty = true;
-      kick();
-    };
+    const onVisibility = () => (document.hidden ? stop() : play());
+    document.addEventListener("visibilitychange", onVisibility);
 
     return () => {
-      toggleRef.current = null;
       cancelAnimationFrame(raf);
       io.disconnect();
       ro.disconnect();
       box.removeEventListener("pointermove", onMove);
       box.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("visibilitychange", onVisibility);
       stop();
       if (video) {
         video.removeAttribute("src");
@@ -355,21 +357,6 @@ export function GlassBand({
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [film, profile, rest, progress, start, end]);
-
-  // Keep the drawing loop in step with the pause control
-  useEffect(() => {
-    pausedRef.current = paused;
-    toggleRef.current?.(paused);
-  }, [paused]);
-
-  const toggle = () => setOverride(!paused);
-
-  const ink = tone === "dark" ? "text-paper" : "text-ink";
-  const sub = tone === "dark" ? "text-fog" : "text-muted";
-  const btn =
-    tone === "dark"
-      ? "border-paper/35 bg-graphite/70 text-paper hover:border-paper aria-pressed:bg-paper aria-pressed:text-graphite"
-      : "border-ink/30 bg-paper/80 text-ink hover:border-ink aria-pressed:bg-ink aria-pressed:text-paper";
 
   return (
     <div ref={wrap} className={`relative ${className}`}>
@@ -385,35 +372,6 @@ export function GlassBand({
           ))}
         </div>
       )}
-      <span
-        ref={index}
-        aria-hidden
-        className={`pointer-events-none absolute left-0 top-0 font-mono text-[11px] tracking-[0.03em] opacity-0 ${ink}`}
-      />
-      <div
-        className={`pointer-events-none absolute inset-x-0 flex items-center gap-4 px-5 sm:px-8 lg:px-12 ${sub}`}
-        style={{ top: foot === "rest" ? `calc(${rest * 100}% + 14px)` : "calc(100% + 6px)" }}
-      >
-        <div className="mr-auto">{caption}</div>
-        <button
-          type="button"
-          onClick={toggle}
-          aria-pressed={paused}
-          className={`pointer-events-auto inline-flex h-9 items-center gap-2 border px-3 text-[13px] font-medium transition-colors ${btn}`}
-        >
-          <span aria-hidden className="inline-flex gap-[3px]">
-            {paused ? (
-              <span className="size-0 border-y-[5px] border-l-[8px] border-y-transparent border-l-current" />
-            ) : (
-              <>
-                <span className="h-[11px] w-[3px] bg-current" />
-                <span className="h-[11px] w-[3px] bg-current" />
-              </>
-            )}
-          </span>
-          {paused ? "Play film" : "Pause film"}
-        </button>
-      </div>
     </div>
   );
 }

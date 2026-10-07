@@ -144,9 +144,8 @@ export function ClosingChapter() {
       {/* The glass edge: the red room ends in the hero's nine flutes, hung
           over a paper strip that leads into the footer. They start on a
           short fringe and drop into an arc as the footer comes up, deepest
-          at the center, so the page settles rather than climbs. The pause
-          control takes the 48px row under the glass. */}
-      <div className="relative h-[clamp(200px,calc(15vw+48px),256px)] bg-paper pb-12">
+          at the center, so the page settles rather than climbs. */}
+      <div className="relative h-[clamp(152px,15vw,208px)] bg-paper">
         <GlassBand
           film={heroFilm()}
           profile="arc"
@@ -154,7 +153,6 @@ export function ClosingChapter() {
           progress="viewport"
           start={0.98}
           end={0.4}
-          tone="light"
           className="h-full"
         />
       </div>

@@ -77,6 +77,9 @@ argument onto the homepage chapters.
   one orchestrated load moment and the services fold (`services-fold.tsx`)
   is the one scroll-scrubbed chapter. The fluted glass (`glass-band.tsx`)
   is the one WebGL surface; elsewhere use `Reveal`. No heavy 3D.
-- The film behind the glass plays muted, pauses off screen, and every band
-  has a pause control. Never ship auto-moving media without one.
+- The film behind the glass loops muted with no control (the owner's
+  call); it stops off screen and in hidden tabs, and reduced motion or
+  data saver get a still frame. The clients marquee pauses on hover and
+  sits still for reduced motion. Any other auto-moving media needs a
+  pause control.
 - Design for mobile first; the layout must hold up from 360px to wide desktop.

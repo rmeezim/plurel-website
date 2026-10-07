@@ -9,7 +9,8 @@ import { AUDIT_HREF } from "@/lib/nav";
   distribution exhibit (one story, seven surfaces, owned / earned / paid).
 
   The glass (GlassBand) hangs well clear of the statement and steps into a
-  rising staircase as the visitor scrolls on. Below it, the exhibit draws
+  rising staircase as the visitor scrolls on; a cursor pours coloured
+  light into the film behind it. Below it, the exhibit draws
   the distribution literally: the brand feeds seven surfaces, grouped by
   the three kinds of media. On large screens it is laid out on a 1184-unit
   drawing scaled to the container (--u is one unit), so every wire lands
@@ -248,7 +249,7 @@ export function Hero() {
             <p className="fade-up flex items-start gap-2.5 text-[13px] font-medium leading-[1.5]" style={{ animationDelay: "60ms" }}>
               <i aria-hidden className="mt-[6px] block size-[7px] shrink-0 bg-signal" />
               <span>
-                Brand, demand and distribution{" "}
+                Distribution, engineered{" "}
                 <span className="whitespace-nowrap text-fog">· A Northeon company</span>
               </span>
             </p>
@@ -263,11 +264,13 @@ export function Hero() {
             className="fade-up col-span-4 flex flex-col items-start gap-6 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pb-2"
             style={{ animationDelay: "520ms" }}
           >
-            <p className="max-w-[34ch] text-[17px] leading-[1.5] text-fog lg:text-[19px]">
-              One story, cut for every surface: owned, earned and paid.
+            <p className="max-w-[36ch] text-[17px] leading-[1.5] text-fog lg:text-[18px]">
+              High-caliber clients now find firms through distribution, not chance.
+              Plurel builds your narrative, makes the content and runs it across the
+              channels your buyers trust.
             </p>
             <CtaLink href={AUDIT_HREF} className="w-full sm:w-auto">
-              Book a growth audit
+              Request a diagnostic
             </CtaLink>
           </div>
         </div>
@@ -280,8 +283,6 @@ export function Hero() {
         rest={0.42}
         progress="page"
         end={0.16}
-        caption={<Meta>Fig. 00 · One film, nine panes</Meta>}
-        foot="rest"
         className="fade-up mt-20 h-[clamp(300px,54svh,560px)] sm:mt-24 lg:mt-28"
       />
 
