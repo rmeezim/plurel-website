@@ -6,24 +6,27 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Plurel — project standards
 
-Plurel is Northeon's creative division. The site turns outdated business
-presence into premium digital brand experiences. Services: Website Design,
-AEO/SEO, Brand Identity, Content Marketing, Paid Ads, PR & Reputation,
-Creative Direction, and consulting.
+Plurel is Northeon's brand, demand and distribution company: marketing
+and distribution, rebuilt as one system. Services: Website Design, Brand
+Identity, AI Search & SEO, Content Marketing, Paid Ads, PR & Reputation,
+Creative Direction, and Martech & Consulting. Its sister division Kelwin
+(RevOps and go-to-market) turns that demand into revenue.
 
 ## Stack
 
 - Next.js 16 (App Router) + React 19 + TypeScript
 - Tailwind CSS v4 (CSS-first config in `src/app/globals.css` via `@theme`)
-- Fonts via `next/font/google`: Inter (`--font-sans`, everything),
-  Instrument Serif italic (`--font-serif`, one accent phrase per headline),
-  Geist Mono (`--font-mono`, Swiss metadata)
+- Fonts via `next/font/google`: Mona Sans (`--font-sans`, everything; the
+  `type-display` utility sets the wide display cut, `<Accent>` the light
+  weight), JetBrains Mono (`--font-mono`, Swiss metadata). Instrument Serif
+  (`--font-serif`) is kept only for interior pages not yet moved over.
 
 ## Design language: Cinematic Red x Swiss Systems
 
 Read `docs/design-system.md` before building any page. In short: red is
-the environment (red-graded hero film, flat red chapters, oxblood footer),
-surfaces are flat color with no gradients or drawn grid lines, structure
+the environment (flat red chapters, a red-graded film behind fluted glass),
+graphite is the dark tone, the footer is paper, surfaces are flat color
+with no gradients or drawn grid lines, structure
 is Swiss (a strict 12-column grid that is felt, not drawn, numbered
 chapters, mono metadata), and the layout follows the Northeon family
 shared with the sister divisions. Primitives live in `src/components/system.tsx`; the
@@ -36,7 +39,9 @@ brief and Higgsfield prompts are in `docs/hero-video.md`.
 | ---------- | --------- | ------------------------------------------------------------ |
 | `brand`    | `#bf3a36` | Plurel red: red chapters, primary actions, markers on paper  |
 | `ember`    | `#8e2824` | Deep red: hover on red, gradient floors                      |
-| `oxblood`  | `#2a0d0b` | Cinematic shadow: hero base, dark chapters, footer           |
+| `graphite` | `#141517` | The dark tone: hero, work, dark bands                        |
+| `fog`      | `#b9bcc2` | Secondary text and accents on graphite                       |
+| `oxblood`  | `#2a0d0b` | Legacy dark tone, interior pages only                        |
 | `blush`    | `#f2c9bf` | Rose: secondary text and dimmed lines on red and dark        |
 | `signal`   | `#e8564e` | Bright red: markers, rules, indexes on dark                  |
 | `paper`    | `#fbfaf6` | Light chapters; text on red and dark                         |
@@ -47,16 +52,21 @@ brief and Higgsfield prompts are in `docs/hero-video.md`.
 
 Legacy tokens (`canvas`, `clay`, `rust`) remain only for interior pages
 that haven't moved to the new system. Use the generated utilities
-(`bg-brand`, `bg-oxblood`, `text-ink`, `border-line`, etc.) rather than
+(`bg-brand`, `bg-graphite`, `text-ink`, `border-line`, etc.) rather than
 hardcoded hex values.
 
-## Positioning (long-term)
+## Positioning
 
-Plurel is evolving into Northeon's global AI/tech division for martech,
-marketing, and growth transformations. Where natural, copy should frame
-engagements as "growth transformations" and treat AI-era visibility (AEO),
-martech, and growth systems as core to the method — confident and premium,
-never buzzwordy.
+Plurel sells integration, not a menu of services: one narrative, one
+creative engine, one set of numbers and one accountable team across every
+relevant channel (never "every channel"). The thesis: "Your marketing
+shouldn't be ten companies." The best fit is growth-stage companies whose
+marketing has fragmented across suppliers. Engagements start with a
+diagnostic of where the system breaks and run as an integrated monthly
+partnership. Frame them as growth transformations, and treat AI-era
+visibility (AEO), martech and measurement as part of the method:
+confident and premium, never buzzwordy. `docs/design-system.md` maps the
+argument onto the homepage chapters.
 
 ## Conventions
 
@@ -65,7 +75,8 @@ never buzzwordy.
 - Keep animations light and tasteful, all gated behind
   `prefers-reduced-motion` in `globals.css`. The hero load sequence is the
   one orchestrated load moment and the services fold (`services-fold.tsx`)
-  is the one scroll-scrubbed moment; elsewhere use `Reveal`. No heavy 3D yet.
-- The hero film autoplays muted, pauses off screen, and always has a
-  pause control. Never ship auto-moving media without one.
+  is the one scroll-scrubbed chapter. The fluted glass (`glass-band.tsx`)
+  is the one WebGL surface; elsewhere use `Reveal`. No heavy 3D.
+- The film behind the glass plays muted, pauses off screen, and every band
+  has a pause control. Never ship auto-moving media without one.
 - Design for mobile first; the layout must hold up from 360px to wide desktop.

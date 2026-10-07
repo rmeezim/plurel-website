@@ -16,7 +16,8 @@
  * (search for "FOLD_QUERY").
  */
 export const FOLD_QUERY =
-  "(prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-height: 32rem) and (min-width: 22.5rem)";
+  "(prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 22.5rem) and (max-width: 39.99rem) and (min-height: 35rem), " +
+  "(prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 40rem) and (min-height: 40rem)";
 
 /**
  * Service k (0..7, in site order) sits in mark cell CLOCKWISE[k]:

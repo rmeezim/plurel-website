@@ -7,9 +7,9 @@ import {
   Accent,
   ChapterHead,
   CONTAINER,
+  CtaLink,
   GRID,
   Meta,
-  TextLink,
 } from "@/components/system";
 import { CLOCKWISE } from "@/lib/fold";
 import { MARK_CELLS } from "@/lib/mark";
@@ -17,14 +17,27 @@ import { SERVICES } from "@/lib/nav";
 
 const MARK_NAME = "The Plurel mark: eight disciplines, numbered 01 to 08, around your brand";
 
+/** Where each discipline sits in the system the margin chain names */
+const STAGE: Record<string, string> = {
+  "website-design": "Create",
+  "brand-identity": "Narrative",
+  "aeo-seo": "Distribute",
+  "content-marketing": "Create",
+  "paid-ads": "Distribute",
+  "pr-reputation": "Distribute",
+  "creative-direction": "Narrative",
+  "martech-consulting": "Measure",
+};
+
 /*
   (02) Services opens with the fold: the manifesto's red room continues,
   splits along the page grid into nine panels (your brand at the center,
-  the eight disciplines around it), then folds into the Plurel mark beside
-  the headline. The mark stays as a small index of the eight services.
-  ServicesFold drives the motion; everything here is the server-rendered
-  markup, and with motion off it is simply the finished, static chapter.
-  The eight rows below stay the primary list of services.
+  the eight disciplines around it), then folds into the Plurel mark in the
+  left margin, under the standfirst and beside the statement. The mark
+  stays as a small index of the eight services. ServicesFold drives the
+  motion; everything here is the server-rendered markup, and with motion
+  off it is simply the finished, static chapter. The contents page below
+  stays the primary list of services: it reads down, then across.
 */
 export function ServicesChapter() {
   // Service k sits in mark cell CLOCKWISE[k], clockwise from top-left
@@ -94,20 +107,47 @@ export function ServicesChapter() {
               <ChapterHead index="02" label="Services" meta="Eight disciplines · One system" />
             </div>
 
-            <div className={`fold-body ${GRID} mt-14 gap-y-10 lg:mt-20 lg:items-end`}>
+            <div className={`fold-body ${GRID} mt-12 gap-y-8 lg:mt-16 lg:gap-y-12`}>
+              {/* Margin: a small standfirst and the chain the system runs on */}
+              <div data-fold-h2 className="col-span-4 sm:col-span-4 lg:col-span-3 lg:row-start-1 lg:pt-3">
+                <p className="max-w-[34ch] text-[15px] leading-[1.5] text-ink/70 sm:text-[16px] sm:leading-[1.55]">
+                  Every relevant channel, run as one system. The budget follows the bottleneck.
+                </p>
+                {/* Two unbreakable halves, so a narrow margin wraps the chain in balance */}
+                <p className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-ink/15 pt-3 font-mono text-[11px] uppercase tracking-[0.03em]">
+                  {[["Narrative", "Create"], ["Distribute", "Measure"]].map((half, h) => (
+                    <span key={h} className="inline-flex items-center gap-2 whitespace-nowrap">
+                      {half.map((w, i) =>
+                        h === 1 && i === 1 ? (
+                          <b key={w} className="font-medium text-brand">{w}</b>
+                        ) : (
+                          <span key={w} className="inline-flex items-center gap-2">
+                            {w}
+                            <svg viewBox="0 0 24 24" aria-hidden className="size-3 fill-none stroke-brand stroke-2">
+                              <path d="M4 12h16M14 6l6 6-6 6" />
+                            </svg>
+                          </span>
+                        ),
+                      )}
+                    </span>
+                  ))}
+                </p>
+              </div>
+
               <h2
                 id="services-heading"
                 data-fold-h2
-                className="col-span-4 text-[clamp(2.25rem,5vw,5rem)] font-normal leading-[0.98] tracking-[-0.04em] sm:col-span-6 lg:col-span-8 lg:self-end"
+                className="type-display col-span-4 text-[clamp(2rem,min(5.6vw,9svh),5.25rem)] leading-[1.02] sm:col-span-6 lg:col-span-8 lg:col-start-5 lg:row-start-1"
               >
-                Everything that makes you <Accent>visible</Accent>, built as one system.
+                Everything that makes you <Accent className="text-muted">visible</Accent>, built as one system.
               </h2>
 
-              <div className="fold-slot col-span-3 lg:col-span-3 lg:col-start-10">
-                <figure className="fold-fig m-0">
+              <div className="fold-slot col-span-4 sm:col-span-3 lg:col-span-3 lg:col-start-1 lg:row-start-2">
+                {/* Phones: the mark and its caption side by side; sm and up: caption below */}
+                <figure className="fold-fig m-0 flex items-end gap-4 sm:block">
                   <div
                     data-fold-art
-                    className="fold-mark relative aspect-square w-full [container-type:inline-size]"
+                    className="fold-mark relative aspect-square w-[calc(50%-0.5rem)] shrink-0 [container-type:inline-size] sm:w-full"
                   >
                     <LogoMark className="block size-full text-brand forced-colors:text-[CanvasText]" title={MARK_NAME} />
 
@@ -162,9 +202,11 @@ export function ServicesChapter() {
                     </div>
                   </div>
 
-                  <figcaption data-fold-caption className="mt-3 grid text-[11px] leading-snug text-ink/60">
+                  <figcaption data-fold-caption className="grid min-w-0 flex-1 text-[11px] leading-snug text-ink/60 sm:mt-3">
                     <span data-readout="default" className="[grid-area:1/1]">
-                      <Meta>Fig. 02 · Eight disciplines around one brand</Meta>
+                      <Meta>
+                        <span className="text-brand">Fig. 02</span> · Eight disciplines around your brand
+                      </Meta>
                     </span>
                     {SERVICES.map((s) => (
                       <span
@@ -195,54 +237,45 @@ export function ServicesChapter() {
         </div>
       </ServicesFold>
 
-      <div className={CONTAINER}>
-        <div className={`${GRID} pt-12 lg:pt-16`}>
-          <Reveal className="col-span-4 sm:col-span-4 lg:col-span-3 lg:col-start-10">
-            <p className="max-w-[40ch] text-[17px] leading-relaxed text-ink/70">
-              Hire one discipline or the whole system. Every piece is designed
-              to feed the next: brand into site, site into search, search into
-              pipeline.
-            </p>
-            <TextLink href="/services" className="mt-7">
+      <div className={`fold-after ${CONTAINER} pb-24 lg:pb-36`}>
+        <div className={`${GRID} gap-y-10 pt-12 lg:pt-16`}>
+          <div className="order-2 col-span-4 flex sm:col-span-3 lg:pointer-events-none lg:order-1 lg:col-span-3 lg:items-end">
+            <CtaLink href="/services" className="pointer-events-auto w-full">
               All services
-            </TextLink>
+            </CtaLink>
+          </div>
+
+          <Reveal className="order-1 col-span-4 sm:col-span-6 lg:order-2 lg:col-span-8 lg:col-start-5">
+            <div className="flex h-9 items-center justify-between">
+              <Meta>Contents</Meta>
+              <Meta className="text-muted">01–08</Meta>
+            </div>
+            <ol className="grid gap-x-8 sm:grid-flow-col sm:grid-cols-2 sm:grid-rows-4">
+              {SERVICES.map((s, i) => (
+                <li
+                  key={s.slug}
+                  className={`border-t ${i === 0 || i === 4 ? "border-ink" : "border-ink/15"} ${i === 3 || i === 7 ? "sm:border-b sm:border-b-ink/15" : ""} ${i === 7 ? "border-b border-b-ink/15" : ""}`}
+                >
+                  <Link
+                    href={s.href}
+                    className="group relative -mt-px grid grid-cols-[minmax(0,1fr)_1.25rem] border-t-2 border-transparent pb-5 pt-3.5 outline-none transition-colors hover:border-brand focus-visible:border-brand"
+                  >
+                    <Meta className="text-brand">
+                      {s.index}
+                      <span className="text-muted"> · {STAGE[s.slug]}</span>
+                    </Meta>
+                    <ArrowUpRight className="size-[18px] justify-self-end text-ink/35 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-brand group-focus-visible:text-brand" />
+                    <span className="type-display col-span-2 mt-2 text-[clamp(1.375rem,2.3vw,1.875rem)] leading-[1.05]">
+                      {s.name}
+                    </span>
+                    <span className="col-span-2 mt-2 text-[15px] leading-[1.45] text-muted">{s.tagline}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
           </Reveal>
         </div>
       </div>
-
-      <ul className="relative mt-16 border-b border-ink/15 lg:mt-24">
-        {SERVICES.map((s) => (
-          <li key={s.slug} className="border-t border-ink/15">
-            <Link href={s.href} className="group relative block overflow-hidden outline-hidden">
-              <span
-                aria-hidden
-                className="absolute inset-0 origin-bottom scale-y-0 bg-brand transition-transform duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:scale-y-100 group-focus-visible:scale-y-100"
-              />
-              <span className={`${CONTAINER} relative block`}>
-                <span className={`${GRID} items-center py-6 lg:py-8`}>
-                  <Meta className="col-span-1 text-brand transition-colors group-hover:text-paper group-focus-visible:text-paper lg:col-span-2">
-                    ({s.index})
-                  </Meta>
-                  <span className="col-span-3 sm:col-span-3 lg:col-span-5">
-                    <span className="block text-[clamp(1.5rem,3.2vw,2.75rem)] leading-none tracking-[-0.03em] transition-colors group-hover:text-paper group-focus-visible:text-paper">
-                      {s.name}
-                    </span>
-                    <span className="mt-2 block text-[13px] text-muted transition-colors group-hover:text-paper/85 group-focus-visible:text-paper/85 sm:hidden">
-                      {s.tagline}
-                    </span>
-                  </span>
-                  <span className="hidden text-[15px] text-muted transition-colors group-hover:text-paper/85 group-focus-visible:text-paper/85 sm:col-span-2 sm:block lg:col-span-4">
-                    {s.tagline}
-                  </span>
-                  <span className="hidden justify-end lg:col-span-1 lg:flex">
-                    <ArrowUpRight className="size-6 text-ink/40 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-paper group-focus-visible:text-paper" />
-                  </span>
-                </span>
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
     </section>
   );
 }

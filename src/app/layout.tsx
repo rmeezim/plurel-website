@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Instrument_Serif, Inter } from "next/font/google";
+import { Instrument_Serif, JetBrains_Mono, Mona_Sans } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-const inter = Inter({
+// One family carries everything. Its width axis gives the display style
+// (wide, at 110%) and the reading style (normal) from the same face.
+const mona = Mona_Sans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  axes: ["wdth"],
+  variable: "--font-mona",
   display: "swap",
 });
 
@@ -19,22 +22,22 @@ const instrument = Instrument_Serif({
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
+const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-geist-mono",
+  variable: "--font-jetbrains",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Plurel — We build the visible layer of growth",
+  title: "Plurel — Marketing and distribution, rebuilt as one system",
   description:
-    "Plurel turns outdated business presence into premium digital brand experiences. Website design, AEO/SEO, brand identity, content marketing, paid ads, PR & reputation, and creative direction.",
+    "Plurel is Northeon's brand, demand and distribution company. Narrative, brand, website, AI search and SEO, content, paid, PR, and measurement, run as one system for growth-stage companies.",
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Plurel — We build the visible layer of growth",
+    title: "Plurel — Marketing and distribution, rebuilt as one system",
     description:
-      "One team accountable for how you're found, trusted, chosen, and remembered — brand, web, AI search, content, campaigns, and the martech underneath.",
+      "Your marketing shouldn't be ten companies. One narrative, one creative engine, one set of numbers, one accountable team across every relevant channel.",
     type: "website",
     siteName: "Plurel",
     url: "/",
@@ -49,9 +52,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Plurel — We build the visible layer of growth",
+    title: "Plurel — Marketing and distribution, rebuilt as one system",
     description:
-      "One team accountable for how you're found, trusted, chosen, and remembered.",
+      "Your marketing shouldn't be ten companies. It should be one system.",
     images: ["/og.png"],
   },
 };
@@ -66,7 +69,7 @@ const ORG_JSON_LD = {
       name: "Plurel",
       url: `${SITE_URL}/`,
       description:
-        "Plurel is Northeon's creative and growth division — brand identity, website design, AI search visibility (AEO/SEO), content, paid media, PR, and martech, built as one compounding growth system.",
+        "Plurel is Northeon's brand, demand and distribution company: narrative, brand identity, website design, AI search visibility (AEO/SEO), content, paid media, PR, and measurement, run as one marketing system.",
       email: "hello@plurel.com",
       image: `${SITE_URL}/og.png`,
       parentOrganization: { "@type": "Organization", name: "Northeon" },
@@ -105,7 +108,7 @@ export default function RootLayout({
       /* Lets the router force an instant jump to top on page navigations
          while keeping smooth scrolling for in-page anchors */
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${instrument.variable} ${geistMono.variable} antialiased`}
+      className={`${mona.variable} ${instrument.variable} ${jetbrains.variable} antialiased`}
     >
       <body id="top" className="min-h-screen">
         <a

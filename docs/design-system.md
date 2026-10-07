@@ -1,16 +1,19 @@
 # Plurel — design system: Cinematic Red x Swiss Systems
 
-Plurel is one of Northeon's specialized divisions. The site shares the
-Northeon family layout with its sister divisions (Inter headlines at
-regular weight, square-marker kickers in tracked caps, sharp blocks for
-actions, diagonal arrows) and adds two things of its own:
+Plurel is Northeon's brand, demand and distribution company. The site
+reads like a proprietary consulting or technology firm, not an agency:
+the Northeon family layout (square-marker kickers, sharp blocks for
+actions, diagonal arrows) with three things of its own:
 
-- **Cinematic Red.** Red is the environment, not an accent. The hero is a
-  red room with a red-graded film; whole chapters are flat red; the footer
-  is oxblood. This is what makes the site feel alive, human, and inviting.
+- **Cinematic Red, set in graphite.** Red is the environment, not an
+  accent: whole chapters are flat red, and the hero's film is graded red
+  behind fluted glass. Graphite is the dark tone (hero, work, the AI
+  layer), and the footer is paper.
 - **Swiss Systems.** Structure is strict but never drawn. A 12-column grid
-  sets every edge, chapters are numbered, metadata is set in mono, and
-  the logo's own 3x3 grid is the source of all of it.
+  sets every edge, chapters are numbered, figures are captioned, metadata
+  is set in mono, and the logo's own 3x3 grid is the source of all of it.
+- **Frontier type.** One wide grotesk (Mona Sans) for everything, with a
+  mono for the instrumentation. No serif, no italics on the homepage.
 
 **Flat, not lit.** Every surface is one flat color. No gradients, no
 glows, no vignettes, no grain, no drawn column lines. The color, the type
@@ -34,8 +37,7 @@ they are rebuilt on this one.
 - The mark is exact geometry on a 10-unit square: 2-unit corners and
   edges, a 4-unit center, 1-unit gutters. It paints in `currentColor`.
 - `animated` staggers the nine cells in (flagship moments only).
-- Header: 22 to 24px tall. Footer: full container width, in brand red
-  on oxblood.
+- Header: 22 to 24px tall. Footer: brand red on paper.
 
 ## Color
 
@@ -43,7 +45,9 @@ they are rebuilt on this one.
 | --- | --- | --- |
 | `brand` | `#bf3a36` | Plurel red: red chapters, primary actions, markers on paper |
 | `ember` | `#8e2824` | Deep red: hover on red, the floor of red gradients |
-| `oxblood` | `#2a0d0b` | Cinematic shadow: hero base, work chapter, footer |
+| `graphite` | `#141517` | The dark tone: hero, work chapter, the AI layer band |
+| `fog` | `#b9bcc2` | Secondary text and the toned accent on graphite |
+| `oxblood` | `#2a0d0b` | Legacy dark tone; interior pages only until they move over |
 | `blush` | `#f2c9bf` | Rose: secondary text and the dimmed headline line on red and dark |
 | `signal` | `#e8564e` | Bright red: markers, rules, and indexes on dark |
 | `paper` | `#fbfaf6` | Light chapters; text on red and dark |
@@ -61,9 +65,9 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| paper | `bg-paper` | ink | Reading chapters: services, method, results, journal, FAQ |
-| red | `bg-brand` | paper, blush | Hero, thesis, the closing invitation |
-| dark | `bg-oxblood` | paper, signal | Work, footer |
+| paper | `bg-paper` | ink | Reading chapters: manifesto, services, results, journal, FAQ, closing, footer |
+| red | `bg-brand` | paper | The manifesto's findings band, the services fold, method |
+| dark | `bg-graphite` | paper, fog | Hero, work, the method's AI layer |
 
 All three are flat fills. Alternate tones so no two red or dark chapters
 touch, and keep at least one red room on every page. The one exception is
@@ -72,21 +76,25 @@ folds into the mark: one room, not two red chapters.
 
 ## Type
 
+Fonts load in `src/app/layout.tsx` through `next/font/google`.
+
 | Role | Face | Recipe |
 | --- | --- | --- |
-| Display (h1) | Inter 400 | `text-[clamp(3rem,min(8vw,13.5svh),7.25rem)] leading-[0.9] tracking-[-0.05em]` |
-| Chapter (h2) | Inter 400 | `text-[clamp(2.25rem,5vw,5rem)] leading-[0.98] tracking-[-0.04em]` |
-| Big numbers | Inter 300 | `font-light leading-[0.85] tracking-[-0.05em]` |
-| Body | Inter 400 | 15 to 19px, `leading-relaxed`, 40 to 52ch |
-| Accent | Instrument Serif italic | `<Accent>` inside a headline, one phrase only |
-| Kicker | Inter 500 caps | `<Kicker>`: square marker, 11px, `tracking-[0.2em]` |
-| Meta | Geist Mono caps | `<Meta>`: indexes, counts, clocks, parentheticals |
+| Display (h1, h2, h3, big numbers) | Mona Sans, 110% width, 430 | `type-display` plus a size; `leading-[0.98]` to `leading-none` |
+| Accent | Mona Sans 300 | `<Accent>`: same face, lighter, toned by color (`text-fog`, `text-muted`, `text-brand`, `text-blush`) |
+| Body | Mona Sans 400 | 15 to 20px, `leading-[1.5]` to `[1.55]`, 34 to 68ch |
+| Kicker | Mona Sans 500 caps | `<Kicker>`: square marker, 11px, tracked |
+| Meta | JetBrains Mono caps | `<Meta>`: indexes, figure captions, counts, clocks |
 
-- Headlines are never bold. Size and tight tracking carry them.
-- One `<Accent>` per headline, on the word that carries the feeling
-  ("*visible* layer", "*presence* problem", "*obvious* choice").
-- In the home hero the second line is the serif accent in `text-blush`.
-- Parentheticals are Meta: `(01)`, `(Selected clients)`, `(Services)`.
+- `type-display` (in `globals.css`) sets the face, `font-stretch: 110%`,
+  weight 430, `-0.018em` tracking and balanced wrapping. Headlines are
+  never bold.
+- One `<Accent>` per headline, on the phrase that carries the claim
+  ("*one system*", "*Everywhere.*", "*visible*"). It is never italic.
+- `figures` sets lining, proportional numerals for stats.
+- Parentheticals and figure captions are Meta: `(01)`, `Fig. 02 · …`.
+- Instrument Serif (`--font-serif`) remains loaded only for interior
+  pages that haven't moved over.
 
 ## Grid
 
@@ -117,15 +125,15 @@ Content on GRID
 - Padding: `py-24 lg:py-36`; closing chapters `py-28 lg:py-40`.
 - Chapters on a page are numbered in order. The hero and the closing
   invitation are not numbered.
-- Full-bleed index rows (services, journal) put the hairline on the `li`
+- Full-bleed index rows put the hairline on the `li`
   and the content in `CONTAINER` inside the link, so the rule runs edge
   to edge and the hover flood fills the full width.
 
 ## Actions
 
-- `<CtaLink>`: the one primary action per view. Sharp block, tracked caps,
-  diagonal arrow. `solid` (red) on paper and dark, `paper` on red.
-- `<TextLink>`: secondary. Tracked caps on an underline, straight arrow.
+- `<CtaLink>`: the one primary action per view. Sharp block, sentence
+  case, diagonal arrow. `solid` (red) on paper and dark, `paper` on red.
+- `<TextLink>`: secondary. Sentence case on an underline, straight arrow.
 - Header CTA is outlined. Every page offers the Growth Audit as the
   primary door and the strategy call as the secondary one.
 
@@ -135,40 +143,51 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
 `globals.css`, so reduced-motion visitors get the finished page.
 
 - **Hero load (flagship only):** headline lines rise out of their masks
-  (`line-rise`, 140ms apart), then copy, actions, and the distribution
-  wall fade up (`fade-up`).
-- **Scroll:** `Reveal`, staggering siblings 0.08s. The one scroll-scrubbed
-  moment is the services fold; nothing else is driven by scroll position.
-- **Hover:** service rows flood red from the floor (`scale-y`, 500ms);
-  case posters brighten slightly; arrows nudge diagonally.
-- **Ambient:** the hero film and the distribution wall's drift
-  (`wall-drift`, 120s per loop, pauses on hover). One control pauses
-  both. Nothing else moves on its own.
+  (`line-rise`, 140ms apart), then copy, actions, and the glass fade up
+  (`fade-up`).
+- **Scroll:** `Reveal`, staggering siblings 0.08s. The services fold is
+  the one scroll-scrubbed chapter. The two glass bands (below) follow
+  scroll too, but only as a height profile; nothing else is driven by
+  scroll position.
+- **Hover:** glass flutes clear and lift under the pointer; contents rows
+  take a red top rule; arrows nudge diagonally.
+- **Ambient:** only the film behind the glass. Each band has its own
+  pause control. Nothing else moves on its own.
 
-## The home hero: red room and distribution wall
+## Fluted glass
 
-Plurel is the creative and distribution division, so its hero shows the
-work traveling rather than a single photograph. That is also what sets
-it apart from the sister divisions' heroes.
+`src/components/glass-band.tsx` (client), with the shader and the height
+math in `src/lib/glass.ts`. Nine vertical flutes, one per cell of the
+mark, each a cylinder lens over the hero film: a magnified, shifted
+slice, darker seams, a thin highlight and a faint chromatic fringe. The
+film is drawn into a 192px canvas before it reaches the shader, so it
+arrives soft. Until the Higgsfield film exists, a palette stand-in is
+drawn in the shader.
 
-- **Statement:** "Made to be seen. *Everywhere.*" Two lines, the second in
-  the serif accent and blush. Copy and both actions sit to the right.
-- **The room:** flat `bg-brand`. When the film exists it plays behind
-  everything, blurred and graded back to the same red. Until then the
-  film prints on the wall show flat color stills. Film grain appears on
-  the film only (the room and the film prints), never on flat surfaces.
-- **The wall** (`hero-wall.tsx`): seven prints bottom-aligned like a
-  contact sheet, each captioned in Meta with its index, format, and
-  channel. Reel (Social), Search (Rank #1), Brand film (Web), AI answer
-  (Cited), Feed (Paid), Press (Earned), Out of home (OOH). The subject on
-  every surface is "Your Brand": the promise is what Plurel does for the
-  visitor's brand. Sizes are in `--u` (scales with width, and with height
-  on desktop), type inside a print is in em.
-- **One film, many crops** (`hero-motion.tsx`): a single `<video>` plays
-  behind the room; `FilmCanvas` frames mirror it live, cropped around a
-  focal point, only while on screen.
-- **Running foot:** "One story · seven surfaces · owned, earned, paid" and
-  the one pause control.
+- **Profiles.** `rise` (the hero): a low rest line that steps into a
+  staircase as the visitor scrolls away. `retract` (the bottom edge of the
+  closing chapter): the same staircase lifting back to a fringe, so the
+  page ends where it began.
+- **Hover.** The flute under a pointer (never touch) clears, lifts one
+  step and shows a paper edge; its neighbours follow a little.
+- **Rules.** It draws only while on screen, at most 1.5x DPR. It always
+  has a pause control (`aria-pressed`). Reduced motion or data saver get a
+  still frame (the poster when there is one). Without WebGL it falls back
+  to flat brand and ember bars.
+
+## The home hero
+
+Graphite, statement left, one line of copy and the primary action right,
+then the glass, then the exhibit:
+
+- **Kicker:** "Brand, demand and distribution · A Northeon company".
+- **Statement:** "Made to be / seen. *Everywhere.*", the accent in fog.
+  Copy: "One story, cut for every surface: owned, earned and paid."
+- **Glass:** the `rise` band, set well below the actions, captioned
+  "Fig. 00 · One film, nine panes" with its pause control on the rest
+  line, so both are on the first screen.
+- **Exhibit:** "Fig. 01", one story distributed to seven surfaces grouped
+  as owned, earned and paid. A scaled drawing at lg, a grouped list below.
 
 ## The services fold
 
@@ -190,8 +209,9 @@ Rules:
 - It moves only with the visitor's own scroll and stops when they stop.
   Native scroll only: no wheel or touch handlers, no snap, no smoothing.
 - The gate (`FOLD_QUERY` in `lib/fold.ts`, mirrored in `globals.css`):
-  motion only with no reduced-motion preference, no forced colors, at least
-  32rem tall and 22.5rem wide, with JS. Everything else, and a failed fit
+  motion only with no reduced-motion preference, no forced colors, with JS,
+  at least 22.5rem wide, and at least 35rem tall on phones (40rem from the
+  sm breakpoint up), which is where the resolved frame measurably fits. Everything else, and a failed fit
   check, gets the finished static figure: the mark with indexes 01-08
   around "Your brand", captioned "Fig. 02". A failed fit is retried on
   resize; if the pin switches off mid-fold, the visitor lands on the
@@ -211,12 +231,13 @@ Rules:
 ## Imagery
 
 - The hero film is generated in Higgsfield; see `docs/hero-video.md`.
-- Case studies are flat color posters (`work-chapter.tsx`): one field of
-  red, ink, blush or ember, the client set large with an accent line,
-  the result as the loudest number. Real stills go in the same frame
-  when they exist.
+- Case studies (`work-chapter.tsx`) are typeset, not photographed: one
+  engagement as a graphite exhibit (the client's words, From / Built /
+  To, the result as the loudest number), then a ledger of every
+  engagement on the same columns. Real stills join the exhibit when they
+  exist.
 - Photography direction for stills matches the film: people at work,
-  crimson and oxblood light, warm skin tones, shallow depth of field,
+  crimson light against graphite shadow, warm skin tones, shallow depth of field,
   grain, nothing staged at the camera.
 
 ## Header and footer
@@ -227,5 +248,25 @@ Rules:
   listed in `OVERLAY_ROUTES` (`src/lib/nav.ts`); other routes get a
   spacer so content starts below the bar. Desktop menus open a full-width
   Swiss panel; mobile opens a full-screen red index.
-- Footer (`site-footer.tsx`): oxblood, one invitation, Swiss link columns,
-  full-width lockup, live studio clock.
+- Footer (`site-footer.tsx`): paper, brand-red lockup, Swiss link
+  columns, the Northeon line (Plurel beside its sister, Kelwin), live
+  studio clock. The closing chapter's `retract` glass sits right above it.
+
+## Positioning in the homepage
+
+Plurel sells integration, not a menu of services. Every chapter carries
+one step of that argument:
+
+| Chapter | Job |
+| --- | --- |
+| Hero | The promise: one story, on every surface |
+| (01) Manifesto | The problem: "Your marketing shouldn't be ten companies." Each supplier reports its own number |
+| (02) Services | The answer: every relevant channel, run as one system (Narrative → Create → Distribute → Measure) |
+| (03) Method | Diagnose where the system breaks, then design, deploy, compound |
+| (04)-(06) Work, results, journal | Proof, measured as one system |
+| (07) FAQ | The real objections: every channel? how is this not full-service? |
+| Closing | The diagnostic as the door in |
+
+Write "every relevant channel", never "every channel". Frame engagements as
+growth transformations; keep AI search, martech and measurement inside the
+method rather than as slogans.

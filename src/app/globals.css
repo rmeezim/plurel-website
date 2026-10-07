@@ -16,7 +16,9 @@
   --color-charcoal: #20201e; /* dark panels */
   --color-brand: #bf3a36; /* Plurel red: red chapters, CTAs, markers */
   --color-ember: #8e2824; /* deep red: hover on red, gradient floor */
-  --color-oxblood: #2a0d0b; /* cinematic shadow red, footer, dark chapters */
+  --color-oxblood: #2a0d0b; /* legacy shadow red; dark chapters are graphite now */
+  --color-graphite: #141517; /* the dark tone: hero, work, dark panels */
+  --color-fog: #b9bcc2; /* secondary text and dimmed lines on graphite */
   --color-blush: #f2c9bf; /* rose: secondary text and dimmed lines on red */
   --color-signal: #e8564e; /* bright red: markers and numbers on dark */
   --color-line: #d8d2c8; /* hairlines and dividers on paper */
@@ -39,12 +41,30 @@
 }
 
 @theme inline {
-  /* Inter carries everything: the same face as the rest of the Northeon
-     family. Instrument Serif italic is the human accent (one phrase per
-     headline, never body). Geist Mono is Swiss metadata only. */
-  --font-sans: var(--font-inter);
+  /* Mona Sans carries everything: wide (110%) for display, normal width
+     for reading. Emphasis is by weight and tone in the same face, never a
+     second typeface. JetBrains Mono is Swiss metadata only. Instrument
+     Serif stays only for interior pages that have not moved over. */
+  --font-sans: var(--font-mona);
   --font-serif: var(--font-instrument);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-jetbrains);
+}
+
+/* Display type: Mona Sans at 110% width. Every headline and big number. */
+@utility type-display {
+  font-family: var(--font-mona), system-ui, sans-serif;
+  font-stretch: 110%;
+  font-weight: 430;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
+}
+/* The one quieter phrase in a headline: same face, lighter, toned down */
+@utility type-accent {
+  font-weight: 300;
+}
+/* Display figures: proportional lining numerals, so 3.2× sets tight */
+@utility figures {
+  font-variant-numeric: lining-nums proportional-nums;
 }
 
 @layer base {
@@ -57,6 +77,14 @@
     html {
       scroll-behavior: smooth;
     }
+  }
+
+  /* No widows: headlines balance, running text breaks politely */
+  h1, h2, h3, blockquote {
+    text-wrap: balance;
+  }
+  p, li, dd, figcaption {
+    text-wrap: pretty;
   }
 
   body {
@@ -104,8 +132,9 @@
   display: none;
 }
 
-/* FOLD_QUERY */
-@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-height: 32rem) and (min-width: 22.5rem) {
+/* FOLD_QUERY: phones need 35rem of height, sm and up 40rem, which is
+   where the resolved frame fits (measured; see the fit check) */
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 22.5rem) and (max-width: 39.99rem) and (min-height: 35rem), (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 40rem) and (min-height: 40rem) {
   /* While the fold is live, anchor jumps and focus scrolls land at once.
      A smooth scroll would play the fold by itself, faster than any hand. */
   html[data-js]:has(.fold:not([data-off])) {
@@ -152,7 +181,8 @@
     min-height: 0;
     margin-top: 2rem;
     row-gap: 1.25rem;
-    grid-template-rows: auto minmax(0, 1fr);
+    /* standfirst, statement, then the mark's slot takes the rest */
+    grid-template-rows: auto auto minmax(0, 1fr);
   }
   html[data-js] .fold:not([data-off]) .fold-slot {
     align-self: stretch;
@@ -163,9 +193,22 @@
     justify-content: flex-end;
   }
   /* The resting mark is as large as its columns allow, but never taller
-     than the space left for it and a caption of up to three Meta lines */
+     than the space left for it. Phones: mark and caption side by side, so
+     only the mark is height-bound. sm and up: a caption of up to three Meta
+     lines sits below. */
   html[data-js] .fold:not([data-off]) .fold-fig {
-    width: min(100cqw, 100cqh - 3.75rem);
+    width: 100%;
+  }
+  html[data-js] .fold:not([data-off]) .fold-fig [data-fold-art] {
+    width: min(calc(50cqw - 0.5rem), 100cqh);
+  }
+  @media (min-width: 40rem) {
+    html[data-js] .fold:not([data-off]) .fold-fig {
+      width: min(100cqw, 100cqh - 3.75rem);
+    }
+    html[data-js] .fold:not([data-off]) .fold-fig [data-fold-art] {
+      width: 100%;
+    }
   }
   html[data-js] .fold:not([data-off]) .fold-foot {
     top: calc(100vh - 3.25rem);
@@ -176,9 +219,27 @@
     html[data-js] .fold:not([data-off]) .fold-content {
       padding-top: 108px;
     }
+    /* The contents page rises beside the landed mark: its top meets the
+       mark's top (--fold-pull is set by ServicesFold from the measured
+       mark). It paints over the stage's empty right half only; the margin
+       column lets pointer events through to the mark. */
+    html[data-js] .fold[data-armed] .fold-after {
+      position: relative;
+      z-index: 1;
+      margin-top: calc(-1 * var(--fold-pull, 0px));
+      pointer-events: none;
+    }
+    html[data-js] .fold[data-armed] .fold-after > div {
+      padding-top: 0;
+    }
+    html[data-js] .fold[data-armed] .fold-after :is(ol, a) {
+      pointer-events: auto;
+    }
+    /* standfirst beside the statement, then the mark lands below in the margin */
     html[data-js] .fold:not([data-off]) .fold-body {
       margin-top: 3rem;
-      grid-template-rows: minmax(0, 1fr);
+      row-gap: 2rem;
+      grid-template-rows: auto minmax(0, 1fr);
     }
   }
 
@@ -224,35 +285,6 @@
   .fold-fig:has(.fold-hit[data-i="07"]:hover) [data-readout="07"],
   .fold-fig:has(.fold-hit[data-i="08"]:hover) [data-readout="08"] {
     opacity: 1;
-  }
-}
-
-/* Hero film behind the wall: softened so the prints stay the focus */
-.hero-film {
-  filter: blur(14px) saturate(1.1);
-  transform: scale(1.08);
-}
-
-/* Distribution wall: every frame is sized in --u, so the wall scales as
-   one piece. */
-.wall {
-  --u: 0.56px;
-}
-@media (min-width: 40rem) {
-  .wall {
-    --u: 0.74px;
-  }
-}
-/* Desktop: scale with the viewport's height too, so the wall stays in
-   the first screen on short laptops without shrinking past legibility */
-@media (min-width: 64rem) {
-  .wall {
-    --u: clamp(0.72px, calc((100svh - 470px) / 400), 1px);
-  }
-}
-@media (min-width: 100rem) {
-  .wall {
-    --u: clamp(0.72px, calc((100svh - 470px) / 400), 1.2px);
   }
 }
 
@@ -545,12 +577,4 @@
     animation: line-rise 1.05s cubic-bezier(0.19, 1, 0.22, 1) both;
   }
 
-  /* Distribution wall drift: one slow loop, pausable */
-  .wall-drift {
-    animation: marquee 120s linear infinite;
-  }
-  .wall:hover .wall-drift,
-  [data-paused="true"] .wall-drift {
-    animation-play-state: paused;
-  }
 }

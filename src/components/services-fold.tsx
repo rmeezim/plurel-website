@@ -61,7 +61,8 @@ export function ServicesFold({ children }: { children: ReactNode }) {
     const room = one("[data-fold-room]");
     const center = one("[data-fold-center]");
     const head = one("[data-fold-head]");
-    const h2 = one("[data-fold-h2]");
+    // The statement and its margin standfirst rise together
+    const h2s = all("[data-fold-h2]");
     const art = one("[data-fold-art]");
     const caption = one("[data-fold-caption]");
     const foot = one("[data-fold-foot]");
@@ -71,7 +72,7 @@ export function ServicesFold({ children }: { children: ReactNode }) {
     const names = all("[data-fold-name]");
     const markLabels = all("[data-fold-mark-label]");
     if (
-      !stage || !content || !backdrop || !room || !center || !head || !h2 ||
+      !stage || !content || !backdrop || !room || !center || !head || !h2s.length ||
       !art || !caption || !foot || !markCenter ||
       cells.length !== 9 || labels.length !== 8 || markLabels.length !== 8
     ) {
@@ -79,7 +80,7 @@ export function ServicesFold({ children }: { children: ReactNode }) {
     }
 
     const mq = window.matchMedia(FOLD_QUERY);
-    const driven = [backdrop, room, center, head, h2, art, caption, foot, ...cells, ...labels, ...names];
+    const driven = [backdrop, room, center, head, ...h2s, art, caption, foot, ...cells, ...labels, ...names];
 
     let L: Layout | null = null;
     let top = 0;
@@ -206,6 +207,10 @@ export function ServicesFold({ children }: { children: ReactNode }) {
       // long pushes it up into the headline rather than off the bottom
       const fig = art.parentElement;
       const slot = fig?.parentElement;
+      // On large screens the contents page rises into the space beside the
+      // landed mark (see .fold-after in globals.css)
+      section.style.setProperty("--fold-pull", `${Math.max(0, Math.round(H - artRect.y))}px`);
+
       const fits =
         !!fig && !!slot &&
         artRect.w >= 120 &&
@@ -240,8 +245,10 @@ export function ServicesFold({ children }: { children: ReactNode }) {
       put(room, "opacity", op(f.roomLine.opacity));
       put(foot, "opacity", op(f.foot));
       put(head, "opacity", op(f.head));
-      put(h2, "opacity", op(f.h2.opacity));
-      put(h2, "transform", `translate3d(0,${px(f.h2.y)}px,0)`);
+      for (const el of h2s) {
+        put(el, "opacity", op(f.h2.opacity));
+        put(el, "transform", `translate3d(0,${px(f.h2.y)}px,0)`);
+      }
       put(art, "opacity", op(f.art));
       put(caption, "opacity", op(f.caption));
       if (f.rest !== restOn) {
@@ -320,6 +327,7 @@ export function ServicesFold({ children }: { children: ReactNode }) {
       measureRaf = 0;
       section.removeAttribute("data-armed");
       section.removeAttribute("data-rest");
+      section.style.removeProperty("--fold-pull");
       clearInline();
     };
 

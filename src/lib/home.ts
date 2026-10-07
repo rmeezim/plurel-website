@@ -12,23 +12,23 @@ export const CLIENTS = [
   "Verra",
 ];
 
-/** The four outcomes every engagement is accountable for */
+/** The fragmentation the manifesto names: each supplier optimizes its own number */
 export const PILLARS = [
   {
-    word: "Found",
-    line: "In search, in feeds, and in the answers AI assistants give.",
+    word: "Paid",
+    line: "The ads agency reports clicks.",
   },
   {
-    word: "Trusted",
-    line: "A brand and site that read as the premium option on sight.",
+    word: "Search",
+    line: "The SEO agency reports traffic.",
   },
   {
-    word: "Chosen",
-    line: "Proof, clarity, and a path to inquiry at every touchpoint.",
+    word: "Brand",
+    line: "The studio reports consistency.",
   },
   {
-    word: "Remembered",
-    line: "Content and reputation that compound quarter over quarter.",
+    word: "Social",
+    line: "The social team reports impressions.",
   },
 ];
 
@@ -36,37 +36,37 @@ export const PHASES = [
   {
     number: "1",
     name: "Diagnose",
-    tagline: "Know where you stand",
+    tagline: "Find where the system breaks",
     description:
-      "A presence audit across brand, website, search, and AI visibility: where you win, where you leak, and what to fix first.",
-    outputs: ["Brand & presence audit", "Competitor map", "SEO / AEO baseline", "Growth gap report"],
+      "One diagnostic across market, narrative, touchpoints, assets, distribution, and measurement: where you win, where you leak, and what to fix first.",
+    outputs: ["System map", "Narrative & positioning read", "Search & channel baseline", "Priority roadmap"],
     ai: "AI visibility scan",
   },
   {
     number: "2",
     name: "Design",
-    tagline: "Build the visible layer",
+    tagline: "Rebuild the story and the surfaces",
     description:
-      "Identity, website, and content systems designed as one coherent experience. Considered, premium, unmistakably yours.",
-    outputs: ["Brand identity", "Website design", "Content architecture", "Creative direction"],
+      "Positioning, messaging, identity, website, and the asset system designed together, so every channel tells the same story.",
+    outputs: ["Narrative & messaging", "Brand identity", "Website & landing pages", "Asset system"],
     ai: "Generative concepting",
   },
   {
     number: "3",
     name: "Deploy",
-    tagline: "Launch and integrate",
+    tagline: "Launch on the channels that matter",
     description:
-      "Ship the new presence and wire the machinery underneath: analytics, CRM, automation, and attribution from day one.",
-    outputs: ["Site build & QA", "Martech stack", "Tracking & attribution", "Launch PR"],
+      "Ship to the channels that fit your market, not every channel there is, and wire the data underneath: analytics, CRM handoff, and attribution from day one.",
+    outputs: ["Site build & QA", "Channel launch plan", "Tracking & attribution", "Launch PR"],
     ai: "Automation & agent wiring",
   },
   {
     number: "4",
     name: "Compound",
-    tagline: "Turn presence into growth",
+    tagline: "Measure, learn, reallocate",
     description:
-      "Always-on content, paid, and reputation programs that stack results quarter over quarter.",
-    outputs: ["Content engine", "Paid media", "PR & reputation", "Quarterly strategy"],
+      "Content, search, paid, and earned run as one program. Every quarter the numbers rewrite the brief, and the budget moves to the bottleneck.",
+    outputs: ["Content engine", "Paid & search", "PR & reputation", "Quarterly reallocation"],
     ai: "Predictive optimization",
   },
 ];
@@ -163,31 +163,39 @@ export const VOICES = [
 export const FAQS = [
   {
     q: "What does a typical engagement look like?",
-    a: "Every engagement runs our four-phase operating model: Diagnose, Design, Deploy, Compound. Focused sprints (a rebrand, a website, an AI-search push) run four to eight weeks. Full growth transformations typically run a quarter, then move into an always-on program.",
+    a: "Every engagement starts with a diagnostic, then runs our four-phase operating model: Diagnose, Design, Deploy, Compound. Most clients work with us as one integrated partnership covering narrative, creative, content, and distribution, with the mix reallocated as the bottleneck moves. Focused sprints (a rebrand, a website, a search push) run four to eight weeks.",
   },
   {
     q: "What does it cost?",
-    a: "Focused sprints start in the low five figures. Full transformations are scoped after the Growth Audit, so you are pricing a defined system rather than open-ended hours. Every scope states what it should return, and quarterly reviews hold the work to it.",
+    a: "Partnerships are a monthly engagement scoped to the system you need, not a menu of line items. You are buying an external marketing department, so the work can move from web to film to search without a new contract. Focused sprints start in the low five figures. Every scope states what it should return, and quarterly reviews hold the work to it.",
   },
   {
     q: "How quickly will we see results?",
-    a: "Perception shifts the day the new presence ships. Pipeline signals, like inquiry quality, search and AI visibility, and conversion, typically move within the first quarter. Programs are reviewed against your targets every quarter.",
+    a: "Perception shifts the day the new narrative and site ship. Pipeline signals, like inquiry quality, search and AI visibility, and conversion, typically move within the first quarter. Programs are reviewed against your targets every quarter.",
   },
   {
-    q: "Do you work with companies like ours?",
-    a: "Our best fit is founder-led B2B, professional services, and premium consumer brands that win on trust. Stage matters less than ambition: if presence is holding your growth back and you want a system rather than a facelift, we should talk.",
+    q: "How is this different from a full-service agency?",
+    a: "We sell the integration, not the menu. A full-service agency puts many services under one roof; we run one narrative, one creative engine, one data layer, and one accountable team across every channel you use. You stop managing ten suppliers who each optimize their own number.",
+  },
+  {
+    q: "Do we need every channel?",
+    a: "No. Every relevant channel, run as one system. Sometimes that is search and a founder voice; sometimes it is LinkedIn, events, and research. The diagnostic decides the mix, and everything in it shares one narrative, one asset system, and one set of numbers.",
   },
   {
     q: "We already have an in-house team or agency. Where do you fit?",
-    a: "Usually as the systems layer. We diagnose and design the growth system, then either run defined lanes end to end (AI search, content engine, reputation) or work with your existing team as the partner accountable for outcomes.",
+    a: "Usually as the system owner. We diagnose and design the whole system, then either run lanes end to end or orchestrate your existing team and suppliers as the partner accountable for the outcome.",
+  },
+  {
+    q: "Do you work with companies like ours?",
+    a: "Our best fit is growth-stage companies whose marketing has outgrown one person and fragmented across suppliers: Series A to C technology companies, and established businesses modernizing how they show up. The problem is the same in SaaS, fintech, healthcare, or professional services: everything works, and nothing works together.",
   },
   {
     q: "What exactly is the Growth Audit, and why is it free?",
-    a: "A strategist reviews six dimensions of your presence (brand clarity, website conversion, AI search visibility, content authority, campaign readiness, and your martech foundation) and returns a prioritized read within about a business day. It's free because it's the fastest way for both of us to see whether there's a real system to build.",
+    a: "A strategist reviews six parts of your marketing system (market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement) and returns a prioritized read within about a business day. It's free because it's the fastest way for both of us to see whether there's a real system to build.",
   },
   {
     q: "Who actually does the work?",
-    a: "A senior Plurel team, drawing on Northeon's global delivery network: strategy, design, engineering, and martech under one roof. The people who scope your system are the people who build it.",
+    a: "A senior Plurel team that owns the system: strategy, narrative, design, film, motion, web, and distribution in one team, drawing on Northeon's global delivery network. The people who diagnose your system are the people who run it.",
   },
 ];
 
