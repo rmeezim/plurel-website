@@ -91,7 +91,7 @@ export const CASES: {
     services: "Brand identity, Web design",
     year: "2025",
     metric: "+212%",
-    metricLabel: "Qualified inquiries",
+    metricLabel: "Qualified demand",
     before: "Dated identity, unclear positioning",
     built: "Brand system, website",
     after: "Premium perception, higher-quality demand",
@@ -136,7 +136,7 @@ export const CASES: {
 ];
 
 export const STATS = [
-  { value: "3.2×", label: "Average lift in qualified inquiries" },
+  { value: "3.2×", label: "Average lift in qualified demand" },
   { value: "+64%", label: "Average conversion-rate improvement" },
   { value: "+185%", label: "Organic & AI-search visibility gained" },
   { value: "0.9s", label: "Median page load after rebuild" },
@@ -163,7 +163,7 @@ export const VOICES = [
 export const FAQS = [
   {
     q: "What does a typical engagement look like?",
-    a: "Every engagement starts with a diagnostic, then runs our four-phase operating model: Diagnose, Design, Deploy, Compound. Most clients work with us as one integrated partnership covering narrative, creative, content, and distribution, with the mix reallocated as the bottleneck moves. Focused sprints (a rebrand, a website, a search push) run four to eight weeks.",
+    a: "Every engagement starts with the Diagnostic, then runs our four-phase operating model: Diagnose, Design, Deploy, Compound. Most clients work with us as one integrated partnership covering narrative, creative, content, and distribution, with the mix reallocated as the bottleneck moves. Focused sprints (a rebrand, a website, a search push) run four to eight weeks.",
   },
   {
     q: "What does it cost?",
@@ -171,7 +171,7 @@ export const FAQS = [
   },
   {
     q: "How quickly will we see results?",
-    a: "Perception shifts the day the new narrative and site ship. Pipeline signals, like inquiry quality, search and AI visibility, and conversion, typically move within the first quarter. Programs are reviewed against your targets every quarter.",
+    a: "Perception shifts the day the new narrative and site ship. Demand signals, like the quality of who reaches out, search and AI visibility, and conversion, typically move within the first quarter. Programs are reviewed against your targets every quarter.",
   },
   {
     q: "How is this different from a full-service agency?",
@@ -179,7 +179,7 @@ export const FAQS = [
   },
   {
     q: "Do we need every channel?",
-    a: "No. Every relevant channel, run as one system. Sometimes that is search and a founder voice; sometimes it is LinkedIn, events, and research. The diagnostic decides the mix, and everything in it shares one narrative, one asset system, and one set of numbers.",
+    a: "No. Every relevant channel, run as one system. Sometimes that is search and a founder voice; sometimes it is LinkedIn, events, and research. The Diagnostic decides the mix, and everything in it shares one narrative, one asset system, and one set of numbers.",
   },
   {
     q: "We already have an in-house team or agency. Where do you fit?",
@@ -191,7 +191,7 @@ export const FAQS = [
   },
   {
     q: "What exactly is the Diagnostic, and why is it free?",
-    a: "A strategist scores six parts of your distribution system (market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement) and returns a prioritized read within about a business day. It's free because it's the fastest way for both of us to see whether there's a real system to build.",
+    a: "The Plurel Distribution Diagnostic: a strategist scores six parts of your distribution system (market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement) and returns a prioritized read within about a business day. It's free because it's the fastest way for both of us to see whether there's a real system to build.",
   },
   {
     q: "Who actually does the work?",

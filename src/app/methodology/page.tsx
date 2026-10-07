@@ -73,7 +73,7 @@ const PHASES: Phase[] = [
     name: "Diagnose",
     intent: "Know where you stand.",
     window: "WK 00–02",
-    gateName: "The Growth Gap Review",
+    gateName: "The Diagnostic Review",
     why: "Every engagement starts with evidence. Before a single pixel moves, we establish ground truth: where your presence wins, where it leaks, and which fixes move revenue first. Diagnosis is why our roadmaps survive contact with reality.",
     experience:
       "Two working interviews, one access checklist, one questionnaire. We carry the rest — you keep running your business.",
@@ -110,14 +110,14 @@ const PHASES: Phase[] = [
       },
     ],
     artifacts: [
-      "Growth Gap Report",
+      "Diagnostic Report",
       "Nine-layer scorecard",
       "Competitor map",
       "AEO baseline",
       "Prioritized fix list",
     ],
     gate: "A working session where findings become priorities. Nothing proceeds until the report is agreed and signed — and if we're not the right partner, the report is still yours.",
-    handoff: "Hands off — a signed Growth Gap Report",
+    handoff: "Hands off — a signed Diagnostic Report",
   },
   {
     number: "02",
@@ -309,11 +309,11 @@ const FAQS = [
   },
   {
     q: "Do we have to rebuild everything?",
-    a: "No — that's what Diagnose is for. The Growth Gap Report scores all nine layers of your presence; whatever already works is kept and wired into the system. You invest where the evidence says the leak is, not where a pitch deck says it is.",
+    a: "No — that's what Diagnose is for. The Diagnostic Report scores every part of your distribution system; whatever already works is kept and wired into the system. You invest where the evidence says the leak is, not where a pitch deck says it is.",
   },
   {
     q: "What do the first two weeks look like?",
-    a: "Two working interviews, one access checklist, one questionnaire — then we disappear into the audit. You get the Growth Gap Report and a prioritized fix list at the Growth Gap Review. If you stop there, the findings are still yours to keep.",
+    a: "Two working interviews, one access checklist, one questionnaire — then we disappear into the Diagnostic. You get the Diagnostic Report and a prioritized fix list at the Diagnostic Review. If you stop there, the findings are still yours to keep.",
   },
   {
     q: "How do you measure success?",
@@ -927,7 +927,7 @@ export default function MethodologyPage() {
               <em className="italic">first deliverable</em>.
             </h2>
             <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Every engagement starts with the audit &mdash; a clear read on
+              Every engagement starts with the Diagnostic &mdash; a clear read on
               where your presence stands across all nine layers, and what to
               fix first. Book the call; leave with the truth either way.
             </p>

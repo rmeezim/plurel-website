@@ -35,7 +35,7 @@ export function CityClock({ visitor = false, className = "" }: { visitor?: boole
 
   useEffect(() => {
     const zone = visitor ? Intl.DateTimeFormat().resolvedOptions().timeZone || STUDIO_CITY.timeZone : STUDIO_CITY.timeZone;
-    const city = visitor ? cityOf(zone) : STUDIO_CITY.name;
+    const city = visitor ? cityOf(zone) : `${STUDIO_CITY.name} studio`;
     const format = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: zone });
     const tick = () => setNow({ city, time: format.format(new Date()) });
     tick();
@@ -47,7 +47,7 @@ export function CityClock({ visitor = false, className = "" }: { visitor?: boole
     <span
       className={`tabular-nums transition-opacity duration-500 ${visitor && !now ? "opacity-0" : ""} ${className}`}
     >
-      {now?.city ?? (visitor ? "Local" : STUDIO_CITY.name)} <span aria-hidden>·</span>{" "}
+      {now?.city ?? (visitor ? "Local" : `${STUDIO_CITY.name} studio`)} <span aria-hidden>·</span>{" "}
       <time suppressHydrationWarning>{now?.time ?? "--:--"}</time>
     </span>
   );

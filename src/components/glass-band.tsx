@@ -320,17 +320,20 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
   return (
     <div ref={wrap} className={`relative ${className}`}>
       <canvas ref={canvas} aria-hidden className="absolute inset-0 block size-full" />
-      {noGl && (
-        <div aria-hidden className="absolute inset-x-0 top-0 grid h-full grid-cols-9 items-start">
-          {Array.from({ length: N }, (_, i) => (
-            <span
-              key={i}
-              className={`block ${i % 2 ? "bg-ember" : "bg-brand"}`}
-              style={{ height: `${fluteHeight(i, N, 1, profile, rest) * 100}%` }}
-            />
-          ))}
-        </div>
-      )}
+      {/* Flat bars in the finished profile: without JS (hidden once JS
+          runs) and without WebGL */}
+      <div
+        aria-hidden
+        className={`absolute inset-x-0 top-0 grid h-full grid-cols-9 items-start ${noGl ? "" : "[html[data-js]_&]:hidden"}`}
+      >
+        {Array.from({ length: N }, (_, i) => (
+          <span
+            key={i}
+            className={`block ${i % 2 ? "bg-ember" : "bg-brand"}`}
+            style={{ height: `${fluteHeight(i, N, 1, profile, rest) * 100}%` }}
+          />
+        ))}
+      </div>
     </div>
   );
 }

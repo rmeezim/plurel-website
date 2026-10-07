@@ -54,7 +54,7 @@ const STANDARDS = [
     number: "01",
     name: "Diagnosis before design",
     detail:
-      "No build before evidence: every engagement opens with the audit and a signed Growth Gap Report.",
+      "No build before evidence: every engagement opens with the Diagnostic and a signed Diagnostic Report.",
   },
   {
     number: "02",
@@ -454,7 +454,7 @@ export default function AboutPage() {
                   businesses lose the moments that decide a shortlist &mdash;
                   and built the method so it never comes down to luck. He
                   leads the first two weeks of every engagement personally:
-                  the audit carries his signature.
+                  the Diagnostic carries his signature.
                 </p>
               </div>
               <div className="mt-7 flex flex-wrap items-center gap-x-10 gap-y-4">

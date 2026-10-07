@@ -224,9 +224,10 @@ type LabelCache = { x: number; y: number; o: number };
 
 /**
  * Mounts the field inside `root` (the section). Returns the cleanup.
- * `reduced` (prefers-reduced-motion) always gets the still frame.
+ * Reduced motion is read live (a toggle needs no remount) and always gets
+ * the still frame.
  */
-export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean }): () => void {
+export function mountAttentionField(root: HTMLElement): () => void {
   const one = <T extends Element = HTMLElement>(sel: string) => root.querySelector<T>(sel);
   const all = (sel: string) => Array.from(root.querySelectorAll<HTMLElement>(sel));
 
@@ -270,6 +271,8 @@ export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean 
 
   /* ---------- state ---------- */
   const pinMQ = window.matchMedia(AF_PIN_QUERY);
+  const reducedMQ = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const reduced = () => reducedMQ.matches;
   let pinned = false;
   let W = 0, H = 0, dpr = 1, phone = false;
   // Hs: the part of the stage always on screen (svh), H: the whole (lvh)
@@ -1233,7 +1236,7 @@ export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean 
 
     const AW = A1 - A0;
     if (flowV > 0.002) {
-      drawRibbons(flowV * dim, t, !opts.reduced);
+      drawRibbons(flowV * dim, t, !reduced());
       // the qualified stream after the throat
       const tx = A0 + ut * AW;
       c.globalAlpha = flowV * dim;
@@ -1331,7 +1334,7 @@ export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean 
     /* --- particles --- */
     let vn = 0;
     const sgx = W * (phone ? 0.085 : 0.06), sgy = H * (phone ? 0.05 : 0.075);
-    const twOn = !opts.reduced && noiseW > 0;
+    const twOn = !reduced() && noiseW > 0;
     const u = MS / 10, mx0 = MX - MS / 2, my0 = MY - MS / 2;
     const oFade = 1 - ss(0.84, 1, fOpen);
     for (let i = 0; i < drawN; i++) {
@@ -1457,7 +1460,7 @@ export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean 
     if (beta > 0.002) {
       const tx = A0 + ut * AW;
       const km = eio(m3);
-      drawPoint(lerp(tx, hx, km), lerp(Cc, hy, km), lerp(1, 1.35, km), beta * dim, t, !opts.reduced);
+      drawPoint(lerp(tx, hx, km), lerp(Cc, hy, km), lerp(1, 1.35, km), beta * dim, t, !reduced());
     }
   }
 
@@ -1629,9 +1632,37 @@ export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean 
     }
   }
 
+  /*
+    Where the track sits on the page and where the reader was, cached on
+    scroll (and on resizes that keep the mode). When the mode flips (a phone
+    rotates, a window gets short, reduced motion toggles) the track changes
+    height by thousands of pixels, so syncMode puts the reader back: inside
+    the field they land at its start, below it they stay on the same content.
+    Like the services fold's keepPlace.
+  */
+  let geo = { top: 0, h: 0, y: 0, vh: 0 };
+  const snap = () => {
+    const r = track.getBoundingClientRect();
+    geo = { top: r.top + window.scrollY, h: track.offsetHeight, y: window.scrollY, vh: window.innerHeight };
+  };
+  const keepPlace = () => {
+    const was = geo;
+    if (!was.h) return snap();
+    const r = track.getBoundingClientRect();
+    const top = r.top + window.scrollY;
+    const h = track.offsetHeight;
+    if (was.y > was.top && was.y < was.top + was.h - was.vh) {
+      window.scrollTo({ top, behavior: "instant" });
+    } else if (was.y >= was.top + was.h - was.vh) {
+      window.scrollTo({ top: was.y + (top + h) - (was.top + was.h), behavior: "instant" });
+    }
+    snap();
+  };
+
   function syncMode() {
-    const next = !opts.reduced && pinMQ.matches;
+    const next = !reduced() && pinMQ.matches;
     if (next === pinned && N) return;
+    const flipped = N > 0;
     pinned = next;
     stop();
     clearInline();
@@ -1650,13 +1681,22 @@ export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean 
       }
     }
     resize();
+    if (flipped) keepPlace();
+    else snap();
     if (pinned && visible) start();
   }
 
   /* ---------- wiring ---------- */
   let visible = false;
-  const ro = new ResizeObserver(resize);
+  // A resize that keeps the mode re-caches the geometry; a flip is handled
+  // by syncMode (media query changes are reported before resize observers)
+  const ro = new ResizeObserver(() => {
+    resize();
+    if ((!reduced() && pinMQ.matches) === pinned) snap();
+  });
   ro.observe(fig);
+  const onScroll = () => snap();
+  window.addEventListener("scroll", onScroll, { passive: true });
   const io = new IntersectionObserver(
     (es) => {
       for (const e of es) {
@@ -1669,6 +1709,7 @@ export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean 
   );
   io.observe(root);
   pinMQ.addEventListener("change", syncMode);
+  reducedMQ.addEventListener("change", syncMode);
   const onVis = () => {
     if (document.hidden) stop();
     else if (visible) start();
@@ -1714,6 +1755,8 @@ export function mountAttentionField(root: HTMLElement, opts: { reduced: boolean 
     ro.disconnect();
     io.disconnect();
     pinMQ.removeEventListener("change", syncMode);
+    reducedMQ.removeEventListener("change", syncMode);
+    window.removeEventListener("scroll", onScroll);
     tabs.forEach((b, i) => b.removeEventListener("click", handlers[i]));
     document.removeEventListener("visibilitychange", onVis);
   };

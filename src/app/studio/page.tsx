@@ -297,7 +297,7 @@ export default function StudioPage() {
               Bring us the <em className="italic">before</em>.
             </h2>
             <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Book the strategy call &mdash; the audit tells us both where
+              Book the strategy call &mdash; the Diagnostic tells us both where
               the work should start.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">

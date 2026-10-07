@@ -22,7 +22,7 @@ export function ClientsStrip() {
               <li
                 key={`${name}-${i}`}
                 aria-hidden={i >= CLIENTS.length || undefined}
-                className="flex items-center whitespace-nowrap pr-12 text-[18px] tracking-[-0.01em] text-ink/55 lg:pr-16 lg:text-[20px]"
+                className="flex items-center whitespace-nowrap pr-12 text-[18px] tracking-[-0.01em] text-ink/70 lg:pr-16 lg:text-[20px]"
               >
                 <i aria-hidden className="mr-12 block size-[5px] bg-ink/25 lg:mr-16" />
                 {name}

@@ -664,8 +664,10 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
     // Supplier labels fade as the system forms; reduced motion only ever
     // shows this end state, so there they stay a little stronger
     const fade = ss(clamp((q2 - 0.15) / 0.6));
-    const nameOp = lerp(1, reduced ? 0.55 : 0.45, fade);
-    const metOp = lerp(1, reduced ? 0.42 : 0.35, fade);
+    // Reduced motion only ever shows the end state, so its labels stay
+    // fully legible (paper on brand red is about 4.8:1)
+    const nameOp = reduced ? 1 : lerp(1, 0.45, fade);
+    const metOp = reduced ? 1 : lerp(1, 0.35, fade);
     // On phones the converging strands climb through the label rows: once
     // they start to bend, the labels stop cutting them, so they pass
     // cleanly behind the fading type instead of being chopped
@@ -740,7 +742,7 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
       c.fillStyle = rgba(PAPER, 0.95);
       c.fillText(sd.name, x, y);
       c.globalAlpha = metOp;
-      c.fillStyle = rgba(BLUSH, 0.95);
+      c.fillStyle = reduced ? rgba(PAPER, 0.95) : rgba(BLUSH, 0.95);
       c.fillText(sd.metric, x + sd.nameW, y);
     }
     if (kEnd > 0.01) {

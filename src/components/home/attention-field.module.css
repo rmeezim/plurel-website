@@ -19,7 +19,7 @@
 .root {
   --af-rule: color-mix(in srgb, var(--color-paper) 15%, transparent);
   --af-fog-50: color-mix(in srgb, var(--color-fog) 50%, transparent);
-  --af-fog-62: color-mix(in srgb, var(--color-fog) 62%, transparent);
+  --af-fog-62: color-mix(in srgb, var(--color-fog) 70%, transparent);
   --af-fog-78: color-mix(in srgb, var(--color-fog) 78%, transparent);
   --af-pad: 16px;
   position: relative;

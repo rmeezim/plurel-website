@@ -78,6 +78,9 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    /* Focus and anchor scrolls stop clear of the floating header pill
+       (48px + 10px offset + air); the fold anchor cancels it below */
+    scroll-padding-top: 4.5rem;
   }
 
   /* Anchor jumps glide only for visitors who are fine with motion */
@@ -157,6 +160,8 @@
     bottom: 0;
     height: 100vh;
     height: 100lvh;
+    /* #services lands exactly on the resolved frame, not 4.5rem short */
+    scroll-margin-top: -4.5rem;
   }
   html[data-js] .fold:not([data-off]) .fold-skip {
     display: block;
@@ -345,6 +350,22 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Reduced motion: the clients marquee stands still, so every name shows
+   once, wrapped, with no edge fade */
+@media (prefers-reduced-motion: reduce) {
+  .clients-rail {
+    mask-image: none;
+  }
+  .clients-track {
+    width: auto;
+    flex-wrap: wrap;
+    row-gap: 0.75rem;
+  }
+  .clients-track > li[aria-hidden] {
+    display: none;
+  }
 }
 
 /* Light, tasteful entrance animation — disabled when users prefer reduced motion */

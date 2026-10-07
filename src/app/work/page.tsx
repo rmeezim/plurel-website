@@ -463,7 +463,7 @@ export default function WorkPage() {
       {/* ------------------------------------------ The pattern */}
       <StatementSection
         kicker="The pattern"
-        note="Every case began with the audit"
+        note="Every case began with the Diagnostic"
         surface="ink"
         footer={
           <Link
@@ -501,7 +501,7 @@ export default function WorkPage() {
               <em className="italic">every one of these began</em>.
             </h2>
             <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Book the strategy call and get the audit &mdash; a clear read
+              Book the strategy call and get the Diagnostic &mdash; a clear read
               on your presence across all nine layers, and what to fix first.
               The after is the part we build together.
             </p>

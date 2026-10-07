@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AUDIT_HREF } from "@/lib/nav";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { PostCover } from "@/components/post-cover";
@@ -188,15 +189,15 @@ export default async function ArticlePage(props: PageProps<"/blog/[slug]">) {
                 Put it to work
               </p>
               <p className="mt-3 max-w-[44ch] text-[15px] leading-relaxed text-paper/85">
-                Wondering what this looks like for your business? A growth
-                audit answers it with your numbers, not ours.
+                Wondering what this looks like for your business? The
+                Diagnostic answers it with your numbers, not ours.
               </p>
             </div>
             <Link
-              href="/contact"
+              href={AUDIT_HREF}
               className="group inline-flex items-center gap-2 rounded-lg bg-brand px-5 py-3 text-sm font-medium text-paper transition-colors hover:bg-[#a8302c]"
             >
-              Book Growth Audit
+              Request a diagnostic
               <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
           </div>

@@ -171,7 +171,7 @@ export default function ServicesIndexPage() {
           <Reveal className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-line pt-6">
             <p className="max-w-[52ch] text-[13px] leading-relaxed text-muted">
               Every engagement &mdash; any size &mdash; starts with the
-              audit, so scope comes from evidence.
+              Diagnostic, so scope comes from evidence.
             </p>
             <Link
               href="/contact"

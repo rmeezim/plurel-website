@@ -3,7 +3,7 @@ import { Accent, ChapterHead, CONTAINER, GRID, Meta, TextLink } from "@/componen
 import { CASES, STATS, VOICES } from "@/lib/home";
 
 /* The category over each key figure, in STATS order */
-const STAT_TOPICS = ["Pipeline", "Conversion", "Search & AI", "Performance"];
+const STAT_TOPICS = ["Demand", "Conversion", "Search & AI", "Performance"];
 
 /* "+185%" -> sign, number, unit, so the sign and unit can sit smaller on
    the baseline instead of rising as superscripts */
@@ -56,7 +56,7 @@ export function ResultsChapter() {
               id="results-heading"
               className="type-display text-[clamp(1.875rem,4.0625vw,3.25rem)] leading-[1.06]"
             >
-              Measured as one system, not ten reports. Pipeline signals move within the
+              Measured as one system, not ten reports. Demand signals move within the
               first <Accent className="text-muted">quarter.</Accent>
             </h2>
           </Reveal>
@@ -125,7 +125,7 @@ export function ResultsChapter() {
               Signals
             </Meta>
             <p className="mt-2 max-w-[30ch] text-[15px] leading-[1.45]">
-              Inquiry quality, search and AI visibility, and conversion
+              Demand quality, search and AI visibility, and conversion
             </p>
           </div>
           <div className="col-span-4 sm:col-span-3">

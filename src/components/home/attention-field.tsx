@@ -39,17 +39,9 @@ export function AttentionField() {
   useEffect(() => {
     const root = ref.current;
     if (!root) return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let unmount = mountAttentionField(root, { reduced: mq.matches });
-    const onChange = () => {
-      unmount();
-      unmount = mountAttentionField(root, { reduced: mq.matches });
-    };
-    mq.addEventListener("change", onChange);
-    return () => {
-      mq.removeEventListener("change", onChange);
-      unmount();
-    };
+    // The engine follows reduced motion and the pin query live, and keeps
+    // the reader's place when either flips, so it mounts once
+    return mountAttentionField(root);
   }, []);
 
   return (
@@ -76,6 +68,17 @@ export function AttentionField() {
           </div>
 
           <div className={s.fig} data-af-fig="">
+            <p className="sr-only">
+              The figure: nine lanes of attention.{" "}
+              {AF_GROUPS.map(
+                (g, gi) =>
+                  `${g}: ${AF_LANES.filter((l) => l.group === gi)
+                    .map((l) => l.name)
+                    .join(", ")}. `,
+              )}
+              They run as one funnel into qualified demand, shown as an
+              illustrative {AF_INDEX.toFixed(1)}× index over a 1.0× baseline.
+            </p>
             <canvas className={s.canvas} aria-hidden="true" data-af-canvas="" />
             <div className={s.labels} aria-hidden="true">
               {AF_LANES.map((l, i) => (

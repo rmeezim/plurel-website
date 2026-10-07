@@ -341,7 +341,7 @@ export default async function ServicePage({
           </Link>
         }
       >
-        The audit tells us if{" "}
+        The Diagnostic tells us if{" "}
         <em className="italic">you even need this</em>.
       </StatementSection>
     </main>

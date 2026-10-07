@@ -42,9 +42,9 @@ export function BraidStrip() {
       <div className={`${GRID} items-start`}>
         <figcaption className="col-span-4 sm:col-span-6 lg:col-span-3">
           <Meta as="p" className="text-paper">
-            Fig. 01 <span aria-hidden className="text-blush lg:hidden">· </span>
+            Fig. 01 <span aria-hidden className="text-paper lg:hidden">· </span>
             <span className="lg:mt-1.5 lg:block">Ten suppliers, one system</span>
-            <span aria-hidden className="mt-1.5 block text-blush @min-[560px]:hidden">
+            <span aria-hidden className="mt-1.5 block text-paper @min-[560px]:hidden">
               Six of ten shown
             </span>
             <span className="sr-only">

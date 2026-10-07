@@ -103,7 +103,7 @@ function MenuTrigger({
   menuKey: MenuKey;
   open: boolean;
   onOpen: (key: MenuKey) => void;
-  onToggle: (key: MenuKey) => void;
+  onToggle: (key: MenuKey, viaKeyboard: boolean) => void;
 }) {
   return (
     <button
@@ -111,7 +111,7 @@ function MenuTrigger({
       aria-expanded={open}
       aria-controls={`menu-${menuKey}`}
       onMouseEnter={() => onOpen(menuKey)}
-      onClick={() => onToggle(menuKey)}
+      onClick={(e) => onToggle(menuKey, e.detail === 0)}
       className={`flex items-center gap-2 px-3 py-2 text-[12px] font-medium uppercase tracking-[0.18em] transition-opacity xl:px-4 ${
         open ? "opacity-100" : "opacity-80 hover:opacity-100"
       }`}
@@ -174,12 +174,12 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
         onClick={onNavigate}
         className="group relative col-span-4 bg-brand flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3"
       >
-        <Meta className="relative text-blush">(Free) · ~1 business day</Meta>
+        <Meta className="relative text-paper">(Free) · ~1 business day</Meta>
         <span className="relative">
           <span className="block text-[26px] leading-[1.05] tracking-[-0.02em]">
-            The Distribution Diagnostic
+            The Diagnostic
           </span>
-          <span className="mt-2 block text-[13px] leading-relaxed text-paper/80">
+          <span className="mt-2 block text-[13px] leading-relaxed text-paper">
             A strategist&apos;s read on where your marketing system breaks.
           </span>
           <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em]">
@@ -260,8 +260,18 @@ export function SiteHeader() {
   const cancelClose = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
   };
-  const toggleMenu = (key: MenuKey) =>
+  // Opened from the keyboard, the panel takes focus (it renders after the
+  // whole bar, so Tab alone would visit five unrelated stops first)
+  const kbMenu = useRef<MenuKey | null>(null);
+  const toggleMenu = (key: MenuKey, viaKeyboard = false) => {
+    kbMenu.current = viaKeyboard && menu !== key ? key : null;
     setMenu((current) => (current === key ? null : key));
+  };
+  useEffect(() => {
+    if (!menu || kbMenu.current !== menu) return;
+    kbMenu.current = null;
+    document.querySelector<HTMLElement>(`#menu-${menu} a[href]`)?.focus();
+  }, [menu]);
   const closeAll = () => {
     setMenu(null);
     setMobileOpen(false);
@@ -277,7 +287,11 @@ export function SiteHeader() {
       const bar = barRef.current;
       if (!bar) return;
       const r = bar.getBoundingClientRect();
-      setBehind(toneAt(r.left + r.width / 2, r.top + r.height / 2, headerRef.current));
+      // Light glass if any third of the bar sits over a light surface, so
+      // its type never ends up thin on paper
+      const y = r.top + r.height / 2;
+      const tones = [0.2, 0.5, 0.8].map((f) => toneAt(r.left + r.width * f, y, headerRef.current));
+      setBehind(tones.includes("light") ? "light" : "dark");
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(probe);
@@ -295,6 +309,9 @@ export function SiteHeader() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
+        // Leaving an open panel from inside returns focus to its trigger
+        const panel = document.activeElement?.closest<HTMLElement>("[id^='menu-']");
+        if (panel) document.querySelector<HTMLElement>(`[aria-controls="${panel.id}"]`)?.focus();
         setMenu(null);
         setMobileOpen(false);
       }
@@ -303,12 +320,43 @@ export function SiteHeader() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // The full-screen mobile index owns the viewport while open
+  // The full-screen mobile index owns the viewport and the keyboard while
+  // open: focus moves to Close, Tab cycles inside, the page behind is inert,
+  // and closing hands focus back to the Open menu button
+  const openBtn = useRef<HTMLButtonElement>(null);
+  const closeBtn = useRef<HTMLButtonElement>(null);
+  const dialog = useRef<HTMLDivElement>(null);
+  const wasOpen = useRef(false);
   useEffect(() => {
-    if (!mobileOpen) return;
+    if (!mobileOpen) {
+      if (wasOpen.current) openBtn.current?.focus();
+      wasOpen.current = false;
+      return;
+    }
+    wasOpen.current = true;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const behind = [document.getElementById("main"), document.querySelector("body > footer")];
+    behind.forEach((el) => el?.setAttribute("inert", ""));
+    closeBtn.current?.focus();
+    const onTab = (e: KeyboardEvent) => {
+      if (e.key !== "Tab" || !dialog.current) return;
+      const stops = Array.from(dialog.current.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"));
+      if (!stops.length) return;
+      const first = stops[0];
+      const last = stops[stops.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onTab);
     return () => {
+      document.removeEventListener("keydown", onTab);
+      behind.forEach((el) => el?.removeAttribute("inert"));
       document.body.style.overflow = previous;
     };
   }, [mobileOpen]);
@@ -332,15 +380,15 @@ export function SiteHeader() {
       <header ref={headerRef} className="fixed inset-x-0 top-0 z-50" onMouseLeave={scheduleClose}>
         <div
           ref={barRef}
-          className={`mx-auto transition-[width,max-width,height,margin,border-radius,background-color,border-color,color] duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)] ${shape} ${surface}`}
+          className={`mx-auto transition-[width,max-width,height,margin,border-radius,background-color,border-color,color] duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)] motion-reduce:transition-none ${shape} ${surface}`}
         >
           <div
-            className={`mx-auto flex h-full max-w-[1440px] items-center justify-between gap-6 transition-[padding] duration-500 ${
+            className={`mx-auto flex h-full max-w-[1440px] items-center justify-between gap-6 transition-[padding] duration-500 motion-reduce:transition-none ${
               pill ? "px-3 sm:px-4 lg:px-5" : "px-5 sm:px-8 lg:px-12"
             }`}
           >
             <Link href="/" onClick={closeAll} className="shrink-0" aria-label="Plurel home">
-              <Logo className={`w-auto transition-[height] duration-500 ${pill ? "h-[19px]" : "h-[20px] lg:h-[22px]"}`} />
+              <Logo className={`w-auto transition-[height] duration-500 motion-reduce:transition-none ${pill ? "h-[19px]" : "h-[20px] lg:h-[22px]"}`} />
             </Link>
 
             <nav aria-label="Primary" className="hidden items-center lg:flex">
@@ -376,7 +424,7 @@ export function SiteHeader() {
               <Link
                 href={AUDIT_HREF}
                 onClick={closeAll}
-                className={`group hidden items-center gap-3 border text-[11px] font-medium uppercase tracking-[0.18em] transition-[height,padding,background-color,border-color,color] duration-300 sm:inline-flex ${
+                className={`group hidden items-center gap-3 border text-[11px] font-medium uppercase tracking-[0.18em] transition-[height,padding,background-color,border-color,color] duration-300 motion-reduce:transition-none sm:inline-flex ${
                   pill ? "h-8 rounded-[1px] px-3.5" : "h-10 px-4"
                 } ${
                   tone === "light"
@@ -388,12 +436,13 @@ export function SiteHeader() {
                 <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <button
+                ref={openBtn}
                 type="button"
                 onClick={() => setMobileOpen(true)}
                 aria-expanded={mobileOpen}
                 aria-controls="mobile-menu"
                 aria-label="Open menu"
-                className={`inline-flex items-center justify-center border transition-[width,height,border-color] duration-300 lg:hidden ${
+                className={`inline-flex items-center justify-center border transition-[width,height,border-color] duration-300 motion-reduce:transition-none lg:hidden ${
                   pill ? "size-9 rounded-[1px]" : "size-10"
                 } ${tone === "light" ? "border-ink/25" : "border-paper/40"}`}
               >
@@ -440,6 +489,7 @@ export function SiteHeader() {
       {/* Mobile: full-screen red index */}
       {mobileOpen && (
         <div
+          ref={dialog}
           id="mobile-menu"
           role="dialog"
           aria-modal="true"
@@ -451,6 +501,7 @@ export function SiteHeader() {
               <Logo className="h-[22px] w-auto" />
             </Link>
             <button
+              ref={closeBtn}
               type="button"
               onClick={() => setMobileOpen(false)}
               aria-label="Close menu"
@@ -493,7 +544,7 @@ export function SiteHeader() {
               Get in touch
               <ArrowUpRight className="size-4" />
             </Link>
-            <div className="flex flex-wrap items-center justify-between gap-3 text-blush">
+            <div className="flex flex-wrap items-center justify-between gap-3 text-paper">
               <Meta>
                 <CityClock visitor />
               </Meta>

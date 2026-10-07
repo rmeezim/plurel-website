@@ -92,7 +92,7 @@ export function ManifestoChapter() {
                 id="manifesto-fragments"
                 className="type-display max-w-[16em] text-[1.5rem] leading-none text-paper lg:max-w-[10em] lg:text-[clamp(1.375rem,2.19vw,1.75rem)]"
               >
-                Four suppliers, four numbers. Nobody owns the pipeline.
+                Every supplier reports its own number. Nobody owns the outcome.
               </h3>
             </Reveal>
 
