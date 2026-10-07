@@ -1,17 +1,30 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { GLASS_FRAG, GLASS_VERT, MAX_SPLATS, fluteHeight, type GlassProfile } from "@/lib/glass";
+import {
+  GLASS_FRAG,
+  GLASS_VERT,
+  MAX_SPLATS,
+  SPLAT,
+  createTrail,
+  fluteHeight,
+  packTrail,
+  trailAge,
+  trailBreak,
+  trailTo,
+  type GlassProfile,
+} from "@/lib/glass";
 import type { Film } from "@/lib/film";
 
 /*
   A band of nine glass flutes over the film (shader and profiles in
-  lib/glass.ts). Scrolling moves the flute bottoms. A mouse or pen pours
-  light into the scene behind the glass: each stretch of travel leaves a
-  splat, tinted by its direction, that drifts on, spreads and fades, so
-  the flutes refract it into liquid shapes. The film loops while the band
-  is on screen and the tab is visible; reduced motion and data saver get a
-  still frame, the finished profile and a shorter-lived glow.
+  lib/glass.ts). Scrolling moves the flute bottoms. A mouse or pen brings
+  warm light into the scene behind the glass: its path leaves a soft
+  ribbon, tinted by the direction of travel, that stays where it was laid
+  and fades calmly, and each rod bends its own slice of it. Touch is
+  ignored. The film loops while the band is on screen and the tab is
+  visible; reduced motion and data saver get a still frame and the
+  finished profile, with no light trail.
 
   progress "page": 0 at the top of the page, 1 once the band's top has
   scrolled up to `end` of the viewport (the hero). progress "viewport": 0
@@ -36,16 +49,6 @@ const readStill = () =>
   Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
 const FILM_W = 192; // the film is drawn this small, so it arrives soft
 
-/** Seconds a splat of poured light lives (shorter under reduced motion) */
-const SPLAT_LIFE = 1.8;
-const SPLAT_LIFE_STILL = 0.7;
-/** Pixels of pointer travel between splats */
-const SPLAT_GAP = 34;
-/** Starting radius in pixels; a splat spreads to 1.9x as it fades */
-const SPLAT_R = 42;
-
-type Splat = { x: number; y: number; vx: number; vy: number; hue: number; s: number; age: number };
-
 type Props = {
   film: Film;
   profile: GlassProfile;
@@ -67,7 +70,6 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
     if (!box || !cv) return;
 
     const still = readStill();
-    const life = still ? SPLAT_LIFE_STILL : SPLAT_LIFE;
 
     const gl = cv.getContext("webgl", { premultipliedAlpha: false, antialias: false, alpha: true });
     if (!gl) {
@@ -99,7 +101,7 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
     const u = {
       res: U("uRes"), t: U("uT"), p: U("uP"), n: U("uN"), rest: U("uRest"), aspect: U("uAspect"),
       arc: U("uArc"), useVideo: U("uUseVideo"), scale: U("uVideoScale"), offset: U("uVideoOffset"),
-      spN: U("uSpN"), sp: U("uSp"), spHue: U("uSpHue"),
+      spN: U("uSpN"), spR: U("uSpR"), sp: U("uSp"),
     };
     gl.uniform3fv(U("uDark"), COLORS.dark);
     gl.uniform3fv(U("uRed"), COLORS.red);
@@ -164,18 +166,14 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
     let p = 0;
     let raf = 0;
     let last = performance.now();
-    let W = 0;
     let H = 0;
-    const splats: Splat[] = [];
+    const trail = createTrail(still ? SPLAT.lifeStill : SPLAT.life);
     const spA = new Float32Array(MAX_SPLATS * 4);
-    const spH = new Float32Array(MAX_SPLATS);
-    let lastPt: { x: number; y: number; at: number } | null = null;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      W = box.clientWidth;
       H = box.clientHeight;
-      cv.width = Math.max(1, Math.round(W * dpr));
+      cv.width = Math.max(1, Math.round(box.clientWidth * dpr));
       cv.height = Math.max(1, Math.round(H * dpr));
       dirty = true;
     };
@@ -211,21 +209,10 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
         gl.uniform2f(u.scale, s, 1);
         gl.uniform2f(u.offset, 0.5 - 0.5 * s, 0);
       }
-      // Splats: position in band space, radius in band heights, weight
-      // rising over 80ms and falling as it spreads
-      splats.forEach((s, k) => {
-        const a = s.age / life;
-        spA[k * 4] = s.x;
-        spA[k * 4 + 1] = s.y;
-        spA[k * 4 + 2] = (SPLAT_R * (1 + 0.9 * a)) / Math.max(1, H);
-        spA[k * 4 + 3] = s.s * Math.min(1, s.age / 0.08) * Math.pow(1 - a, 1.6);
-        spH[k] = s.hue;
-      });
-      gl.uniform1f(u.spN, splats.length);
-      if (splats.length) {
-        gl.uniform4fv(u.sp, spA);
-        gl.uniform4fv(u.spHue, spH);
-      }
+      const n = packTrail(trail, spA);
+      gl.uniform1f(u.spN, n);
+      gl.uniform1f(u.spR, SPLAT.radius / Math.max(1, H));
+      if (n) gl.uniform4fv(u.sp, spA);
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
@@ -234,7 +221,8 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
     const frame = (now: number) => {
       raf = 0;
       if (!visible) return;
-      const dt = Math.min(0.05, (now - last) / 1000);
+      const real = (now - last) / 1000;
+      const dt = Math.min(0.05, real);
       last = now;
       const np = progressNow();
       if (Math.abs(np - p) > 0.0004) {
@@ -245,16 +233,10 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
         t += dt;
         dirty = true;
       }
-      if (splats.length) {
-        const damp = Math.exp(-2.5 * dt);
-        for (const s of splats) {
-          s.age += dt;
-          s.x += s.vx * dt;
-          s.y += s.vy * dt;
-          s.vx *= damp;
-          s.vy *= damp;
-        }
-        for (let k = splats.length - 1; k >= 0; k--) if (splats[k].age >= life) splats.splice(k, 1);
+      if (trail.points.length) {
+        // The light keeps real time even when frames are slow, so its fade
+        // stays as long as it should (the ration refills on the same clock)
+        trailAge(trail, Math.min(0.25, real));
         dirty = true;
       }
       if (video && video.readyState >= 2 && !video.paused) upload(video, video.videoWidth, video.videoHeight);
@@ -262,6 +244,8 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
         draw();
         dirty = false;
       }
+      // A still frame with no light left idles until scroll, resize or the pointer
+      if (still && !trail.points.length) return;
       raf = requestAnimationFrame(frame);
     };
     const kick = () => {
@@ -294,46 +278,21 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
     ro.observe(box);
     resize();
 
-    // The cursor pours light: one splat per stretch of travel over the glass,
-    // carrying the direction (its tint) and a little of the speed (its drift)
+    // The cursor brings light: a mouse or pen over the glass lays a trail
     const onMove = (e: PointerEvent) => {
-      if (e.pointerType === "touch") return;
+      if (e.pointerType === "touch" || still) return;
       const r = box.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width;
-      const y = (e.clientY - r.top) / r.height;
-      const i = Math.min(N - 1, Math.max(0, Math.floor(x * N)));
-      if (x < 0 || x > 1 || y < 0 || y > fluteHeight(i, N, p, profile, rest) + 0.02) {
-        lastPt = null;
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      const i = Math.min(N - 1, Math.max(0, Math.floor((x / r.width) * N)));
+      if (x < 0 || x > r.width || y < 0 || y > (fluteHeight(i, N, p, profile, rest) + 0.02) * r.height) {
+        trailBreak(trail);
         return;
       }
-      const now = performance.now();
-      if (!lastPt) {
-        lastPt = { x: e.clientX, y: e.clientY, at: now };
-        return;
-      }
-      const dx = e.clientX - lastPt.x;
-      const dy = e.clientY - lastPt.y;
-      const dist = Math.hypot(dx, dy);
-      if (dist < SPLAT_GAP * 0.5) return;
-      const secs = Math.max(0.016, (now - lastPt.at) / 1000);
-      const hue = (((Math.atan2(-dy, dx) / (2 * Math.PI)) % 1) + 1) % 1;
-      const strength = Math.min(1, Math.max(0.45, dist / 60));
-      const vx = Math.max(-0.4, Math.min(0.4, (dx / r.width / secs) * 0.12));
-      const vy = Math.max(-0.4, Math.min(0.4, (dy / r.height / secs) * 0.12));
-      const steps = Math.min(4, Math.max(1, Math.round(dist / SPLAT_GAP)));
-      const x0 = (lastPt.x - r.left) / r.width;
-      const y0 = (lastPt.y - r.top) / r.height;
-      for (let k = 1; k <= steps; k++) {
-        const f = k / steps;
-        splats.push({ x: x0 + (x - x0) * f, y: y0 + (y - y0) * f, vx, vy, hue, s: strength, age: 0 });
-      }
-      while (splats.length > MAX_SPLATS) splats.shift();
-      lastPt = { x: e.clientX, y: e.clientY, at: now };
+      trailTo(trail, x, y, r.width, r.height);
       kick();
     };
-    const onLeave = () => {
-      lastPt = null;
-    };
+    const onLeave = () => trailBreak(trail);
     box.addEventListener("pointermove", onMove);
     box.addEventListener("pointerleave", onLeave);
     const onScroll = () => kick();

@@ -161,30 +161,35 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
 
 `src/components/glass-band.tsx` (client), with the shader and the height
 math in `src/lib/glass.ts`. Nine vertical flutes, one per cell of the
-mark, each a cylinder lens over the hero film: the scene just behind it,
-flipped, magnified at the centre and squeezed toward the edges, bowed
-vertically, with a crisp lit edge, a faint warm/cool fringe and a lit
-bottom edge. It reads as glass because the film has lines and points of
-light for the flutes to bend. The film is drawn into a 192px canvas
-before it reaches the shader, so it arrives soft. Until the Higgsfield
-film exists, a stand-in studio (red key light, cool fill, a window,
-bokeh, people crossing) is drawn in the shader.
+mark, each a solid glass rod over the hero film: it shows a wide, shifted
+slice of the scene behind it (never flipped, never bowed), rounds off into
+dark seams, and catches a crisp specular line just inside its left edge, a
+fainter rim on its right, a warm fringe right at both and a lit bottom
+lip. That rounded left and right edge is the 3D feel to protect; nothing
+in it wobbles. It reads as glass because the film has lines and points of
+light for the rods to bend. The film is drawn into a 192px canvas before
+it reaches the shader, so it arrives soft. Until the Higgsfield film
+exists, a stand-in studio (red key light, ember wash, blush floor light, a
+window, a few large out-of-focus lights, a beam, people crossing) is
+drawn in the shader.
 
-- **Profiles.** `rise` (the hero): a low rest line that steps into a
-  staircase as the visitor scrolls away. `arc` (the bottom edge of the
-  closing chapter): a short fringe that drops into a symmetric arc,
-  deepest at the center flute, as the footer comes up.
-- **Hover: poured light** (after Athena). A mouse or pen (never touch)
-  leaves a splat every ~34px of travel, tinted by its direction: right
-  signal red, up warm paper, left cool fog, down blush. Splats drift on
-  with the pointer's momentum, spread and fade over 1.8s, and are sampled
-  through the same lens as the film, so each flute bends them into its
-  own liquid shape. Up to 16 at once (`MAX_SPLATS`).
+- **Profiles.** `rise` (the hero): a rest line a little over half the
+  band (0.56) that steps into a staircase as the visitor scrolls away.
+  `arc` (the bottom edge of the closing chapter): a short fringe that
+  drops into a symmetric arc, deepest at the center flute, as the footer
+  comes up.
+- **Hover: light behind the glass.** A mouse or pen (never touch) lays a
+  soft ribbon of light along its path in the scene behind the rods,
+  tinted by direction of travel, warm tones only: right signal red, up
+  warm white, left blush, down light coral, all lifted to one brightness.
+  Never blue or cool. The ribbon stays where it was laid (no drift, no
+  ripple) and fades evenly over 1.5s; every rod bends its own slice of it.
+  Up to 32 points at once (`MAX_SPLATS`), rationed so a fast sweep spaces
+  them out rather than dropping visible ones.
 - **Rules.** No caption, no pause control. It draws only while on screen,
   at most 1.5x DPR, and the film stops in hidden tabs. Reduced motion or
-  data saver get a still frame (the poster when there is one) and a
-  short-lived glow. Without WebGL it falls back to flat brand and ember
-  bars.
+  data saver get a still frame (the poster when there is one) and no
+  light trail. Without WebGL it falls back to flat brand and ember bars.
 
 ## The home hero
 

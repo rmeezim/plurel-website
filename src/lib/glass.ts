@@ -1,13 +1,16 @@
 /*
-  Fluted glass, as pure data: the shader and the flute profiles. No DOM, so
-  the profile math can be tested on its own (GlassBand draws with it).
+  Fluted glass, as pure data: the shader, the flute profiles and the cursor
+  light. No DOM, so the math can be tested on its own (GlassBand draws
+  with it).
 
-  Nine flutes, one per cell of the Plurel mark. Each is a shallow lens over
-  the film: it shows the scene just behind it, flipped and a little
-  squeezed, with a crisp highlight and a faint colour split at its edges.
+  Nine flutes, one per cell of the Plurel mark. Each is a solid glass rod:
+  it shows a wide, shifted slice of the film behind it, rounds off into
+  dark seams, and catches a crisp specular line inside its left edge, a
+  fainter rim on its right and a warm fringe right at both.
   The film is the hero film when it exists (drawn small, so it arrives
-  soft), otherwise a stand-in drawn in the palette. The cursor pours light
-  into the scene behind the glass, tinted by its direction of travel.
+  soft), otherwise a stand-in drawn in the palette. The cursor brings warm
+  light into the scene behind the glass, tinted by its direction of
+  travel, and every rod bends its own slice of it.
 */
 
 export type GlassProfile = "rise" | "arc";
@@ -35,67 +38,184 @@ export function fluteHeight(i: number, n: number, p: number, profile: GlassProfi
   return rest + (1 - rest) * fluteShape(i, n, profile) * smooth(clamp01(p));
 }
 
-/** Most cursor splats the shader reads at once (uniform arrays are sized to it) */
-export const MAX_SPLATS = 16;
+/* ------------------------------------------------------------------ */
+/* Cursor light                                                        */
+/* ------------------------------------------------------------------ */
 
-/*
-  Cursor colour, by direction of travel, as a hue in [0, 1) around the
-  circle: right is signal red, up warm paper, left a cool fog, down blush.
-  Shared by the shader (palette) and tests.
-*/
+/** Most splats of light the shader reads at once (its uniform array is sized to it) */
+export const MAX_SPLATS = 32;
+
+/**
+ * Light colour by direction of travel, as a hue in [0, 1) around the
+ * circle, warm brand tones only: right is signal red, up a warm white,
+ * left blush, down a light coral (brand red lifted, so it still shows on
+ * the red film). The shader brings every stop to a common brightness, so
+ * no direction reads weaker. Shared by the shader (palette) and tests.
+ */
 export const SPLAT_STOPS = [
   [0.91, 0.34, 0.31],
-  [1.0, 0.93, 0.86],
-  [0.62, 0.72, 0.84],
+  [0.98, 0.91, 0.87],
   [0.95, 0.79, 0.75],
+  [0.94, 0.52, 0.46],
 ] as const;
+
+export const SPLAT = {
+  /** Seconds the light lives where it was laid, and under reduced motion */
+  life: 1.5,
+  lifeStill: 0.6,
+  /** Pixels of pointer travel between the trail's points */
+  gap: 34,
+  /** Soft radius of the light in pixels; it holds its size while it fades */
+  radius: 46,
+  /** Points that may be laid at once before the ration applies */
+  burst: 4,
+} as const;
+
+/** A point of the trail: band-space position (0..1), hue (-1 starts a stroke), age in seconds */
+export type TrailPoint = { x: number; y: number; hue: number; age: number };
+
+/**
+ * The cursor's trail of light: a soft ribbon along the pointer's path,
+ * laid as points that stay where they are and fade in place. The last point
+ * rides with the pointer, so the light never lags it. Points are rationed
+ * so the shader's array never fills while one still shows: a fast sweep
+ * lays them further apart instead of dropping the oldest mid-fade. The
+ * ration refills on the same clock the points age by (trailAge), so a slow
+ * or stalled frame rate cannot let points outlive their budget.
+ */
+export type Trail = {
+  points: TrailPoint[];
+  life: number;
+  /** Last fixed point, in pixels; null between strokes */
+  from: { x: number; y: number } | null;
+  /** Whether the last point is still riding with the pointer */
+  open: boolean;
+  tokens: number;
+};
+
+export function createTrail(life: number): Trail {
+  return { points: [], life, from: null, open: false, tokens: SPLAT.burst };
+}
+
+/** The pointer is at (x, y) pixels over a w x h band */
+export function trailTo(tr: Trail, x: number, y: number, w: number, h: number) {
+  if (!tr.from) {
+    if (tr.tokens < 1) return;
+    tr.tokens -= 1;
+    tr.points.push({ x: x / w, y: y / h, hue: -1, age: 0 });
+    tr.from = { x, y };
+    tr.open = false;
+  } else {
+    const dx = x - tr.from.x;
+    const dy = y - tr.from.y;
+    if (!dx && !dy) return;
+    if (!tr.open) {
+      tr.points.push({ x: 0, y: 0, hue: 0, age: 0 });
+      tr.open = true;
+    }
+    const head = tr.points[tr.points.length - 1];
+    head.x = x / w;
+    head.y = y / h;
+    head.hue = (((Math.atan2(-dy, dx) / (2 * Math.PI)) % 1) + 1) % 1;
+    head.age = 0;
+    if (Math.hypot(dx, dy) >= SPLAT.gap && tr.tokens >= 1) {
+      tr.tokens -= 1;
+      tr.open = false;
+      tr.from = { x, y };
+    }
+  }
+  while (tr.points.length > MAX_SPLATS) tr.points.shift();
+}
+
+/** The pointer left the glass: its next move starts a new stroke */
+export function trailBreak(tr: Trail) {
+  // The riding point stays where it is: it is paid for now (a debt, if need be)
+  if (tr.open) tr.tokens -= 1;
+  tr.from = null;
+  tr.open = false;
+}
+
+/**
+ * Ages the trail by dt seconds and refills the ration by the same dt; a
+ * point goes once the stretch after it has faded too
+ */
+export function trailAge(tr: Trail, dt: number) {
+  // A point lives its life plus, at most, its successor's: with the riding
+  // point that is burst + rate x life + 2, which this rate keeps to MAX_SPLATS
+  tr.tokens = Math.min(SPLAT.burst, tr.tokens + dt * ((MAX_SPLATS - SPLAT.burst - 2) / tr.life));
+  for (const p of tr.points) p.age += dt;
+  const pts = tr.points;
+  while (pts.length && pts[0].age >= tr.life && (pts.length < 2 || pts[1].age >= tr.life || pts[1].hue < 0)) pts.shift();
+  // Nothing left alight: the next stroke starts like a fresh trail
+  if (!pts.length) tr.tokens = SPLAT.burst;
+}
+
+/** Weight of a point of light at a given age: a calm, even fade to nothing */
+export const fadeWeight = (age: number, life: number) => 1 - clamp01(age / life);
+
+/** Packs the trail for the shader as (x, y, hue, weight); returns the count */
+export function packTrail(tr: Trail, out: Float32Array) {
+  const n = Math.min(tr.points.length, MAX_SPLATS);
+  for (let k = 0; k < n; k++) {
+    const p = tr.points[k];
+    out[k * 4] = p.x;
+    out[k * 4 + 1] = p.y;
+    out[k * 4 + 2] = p.hue;
+    out[k * 4 + 3] = fadeWeight(p.age, tr.life);
+  }
+  return n;
+}
+
+/* ------------------------------------------------------------------ */
+/* Shader                                                              */
+/* ------------------------------------------------------------------ */
 
 export const GLASS_VERT = `attribute vec2 a; varying vec2 v; void main(){ v = a * 0.5 + 0.5; gl_Position = vec4(a, 0.0, 1.0); }`;
 
-const stop = (k: number) => `vec3(${SPLAT_STOPS[k].map((x) => x.toFixed(2)).join(", ")})`;
+const stop = (k: number) => `vec3(${SPLAT_STOPS[k].map((x) => x.toFixed(3)).join(", ")})`;
 
 export const GLASS_FRAG = `
 precision highp float;
 varying vec2 v;
 uniform vec2 uRes;
-uniform float uT, uP, uN, uRest, uAspect, uArc, uUseVideo, uSpN;
+uniform float uT, uP, uN, uRest, uAspect, uArc, uUseVideo, uSpN, uSpR;
 uniform vec3 uDark, uRed, uEmber, uBlush, uPaper;
 uniform sampler2D uVideo;
 uniform vec2 uVideoScale, uVideoOffset;
 uniform vec4 uSp[${MAX_SPLATS}];
-uniform vec4 uSpHue[${MAX_SPLATS / 4}];
+
+const vec3 WARM = vec3(1.0, 0.96, 0.92);
 
 vec3 blob(vec3 col, vec2 p, vec2 c, float r, vec3 k, float s) {
   vec2 d = p - c; d.x *= uAspect;
   return mix(col, k, s * exp(-dot(d, d) / (r * r)));
 }
-// The stand-in film: a graphite studio lit red, a cool fill from the left,
-// a soft window, bokeh and people crossing. Its lines and points of light
-// are what let the eye read the flutes as glass.
+// The stand-in film: a dark room lit red, an ember wash, a blush floor
+// light, one bright window catch, a few large out-of-focus lights, a beam
+// and people crossing. Its lights are what let the eye read the flutes as
+// glass.
 vec3 standIn(vec2 p, float t) {
-  vec3 col = mix(uDark * 1.7, uEmber * 0.6, smoothstep(0.0, 1.0, p.y));
-  col = blob(col, p, vec2(0.3 + 0.2 * sin(t * 0.07), 0.58 + 0.1 * cos(t * 0.09)), 0.42, uRed, 0.88);
-  col = blob(col, p, vec2(0.8 + 0.08 * cos(t * 0.05 + 1.0), 0.32 + 0.08 * sin(t * 0.11)), 0.3, uRed * 1.12, 0.62);
-  col = blob(col, p, vec2(0.04, 0.22), 0.36, vec3(0.4, 0.44, 0.52), 0.42);
-  col = blob(col, p, vec2(0.5 + 0.3 * sin(t * 0.06 + 0.6), 0.9), 0.2, uBlush, 0.45);
-  float beam = smoothstep(0.14, 0.0, abs((p.x - 0.56) - (p.y - 0.5) * 0.65 + 0.05 * sin(t * 0.1)));
-  col += uBlush * 0.14 * beam;
-  float wx = smoothstep(0.66, 0.7, p.x) * smoothstep(0.95, 0.91, p.x);
-  float wy = smoothstep(0.05, 0.1, p.y) * smoothstep(0.6, 0.5, p.y);
-  float slats = 0.86 + 0.14 * smoothstep(0.25, 0.75, abs(fract(p.y * 8.0 + t * 0.01) - 0.5) * 2.0);
-  col = mix(col, mix(uBlush, uPaper, 0.6), wx * wy * slats * 0.46);
-  for (int k = 0; k < 9; k++) {
+  vec3 night = vec3(0.105, 0.068, 0.076);
+  vec3 col = mix(night, mix(uEmber, uRed, 0.4) * 0.72, 0.26 + 0.64 * p.y);
+  col = blob(col, p, vec2(0.22 + 0.16 * sin(t * 0.13), 0.55 + 0.22 * cos(t * 0.11)), 0.30, uRed, 0.95);
+  col = blob(col, p, vec2(0.68 + 0.20 * cos(t * 0.09 + 1.3), 0.40 + 0.18 * sin(t * 0.17)), 0.26, uEmber * 1.08, 0.85);
+  col = blob(col, p, vec2(0.48 + 0.32 * sin(t * 0.07 + 0.6), 0.82 + 0.06 * sin(t * 0.21)), 0.20, uBlush, 0.56);
+  col = blob(col, p, vec2(0.86 + 0.08 * sin(t * 0.19), 0.24 + 0.10 * cos(t * 0.15)), 0.15, uPaper, 0.55);
+  float beam = smoothstep(0.2, 0.0, abs((p.x - 0.5) - (p.y - 0.5) * 0.6 + 0.05 * sin(t * 0.1)));
+  col += uBlush * 0.06 * beam;
+  // Out of focus: big and soft, stretched wide so the rods' squeeze leaves
+  // them round-ish pools rather than specks on the glass
+  for (int k = 0; k < 3; k++) {
     float fk = float(k);
-    vec2 c = vec2(fract(0.13 + fk * 0.371 + t * 0.003 * (1.0 + fk * 0.15)), 0.12 + 0.72 * fract(fk * 0.618 + 0.2));
-    float r = 0.018 + 0.022 * fract(fk * 0.77);
-    vec2 d = p - c; d.x *= uAspect;
-    float disc = smoothstep(r, r * 0.55, length(d));
-    col += mix(uBlush, uPaper, fract(fk * 0.5)) * disc * (0.22 + 0.14 * sin(t * 0.5 + fk));
+    vec2 c = vec2(fract(0.21 + fk * 0.37 + t * 0.004 * (1.0 + fk * 0.3)), 0.22 + 0.5 * fract(fk * 0.618 + 0.3));
+    float r = 0.08 + 0.04 * fract(fk * 0.77);
+    vec2 d = p - c; d.x *= uAspect * 0.5;
+    col += mix(uBlush, uPaper, 0.5 * fk) * 0.045 * exp(-dot(d, d) / (r * r));
   }
   float fx = fract(t * 0.031) * 1.7 - 0.35;
   float body = smoothstep(0.075, 0.0, abs((p.x - fx) * uAspect * 0.55)) * smoothstep(0.18, 0.42, p.y);
   float head = smoothstep(0.05, 0.0, length(vec2((p.x - fx) * uAspect * 0.55, p.y - 0.3)));
-  return mix(col, uDark * 0.55, clamp(body + head, 0.0, 1.0) * 0.6);
+  return mix(col, night * 0.5, clamp(body + head, 0.0, 1.0) * 0.6);
 }
 vec3 film(vec2 p, float t) {
   if (uUseVideo > 0.5) {
@@ -118,32 +238,35 @@ vec3 palette(float h) {
   if (x < 3.0) return mix(c, d, x - 2.0);
   return mix(d, a, x - 3.0);
 }
-float hueOf(int k) {
-  vec4 q = uSpHue[0];
-  for (int j = 1; j < ${MAX_SPLATS / 4}; j++) if (j == k / 4) q = uSpHue[j];
-  int m = k - 4 * (k / 4);
-  return m == 0 ? q.x : m == 1 ? q.y : m == 2 ? q.z : q.w;
-}
-// The light the cursor pours into the scene behind the glass: each splat
-// is stretched along its direction of travel and tinted by it; a slow
-// ripple keeps the edges liquid.
-vec4 pour(vec2 q) {
-  q += 0.03 * vec2(sin(q.y * 17.0 + uT * 1.9 + q.x * 6.0), sin(q.x * 13.0 - uT * 1.4 + q.y * 4.0));
+// The cursor's light in the scene behind the glass: a soft ribbon along
+// the pointer's path, tinted by its direction, fading toward its tail.
+// Every stop is lifted to one brightness, so red on the red film still
+// shows; the ribbon is wider than tall in the scene, so the rods' squeeze
+// leaves a pool of light, not a hairline, whichever way the cursor moves
+const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
+vec4 light(vec2 q) {
   vec3 acc = vec3(0.0);
-  float sum = 0.0;
-  for (int k = 0; k < ${MAX_SPLATS}; k++) {
+  float sum = 0.0, top = 0.0;
+  vec4 a = uSp[0];
+  for (int k = 1; k < ${MAX_SPLATS}; k++) {
     if (float(k) >= uSpN) break;
-    vec4 s = uSp[k];
-    float hue = hueOf(k);
-    float a = hue * 6.2831853;
-    vec2 dir = vec2(cos(a), -sin(a));
-    vec2 d = q - s.xy; d.x *= uAspect;
-    vec2 r = vec2(dot(d, dir) * 0.6, dot(d, vec2(-dir.y, dir.x)));
-    float f = s.w * exp(-dot(r, r) / (s.z * s.z));
-    acc += f * palette(hue);
-    sum += f;
+    vec4 b = uSp[k];
+    if (b.z >= 0.0) {
+      vec2 pa = q - a.xy, ba = b.xy - a.xy;
+      pa.x *= uAspect * 0.55; ba.x *= uAspect * 0.55;
+      float h = clamp(dot(pa, ba) / max(dot(ba, ba), 1e-8), 0.0, 1.0);
+      vec2 d = pa - ba * h;
+      float e = dot(d, d) / (uSpR * uSpR);
+      float f = mix(a.w, b.w, h) * (0.72 * exp(-e) + 0.28 * exp(-e * 0.2));
+      vec3 k = palette(b.z);
+      k *= clamp(0.62 / max(dot(k, LUMA), 1e-3), 1.0, 2.2);
+      acc += f * k;
+      sum += f;
+      top = max(top, f);
+    }
+    a = b;
   }
-  return vec4(acc / max(sum, 1e-4), 1.0 - exp(-sum * 1.3));
+  return vec4(acc / max(sum, 1e-4), top);
 }
 void main() {
   vec2 uv = vec2(v.x, 1.0 - v.y);
@@ -152,39 +275,40 @@ void main() {
   float u = fract(uv.x * n);
   float h = height(i, n, uP);
   if (uv.y > h) { gl_FragColor = vec4(0.0); return; }
-  // Reeded glass: each flute is a cylinder lens that shows the scene just
-  // behind it flipped, magnified at its centre and squeezed toward its
-  // edges, bowed vertically, with a faint colour split at the edges.
+  // Each rod shows a wide slice of the film, shifted rod by rod. Right at
+  // its rims the red bends a little further out: a warm fringe, never a
+  // cool one
   float lens = u - 0.5;
-  float bend = lens * 0.6 + lens * lens * lens * 3.2;
-  vec2 q = vec2((i + 0.5) / n - bend / n + 0.012 * sin(i * 1.7 + 0.3),
-                uv.y + 0.035 * (lens * lens * 4.0 - 0.33) + 0.01 * sin(i * 2.3));
-  float ca = pow(abs(lens) * 2.0, 4.0) * 0.006;
-  vec3 c;
-  c.r = film(q + vec2(ca, 0.0), uT).r;
-  c.g = film(q, uT).g;
-  c.b = film(q - vec2(ca, 0.0), uT).b;
+  vec2 q = vec2((i + 0.5) / n + lens * 2.3 / n + 0.05 * sin(i * 1.37 + 0.4),
+                uv.y * 0.9 + 0.05 + 0.035 * sin(i * 2.13));
+  vec3 c = film(q, uT);
+  float ca = pow(abs(lens) * 2.0, 6.0) * 0.012;
+  if (ca > 0.0004) c.r = max(c.r, film(q + vec2(sign(lens) * ca, 0.0), uT).r);
+  // Light behind the glass: it brightens the scene the rod bends
+  float lit = 0.0;
   if (uSpN > 0.5) {
-    // Poured light keeps the glass's own light and shade underneath it
-    vec4 g = pour(q);
-    float lum = dot(c, vec3(0.2126, 0.7152, 0.0722));
-    c = mix(c, g.rgb * (0.62 + 0.75 * lum), g.a * 0.78) + g.rgb * g.a * 0.12;
+    vec4 g = light(q);
+    vec3 tint = mix(vec3(1.0), c / max(max(c.r, max(c.g, c.b)), 1e-3), 0.3);
+    vec3 glow = g.rgb * tint * g.a * 0.7;
+    c = 1.0 - (1.0 - c) * (1.0 - glow);
+    lit = g.a;
   }
-  // The glass body: barely shaded, faintly cool, with one soft sheen
-  c *= 0.92 + 0.1 * sin(u * 3.14159);
-  c = mix(c, c * vec3(0.96, 0.985, 1.02), 0.5);
-  c += vec3(1.0, 0.97, 0.94) * 0.06 * exp(-pow((u - 0.3) / 0.09, 2.0));
-  // Edges: a crisp highlight with a warm fringe on the leading edge, a
-  // cool fringe and a fine shadow on the trailing one
+  // The rod: rounded shading, dark seams, a crisp specular line inside the
+  // left edge in a soft halo (brighter where the cursor's light is behind
+  // it), a fainter rim on the right
   float px = n / uRes.x;
-  float lead = smoothstep(2.2 * px, 0.0, u);
-  float tail = smoothstep(1.0 - 1.8 * px, 1.0, u);
-  c = mix(c, vec3(1.0, 0.97, 0.94), lead * 0.34);
-  c.r += 0.09 * smoothstep(5.0 * px, 2.5 * px, u) * smoothstep(1.2 * px, 2.5 * px, u);
-  c.gb += 0.035 * smoothstep(1.0 - 6.0 * px, 1.0 - 3.0 * px, u) * (1.0 - tail);
-  c *= 1.0 - tail * 0.45;
-  // The bottom edge catches the light
+  c *= 0.86 + 0.18 * sin(u * 3.14159);
+  c *= mix(0.6, 1.0, smoothstep(0.0, 0.035, u) * smoothstep(1.0, 0.965, u));
+  float spec = smoothstep(1.3 * px, 0.2 * px, abs(u - 0.045));
+  float halo = smoothstep(0.032, 0.0, abs(u - 0.047));
+  c += WARM * (0.24 * spec + 0.12 * halo) * (1.0 + 1.0 * lit);
+  c += WARM * 0.06 * smoothstep(1.2 * px, 0.0, abs(u - 0.962));
+  // A faint sheen down the rod's shoulder, brighter toward the top
+  c *= 1.0 + 0.22 * exp(-pow((u - 0.3) / 0.09, 2.0)) * (1.0 - 0.6 * uv.y / h);
+  // The bottom edge: a slight darkening, then a fine lit lip
   float py = 1.0 / uRes.y;
-  c = mix(c, vec3(1.0, 0.97, 0.94), 0.3 * smoothstep(h - 2.0 * py, h - 0.5 * py, uv.y));
-  gl_FragColor = vec4(c, 1.0);
+  c *= 1.0 - 0.2 * smoothstep(h - 0.012, h, uv.y);
+  c += WARM * 0.1 * smoothstep(h - 2.0 * py, h - 0.5 * py, uv.y);
+  // The brightest it gets is warm white, never a cold one
+  gl_FragColor = vec4(min(c, WARM), 1.0);
 }`;
