@@ -1,3 +1,4 @@
+import { BraidStrip } from "@/components/home/braid-strip";
 import { Reveal } from "@/components/reveal";
 import {
   Accent,
@@ -81,7 +82,8 @@ export function ManifestoChapter() {
         </div>
       </div>
 
-      {/* Findings: a full-bleed red band that hands red to the services fold */}
+      {/* Findings: a full-bleed red band that hands red to the services fold,
+          closing on Fig. 01, the ten suppliers braided into one system */}
       <div className="bg-brand pb-16 pt-14 text-paper sm:pb-20 sm:pt-16 lg:pb-26 lg:pt-18">
         <div className={CONTAINER}>
           <div className={`${GRID} items-start`}>
@@ -123,6 +125,8 @@ export function ManifestoChapter() {
               </ol>
             </Reveal>
           </div>
+
+          <BraidStrip />
         </div>
       </div>
     </section>

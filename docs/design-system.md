@@ -146,16 +146,18 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
 - **Hero load (flagship only):** headline lines rise out of their masks
   (`line-rise`, 140ms apart), then copy, actions, and the glass fade up
   (`fade-up`).
-- **Scroll:** `Reveal`, staggering siblings 0.08s. The services fold is
-  the one scroll-scrubbed chapter. The two glass bands (below) follow
-  scroll too, but only as a height profile; nothing else is driven by
-  scroll position.
+- **Scroll:** `Reveal`, staggering siblings 0.08s. Two chapters are
+  pinned and scrubbed: the Attention Field (under the hero) and the
+  services fold. The manifesto's braid is scrubbed without pinning, and
+  the two glass bands follow scroll as a height profile; nothing else is
+  driven by scroll position.
 - **Hover:** a pointer pours light into the glass (below); contents rows
   take a red top rule; arrows nudge diagonally.
-- **Ambient:** the film behind the glass (no control, by the owner's
-  call: it loops while on screen and stops in hidden tabs) and the
-  selected-clients marquee (paused on hover). Nothing else moves on its
-  own; both sit still for reduced motion.
+- **Ambient:** the film behind the glass and the Attention Field's drift
+  (no controls, by the owner's call: they run only while on screen and
+  stop in hidden tabs), and the selected-clients marquee (paused on
+  hover). Nothing else moves on its own; all of them sit still for
+  reduced motion.
 
 ## Fluted glass
 
@@ -194,16 +196,56 @@ drawn in the shader.
 ## The home hero
 
 Graphite, statement left, one line of copy and the primary action right,
-then the glass, then the exhibit:
+then the glass:
 
 - **Kicker:** "Distribution, engineered · A Northeon company".
 - **Statement:** "Made to be / seen. *Everywhere.*", the accent in fog.
-  Copy: "High-caliber clients now find firms through distribution, not
-  chance. Plurel builds your narrative, makes the content and runs it
-  across the channels your buyers trust." Action: "Request a diagnostic".
-- **Glass:** the `rise` band, set well below the actions, uncaptioned.
-- **Exhibit:** "Fig. 01", one story distributed to seven surfaces grouped
-  as owned, earned and paid. A scaled drawing at lg, a grouped list below.
+  Copy: "Great work no longer sells itself. Distribution does. Plurel
+  engineers yours as one system, so the right clients find you and growth
+  compounds." Action: "Request a diagnostic".
+- **Glass:** the `rise` band, set well below the actions, uncaptioned,
+  resting a little over half its height on first load.
+
+## The Attention Field
+
+`home/attention-field.tsx` (markup, client) with the canvas engine in
+`lib/attention-field.ts` and the stage layout in
+`home/attention-field.module.css`. The section right after the hero
+(`#distribution`, graphite): how Plurel distributes, told in thousands of
+points of attention on one canvas, pinned and scrubbed by scroll, with a
+stage control at the foot (01 Noise to 05 Demand, and "See the method").
+
+1. **Noise.** "Attention is everywhere." Fog dots drifting as noise.
+2. **Story.** "One story, cut for every surface." The dots condense into
+   the Plurel mark, which opens into outlined format cards with crop
+   marks (Reel 9:16, Film 16:9, Feed 1:1, AI answer, Creator cut 4:5, Out
+   of home 48-sheet), after concept A of the flow board.
+3. **Lanes.** "Be where it gathers." The cards fly to the heads of nine
+   lanes, one per glass flute: Owned (Search, Social, Video), Earned (AI
+   answers, Press, UGC), Paid (Creators, Paid media, Events).
+4. **System.** "Run it as one system." The lanes bend into one funnel;
+   the dots that pass through turn signal red.
+5. **Demand.** "Qualified demand." The red stream rises to one bright
+   point; the readout is an index (1.0× to 3.2× vs. baseline,
+   illustrative), so it reads for B2B and B2C alike. Never "inquiries" or
+   "pipeline" here.
+
+Rules: pinned only with JS, motion allowed and a viewport at least 360px
+wide and 560px tall; otherwise a designed static version (the five stages
+as a list beside one still frame). Nothing that contains the sticky stage
+may clip (`overflow: hidden/clip` breaks it). The loop runs only while
+the section is on screen and the tab visible; no pause control (the
+owner's call, as with the glass).
+
+## The manifesto braid
+
+`home/braid-strip.tsx` with the engine in `lib/braid.ts`: "Fig. 01 · Ten
+suppliers, one system", the closing figure of the manifesto's red band,
+under the four suppliers. Scrubbed by scroll as it passes, never pinned:
+ten tangled paper strands, each a supplier with its vanity metric (six on
+phones), straighten into lanes in the order of the list above it, then
+braid through the Plurel mark into one strand: "One system · one number".
+Paper and blush only on the red; reduced motion shows the finished braid.
 
 ## The services fold
 
@@ -281,13 +323,14 @@ one step of that argument:
 
 | Chapter | Job |
 | --- | --- |
-| Hero | The promise: one story, on every surface |
-| (01) Manifesto | The problem: "Your marketing shouldn't be ten companies." Each supplier reports its own number |
+| Hero | The promise: made to be seen, everywhere; distribution as how the right clients find you |
+| Attention Field | The mechanism: attention everywhere, one story, nine lanes, one system, qualified demand |
+| (01) Manifesto | The problem: "Your marketing shouldn't be ten companies." Each supplier reports its own number; the braid shows ten becoming one |
 | (02) Services | The answer: every relevant channel, run as one system (Narrative → Create → Distribute → Measure) |
 | (03) Method | Diagnose where the system breaks, then design, deploy, compound |
 | (04)-(06) Work, results, journal | Proof, measured as one system |
 | (07) FAQ | The real objections: every channel? how is this not full-service? |
-| Closing | The diagnostic as the door in |
+| Closing | The Diagnostic as the door in ("Request your diagnostic") |
 
 Write "every relevant channel", never "every channel". Frame engagements as
 growth transformations; keep AI search, martech and measurement inside the
