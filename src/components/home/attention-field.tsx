@@ -152,6 +152,7 @@ export function AttentionField() {
                   type="button"
                   className={s.tab}
                   data-af-tab=""
+                  aria-label={`${two(i + 1)} ${st.tab}`}
                   aria-current={i === 0 ? "step" : undefined}
                 >
                   <i className={s.tabMark} aria-hidden="true" />

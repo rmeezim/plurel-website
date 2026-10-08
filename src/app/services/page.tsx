@@ -110,7 +110,7 @@ export default function ServicesIndexPage() {
           </div>
           <Reveal className="mt-8">
             <Link
-              href="/#growth-system"
+              href="/#distribution"
               className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
             >
               How the eight connect &mdash; the growth system

@@ -54,9 +54,9 @@ const CASES: CaseStudy[] = [
     built:
       "An identity system, an editorial website, and a machine-readable case library built for the engines that answer buyers.",
     after:
-      "Premium perception, better-fit pipeline — qualified inquiries up 212% in two quarters.",
+      "Premium perception, better-fit demand — qualified demand up 212% in two quarters.",
     metricValue: "+212%",
-    metricLabel: "qualified inquiries",
+    metricLabel: "qualified demand",
     facts: ["Launch in seven weeks", "Cited case library, AEO-ready"],
     layers: ["01 Brand", "02 Website", "03 AI Search"],
     quote:
@@ -501,8 +501,8 @@ export default function WorkPage() {
               <em className="italic">every one of these began</em>.
             </h2>
             <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Book the strategy call and get the Diagnostic &mdash; a clear read
-              on your presence across all nine layers, and what to fix first.
+              Book the strategy call and get the Diagnostic &mdash; a scored read
+              on the six parts of your distribution system, and what to fix first.
               The after is the part we build together.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">

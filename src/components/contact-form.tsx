@@ -72,7 +72,7 @@ export function ContactForm() {
       <div className="glass-in self-start rounded-2xl border border-line bg-paper p-8 sm:p-10">
         <Spark className="size-5 text-brand" aria-hidden />
         <h3 className="mt-5 font-sans text-2xl font-normal tracking-[-0.01em] text-ink">
-          <Cascade text="Your inquiry is drafted." base={0.1} step={0.06} />
+          <Cascade text="Your request is drafted." base={0.1} step={0.06} />
         </h3>
         <p
           className="word-in mt-3 max-w-[48ch] text-[15px] leading-relaxed text-ink/75"

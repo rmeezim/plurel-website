@@ -277,13 +277,14 @@ export function SiteHeader() {
     setMobileOpen(false);
   };
 
-  // Scroll state, and the tone of whatever sits behind the bar's centre,
-  // sampled at most once a frame
+  // Scroll state every frame; the tone of whatever sits behind the bar is
+  // hit-tested at most every 120ms, plus once when scrolling settles
   useEffect(() => {
     let raf = 0;
-    const probe = () => {
-      raf = 0;
-      setScrolled(window.scrollY > 24);
+    let lastTone = 0;
+    let settle: ReturnType<typeof setTimeout> | undefined;
+    const tone = () => {
+      lastTone = performance.now();
       const bar = barRef.current;
       if (!bar) return;
       const r = bar.getBoundingClientRect();
@@ -293,6 +294,13 @@ export function SiteHeader() {
       const tones = [0.2, 0.5, 0.8].map((f) => toneAt(r.left + r.width * f, y, headerRef.current));
       setBehind(tones.includes("light") ? "light" : "dark");
     };
+    const probe = () => {
+      raf = 0;
+      setScrolled(window.scrollY > 24);
+      if (performance.now() - lastTone > 120) tone();
+      clearTimeout(settle);
+      settle = setTimeout(tone, 140);
+    };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(probe);
     };
@@ -301,6 +309,7 @@ export function SiteHeader() {
     window.addEventListener("resize", onScroll);
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(settle);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
@@ -377,7 +386,16 @@ export function SiteHeader() {
 
   return (
     <>
-      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50" onMouseLeave={scheduleClose}>
+      <header
+        ref={headerRef}
+        className="fixed inset-x-0 top-0 z-50 [html:not([data-js])_&]:absolute"
+        onMouseLeave={scheduleClose}
+        onBlur={(e) => {
+          // Tabbing out of the header closes an open panel, so focus never
+          // sits behind it
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setMenu(null);
+        }}
+      >
         <div
           ref={barRef}
           className={`mx-auto transition-[width,max-width,height,margin,border-radius,background-color,border-color,color] duration-500 ease-[cubic-bezier(0.2,0.7,0.2,1)] motion-reduce:transition-none ${shape} ${surface}`}
@@ -442,7 +460,7 @@ export function SiteHeader() {
                 aria-expanded={mobileOpen}
                 aria-controls="mobile-menu"
                 aria-label="Open menu"
-                className={`inline-flex items-center justify-center border transition-[width,height,border-color] duration-300 motion-reduce:transition-none lg:hidden ${
+                className={`inline-flex items-center justify-center border transition-[width,height,border-color] duration-300 motion-reduce:transition-none lg:hidden [html:not([data-js])_&]:hidden ${
                   pill ? "size-9 rounded-[1px]" : "size-10"
                 } ${tone === "light" ? "border-ink/25" : "border-paper/40"}`}
               >

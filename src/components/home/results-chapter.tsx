@@ -44,7 +44,7 @@ export function ResultsChapter() {
   const year = CASES.find((c) => c.name === company)?.year;
 
   return (
-    <section aria-labelledby="results-heading" className="bg-paper py-24 text-ink lg:py-36">
+    <section id="results" aria-labelledby="results-heading" className="bg-paper py-24 text-ink lg:py-36">
       <div className={CONTAINER}>
         <ChapterHead index="05" label="Results" meta="Across recent engagements" />
 

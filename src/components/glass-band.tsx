@@ -221,6 +221,10 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
     const frame = (now: number) => {
       raf = 0;
       if (!visible) return;
+      // The observer's margin warms the film up early; drawing waits until
+      // the band is really on screen (scroll restarts the loop via kick)
+      const rb = box.getBoundingClientRect();
+      if (rb.bottom <= 0 || rb.top >= window.innerHeight) return;
       const real = (now - last) / 1000;
       const dt = Math.min(0.05, real);
       last = now;

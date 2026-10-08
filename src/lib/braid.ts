@@ -666,8 +666,11 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
     const fade = ss(clamp((q2 - 0.15) / 0.6));
     // Reduced motion only ever shows the end state, so its labels stay
     // fully legible (paper on brand red is about 4.8:1)
-    const nameOp = reduced ? 1 : lerp(1, 0.45, fade);
-    const metOp = reduced ? 1 : lerp(1, 0.35, fade);
+    // Supplier names stay legible on the red (paper, about 4.8:1); their
+    // vanity metrics fade out completely as the braid forms: ten numbers
+    // become one. Reduced motion only shows the end state, metrics included
+    const nameOp = 1;
+    const metOp = reduced ? 1 : 1 - fade;
     // On phones the converging strands climb through the label rows: once
     // they start to bend, the labels stop cutting them, so they pass
     // cleanly behind the fading type instead of being chopped
@@ -742,7 +745,7 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
       c.fillStyle = rgba(PAPER, 0.95);
       c.fillText(sd.name, x, y);
       c.globalAlpha = metOp;
-      c.fillStyle = reduced ? rgba(PAPER, 0.95) : rgba(BLUSH, 0.95);
+      c.fillStyle = rgba(PAPER, 0.95);
       c.fillText(sd.metric, x + sd.nameW, y);
     }
     if (kEnd > 0.01) {
@@ -757,6 +760,7 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
   }
 
   /* progress, loop, observers */
+  const figure = canvas.closest("figure");
   let raf = 0;
   let visible = false;
   let disposed = false;
@@ -769,8 +773,11 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
     const r = canvas.getBoundingClientRect();
     const vh = window.innerHeight || 1;
     // Canvas top at progress 1, then at progress 0 (the whole strip in view).
-    // On short screens, stretch the scrub to its minimum from both ends
-    let end = Math.max(P_END_MIN, vh * P_END);
+    // On short screens, stretch the scrub to its minimum from both ends.
+    // The end is measured from the figure's top, so a caption stacked above
+    // the canvas also clears the header
+    const capOff = figure ? Math.max(0, r.top - figure.getBoundingClientRect().top) : 0;
+    let end = Math.max(P_END_MIN, vh * P_END) + capOff;
     let start = vh * P_START - r.height;
     const short = vh * P_SPAN_MIN - (start - end);
     if (short > 0) {
@@ -789,10 +796,12 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
     const goal = target();
     // A short glide, so wheel steps read as motion rather than jumps
     p = shown < 0 ? goal : p + (goal - p) * (1 - Math.exp(-dt * 10));
-    if (Math.abs(goal - p) < 0.0005) p = goal;
-    draw(p, now / 1000);
+    const settled = Math.abs(goal - p) < 0.0005;
+    if (settled) p = goal;
+    // Time is held at 0: the braid moves only with the visitor's scroll
+    if (p !== shown) draw(p, 0);
     shown = p;
-    raf = requestAnimationFrame(tick);
+    if (!settled) raf = requestAnimationFrame(tick);
   };
   const start = () => {
     if (reduced) {
@@ -814,6 +823,8 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
     if (k === key) return;
     key = k;
     relayout();
+    // A resized canvas is blank: draw again even if progress has not moved
+    shown = -1;
     if (reduced) draw(1, 0);
     else start();
   };
@@ -827,6 +838,8 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
     { rootMargin: "120px 0px" },
   );
   io.observe(canvas);
+  const onScroll = () => start();
+  window.addEventListener("scroll", onScroll, { passive: true });
   const ro = new ResizeObserver(refresh);
   ro.observe(canvas);
 
@@ -847,6 +860,7 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
     raf = 0;
     io.disconnect();
     ro.disconnect();
+    window.removeEventListener("scroll", onScroll);
     fonts?.removeEventListener?.("loadingdone", onFonts);
   };
 }

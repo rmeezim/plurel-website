@@ -235,7 +235,10 @@ wide and 560px tall; otherwise a designed static version (the five stages
 as a list beside one still frame). Nothing that contains the sticky stage
 may clip (`overflow: hidden/clip` breaks it). The loop runs only while
 the section is on screen and the tab visible; no pause control (the
-owner's call, as with the glass).
+owner's call, as with the glass). When the mode flips (a phone rotates, a
+window gets short, reduced motion toggles), the engine keeps the reader's
+place: inside the field they land at its start, below it they stay on the
+same chapter.
 
 ## The manifesto braid
 
@@ -245,7 +248,10 @@ under the four suppliers. Scrubbed by scroll as it passes, never pinned:
 ten tangled paper strands, each a supplier with its vanity metric (six on
 phones), straighten into lanes in the order of the list above it, then
 braid through the Plurel mark into one strand: "One system · one number".
-Paper and blush only on the red; reduced motion shows the finished braid.
+As it forms, the ten metrics fade out (ten numbers become one); the
+supplier names stay legible. It moves only with the visitor's scroll and
+rests otherwise. Paper and blush only on the red; reduced motion shows the
+finished braid.
 
 ## The services fold
 

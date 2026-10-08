@@ -5,7 +5,7 @@ deepen one of its claims — proof (`/work`), capability (`/services`),
 credibility (`/about`, `/studio`), method (`/methodology`) — or to catch a
 visitor at a different entry point (blog posts, the growth-audit landing
 page). Every page ends in the same two doors: book a strategy call, or
-request the growth audit.
+request the Diagnostic.
 
 Conventions that apply to every page: the Cinematic Red x Swiss Systems
 language (`docs/design-system.md`), mobile-first from 360px, numbered

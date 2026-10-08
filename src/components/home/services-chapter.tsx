@@ -73,7 +73,7 @@ export function ServicesChapter() {
             ))}
             <p
               data-fold-room
-              className="fold-room absolute left-0 top-0 m-0 origin-top-left whitespace-nowrap font-serif text-[clamp(2.25rem,9vw,7.5rem)] italic leading-none text-paper"
+              className="fold-room type-display absolute left-0 top-0 m-0 origin-top-left whitespace-nowrap text-[clamp(2.25rem,9vw,7.5rem)] leading-none text-paper"
             >
               Your brand.
             </p>

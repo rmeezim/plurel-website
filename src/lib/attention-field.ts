@@ -277,6 +277,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
   let W = 0, H = 0, dpr = 1, phone = false;
   // Hs: the part of the stage always on screen (svh), H: the whole (lvh)
   let pad = 24, Fy = 0, Fh = 0, Hs = 0;
+  let laneWs: number[] = [];
   let A0 = 0, A1 = 0, grpX = 0, brX = 0, labX = 0, dashX = 0, dashW = 8, iconX = 0, iconS = 1;
   let pitch = 50, bh = 12, Cc = 0, um = 0.38, ut = 0.78;
   const gT = 0.016, wT = 0.11;
@@ -366,7 +367,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
   function layoutPinned() {
     phone = W < 700;
     pools = phone ? POOLS_PHONE : POOLS_DESK;
-    pad = phone ? 16 : clamp(W * 0.036, 24, 64);
+    pad = phone ? 16 : Math.max(clamp(W * 0.036, 24, 64), (W - 1440) / 2 + 48);
     // the composition keeps to the always-visible part of the stage; the
     // dots of the noise still reach the floor under a collapsed toolbar
     const top = phone ? 104 : 112, bot = phone ? 90 : 104;
@@ -705,6 +706,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
   /** Positions that only change on resize; opacity is written per frame */
   function placeFixed() {
     cache.clear();
+    laneWs = laneEls.map((el) => (el.firstElementChild as HTMLElement | null)?.offsetWidth ?? 80);
     GROUP_RANGE.forEach(([a, b], g) => {
       align(grpEls[g], phone ? "rot" : "l");
       put(grpEls[g], grpX, (C[a] + C[b]) / 2, 0);
@@ -1167,7 +1169,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
     const pooled = p < 0.29;
     for (let k = 0; k < NL; k++) {
       const el = laneEls[k];
-      if (pooled) put(el, ax[k] + 10, ay[k], poolV * dimLab);
+      if (pooled) put(el, clamp(ax[k] + 10, pad, W - pad - laneWs[k]), ay[k], poolV * dimLab);
       else {
         const ly = phone ? C[k] - bh - 9 : C[k];
         const lx = phone ? labX + icons[k].w + 8 : labX;
@@ -1557,7 +1559,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
   // screen and in a hidden tab; reduced motion never gets here.
   let running = false, raf = 0, lastP = -1;
   const tStart = performance.now();
-  let slow = 0, lastNow = 0;
+  let slow = 0, fast = 0, lastNow = 0;
   const clock = (now: number) => T0 + (now - tStart) / 1000;
 
   let trackTop = 0;
@@ -1571,23 +1573,36 @@ export function mountAttentionField(root: HTMLElement): () => void {
     if (!running) return;
     raf = requestAnimationFrame(tick);
     const p = progress();
-    // the observer counts a section touching the fold as on screen: draw
-    // nothing until it is in (resize() drew the first frame)
-    if (trackTop >= window.innerHeight - 1) {
+    // a sliver at the fold is not worth a frame: draw nothing until at
+    // least 48px of the section is in (resize() drew the first frame)
+    if (window.innerHeight - trackTop < 48) {
       lastNow = 0;
       return;
     }
-    // shed dots if the device can't hold the frame rate
-    if (lastNow) {
-      const dt = now - lastNow;
-      slow = dt > 30 && dt < 200 ? slow + 1 : Math.max(0, slow - 1);
+    // Shed dots only for the field's own cost, measured while the stage is
+    // pinned and whole on screen (other work on the page, like the hero's
+    // WebGL, must not count against it), and win them back when cheap
+    const t0 = performance.now();
+    render(p, clock(now));
+    const cost = performance.now() - t0;
+    const whole = trackTop <= 0 && track.getBoundingClientRect().bottom >= window.innerHeight;
+    if (whole && lastNow) {
+      if (cost > 8) {
+        slow += 1;
+        fast = 0;
+      } else {
+        slow = Math.max(0, slow - 1);
+        fast = cost < 4 ? fast + 1 : 0;
+      }
       if (slow > 45 && drawN > N * 0.55) {
         drawN = Math.round(drawN * 0.85);
         slow = 0;
+      } else if (fast > 120 && drawN < N) {
+        drawN = Math.min(N, Math.round(drawN / 0.85));
+        fast = 0;
       }
     }
     lastNow = now;
-    render(p, clock(now));
     lastP = p;
   }
   function start() {
@@ -1640,21 +1655,42 @@ export function mountAttentionField(root: HTMLElement): () => void {
     the field they land at its start, below it they stay on the same content.
     Like the services fold's keepPlace.
   */
-  let geo = { top: 0, h: 0, y: 0, vh: 0 };
+  type Geo = { top: number; h: number; y: number; vw: number; vh: number; anchor: Element | null; at: number };
+  let geo: Geo = { top: 0, h: 0, y: 0, vw: 0, vh: 0, anchor: null, at: 0 };
+  // The chapter under the header line (a child of <main>) and how far into
+  // it the reader is: what keepPlace restores after the page reflows
+  const anchorNow = () => {
+    const main = root.parentElement;
+    if (!main) return { anchor: null, at: 0 };
+    for (const el of Array.from(main.children)) {
+      const r = el.getBoundingClientRect();
+      if (r.bottom > 80) return { anchor: el, at: r.top };
+    }
+    return { anchor: null, at: 0 };
+  };
   const snap = () => {
     const r = track.getBoundingClientRect();
-    geo = { top: r.top + window.scrollY, h: track.offsetHeight, y: window.scrollY, vh: window.innerHeight };
+    geo = {
+      top: r.top + window.scrollY,
+      h: track.offsetHeight,
+      y: window.scrollY,
+      vw: window.innerWidth,
+      vh: window.innerHeight,
+      ...anchorNow(),
+    };
   };
   const keepPlace = () => {
     const was = geo;
     if (!was.h) return snap();
-    const r = track.getBoundingClientRect();
-    const top = r.top + window.scrollY;
-    const h = track.offsetHeight;
-    if (was.y > was.top && was.y < was.top + was.h - was.vh) {
-      window.scrollTo({ top, behavior: "instant" });
-    } else if (was.y >= was.top + was.h - was.vh) {
-      window.scrollTo({ top: was.y + (top + h) - (was.top + was.h), behavior: "instant" });
+    const end = was.top + Math.max(0, was.h - was.vh);
+    if (was.y >= was.top - 1 && was.y <= end) {
+      // Inside the field: land at its start
+      const r = track.getBoundingClientRect();
+      window.scrollTo({ top: r.top + window.scrollY, behavior: "instant" });
+    } else if (was.y > end && was.anchor?.isConnected) {
+      // Below it: the same chapter, the same distance in
+      const r = was.anchor.getBoundingClientRect();
+      window.scrollTo({ top: r.top + window.scrollY - was.at, behavior: "instant" });
     }
     snap();
   };
@@ -1695,7 +1731,20 @@ export function mountAttentionField(root: HTMLElement): () => void {
     if ((!reduced() && pinMQ.matches) === pinned) snap();
   });
   ro.observe(fig);
-  const onScroll = () => snap();
+  // Scrolls caused by a resize (the browser clamping a shorter page) must
+  // not overwrite the snapshot taken before it; a settled resize re-snaps
+  const onScroll = () => {
+    if (window.innerWidth !== geo.vw || window.innerHeight !== geo.vh) return;
+    snap();
+  };
+  let resizeRaf = 0;
+  const onResize = () => {
+    cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => {
+      if ((!reduced() && pinMQ.matches) === pinned) snap();
+    });
+  };
+  window.addEventListener("resize", onResize);
   window.addEventListener("scroll", onScroll, { passive: true });
   const io = new IntersectionObserver(
     (es) => {
@@ -1705,7 +1754,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
         else stop();
       }
     },
-    { rootMargin: "0px" },
+    { rootMargin: "0px 0px -48px 0px" },
   );
   io.observe(root);
   pinMQ.addEventListener("change", syncMode);
@@ -1728,6 +1777,16 @@ export function mountAttentionField(root: HTMLElement): () => void {
     b.addEventListener("click", fn);
     return fn;
   });
+  // Tabbing in from outside lands where that tab's stage is fully shown
+  const onFocusIn = (e: FocusEvent) => {
+    if (!pinned || root.contains(e.relatedTarget as Node | null)) return;
+    const i = tabs.indexOf(e.target as HTMLElement);
+    if (i < 0) return;
+    const r = track.getBoundingClientRect();
+    const top = window.scrollY + r.top + TAB_TO[i] * (r.height - H) + 1;
+    window.scrollTo({ top, behavior: "instant" });
+  };
+  root.addEventListener("focusin", onFocusIn);
 
   let alive = true;
   if (document.fonts && document.fonts.ready) {
@@ -1757,7 +1816,10 @@ export function mountAttentionField(root: HTMLElement): () => void {
     pinMQ.removeEventListener("change", syncMode);
     reducedMQ.removeEventListener("change", syncMode);
     window.removeEventListener("scroll", onScroll);
+    window.removeEventListener("resize", onResize);
+    cancelAnimationFrame(resizeRaf);
     tabs.forEach((b, i) => b.removeEventListener("click", handlers[i]));
+    root.removeEventListener("focusin", onFocusIn);
     document.removeEventListener("visibilitychange", onVis);
   };
 }

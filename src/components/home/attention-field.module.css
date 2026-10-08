@@ -26,7 +26,7 @@
 }
 @media (min-width: 700px) {
   .root {
-    --af-pad: clamp(24px, 3.6vw, 64px);
+    --af-pad: max(clamp(24px, 3.6vw, 64px), calc((100vw - 1440px) / 2 + 48px));
   }
 }
 

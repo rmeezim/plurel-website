@@ -88,7 +88,7 @@ export const POSTS: Post[] = [
       { type: "h2", text: "Where to start" },
       {
         type: "p",
-        text: "Write down five ways a real customer would ask an assistant for what you sell. Ask them. If you are absent from the answers, that is the first line of your growth audit — and the clearest case for treating AI visibility as a first-class channel rather than an afterthought.",
+        text: "Write down five ways a real customer would ask an assistant for what you sell. Ask them. If you are absent from the answers, that is the first line of your Diagnostic — and the clearest case for treating AI visibility as a first-class channel rather than an afterthought.",
       },
     ],
   },

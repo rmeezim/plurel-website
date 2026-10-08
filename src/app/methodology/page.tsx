@@ -82,7 +82,7 @@ const PHASES: Phase[] = [
         code: "D·01",
         name: "Presence audit",
         detail:
-          "Brand, website, search, AI answers, content, proof, and paid footprint — scored across all nine system layers.",
+          "Market, narrative, touchpoints, assets, distribution and measurement — scored as the six parts of your distribution system.",
       },
       {
         code: "D·02",
@@ -111,7 +111,7 @@ const PHASES: Phase[] = [
     ],
     artifacts: [
       "Diagnostic Report",
-      "Nine-layer scorecard",
+      "Six-part scorecard",
       "Competitor map",
       "AEO baseline",
       "Prioritized fix list",
@@ -768,14 +768,14 @@ export default function MethodologyPage() {
                     code: "SYS·09",
                     name: "The Growth System",
                     desc: "The nine-layer circuit the method builds — from brand and website to reputation.",
-                    href: "/#growth-system",
+                    href: "/#distribution",
                     label: "See the system",
                   },
                   {
                     code: "SIG·06",
                     name: "The Signal Console",
                     desc: "Six living signals that instrument the system — reviewed monthly, reset quarterly.",
-                    href: "/#performance",
+                    href: "/#results",
                     label: "See the signals",
                   },
                 ].map((plate, i) => (
@@ -927,9 +927,9 @@ export default function MethodologyPage() {
               <em className="italic">first deliverable</em>.
             </h2>
             <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Every engagement starts with the Diagnostic &mdash; a clear read on
-              where your presence stands across all nine layers, and what to
-              fix first. Book the call; leave with the truth either way.
+              Every engagement starts with the Diagnostic &mdash; a scored read
+              on the six parts of your distribution system, and what to fix
+              first. Book the call; leave with the truth either way.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
               <Link
@@ -940,7 +940,7 @@ export default function MethodologyPage() {
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <Link
-                href="/#growth-system"
+                href="/#distribution"
                 className="border-b border-paper/40 pb-0.5 text-sm text-paper transition-colors hover:border-paper"
               >
                 See the system it builds

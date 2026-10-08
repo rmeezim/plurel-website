@@ -119,13 +119,14 @@ export default function RootLayout({
         </a>
         {/* Reloads always start at the top — pages open on the headline
             cascade, never mid-scroll. Runs before the browser restores
-            the previous scroll position. Also marks html[data-js] so
+            the previous scroll position. An internal link switches the
+            mode to auto, so Back returns the reader to where they left. Also marks html[data-js] so
             scroll-driven layout (the services fold) is sized in CSS
             before first paint. */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{if('scrollRestoration' in history)history.scrollRestoration='manual'}catch(e){}document.documentElement.setAttribute('data-js','')",
+              "try{if('scrollRestoration' in history){history.scrollRestoration='manual';document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^=\"/\"]');if(a)history.scrollRestoration='auto'},true)}}catch(e){}document.documentElement.setAttribute('data-js','')",
           }}
         />
         <script

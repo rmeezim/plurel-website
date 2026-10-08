@@ -47,7 +47,7 @@ export const PHASES = [
     name: "Design",
     tagline: "Rebuild the story and the surfaces",
     description:
-      "Positioning, messaging, identity, website, and the asset system designed together, so every channel tells the same story.",
+      "Positioning, messaging, identity, website, and the asset system designed together, so every relevant channel tells the same story.",
     outputs: ["Narrative & messaging", "Brand identity", "Website & landing pages", "Asset system"],
     ai: "Generative concepting",
   },
@@ -175,7 +175,7 @@ export const FAQS = [
   },
   {
     q: "How is this different from a full-service agency?",
-    a: "We sell the integration, not the menu. A full-service agency puts many services under one roof; we run one narrative, one creative engine, one data layer, and one accountable team across every channel you use. You stop managing ten suppliers who each optimize their own number.",
+    a: "We sell the integration, not the menu. A full-service agency puts many services under one roof; we run one narrative, one creative engine, one data layer, and one accountable team across every relevant channel you use. You stop managing ten suppliers who each optimize their own number.",
   },
   {
     q: "Do we need every channel?",
@@ -187,7 +187,7 @@ export const FAQS = [
   },
   {
     q: "Do you work with companies like ours?",
-    a: "Our best fit is growth-stage companies whose marketing has outgrown one person and fragmented across suppliers: Series A to C technology companies, and established businesses modernizing how they show up. The problem is the same in SaaS, fintech, healthcare, or professional services: everything works, and nothing works together.",
+    a: "Our best fit is growth-stage companies, B2B and B2C, whose marketing has outgrown one person and fragmented across suppliers: Series A to C technology companies, consumer brands, and established businesses modernizing how they show up. The problem is the same in SaaS, fintech, consumer goods, healthcare, or professional services: everything works, and nothing works together.",
   },
   {
     q: "What exactly is the Diagnostic, and why is it free?",
