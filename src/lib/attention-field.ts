@@ -1,7 +1,6 @@
 import {
   CHANNEL,
   CHANNELS,
-  HALDEN,
   MOSAIC_TALL,
   MOSAIC_WIDE,
   PHONE_SEARCH,
@@ -17,16 +16,17 @@ import {
 
   One canvas of dots tells the distribution story in five scroll-scrubbed
   stages:
-    NOISE   attention gathers in nine pools, one per surface, each a
-            body round its marker with a lit core. The mesh
-            answers a fine pointer (a soft lens that pushes the nearest
-            dots aside and lights them), and each pool's marker can be
-            picked up and dragged, its dots following on a spring
-            (see "touch" below)
-    STORY   the dots settle into one master frame, a dot screen carrying
-            the story's line; a blade cuts it along the gutters of a
-            mosaic, outermost cut first, the pieces parting behind it like
-            a cut sheet, and each piece develops into a live recording of
+    NOISE   attention gathers, loosely, round nine markers, one per
+            surface. The mesh answers a fine pointer (a soft lens that
+            pushes the nearest dots aside and lights them), and each
+            marker can be picked up and dragged on its own: the mesh parts
+            round it as it does round the pointer, no dots follow it, and
+            let go it eases home (see "touch" below)
+    STORY   the dots settle into one master frame, an even dot screen; a
+            beat, then a blade cuts it along the gutters of a mosaic, one
+            cut after another, outermost first, the pieces parting behind
+            it like a cut sheet; another beat, the red cuts fading, and
+            only then does each piece develop into a live recording of
             that one story in one format (the channel tiles: an AI answer,
             a search result, a reel...)
     LANES   the recordings hand over to the heads of nine lanes (owned,
@@ -164,6 +164,11 @@ const POOLS_PHONE: readonly [number, number][] = [
   [0.1, 0.2], [0.58, 0.31], [0.12, 0.44], [0.48, 0.15], [0.58, 0.58],
   [0.16, 0.69], [0.62, 0.45], [0.14, 0.84], [0.6, 0.79],
 ];
+/** The share of a surface's dots that gather round its marker in the noise */
+const POOL_SHARE = 0.55;
+/** Their spread (one sigma) as a share of the stage's width and height:
+    phones, then wider screens */
+const POOL_SX = [0.078, 0.054] as const, POOL_SY = [0.046, 0.07] as const;
 /** The aspect of a drawn head (a lane with no tile; every head in the
     still frame takes its tile's from lib/channels.ts) */
 const HEAD_AR: Record<AfIcon, number> = {
@@ -174,68 +179,82 @@ const NT = CHANNELS.length;
 const LANE_TILE = AF_LANES.map((L) => CHANNELS.findIndex((c) => c.lane === L.name));
 const TILE_LANE = CHANNELS.map((c) => AF_LANES.findIndex((L) => L.name === c.lane));
 
-/* Scroll timeline, p in [0, 1]: five stages of 0.2. Each heading rises in at
-   its stage's start, holds while the visual changes under it (dimmed), then
-   lifts away and the visual holds the stage on its own. */
-// STORY gets the longest stretch: its heading has lifted before the story's
-// line comes up, so the line, the cut and the mosaic of recordings hold the
+/* The scroll timeline. The track's scroll fraction (0..1) times T_LEN is
+   the timeline's p, so 0.01 of p is always the same distance (4.6% of a
+   screen: about 41px on a 900px one). The track is 615svh (see
+   attention-field.module.css), the stage one screen: STORY was given 0.07
+   more p for its cuts, and another 0.05 for the beat that holds the
+   finished cut grid before the tiles, everything after it moving on by
+   each.
+   Five stages; each heading rises in at its stage's start, holds while the
+   visual changes under it (dimmed), then lifts away and the visual holds
+   the stage on its own. */
+// STORY gets the longest stretch: its heading has lifted before the cuts
+// are made, so the frame, the cuts and the mosaic of recordings hold the
 // stage on their own, and the tiles reach their lanes before LANES rises.
-// LANES lifts early so the nine lanes hold the stage on their own (0.53 to
-// 0.6) before SYSTEM bends them.
+// LANES lifts early so the nine lanes hold the stage on their own (0.66 to
+// 0.72) before SYSTEM bends them.
+const T_LEN = 1.12;
 const HEAD: readonly [number, number, number, number][] = [
   [-1, 0, 0.06, 0.1],
   [0.165, 0.195, 0.222, 0.245],
-  [0.468, 0.488, 0.515, 0.54],
-  [0.6, 0.63, 0.685, 0.715],
-  [0.785, 0.815, 0.865, 0.9],
+  [0.588, 0.608, 0.635, 0.66],
+  [0.72, 0.75, 0.805, 0.835],
+  [0.905, 0.935, 0.985, 1.02],
 ];
 /** The link to the method: in over END0..END1, and where focusing it lands */
-const END0 = 0.9, END1 = 0.94, END_AT = 0.96;
+const END0 = 1.02, END1 = 1.06, END_AT = 1.08;
 /* STORY, in p. The dots settle into one master frame over G0..G1 (under
-   the heading), an even dot screen; the story's line comes up in it once
-   the heading has nearly gone (INK0..INK1: the letters' cells split into
-   finer points and brighten). The blade then makes the mosaic's cuts,
-   outermost first, each over CUT_T, all inside CUT0..CUT1: behind the
-   blade the gutter opens, each piece's points closing up into its tile's
-   rectangle (a dot takes OPEN_T to move, parting a little past it and
-   settling) and its cut edge staying lit, so the frame visibly becomes
-   pieces. Each piece then develops into its recording over DEV_T, top to
-   bottom, in the order the story is told (CHANNELS), and a line under the
-   mosaic says Halden is a sample (NOTE0..). The build-up is brisk so that
-   the finished mosaic, the recordings the reader came for, holds and plays
-   for the longest stretch of STORY (about a third of a screen of scroll,
-   DEV0 + NT·DEV_STG + DEV_T to KC0). Then the tiles hand over to the lanes'
-   heads over KC0..KC1, one after another (FL_STG apart, nearest the lanes
-   first, so the column of heads is clear before anything lands in it):
-   each shrinks in place to its head's size, then slides to the head, on
-   top of every tile bound for a lower lane (see flightRect). Its lane
-   pours out of it as it lands. A tile plays until it leaves the mosaic,
-   then holds its frame: in flight it is one raster the compositor scales,
-   and as a head a few dozen pixels tall it costs nothing. */
-const G0 = 0.17, G1 = 0.248, INK0 = 0.24, INK1 = 0.256;
-const CUT0 = 0.258, CUT1 = 0.288, CUT_T = 0.011, OPEN_T = 0.008;
-const DEV0 = 0.293, DEV_STG = 0.004, DEV_T = 0.012;
-const NOTE0 = 0.316, NOTE1 = 0.332;
-const KC0 = 0.412, KC1 = 0.47, FL_STG = 0.1;
+   the heading), an even dot screen, and it holds alone for a beat once the
+   heading has gone. The blade then makes the mosaic's cuts one after
+   another, outermost first, each a red line run the length of its gutter
+   over CUT_T, all inside CUT0..CUT1: behind the blade the gutter opens,
+   each piece's points closing up into its tile's rectangle (a dot takes
+   OPEN_T to move, parting a little past it and settling) and its cut edge
+   staying lit. The red lines stay until the last cut is through, and the
+   finished cut grid then holds, lines lit and dots showing, for a second
+   beat (CUT1..FADE0: 0.05 of p, some 205px of scroll on a 900px screen),
+   so the cuts are read well before anything develops. Only then do the red
+   lines fade (FADE0..FADE1), leaving the frame in pieces, and each piece
+   develops into its recording over DEV_T from DEV0, top to bottom, in the
+   order the story is told (CHANNELS), and a line under the mosaic says
+   Halden is a sample (NOTE0..). The finished mosaic, the recordings the
+   reader came for, holds and plays for the longest stretch of STORY (about
+   0.09 of p: some 390px of scroll on a 900px screen, DEV0 + NT·DEV_STG +
+   DEV_T to KC0). Then the tiles hand over to the lanes' heads over
+   KC0..KC1, one after another (FL_STG apart, nearest the lanes first, so
+   the column of heads is clear before anything lands in it): each shrinks
+   in place to its head's size, then slides to the head, on top of every
+   tile bound for a lower lane (see flightRect). Its lane pours out of it
+   as it lands. A tile plays until it leaves the mosaic, then holds its
+   frame: in flight it is one raster the compositor scales, and as a head a
+   few dozen pixels tall it costs nothing. */
+const G0 = 0.17, G1 = 0.244;
+const CUT0 = 0.262, CUT1 = 0.326, CUT_T = 0.012, OPEN_T = 0.008;
+const FADE0 = CUT1 + 0.05, FADE1 = FADE0 + 0.014;
+const DEV0 = 0.394, DEV_STG = 0.005, DEV_T = 0.014;
+const NOTE0 = 0.42, NOTE1 = 0.436;
+const KC0 = 0.532, KC1 = 0.59, FL_STG = 0.1;
 /** When a lane with no tile opens: its drawn head is in */
-const HEAD_NEW = 0.44;
+const HEAD_NEW = 0.56;
 /** A dot's run into its lane (in p): on a phone down out of its head
     (IN_T), then along the lane (OUT_T); a lane starts to pour when its
     tile is POUR_AT through its flight */
 const IN_T = 0.012, OUT_T = 0.034, HEAD_JIT = 0.024, POUR_AT = 0.86;
+/** A point of the master frame's light: FRAME_A + FRAME_B × its dot's brightness */
+const FRAME_A = 0.34, FRAME_B = 0.34;
 /** The scene loops in a tile run only at this scale or more */
 const FX_SCALE = 0.8;
 
 /* Touch, in NOISE only. The lens: radius in CSS px, and how far it pushes
    the dot at its centre, as a share of the radius (under 0.5, so the dots
    never cross: a clean hole with a lit, crowded rim). The springs are
-   stiffness and damping per second; a dragged pool's core follows its
-   marker closely, its rim lags and overshoots, so it moves like a body. */
+   stiffness and damping per second: each dot's give, and a dropped
+   marker's glide home (damped just short of critical, so it settles
+   without a bounce). */
 const LENS_R = 110, LENS_R_PHONE = 84, LENS_PUSH = 0.42;
 const DOT_K = 110, DOT_C = 9.5;
-const MK_K = 180, MK_C = 20;
-const CORE_K = 420, CORE_C = 33;
-const RIM_K = 70, RIM_C = 6.4;
+const MK_K = 110, MK_C = 19;
 
 /* ---------- palette ---------- */
 const PAPER = "251,250,246";
@@ -353,29 +372,21 @@ export function mountAttentionField(root: HTMLElement): () => void {
   const headAt = new Float32Array(NL);
   // still
   let stillCurveSplit = false;
-  let readH = 90;
+  // the link's height
+  let endH = 40;
 
   // touch (NOISE only; the handlers and the step are under "touch" below).
   // The pointer in client px, and the lens' eased centre, radius and
   // strength in stage px
   let ptrCX = 0, ptrCY = 0, hover = false;
-  // the marker under a fine pointer (-1 none); the pool held or pointed at,
-  // and how lit it is (eased)
-  let hoverK = -1, heldK = -1, heldA = 0;
   let lensX = 0, lensY = 0, lensR = LENS_R, lensA = 0;
   // some dot still has give to spend
   let jOn = false;
-  // Per pool, as offsets from its home: where its marker is shown (mk),
-  // where a dropped marker settles (tg), and the two followers its dots
-  // ride on (core, rim), each with a velocity
+  // Each marker, as an offset from its pool's home, and its velocity: only
+  // a marker moves when it is dragged, never its pool's dots
   const mkX = new Float32Array(NL), mkY = new Float32Array(NL), mkVX = new Float32Array(NL), mkVY = new Float32Array(NL);
-  const tgX = new Float32Array(NL), tgY = new Float32Array(NL);
-  const coX = new Float32Array(NL), coY = new Float32Array(NL), coVX = new Float32Array(NL), coVY = new Float32Array(NL);
-  const rmX = new Float32Array(NL), rmY = new Float32Array(NL), rmVX = new Float32Array(NL), rmVY = new Float32Array(NL);
-  // the pool in hand (-1 none), its pointer, and where on the marker it was taken
+  // the marker in hand (-1 none), its pointer, and where on it it was taken
   let dragK = -1, dragId = -1, grabDX = 0, grabDY = 0;
-  // the pools' spread (px), set each frame
-  let poolSX = 60, poolSY = 50;
   // where the stage sits in the viewport (read with the track's rect)
   let stageL = 0, stageT = 0;
 
@@ -388,25 +399,15 @@ export function mountAttentionField(root: HTMLElement): () => void {
   let ph = new Float32Array(0), u0 = new Float32Array(0), sp = new Float32Array(0), off = new Float32Array(0);
   let br = new Float32Array(0), sz = new Float32Array(0), dl = new Float32Array(0), arc = new Float32Array(0);
   let ps0 = new Float32Array(0), pof = new Float32Array(0);
-  // how near a pooled dot sits to its pool's core (0..1): the core is lit
-  let pc = new Float32Array(0);
-  // story: each dot's point in the master frame (fp), the centre of its
-  // cell there (fc: the line's cells hold up to four points, gathered at
-  // the centre until the line comes up, each then carrying fsh of the
-  // cell's light), the piece it belongs to (ft) and where in that piece
-  // (fu, fv: 0..1 across it); fdup marks a dot beyond the frame's points,
-  // which dissolves as it arrives
-  let fpx = new Float32Array(0), fpy = new Float32Array(0), fcx = new Float32Array(0), fcy = new Float32Array(0);
-  let fsh = new Float32Array(0), fu = new Float32Array(0), fv = new Float32Array(0);
+  // story: each dot's point in the master frame (fp), the piece it belongs
+  // to (ft) and where in that piece (fu, fv: 0..1 across it); fdup marks a
+  // dot beyond the frame's points, which dissolves as it arrives
+  let fpx = new Float32Array(0), fpy = new Float32Array(0), fu = new Float32Array(0), fv = new Float32Array(0);
   let ft = new Uint8Array(0), fdup = new Uint8Array(0);
   // the frame's dot pitch (px)
   let fPitch = 12;
-  // and how much of the story's line its point carries (0..1)
-  let fink = new Float32Array(0);
-  // touch: each dot's give (displacement, velocity) and how far it trails
-  // its pool's marker (0 core .. 1 rim)
+  // touch: each dot's give (displacement, velocity)
   let jx = new Float32Array(0), jy = new Float32Array(0), jvx = new Float32Array(0), jvy = new Float32Array(0);
-  let lw = new Float32Array(0);
   // draw slots (twice N: the still draws qualified dots on their lane and on the curve)
   let sx = new Float32Array(0), sy = new Float32Array(0), ss2 = new Float32Array(0);
   let sb = new Uint16Array(0), order = new Int32Array(0);
@@ -421,18 +422,18 @@ export function mountAttentionField(root: HTMLElement): () => void {
     stray = U8(); ln = U8(); qd = U8(); cl = U8(); hi = U8(); tw = U8();
     gx = F(); gy = F(); nx = F(); ny = F(); dvx = F(); dvy = F(); amp = F(); fr = F(); ph = F();
     u0 = F(); sp = F(); off = F(); br = F(); sz = F(); dl = F(); arc = F(); ps0 = F(); pof = F();
-    fpx = F(); fpy = F(); fcx = F(); fcy = F(); fsh = F(); fu = F(); fv = F(); ft = U8(); fdup = U8(); fink = F();
-    jx = F(); jy = F(); jvx = F(); jvy = F(); lw = F(); pc = F();
+    fpx = F(); fpy = F(); fu = F(); fv = F(); ft = U8(); fdup = U8();
+    jx = F(); jy = F(); jvx = F(); jvy = F();
     jOn = false;
     sx = new Float32Array(2 * n); sy = new Float32Array(2 * n); ss2 = new Float32Array(2 * n);
     sb = new Uint16Array(2 * n); order = new Int32Array(2 * n);
     const cum: number[] = [];
     let acc = 0;
     for (const L of AF_LANES) cum.push((acc += L.share));
-    // A few strays drift over the whole field; most of each surface's
-    // attention pools round its marker, two in five of those in a tight,
-    // lit core, so every pool reads as a body at rest (and as something to
-    // pick up); the rest of the lane's dots wander
+    // A few strays drift over the whole field; about half of each
+    // surface's attention gathers loosely round its marker, enough for the
+    // field to read as nine surfaces and no more (no lit core: nothing
+    // reads as a body that belongs to the marker); the rest wander
     for (let i = 0; i < n; i++) {
       stray[i] = r() < 0.04 ? 1 : 0;
       const x = r() * acc;
@@ -440,12 +441,12 @@ export function mountAttentionField(root: HTMLElement): () => void {
       while (k < NL - 1 && x > cum[k]) k++;
       ln[i] = k;
       qd[i] = !stray[i] && r() < AF_LANES[k].qual ? 1 : 0;
-      cl[i] = !stray[i] && r() < 0.7 ? 1 : 0;
+      cl[i] = !stray[i] && r() < POOL_SHARE ? 1 : 0;
       hi[i] = r() < 0.05 ? 1 : 0;
       tw[i] = r() < 0.05 ? 1 : 0;
-      const core = r() < 0.4 ? 0.42 : 1;
-      gx[i] = clamp(gauss(), -3, 3) * core;
-      gy[i] = clamp(gauss(), -3, 3) * core;
+      r(); // a spare draw: keeps every later one, and so the field's look, stable
+      gx[i] = clamp(gauss(), -3, 3);
+      gy[i] = clamp(gauss(), -3, 3);
       nx[i] = r(); ny[i] = r();
       dvx[i] = (r() - 0.5) * 9; dvy[i] = (r() - 0.5) * 6;
       amp[i] = 2 + r() * 9; fr[i] = 0.12 + r() * 0.38; ph[i] = r() * TAU;
@@ -456,8 +457,6 @@ export function mountAttentionField(root: HTMLElement): () => void {
       sz[i] = s < 0.7 ? 1.1 : s < 0.97 ? 1.6 : 2.1;
       dl[i] = r(); arc[i] = (r() - 0.5) * 70;
       ps0[i] = r(); pof[i] = clamp(gauss() * 0.5, -1.4, 1.4);
-      lw[i] = 0.85 * Math.pow(Math.min(1, Math.hypot(gx[i], gy[i]) / 2.6), 1.2) + 0.15 * dl[i];
-      pc[i] = Math.max(0, 1 - Math.hypot(gx[i], gy[i]) / 1.3);
     }
   }
 
@@ -655,61 +654,28 @@ export function mountAttentionField(root: HTMLElement): () => void {
   }
 
   /**
-   * The master frame: a dot screen over the mosaic's whole rectangle, its
-   * gutters included, with the story's line set in it at twice the pitch
-   * (a fine grid inside the letters, a coarse one round them, which keeps
-   * clear of their edges). Until the line comes up a cell's fine points
-   * sit at its centre, sharing its light, so the screen reads even. About
-   * half the dots make its points, so it stays whole when dots are shed
-   * for cost (never below 0.55 N); the rest double up and dissolve on
-   * arrival. Each point belongs to the piece of the frame it lies in.
+   * The master frame: an even dot screen over the mosaic's whole
+   * rectangle, its gutters included. About half the dots make its points,
+   * so it stays whole when dots are shed for cost (never below 0.55 N); the
+   * rest double up and dissolve on arrival. Each point belongs to the piece
+   * of the frame it lies in.
    */
   function assignFrame() {
     const F = lay.frame;
     let avail = 0;
     for (let i = 0; i < N; i++) if (!stray[i]) avail++;
     const budget = Math.max(16, avail * 0.5);
-    const px: number[] = [], py: number[] = [], pk: number[] = [], pcx: number[] = [], pcy: number[] = [], psh: number[] = [];
-    let sp = Math.sqrt((F.w * F.h) / (budget * 0.8));
+    // the finest square-ish pitch whose points fit the budget
+    let sp = Math.sqrt((F.w * F.h) / budget);
+    let cols = 2, rows = 2;
     for (let pass = 0; pass < 4; pass++) {
-      px.length = py.length = pk.length = pcx.length = pcy.length = psh.length = 0;
-      const cols = Math.max(2, Math.round(F.w / sp)), rows = Math.max(2, Math.round(F.h / sp));
-      const dx = F.w / cols, dy = F.h / rows, c2 = cols * 2;
-      fPitch = Math.max(dx, dy);
-      const ink = inkMask(c2, rows * 2);
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const at = (u: number, v: number) => (ink ? ink[(r * 2 + v) * c2 + c * 2 + u] : 0);
-          const cx = F.x + (c + 0.5) * dx, cy = F.y + (r + 0.5) * dy;
-          if (Math.max(at(0, 0), at(1, 0), at(0, 1), at(1, 1)) < 0.12) {
-            px.push(cx);
-            py.push(cy);
-            pk.push(0);
-            pcx.push(cx);
-            pcy.push(cy);
-            psh.push(1);
-            continue;
-          }
-          const n0 = px.length;
-          for (let v = 0; v < 2; v++) {
-            for (let u = 0; u < 2; u++) {
-              const k = at(u, v);
-              if (k < 0.3) continue;
-              px.push(F.x + (c + 0.25 + u * 0.5) * dx);
-              py.push(F.y + (r + 0.25 + v * 0.5) * dy);
-              pk.push(k);
-              pcx.push(cx);
-              pcy.push(cy);
-            }
-          }
-          const n1 = px.length - n0;
-          for (let q = 0; q < n1; q++) psh.push(1 / n1);
-        }
-      }
-      if (px.length <= budget) break;
-      sp *= Math.sqrt(px.length / budget) * 1.02;
+      cols = Math.max(2, Math.round(F.w / sp));
+      rows = Math.max(2, Math.round(F.h / sp));
+      if (cols * rows <= budget) break;
+      sp *= Math.sqrt((cols * rows) / budget) * 1.02;
     }
-    const pts = px.length;
+    const dx = F.w / cols, dy = F.h / rows, pts = cols * rows;
+    fPitch = Math.max(dx, dy);
     const ks = CHANNELS.map((_, j) => j).filter((j) => shown[j]);
     let n = 0;
     for (let i = 0; i < N; i++) {
@@ -717,13 +683,9 @@ export function mountAttentionField(root: HTMLElement): () => void {
       const q = n % pts;
       fdup[i] = n >= pts ? 1 : 0;
       n++;
-      const x = px[q], y = py[q];
+      const x = F.x + ((q % cols) + 0.5) * dx, y = F.y + (Math.floor(q / cols) + 0.5) * dy;
       fpx[i] = x;
       fpy[i] = y;
-      fcx[i] = pcx[q];
-      fcy[i] = pcy[q];
-      fsh[i] = psh[q];
-      fink[i] = pk[q];
       // the piece it lies in (the pieces tile the frame), or the nearest
       let best = -1, bd = Infinity;
       for (const j of ks) {
@@ -743,50 +705,6 @@ export function mountAttentionField(root: HTMLElement): () => void {
         fv[i] = clamp((y - r.y) / r.h, 0, 1);
       }
     }
-  }
-
-  /**
-   * The story's line set in a grid, one value per cell: the share of the
-   * cell the type covers (eased), or null when the grid is too coarse to
-   * carry it legibly. Left-aligned on two lines (more on a narrow frame),
-   * in the display face.
-   */
-  function inkMask(cols: number, rows: number): Float32Array | null {
-    const R = 3, cw = cols * R, chh = rows * R;
-    const words = HALDEN.line.split(" ");
-    const lines = cols / rows > 1.2
-      ? [words.slice(0, 2).join(" "), words.slice(2).join(" ")]
-      : cols / rows > 0.75
-        ? [words[0], words[1], words.slice(2).join(" ")]
-        : [words[0], words[1], words[2], words.slice(3).join(" ")];
-    const off = document.createElement("canvas");
-    off.width = cw;
-    off.height = chh;
-    const o = off.getContext("2d", { willReadFrequently: true });
-    if (!o) return null;
-    const fam = getComputedStyle(steps[0].firstElementChild ?? steps[0]).fontFamily || "sans-serif";
-    const font = (px: number) => `760 ${px}px ${fam}`;
-    o.font = font(100);
-    const widest = Math.max(...lines.map((l) => o.measureText(l).width));
-    // as large as fits 86% of the width and 76% of the height (lines 1.0 apart)
-    const size = Math.min((cw * 0.86 * 100) / widest, (chh * 0.76) / lines.length);
-    // under about eight cells to a line the letters break up: no line
-    if (size / R < 8) return null;
-    o.font = font(size);
-    o.fillStyle = "#fff";
-    const x0 = Math.round(cw * 0.06);
-    const block = size * lines.length;
-    lines.forEach((l, i) => o.fillText(l, x0, (chh - block) / 2 + size * (i + 0.8)));
-    const d = o.getImageData(0, 0, cw, chh).data;
-    const out = new Float32Array(cols * rows);
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        let a = 0;
-        for (let v = 0; v < R; v++) for (let u = 0; u < R; u++) a += d[((r * R + v) * cw + c * R + u) * 4 + 3];
-        out[r * cols + c] = ss(0.2, 0.6, a / (R * R * 255));
-      }
-    }
-    return out;
   }
 
   /**
@@ -1037,7 +955,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
   function placeFixed() {
     cache.clear();
     laneWs = laneEls.map((el) => (el.firstElementChild as HTMLElement | null)?.offsetWidth ?? 80);
-    readH = (readoutEl.firstElementChild as HTMLElement | null)?.offsetHeight || 90;
+    endH = (endEl.firstElementChild as HTMLElement | null)?.offsetHeight || 40;
     GROUP_RANGE.forEach(([a, b], g) => {
       align(grpEls[g], phone ? "rot" : "l");
       put(grpEls[g], grpX, (C[a] + C[b]) / 2, 0);
@@ -1374,22 +1292,23 @@ export function mountAttentionField(root: HTMLElement): () => void {
        Its centre, radius and strength ease; each dot rides a damped
        spring to its push and back (jx/jy, stepped in render's dot loop
        only while some dot has give left: jOn).
-     - the easter egg: press a pool's marker (its name and square, which
-       take the pointer only while grabbable: data-grab) and drag. The
-       marker follows the pointer, rubber-banded at the field's edges; the
-       pool's dots follow on two springs (a tight core, a loose rim), and
-       the lens moves with the pool to part the dots round it. Dropped, it
-       springs to a place inside the field and clear of every other pool
-       (endDrag), and stays until STORY has gathered every dot; then all
-       pools go home, so coming back to NOISE shows the original layout. Pointer capture is on the marker alone and only
-       the marker has touch-action: none, so a page scroll is never taken.
+     - the easter egg: press a marker (its name and square, which take the
+       pointer only while grabbable: data-grab) and drag. The marker alone
+       follows the pointer, rubber-banded at the field's edges; no dots go
+       with it. The lens rides with it, as it rides with a pointer, so the
+       mesh parts round the marker as it passes (its own pool's dots too)
+       and closes behind it. Let go, the marker eases home to its pool on
+       a spring; STORY sends any still under way home at once. Pointer
+       capture is on the marker alone and only the marker has
+       touch-action: none, so a page scroll is never taken.
      The handlers only record; touchStep (called by render) does the work. */
   const rubber = (v: number, lo: number, hi: number) =>
     v < lo ? lo - (60 * (lo - v)) / (lo - v + 60) : v > hi ? hi + (60 * (v - hi)) / (v - hi + 60) : v;
-  let poolsDirty = false, poolsMoving = false;
-  function homePools() {
-    for (const a of [mkX, mkY, mkVX, mkVY, tgX, tgY, coX, coY, coVX, coVY, rmX, rmY, rmVX, rmVY]) a.fill(0);
-    poolsDirty = poolsMoving = false;
+  // some marker is away from home (or on its way back)
+  let marksOut = false;
+  function homeMarks() {
+    for (const a of [mkX, mkY, mkVX, mkVY]) a.fill(0);
+    marksOut = false;
   }
   function endDrag() {
     const k = dragK;
@@ -1399,51 +1318,28 @@ export function mountAttentionField(root: HTMLElement): () => void {
     if (grip && dragId >= 0 && grip.hasPointerCapture(dragId)) grip.releasePointerCapture(dragId);
     dragId = -1;
     delete laneEls[k].dataset.drag;
-    // dropped: it settles where it was let go, inside the field and clear
-    // of every other pool (outside an ellipse of 2.2 spreads round each,
-    // which the pools at home keep too), springing there from the drop
-    const rx = poolSX * 2.2, ry = poolSY * 2.2;
-    const inX = (v: number) => clamp(v, pad + 12, W - pad - 12), inY = (v: number) => clamp(v, Fy + 12, Fy + Fh - 12);
-    let x = inX(ax[k] + mkX[k]), y = inY(ay[k] + mkY[k]);
-    for (let it = 0; it < 8; it++) {
-      let moved = false;
-      for (let o = 0; o < NL; o++) {
-        if (o === k) continue;
-        const ox = ax[o] + tgX[o], oy = ay[o] + tgY[o];
-        const dx = (x - ox) / rx, dy = (y - oy) / ry, d = Math.hypot(dx, dy);
-        if (d >= 1) continue;
-        // out along the line from the other pool (straight down if on it)
-        const ux = d > 1e-3 ? dx / d : 0, uy = d > 1e-3 ? dy / d : 1;
-        x = ox + ux * rx * 1.01;
-        y = oy + uy * ry * 1.01;
-        moved = true;
-      }
-      x = inX(x);
-      y = inY(y);
-      if (!moved) break;
-    }
-    tgX[k] = x - ax[k];
-    tgY[k] = y - ay[k];
+    // dropped: it eases home from where it was let go (touchStep)
   }
-  /** One step of the touch state; `sg` is the pools' spread (px) */
-  function touchStep(dt: number, noiseW: number, grabV: number, sg: number) {
+  /** One step of the touch state */
+  function touchStep(dt: number, noiseW: number, grabV: number) {
     if (noiseW <= 0) {
-      // STORY has every dot: whatever was moved goes home
+      // STORY has every dot: a marker still on its way home is home
       endDrag();
-      if (poolsDirty) homePools();
+      if (marksOut) homeMarks();
     } else if (grabV < 0.5) endDrag();
     const px = ptrCX - stageL, py = ptrCY - stageT;
-    let want = 0, cx = 0, cy = 0, R = phone ? LENS_R_PHONE : LENS_R;
+    let want = 0, cx = 0, cy = 0;
+    const R = phone ? LENS_R_PHONE : LENS_R;
     if (dragK >= 0) {
+      // the marker under the pointer, where it was taken; the lens where it
+      // is held (the pointer, or where the band holds it at an edge)
       const k = dragK;
-      mkX[k] = rubber(px - grabDX, pad + 12, W - pad - 12) - ax[k];
-      mkY[k] = rubber(py - grabDY, Fy + 12, Fy + Fh - 12) - ay[k];
+      const x = rubber(px - grabDX, pad + 12, W - pad - 12), y = rubber(py - grabDY, Fy + 12, Fy + Fh - 12);
+      mkX[k] = x - ax[k];
+      mkY[k] = y - ay[k];
       mkVX[k] = mkVY[k] = 0;
-      tgX[k] = mkX[k];
-      tgY[k] = mkY[k];
-      cx = ax[k] + coX[k];
-      cy = ay[k] + coY[k];
-      R = Math.max(R, sg * 1.7);
+      cx = x + grabDX;
+      cy = y + grabDY;
       want = 1;
     } else if (hover && py >= 0 && py <= H) {
       cx = px;
@@ -1467,52 +1363,24 @@ export function mountAttentionField(root: HTMLElement): () => void {
       } else if (lensA < 0.003) lensA = 0;
     }
     if (lensA > 0) jOn = true;
-    // the pool in hand, or under the pointer, keeps its dots and lights up
-    const hk = dragK >= 0 ? dragK : hover ? hoverK : -1;
-    if (hk >= 0) heldK = hk;
-    if (dt > 0) {
-      heldA += ((hk >= 0 ? 1 : 0) - heldA) * (1 - Math.exp(-dt * 10));
-      if (hk < 0 && heldA < 0.01) {
-        heldA = 0;
-        heldK = -1;
-      }
-    }
-    if (!poolsMoving || dt <= 0) return;
-    // the pools' springs, in two half steps when a frame runs long
+    if (!marksOut || dt <= 0) return;
+    // the dropped markers' glide home, in two half steps when a frame runs long
     const n = dt > 1 / 50 ? 2 : 1, h = dt / n;
     let busy = dragK >= 0;
     for (let s = 0; s < n; s++) {
       for (let k = 0; k < NL; k++) {
-        if (k !== dragK) {
-          mkVX[k] += ((tgX[k] - mkX[k]) * MK_K - mkVX[k] * MK_C) * h;
-          mkVY[k] += ((tgY[k] - mkY[k]) * MK_K - mkVY[k] * MK_C) * h;
-          mkX[k] += mkVX[k] * h;
-          mkY[k] += mkVY[k] * h;
-        }
-        coVX[k] += ((mkX[k] - coX[k]) * CORE_K - coVX[k] * CORE_C) * h;
-        coVY[k] += ((mkY[k] - coY[k]) * CORE_K - coVY[k] * CORE_C) * h;
-        coX[k] += coVX[k] * h;
-        coY[k] += coVY[k] * h;
-        rmVX[k] += ((mkX[k] - rmX[k]) * RIM_K - rmVX[k] * RIM_C) * h;
-        rmVY[k] += ((mkY[k] - rmY[k]) * RIM_K - rmVY[k] * RIM_C) * h;
-        rmX[k] += rmVX[k] * h;
-        rmY[k] += rmVY[k] * h;
+        if (k === dragK) continue;
+        mkVX[k] += (-mkX[k] * MK_K - mkVX[k] * MK_C) * h;
+        mkVY[k] += (-mkY[k] * MK_K - mkVY[k] * MK_C) * h;
+        mkX[k] += mkVX[k] * h;
+        mkY[k] += mkVY[k] * h;
       }
     }
     for (let k = 0; k < NL && !busy; k++) {
-      const v = Math.abs(mkVX[k]) + Math.abs(mkVY[k]) + Math.abs(coVX[k]) + Math.abs(coVY[k]) + Math.abs(rmVX[k]) + Math.abs(rmVY[k]);
-      const d = Math.abs(tgX[k] - mkX[k]) + Math.abs(tgY[k] - mkY[k]) + Math.abs(mkX[k] - rmX[k]) + Math.abs(mkY[k] - rmY[k]) + Math.abs(mkX[k] - coX[k]) + Math.abs(mkY[k] - coY[k]);
-      if (v > 0.5 || d > 0.3) busy = true;
+      if (Math.abs(mkVX[k]) + Math.abs(mkVY[k]) > 0.5 || Math.abs(mkX[k]) + Math.abs(mkY[k]) > 0.3) busy = true;
     }
-    if (!busy) {
-      // at rest: snap the last fraction of a pixel and stop stepping
-      for (let k = 0; k < NL; k++) {
-        mkX[k] = coX[k] = rmX[k] = tgX[k];
-        mkY[k] = coY[k] = rmY[k] = tgY[k];
-        mkVX[k] = mkVY[k] = coVX[k] = coVY[k] = rmVX[k] = rmVY[k] = 0;
-      }
-      poolsMoving = false;
-    }
+    // all home: snap the last fraction of a pixel and stop stepping
+    if (!busy) homeMarks();
   }
 
   /* ---------- pinned render ---------- */
@@ -1549,43 +1417,39 @@ export function mountAttentionField(root: HTMLElement): () => void {
     // the dots leave the story (all hidden by now under the tiles) for
     // their lanes
     const lanesOn = p > KC0 - 0.01;
-    const labV = ss(0.444, 0.478, p) * (1 - ss(0.805, 0.84, p));
-    const grpV = ss(0.458, 0.498, p) * (1 - ss(0.805, 0.84, p));
-    const newV = ss(HEAD_NEW - 0.015, HEAD_NEW + 0.02, p) * (1 - ss(0.805, 0.84, p));
-    const beta = eio(seg(p, 0.64, 0.745));
-    const throatV = ss(0.72, 0.76, p) * (1 - ss(0.8, 0.83, p));
-    const m3 = seg(p, 0.8, 0.91);
-    const flowV = beta * (1 - ss(0.8, 0.875, p));
-    const curveV = ss(0.82, 0.9, p);
-    const axisV = ss(0.85, 0.9, p);
-    // the head reaches the index by 0.94, so the climax holds before release
-    const headS = lerp(0.22, 1, eio(seg(p, 0.845, 0.94)));
+    const labV = ss(0.564, 0.598, p) * (1 - ss(0.925, 0.96, p));
+    const grpV = ss(0.578, 0.618, p) * (1 - ss(0.925, 0.96, p));
+    const newV = ss(HEAD_NEW - 0.015, HEAD_NEW + 0.02, p) * (1 - ss(0.925, 0.96, p));
+    const beta = eio(seg(p, 0.76, 0.865));
+    const throatV = ss(0.84, 0.88, p) * (1 - ss(0.92, 0.95, p));
+    const m3 = seg(p, 0.92, 1.03);
+    const flowV = beta * (1 - ss(0.92, 0.995, p));
+    const curveV = ss(0.94, 1.02, p);
+    const axisV = ss(0.97, 1.02, p);
+    // the head reaches the index by 1.06, so the climax holds before release
+    const headS = lerp(0.22, 1, eio(seg(p, 0.965, 1.06)));
     // the index climbs from baseline as it fades in, and lands with the head
-    const readV = ss(0.86, 0.9, p);
-    const tickV = ss(0.86, 0.94, p);
-    const strayA = lerp(0.34, 0.1, ss(0.17, 0.3, p)) * lerp(1, 0.55, ss(0.8, 0.91, p));
+    const readV = ss(0.98, 1.02, p);
+    const tickV = ss(0.98, 1.06, p);
+    const strayA = lerp(0.34, 0.1, ss(0.17, 0.3, p)) * lerp(1, 0.55, ss(0.92, 1.03, p));
     const noiseW = 1 - k1;
     // the heads and the lanes' names go as the funnel hands over to the curve
-    const keep = 1 - ss(0.805, 0.84, p);
+    const keep = 1 - ss(0.925, 0.96, p);
     for (let j = 0; j < NT; j++) dev[j] = shown[j] ? eio(seg(p, devAt[j], devAt[j] + DEV_T)) : 0;
-    // the story's line comes up in the frame as the heading lifts
-    const inkV = ss(INK0, INK1, p);
 
-    // drifting pools of attention: each pool's home; its marker and its
-    // dots add their touch offsets
+    // drifting pools of attention: each pool's home, which its marker
+    // leaves only while it is dragged or on its way back
     for (let k = 0; k < NL; k++) {
       ax[k] = pad + pools[k][0] * (W - 2 * pad) + Math.sin(t * 0.11 + k * 1.7) * 14;
       ay[k] = Fy + pools[k][1] * Fh + Math.cos(t * 0.09 + k * 2.3) * 10;
     }
-    const sgx = W * (phone ? 0.078 : 0.054), sgy = H * (phone ? 0.046 : 0.07);
-    poolSX = sgx;
-    poolSY = sgy;
+    const sgx = W * (phone ? POOL_SX[0] : POOL_SX[1]), sgy = H * (phone ? POOL_SY[0] : POOL_SY[1]);
     // the markers can be taken while their names are well in
     const grabV = poolV * dimLab;
-    touchStep(dt, noiseW, grabV, Math.max(sgx, sgy));
+    touchStep(dt, noiseW, grabV);
 
     /* --- DOM --- */
-    const pooled = p < 0.29;
+    const pooled = p < 0.3;
     if (pooled !== poolOn) {
       poolOn = pooled;
       for (const el of laneEls) {
@@ -1628,11 +1492,15 @@ export function mountAttentionField(root: HTMLElement): () => void {
       align(readoutEl, "l");
       put(readoutEl, hx + 24, hy, readV * dimLab);
     }
-    // the one link arrives with the readout, lifting into place
+    // the one link arrives with the readout, lifting into place, across
+    // the field from it: on the container's left edge, its foot on the
+    // chart's baseline, where the curve starts. Where the curve starts near
+    // that edge (under 1100px, phones) it sits just under the baseline
     const endV = ss(END0, END1, p);
     const endLift = (1 - endV) * 14;
     if (phone) putEnd(xL, yb + 28 + endLift, endV);
-    else putEnd(hx + 24, hy + readH / 2 + 28 + endLift, endV);
+    else if (W < 1100) putEnd(pad, yb + 28 + endLift, endV);
+    else putEnd(pad, yb - endH + endLift, endV);
     const val = `${(1 + (AF_INDEX - 1) * curveF(tickV)).toFixed(1)}×`;
     if (val !== lastVal) {
       lastVal = val;
@@ -1713,21 +1581,20 @@ export function mountAttentionField(root: HTMLElement): () => void {
       if (needNoise) {
         const w = ph[i], A = amp[i], f = fr[i];
         if (cl[i]) {
-          // a pooled dot rides between its pool's core and rim followers
-          const q = lw[i];
-          nxp = ax[k] + coX[k] + (rmX[k] - coX[k]) * q + gx[i] * sgx + A * Math.sin(f * t + w);
-          nyp = ay[k] + coY[k] + (rmY[k] - coY[k]) * q + gy[i] * sgy + A * Math.cos(f * 0.83 * t + w * 1.3);
-          na = 0.2 + 0.36 * br[i] + 0.3 * pc[i] + (k === heldK ? 0.26 * heldA : 0);
+          // a pooled dot keeps to its pool's home, wherever its marker is
+          nxp = ax[k] + gx[i] * sgx + A * Math.sin(f * t + w);
+          nyp = ay[k] + gy[i] * sgy + A * Math.cos(f * 0.83 * t + w * 1.3);
+          na = 0.18 + 0.36 * br[i];
         } else {
           nxp = mod(nx[i] * W + dvx[i] * t + A * Math.sin(f * t + w), W);
           nyp = mod(ny[i] * H + dvy[i] * t + A * Math.cos(f * 0.83 * t + w * 1.3), H);
           na = 0.12 + 0.3 * br[i];
         }
         if (jOn) {
-          // the lens' push on this dot (none on the pool in hand), and the
-          // spring that carries it there and back
+          // the lens' push on this dot, and the spring that carries it
+          // there and back
           let tx = 0, ty = 0;
-          if (lensA > 0 && !(cl[i] && k === heldK)) {
+          if (lensA > 0) {
             const dx = nxp - lensX, dy = nyp - lensY;
             if (dx < lensR && dx > -lensR && dy < lensR && dy > -lensR) {
               const d = Math.sqrt(dx * dx + dy * dy) + 1e-3;
@@ -1760,14 +1627,13 @@ export function mountAttentionField(root: HTMLElement): () => void {
       }
       const lu = frac(u0[i] + t * AF_LANES[k].speed * sp[i]);
       if (!lanesOn) {
-        // noise, settling into its cell of the master frame; as the line
-        // comes up the cell splits into its points. Behind the blade each
-        // piece closes up into its tile's rectangle, opening the gutter
-        // (its edge dots lit as it goes), and the recording develops over it
+        // noise, settling into its point of the master frame. Behind the
+        // blade each piece closes up into its tile's rectangle, opening the
+        // gutter (its edge dots lit as it goes), and later the recording
+        // develops over it
         const kk = eio(seg(k1, dl[i] * 0.4, dl[i] * 0.4 + 0.6));
-        let fx = lerp(fcx[i], fpx[i], inkV), fy = lerp(fcy[i], fpy[i], inkV);
-        const iv = fink[i] * inkV;
-        let fa = fdup[i] ? 0 : lerp((0.24 + 0.3 * br[i]) * (1 - 0.35 * inkV), 0.8 + 0.2 * br[i], iv) * lerp(fsh[i], 1, inkV);
+        let fx = fpx[i], fy = fpy[i];
+        let fa = fdup[i] ? 0 : FRAME_A + FRAME_B * br[i];
         const fj = ft[i];
         let flash = 0, edge = 0;
         if (cutting && fj !== 255) {
@@ -1799,8 +1665,8 @@ export function mountAttentionField(root: HTMLElement): () => void {
         x = lerp(nxp, fx, kk);
         y = lerp(nyp, fy, kk) + Math.sin(kk * Math.PI) * arc[i];
         a = lerp(na, fa, kk);
-        size = lerp(size, 1.5 + 0.4 * iv, kk);
-        col = kk > 0.55 && (iv > 0.5 || inkV < 0.5 || flash > 0.3 || edge > 0.5) ? C_PAPER : 0;
+        size = lerp(size, 1.5, kk);
+        col = kk > 0.55 ? C_PAPER : 0;
         if (twOn && tw[i] && kk < 0.5) {
           const tws = Math.pow(Math.max(0, Math.sin(t * 0.7 + ph[i] * 5)), 14) * noiseW;
           a += tws * 0.6;
@@ -1887,12 +1753,16 @@ export function mountAttentionField(root: HTMLElement): () => void {
 
     // the blade: each cut runs the length of its gutter as it is made, a
     // 2px signal line with a bright point at its edge, the gutter opening
-    // behind it, and fades once the cut is through
-    if (cutting && p < CUT1 + 0.03) {
+    // behind it. A cut that is through stays, a little quieter, so the
+    // whole cut reads; once the last is through they all fade together
+    // (after the second beat, which holds the finished grid), and only then
+    // do the recordings develop
+    if (cutting && p < DEV0) {
       c.globalAlpha = dim;
+      const out = 1 - ss(FADE0, FADE1, p);
       lay.cuts.forEach((cu, j) => {
         const q = seg(p, cutAt[j], cutAt[j] + CUT_T);
-        const fade = 1 - ss(cutAt[j] + CUT_T, cutAt[j] + CUT_T + 0.012, p);
+        const fade = out * (1 - 0.3 * ss(cutAt[j] + CUT_T, cutAt[j] + CUT_T + 0.01, p));
         if (q <= 0 || fade <= 0) return;
         const v = cu.vertical;
         const x0 = Math.round(cu.x + (v ? cu.w / 2 : 0)) - (v ? 1 : 0), y0 = Math.round(cu.y + (v ? 0 : cu.h / 2)) - (v ? 0 : 1);
@@ -2033,7 +1903,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
     stageL = r.left;
     stageT = Math.min(Math.max(r.top, 0), r.bottom - H);
     const span = r.height - H;
-    return span > 0 ? clamp(-r.top / span, 0, 1) : 0;
+    return span > 0 ? clamp(-r.top / span, 0, 1) * T_LEN : 0;
   }
   function tick(now: number) {
     if (!running) return;
@@ -2104,7 +1974,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
     if (pinned) {
       layoutPinned();
       endDrag();
-      homePools();
+      homeMarks();
       render(lastP < 0 ? progress() : lastP, clock(performance.now()));
     } else {
       layoutStill();
@@ -2167,14 +2037,13 @@ export function mountAttentionField(root: HTMLElement): () => void {
     pinned = next;
     stop();
     endDrag();
-    homePools();
+    homeMarks();
     clearInline();
     lastP = -1;
     lastT = -1;
     poolOn = grabOn = false;
     hover = false;
-    hoverK = heldK = -1;
-    lensA = heldA = 0;
+    lensA = 0;
     // unpinned, the tiles sit in their static mosaic as designed stills
     if (tilesRoot) {
       if (pinned) delete tilesRoot.dataset.still;
@@ -2260,9 +2129,9 @@ export function mountAttentionField(root: HTMLElement): () => void {
     const r = track.getBoundingClientRect();
     const span = r.height - H;
     if (span <= 0) return;
-    const p = -r.top / span;
-    if (p >= END1 && p <= 1) return;
-    window.scrollTo({ top: window.scrollY + r.top + END_AT * span, behavior: "instant" });
+    const p = (-r.top / span) * T_LEN;
+    if (p >= END1 && p <= T_LEN) return;
+    window.scrollTo({ top: window.scrollY + r.top + (END_AT / T_LEN) * span, behavior: "instant" });
   };
   root.addEventListener("focusin", onFocusIn);
 
@@ -2276,16 +2145,12 @@ export function mountAttentionField(root: HTMLElement): () => void {
     if (e.pointerId === dragId || (dragK < 0 && e.pointerType !== "touch")) {
       ptrCX = e.clientX;
       ptrCY = e.clientY;
-      if (e.pointerType !== "touch") {
-        hover = true;
-        if (dragK < 0) hoverK = laneAt(e.target);
-      }
+      if (e.pointerType !== "touch") hover = true;
     }
   };
   const onPointerLeave = (e: PointerEvent) => {
     if (e.pointerType === "touch") return;
     hover = false;
-    hoverK = -1;
   };
   const onPointerDown = (e: PointerEvent) => {
     if (!pinned || dragK >= 0 || (e.pointerType === "mouse" && e.button !== 0)) return;
@@ -2306,7 +2171,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
     grabDX = e.clientX - stageL - (ax[k] + mkX[k]);
     grabDY = e.clientY - stageT - (ay[k] + mkY[k]);
     laneEls[k].dataset.drag = "";
-    poolsDirty = poolsMoving = true;
+    marksOut = true;
   };
   const onPointerEnd = (e: PointerEvent) => {
     if (e.pointerId === dragId) endDrag();

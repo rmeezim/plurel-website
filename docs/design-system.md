@@ -188,7 +188,9 @@ crossing) is drawn in the shader.
   band (0.56) that steps into a staircase as the visitor scrolls away.
   `arc` (the bottom edge of the closing chapter): a short fringe that
   drops into a symmetric arc, deepest at the center flute, as the footer
-  comes up.
+  comes up. Both profiles are the same glass: the arc gets the hero's cool
+  body, frost edges and scene detail (it samples the room a little lower,
+  so its short rods still show the door and the window).
 - **Hover: light behind the glass.** A mouse or pen (never touch) lays a
   soft ribbon of light along its path in the scene behind the rods,
   tinted by direction of travel, warm tones only: right signal red, up
@@ -228,22 +230,25 @@ after the hero (`#distribution`, graphite): how Plurel distributes, told
 in thousands of points of attention on one canvas, pinned and scrubbed by
 scroll. No chrome round it: no running head, no stage tabs, no indices.
 The five stage headings carry it, and the one action, "See the method",
-arrives only with the final readout (focusing it early jumps straight to
-that stage, so keyboards still reach it).
+arrives only with the final readout: an outline button at the container's
+left edge on the chart's baseline, diagonally opposite the readout, never
+a red block beside it (focusing it early jumps straight to that stage, so
+keyboards still reach it).
 
 1. **Noise.** "Attention is everywhere." Fog dots drifting in nine loose
    pools, one per surface, each with its marker and name. The mesh answers
    a fine pointer (a soft lens pushes the nearest dots aside and lifts
-   them), and, unannounced, a marker can be picked up and dragged: its
-   pool follows on a spring, shouldering neighbours aside, and stays where
-   it is dropped until the story gathers it. Scrolling back restores the
-   layout. Mouse and pen only for the lens; a drag only when it starts on
+   them), and, unannounced, a marker can be picked up and dragged: only
+   the marker moves (its dot and name), the mesh parts around it as it
+   does around the cursor, and on release it eases home. No dots travel
+   with it. Mouse and pen only for the lens; a drag only when it starts on
    a marker, so page scrolling is never taken.
 2. **Story.** "One story, cut for every surface." The dots settle into one
-   master frame, a dot screen reading Halden's line "Heat, without the
-   noise.", and a red blade cuts it along the mosaic's gutters into seven
-   live tiles, each a recording of a real surface carrying the same story:
-   an AI answer streaming with citations, a search results page, a reel, a
+   plain grid (no words in it), a red blade cuts it along the mosaic's
+   gutters one cut at a time, the cut grid holds for a beat, and only then
+   do seven live tiles develop into the cells, each a recording of a real
+   surface carrying the same story: an AI answer streaming with
+   citations, a search results page, a reel, a
    film, a press review, a creator's post, a 48-sheet out of home. Halden
    (quiet heat pumps, sold to homeowners and developers) is a sample
    brief, and a quiet line under the mosaic says so. Phones show four:

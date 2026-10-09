@@ -22,13 +22,16 @@ import s from "./attention-field.module.css";
   allowed and the screen is at least 360 x 560 (AF_PIN_QUERY, mirrored in
   the CSS modules): five stages, NOISE / STORY / LANES / SYSTEM / DEMAND,
   each a heading that lifts away as the visual takes the stage. No chrome
-  round it: the one action, the link to the method, arrives with the
-  final readout. In NOISE the mesh answers a fine pointer, and each
-  surface's marker can be picked up and its pool dragged about (an
+  round it: the one action, the link to the method (an outline button,
+  quiet beside the chart), arrives with the final readout, across the
+  field from it at the container's left edge. In NOISE the mesh answers a
+  fine pointer, and each surface's marker can be picked up and dragged on
+  its own, the mesh parting round it, and eases home when let go (an
   unannounced easter egg; the engine owns the pointer code). In STORY the
-  dots settle into one frame that is cut into the tiles, which play (muted
-  footage from public/video/channels where it exists, see lib/clips.ts)
-  and then become the heads of their lanes. The field drifts on its own
+  dots settle into one even frame, a blade cuts it into pieces, and only
+  then does each piece develop into its tile, which plays (muted footage
+  from public/video/channels where it exists, see lib/clips.ts) and then
+  becomes the head of its lane. The field drifts on its own
   while pinned, with no pause control, as the hero and footer glass do.
   Everywhere else it is a calm static chapter: the tiles as one mosaic of
   still frames, the five stages as a list beside one still frame of the
@@ -129,7 +132,7 @@ export function AttentionField({ clips = {} }: { clips?: ChannelClips }) {
 
           {/* The one action: pinned, it arrives with the final readout */}
           <div className={s.end} data-af-end="">
-            <CtaLink href="/methodology" size="md">
+            <CtaLink href="/methodology" size="md" variant="outline-light">
               See the method
             </CtaLink>
           </div>

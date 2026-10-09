@@ -9,9 +9,10 @@
   inside its left edge, a fainter rim on its right, a soft sheen down its
   lit shoulder and a split fringe at both rims (warm outside, cyan-steel
   inside). The cool belongs to the glass, not to the film: every rod
-  tints what it shows toward steel at its top (at its foot on the arc)
-  and down its lit shoulder, deepest where the film behind is dark and
-  gone over its bright lights, so the cool falls in patches. The tint
+  tints what it shows toward steel at its top and down its lit
+  shoulder, deepest where the film behind is dark and gone over its
+  bright lights, so the cool falls in patches. Both profiles (the hero's
+  rise and the closing arc) are the same glass. The tint
   keeps the film's light and shade (and its warm highlights), so any
   film, the red-graded one included, reads as red film through cool
   glass.
@@ -229,11 +230,7 @@ vec3 bokeh(vec3 col, vec2 p, vec2 c, float r, vec3 k) {
 // flutes as glass (each rod shows the door's jambs or the window's mullion
 // in a different place); the cool is left to the glass, so it lands
 // patchily: deep over the room's shadows, faint under its lights.
-vec3 standIn(vec2 p, float t, float lift) {
-  // The arc hangs from a red chapter: its rods see the lower, red half of
-  // the room (lift); the deepest goes halfway, so it keeps its red and
-  // still sees a little of the room above
-  p.y = mix(p.y, 0.58 + 0.42 * p.y, lift);
+vec3 standIn(vec2 p, float t) {
   vec3 night = vec3(0.1, 0.07, 0.078);
   vec3 col = mix(night, mix(uEmber, uRed, 0.5) * 0.8, 0.2 + 0.7 * p.y);
   vec2 dl = vec2((p.x - 0.08) / 0.4, (p.y - 0.02) / 0.3);
@@ -258,12 +255,11 @@ vec3 standIn(vec2 p, float t, float lift) {
   col = mix(col, mix(uBlush, uPaper, 0.1), wx * wy * slats * 0.4);
   // A doorway in the left third, a lit room beyond it: a dim warm-neutral
   // opening with a brighter jamb down each side, so the rods under the
-  // headline each show an upright, and the lintel, in a different place.
-  // The arc's rods, which see the room's lower half, show it faintly
+  // headline each show an upright, and the lintel, in a different place
   float dx0 = wpx - 0.15, dx1 = 0.31 - wpx;
   float door = smoothstep(-0.014, 0.014, dx0) * smoothstep(-0.014, 0.014, dx1) * smoothstep(0.16, 0.21, p.y);
   float jamb = exp(-pow(dx0 / 0.009, 2.0)) + exp(-pow(dx1 / 0.009, 2.0));
-  col += vec3(0.95, 0.86, 0.8) * ((0.06 + 0.05 * p.y) * door + 0.15 * jamb * smoothstep(0.16, 0.22, p.y)) * (1.0 - 0.7 * lift);
+  col += vec3(0.95, 0.86, 0.8) * ((0.06 + 0.05 * p.y) * door + 0.15 * jamb * smoothstep(0.16, 0.22, p.y));
   // Out of focus lights: one held beside the doorway, one drifting across
   // the room
   col = bokeh(col, p, vec2(0.345 + 0.02 * sin(t * 0.03), 0.4), 0.042, uBlush);
@@ -273,12 +269,12 @@ vec3 standIn(vec2 p, float t, float lift) {
   float head = smoothstep(0.05, 0.0, length(vec2((p.x - fx) * uAspect * 0.55, p.y - 0.3)));
   return mix(col, night * 0.5, clamp(body + head, 0.0, 1.0) * 0.6);
 }
-vec3 film(vec2 p, float t, float lift) {
+vec3 film(vec2 p, float t) {
   if (uUseVideo > 0.5) {
     vec2 q = clamp(p * uVideoScale + uVideoOffset, 0.0, 1.0);
     return texture2D(uVideo, q).rgb * 0.95;
   }
-  return standIn(p, t, lift);
+  return standIn(p, t);
 }
 float height(float i, float n, float p) {
   float shape = (i + 1.0) / n;
@@ -341,11 +337,10 @@ void main() {
   // inside is drawn with the edges)
   float lens = u - 0.5;
   vec2 q = vec2((i + 0.5) / n + lens * 2.3 / n + 0.05 * sin(i * 1.37 + 0.4),
-                uv.y * 0.9 + 0.05 + 0.035 * sin(i * 2.13));
-  float lift = uArc * min(1.0, 0.5 + abs(i + 0.5 - 0.5 * n));
-  vec3 c = film(q, uT, lift);
+                uv.y * 0.9 + 0.05 + 0.08 * uArc + 0.035 * sin(i * 2.13));
+  vec3 c = film(q, uT);
   float ca = pow(abs(lens) * 2.0, 6.0) * 0.012;
-  if (ca > 0.0004) c.r = max(c.r, film(q + vec2(sign(lens) * ca, 0.0), uT, lift).r);
+  if (ca > 0.0004) c.r = max(c.r, film(q + vec2(sign(lens) * ca, 0.0), uT).r);
   // What the glass lets through carries its grey-blue cast
   c *= mix(CAST, vec3(1.0), smoothstep(0.5, 0.8, dot(c, LUMA)));
   // Light behind the glass: it warms the scene the rod bends where its pool
@@ -366,27 +361,25 @@ void main() {
     c = mix(c, mix(rose, warmed, keep), 0.85 * smoothstep(0.0, 0.3, core));
   }
   // The glass's own cool, tied to the rod, not to the film: a slate sky
-  // toward its top (toward its foot on the arc, whose top runs on from the
-  // red chapter; lighter there) and down its lit shoulder, deepest where
-  // the film behind is dark, none over the film's bright lights. The film
+  // toward its top and down its lit shoulder, deepest where the film
+  // behind is dark, none over the film's bright lights. The hero and the
+  // closing arc share this one material; only their profiles differ. The film
   // goes through grey before it takes the steel, so red never passes
   // through violet on the way. A tint, never a veil: the film's light and
   // shade survive and the seams stay deep. It gives way only in the
   // cursor's bright pool (core), not under the halo's long tail, so the
-  // glass around the light stays cool. On the arc the shoulder and the grey
-  // pass are lighter, so its rods keep their red and show their glass in
-  // the catch line and the fringe. The shoulder dims down each rod and
+  // glass around the light stays cool. The shoulder dims down each rod and
   // varies rod to rod, a reflected sky rather than a printed stripe
   float cool = 1.0 - smoothstep(0.06, 0.4, core);
   float lum = dot(c, LUMA);
   float dark = 1.0 - smoothstep(0.04, 0.3, lum);
-  float sky = mix(pow(smoothstep(0.58, 0.0, y), 1.3), pow(smoothstep(0.3, 1.0, y), 1.4) * 0.8, uArc);
+  float sky = pow(smoothstep(0.58, 0.0, y), 1.3);
   sky *= 0.82 + 0.18 * sin(i * 2.4 + 1.1);
-  float shoulder = exp(-pow((u - 0.2) / 0.11, 2.0)) * mix(0.35 + 0.65 * (1.0 - y), 0.4 + 0.6 * y, uArc);
-  shoulder *= (0.8 + 0.2 * sin(i * 1.7 + 0.6)) * mix(1.0, 0.5, uArc);
+  float shoulder = exp(-pow((u - 0.2) / 0.11, 2.0)) * (0.35 + 0.65 * (1.0 - y));
+  shoulder *= (0.8 + 0.2 * sin(i * 1.7 + 0.6));
   float zone = cool * max(sky * (0.55 + 0.45 * dark), shoulder);
-  float w = zone * mix(KMIN * mix(1.0, 0.5, uArc), KMAX * mix(1.0, 0.6, uArc), dark) * (1.0 - smoothstep(0.3, 0.7, lum));
-  c = mix(c, vec3(lum), min(1.0, mix(1.5, 0.8, uArc) * w));
+  float w = zone * mix(KMIN, KMAX, dark) * (1.0 - smoothstep(0.3, 0.7, lum));
+  c = mix(c, vec3(lum), min(1.0, 1.5 * w));
   c = mix(c, lum * SKY + SLATE, w);
   // The cursor's glow comes through the glass: where the glass shows its
   // steel, the glow shows that much less, and it is warm only. In its pool

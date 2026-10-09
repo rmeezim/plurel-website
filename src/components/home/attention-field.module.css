@@ -5,7 +5,8 @@
   (their layout is in channel-tiles.module.css), then the five stages as a
   list beside one still frame of the whole system, then the link to the
   method. The block at the foot
-  pins it (a 560svh track with a sticky stage) only with JS (html[data-js],
+  pins it (a 615svh track with a sticky stage; the engine's T_LEN follows
+  its length) only with JS (html[data-js],
   set before first paint) and AF_PIN_QUERY. Keep that media query
   identical to AF_PIN_QUERY in lib/attention-field.ts.
 
@@ -334,7 +335,7 @@
 /* ---------- pinned and scrubbed: AF_PIN_QUERY ---------- */
 @media (prefers-reduced-motion: no-preference) and (min-width: 360px) and (min-height: 560px) {
   :global(html[data-js]) .track {
-    height: 560svh;
+    height: 615svh;
   }
   :global(html[data-js]) .stage {
     position: sticky;
