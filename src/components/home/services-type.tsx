@@ -95,6 +95,7 @@ export function ServicesType({
                 {STAGES.map((st, i) => (
                   <Fragment key={st.key}>
                     {i > 0 && <ArrowRight className="size-3 shrink-0 text-signal sm:size-3.5" />}
+                    <span className={`${s.plain}`}>{st.name}</span>
                     <button
                       type="button"
                       data-stage-btn={st.key}

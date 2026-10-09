@@ -1,5 +1,6 @@
 import { CONTAINER, Meta } from "@/components/system";
 import { CLIENTS } from "@/lib/home";
+import { PauseOffscreen } from "@/components/home/pause-offscreen";
 
 /*
   Proof the moment the film ends: who already works this way, as a slow
@@ -17,7 +18,7 @@ export function ClientsStrip() {
           (Selected clients)
         </Meta>
         <div className="clients-rail relative min-w-0 flex-1 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
-          <ul className="clients-track flex w-max">
+          <ul data-pause-offscreen="" className="clients-track flex w-max">
             {names.map((name, i) => (
               <li
                 key={`${name}-${i}`}
@@ -29,6 +30,7 @@ export function ClientsStrip() {
               </li>
             ))}
           </ul>
+          <PauseOffscreen />
         </div>
       </div>
     </section>

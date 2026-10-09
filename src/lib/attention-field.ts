@@ -1,12 +1,13 @@
 import {
+  CHANNEL,
   CHANNELS,
   HALDEN,
-  MOSAIC_PHONE_WIDE,
   MOSAIC_TALL,
   MOSAIC_WIDE,
   PHONE_SEARCH,
   mosaicJogs,
   mosaicLayout,
+  type ChannelKey,
   type MosaicLayout,
 } from "@/lib/channels";
 
@@ -537,44 +538,70 @@ export function mountAttentionField(root: HTMLElement): () => void {
   }
 
   /**
-   * Phones: the answer over the search (MOSAIC_PHONE), the full width, each
-   * at a scale that keeps its body type at 11px or more. Both reflow to the
-   * width (the search to a narrower page, PHONE_SEARCH). The answer takes
-   * what its written answer needs (about 1:1.12; a short phone crops its
-   * foot, see the tiles' CSS), the search PHONE_SEARCH's aspect or, given
-   * the room, more of its page. If even the shortest pair does not fit,
-   * both shrink together.
+   * Phones (MOSAIC_PHONE): the answer, a row of footage (the reel beside
+   * the film, or beside the billboard on a short phone) and the search,
+   * each full width but the row. The answer and the search keep their body
+   * type at 11px or more (the answer a scale of 0.9 or more, the search
+   * 0.94), both reflowed to the width (the search to a narrower page,
+   * PHONE_SEARCH); the row, which has no small type, takes the height it
+   * needs at the width. The answer takes what its written answer needs
+   * (about 1:1.12; a short phone crops its foot, see the tiles' CSS), the
+   * search PHONE_SEARCH's aspect or, given the room, more of its page. The
+   * film's row is tried first, then the billboard's, then no row at all (a
+   * very short phone shows the pair); if even that does not fit, both shrink
+   * together.
    */
   function phoneLayout(box: Rect, g: number): MosaicLayout {
-    let w = box.w;
-    let L: MosaicLayout = lay;
-    for (let pass = 0; pass < 3; pass++) {
+    const sized = (w: number, foot: ChannelKey | null) => {
       const sA = clamp(w / CHANNELS[0].w, 0.9, 1.1), sS = clamp(w / PHONE_SEARCH.w, 0.94, 1.1);
       const minA = w * 0.82;
+      const aspects = foot ? CHANNEL.reel.aspect + CHANNEL[foot].aspect : 0;
+      const hR = foot ? (w - g) / aspects : 0;
+      const room = box.h - (foot ? hR + g : 0);
       let hS = w / PHONE_SEARCH.aspect;
-      let hA = Math.min(w * 1.12, box.h - g - hS);
+      let hA = Math.min(w * 1.12, room - g - hS);
       if (hA < minA) {
-        hS = Math.max(w / 1.9, box.h - g - minA);
-        hA = Math.max(minA, box.h - g - hS);
-      } else hS = Math.min(w / 1.3, box.h - g - hA);
-      const h = hA + g + hS;
-      const x = box.x + (box.w - w) / 2, y = box.y + Math.max(0, (box.h - h) / 2);
-      L = {
-        frame: { x, y, w, h },
-        tiles: { answer: { x, y, w, h: hA }, search: { x, y: y + hA + g, w, h: hS } },
-        cuts: [{ x, y: y + hA, w, h: g, depth: 0, vertical: false }],
-        scale: { answer: sA, search: sS },
-        aspect: { answer: w / hA, search: w / hS },
-      };
-      if (h <= box.h + 0.5) break;
-      w *= box.h / h;
+        hS = Math.max(w / 1.9, room - g - minA);
+        hA = Math.max(minA, room - g - hS);
+      } else hS = Math.min(w / 1.3, room - g - hA);
+      return { sA, sS, hA, hS, hR, h: hA + g + (foot ? hR + g : 0) + hS };
+    };
+    let w = box.w;
+    const foot: (ChannelKey | null)[] = ["film", "ooh", null];
+    // the first row whose pair fits at the full width; none: the pair, shrunk
+    let f = foot.find((k) => sized(w, k).h <= box.h + 0.5);
+    if (f === undefined) {
+      f = null;
+      for (let pass = 0; pass < 3 && sized(w, f).h > box.h + 0.5; pass++) w *= box.h / sized(w, f).h;
     }
-    return L;
+    const z = sized(w, f);
+    const x = box.x + (box.w - w) / 2, y = box.y + Math.max(0, (box.h - z.h) / 2);
+    const tiles: MosaicLayout["tiles"] = { answer: { x, y, w, h: z.hA } };
+    const scale: MosaicLayout["scale"] = { answer: z.sA, search: z.sS };
+    const aspect: MosaicLayout["aspect"] = { answer: w / z.hA, search: w / z.hS };
+    const cuts: MosaicLayout["cuts"] = [{ x, y: y + z.hA, w, h: g, depth: 0, vertical: false }];
+    let at = y + z.hA + g;
+    if (f) {
+      const wr = z.hR * CHANNEL.reel.aspect, wf = z.hR * CHANNEL[f].aspect;
+      tiles.reel = { x, y: at, w: wr, h: z.hR };
+      tiles[f] = { x: x + wr + g, y: at, w: wf, h: z.hR };
+      for (const k of ["reel", f] as const) {
+        scale[k] = (tiles[k] as Rect).w / CHANNEL[k].w;
+        aspect[k] = CHANNEL[k].aspect;
+      }
+      cuts.push({ x: x + wr, y: at, w: g, h: z.hR, depth: 1, vertical: true });
+      at += z.hR;
+      cuts.push({ x, y: at, w, h: g, depth: 0, vertical: false });
+      at += g;
+    }
+    tiles.search = { x, y: at, w, h: z.hS };
+    cuts.sort((p, q) => p.depth - q.depth || p.x + p.y - (q.x + q.y));
+    return { frame: { x, y, w, h: z.h }, tiles, cuts, scale, aspect };
   }
 
   /**
-   * The mosaic: on phones two tiles (three where the reel fits beside the
-   * answer at a size to read), elsewhere all seven, in whichever
+   * The mosaic: on phones four tiles (the answer, the reel beside the film
+   * or billboard, the search), elsewhere all seven, in whichever
    * arrangement shows the answer and the search larger and keeps its cuts
    * in line (mosaicJogs). Flexible tiles take the aspect the mosaic gives
    * them, reflowed tiles their width: the engine sets the tile's size.
@@ -583,9 +610,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
     const box = { x: pad, y: Fy, w: W - 2 * pad, h: Fh };
     const g = phone ? 10 : W < 1100 ? 14 : 16;
     if (phone) {
-      const three = mosaicLayout(MOSAIC_PHONE_WIDE, box, g, 1.1, true);
-      const reads = (three.scale.answer ?? 0) >= 0.88 && (three.scale.search ?? 0) >= 0.96;
-      lay = reads ? three : phoneLayout(box, g);
+      lay = phoneLayout(box, g);
     } else {
       const read = (L: MosaicLayout) => Math.min(L.scale.answer ?? 0, L.scale.search ?? 0);
       const wide = mosaicLayout(MOSAIC_WIDE, box, g, 1.1, true), tall = mosaicLayout(MOSAIC_TALL, box, g, 1.1, true);
@@ -1634,7 +1659,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
         const sr = src[TILE_LANE[j]];
         sr.x = r.x; sr.y = r.y; sr.w = r.w; sr.h = r.h;
       }
-      putTile(j, r, keep * dim, z, dev[j], running && kj <= 0, kj > 0 && kj < 1);
+      putTile(j, r, keep * (kj >= 1 ? dimLab : dim), z, dev[j], running && kj <= 0, kj > 0 && kj < 1);
     }
     // the line under the mosaic, while it holds
     if (noteEl) {
@@ -2046,8 +2071,13 @@ export function mountAttentionField(root: HTMLElement): () => void {
     lastNow = now;
     lastP = p;
   }
+  /* The page is behind the mobile menu (the header marks the #main wrapper
+     inert while it is open and the menu is opaque): nothing here is seen,
+     so the loop and the tiles rest as they do in a hidden tab */
+  const main = root.closest("#main") ?? root.closest("main");
+  const covered = () => !!root.closest("[inert]");
   function start() {
-    if (running || !pinned || document.hidden) return;
+    if (running || !pinned || document.hidden || covered()) return;
     running = true;
     lastNow = 0;
     raf = requestAnimationFrame(tick);
@@ -2153,6 +2183,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
     resize();
     if (flipped) keepPlace();
     else snap();
+    markFraction();
     if (pinned && visible) start();
   }
 
@@ -2160,9 +2191,29 @@ export function mountAttentionField(root: HTMLElement): () => void {
   let visible = false;
   // A resize that keeps the mode re-caches the geometry; a flip is handled
   // by syncMode (media query changes are reported before resize observers)
+  // Pinned, the track is 560svh, so a window that changes height changes the
+  // track's height under a scroll position that stays put: the reader keeps
+  // their fraction of the way through, as the services chapter does
+  // (`fraction` is cached by scrolls only: the resize event's own snap runs
+  // before this observer and would already see the new height)
+  let fraction = -1;
+  const markFraction = () => {
+    const span = geo.h - H;
+    fraction = pinned && H > 0 && span > 0 ? (geo.y - geo.top) / span : -1;
+  };
   const ro = new ResizeObserver(() => {
+    const was = fraction;
+    const same = (!reduced() && pinMQ.matches) === pinned;
     resize();
-    if ((!reduced() && pinMQ.matches) === pinned) snap();
+    if (!same) return;
+    if (was >= 0 && was <= 1) {
+      const r = track.getBoundingClientRect();
+      const span = r.height - H;
+      const y = r.top + window.scrollY + was * span;
+      if (span > 0 && Math.abs(y - window.scrollY) > 1) window.scrollTo({ top: y, behavior: "instant" });
+    }
+    snap();
+    markFraction();
   });
   ro.observe(fig);
   // Scrolls caused by a resize (the browser clamping a shorter page) must
@@ -2170,6 +2221,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
   const onScroll = () => {
     if (window.innerWidth !== geo.vw || window.innerHeight !== geo.vh) return;
     snap();
+    markFraction();
   };
   let resizeRaf = 0;
   const onResize = () => {
@@ -2198,6 +2250,8 @@ export function mountAttentionField(root: HTMLElement): () => void {
     else if (visible) start();
   };
   document.addEventListener("visibilitychange", onVis);
+  const mo = main ? new MutationObserver(() => (covered() ? stop() : visible && start())) : null;
+  if (main) mo?.observe(main, { attributes: true, attributeFilter: ["inert"] });
 
   // The link is the one stop in the tab order. Hidden (any stage before
   // DEMAND's readout), focusing it jumps straight to where it shows
@@ -2301,5 +2355,6 @@ export function mountAttentionField(root: HTMLElement): () => void {
     fig.removeEventListener("pointercancel", onPointerEnd);
     fig.removeEventListener("lostpointercapture", onPointerEnd);
     document.removeEventListener("visibilitychange", onVis);
+    mo?.disconnect();
   };
 }

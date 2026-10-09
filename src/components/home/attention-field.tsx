@@ -81,9 +81,6 @@ export function AttentionField({ clips = {} }: { clips?: ChannelClips }) {
               )}
               They run as one funnel into qualified demand, shown as an
               illustrative {AF_INDEX.toFixed(1)}× index over a 1.0× baseline.
-              One story, for {HALDEN.name}, a fictional maker of quiet heat
-              pumps, is cut into {FORMATS.slice(0, -1).join(", ")} and{" "}
-              {FORMATS[FORMATS.length - 1]}, each shown as a short recording.
             </p>
             <canvas className={s.canvas} aria-hidden="true" data-af-canvas="" />
             <div className={s.labels} aria-hidden="true">
@@ -109,6 +106,15 @@ export function AttentionField({ clips = {} }: { clips?: ChannelClips }) {
               </span>
             </div>
           </div>
+
+          {/* Outside the figure, which is not drawn without JS: the tiles
+              show then, and need their text alternative (and the disclosure
+              that Halden is made up) all the same */}
+          <p className="sr-only">
+            One story, for {HALDEN.name}, a fictional maker of quiet heat
+            pumps, is cut into {FORMATS.slice(0, -1).join(", ")} and{" "}
+            {FORMATS[FORMATS.length - 1]}, each shown as a short recording.
+          </p>
 
           <ChannelTiles clips={clips} note={`${HALDEN.name} is a sample brief.`} className={s.tiles} />
 

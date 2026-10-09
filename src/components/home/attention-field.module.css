@@ -24,6 +24,10 @@
   --af-fog-62: color-mix(in srgb, var(--color-fog) 70%, transparent);
   --af-fog-78: color-mix(in srgb, var(--color-fog) 78%, transparent);
   position: relative;
+  /* the global scroll-padding (the header's 4.5rem) is cancelled here, as
+     the services chapter does: a #distribution link lands with the pinned
+     stage flush at the top, not 72px short with the hero showing above */
+  scroll-margin-top: -4.5rem;
 }
 
 .track {

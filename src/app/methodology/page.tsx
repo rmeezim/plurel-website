@@ -317,7 +317,7 @@ const FAQS = [
   },
   {
     q: "How do you measure success?",
-    a: "Six signals, instrumented from launch: AI search visibility, inquiry quality, conversion readiness, content velocity, reputation signals, and campaign efficiency. Each has a target agreed in Design and reviewed monthly, with a quarterly council where what compounds gets scaled and what doesn't gets cut.",
+    a: "Six signals, instrumented from launch: AI search visibility, demand quality, conversion readiness, content velocity, reputation signals, and campaign efficiency. Each has a target agreed in Design and reviewed monthly, with a quarterly council where what compounds gets scaled and what doesn't gets cut.",
   },
   {
     q: "Who actually does the work?",

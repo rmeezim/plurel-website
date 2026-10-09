@@ -246,8 +246,9 @@ that stage, so keyboards still reach it).
    an AI answer streaming with citations, a search results page, a reel, a
    film, a press review, a creator's post, a 48-sheet out of home. Halden
    (quiet heat pumps, sold to homeowners and developers) is a sample
-   brief, and a quiet line under the mosaic says so. Phones show the
-   answer and search full width, sized to read.
+   brief, and a quiet line under the mosaic says so. Phones show four:
+   the answer, a footage row (the reel beside the film, or the billboard
+   on short phones) and the search, with text sized to read.
 3. **Lanes.** "Be where it gathers." Each tile shrinks in place and slides
    to the head of its lane, top lane first, and its lane pours from it:
    Owned (Search, Social, Video), Earned (AI answers, Press, UGC), Paid
@@ -330,7 +331,7 @@ Rules:
   measured after fonts load and on resize, which keeps the reader's place.
   Colours morph in OKLab, so no red passes through pink.
 - The four chain stages are toggles at every width (`aria-pressed`): one
-  holds its rows and steps the others back (names stay above 3:1), a
+  holds its rows and steps the others back (all text stays above 4.5:1), a
   second press or Escape clears. `#services` lands on the chapter.
 - The pure parts are unit tested:
   `npx -y tsx --test src/lib/services-type.test.ts`.

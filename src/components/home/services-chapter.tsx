@@ -80,7 +80,7 @@ export function ServicesChapter() {
                 >
                   <span
                     data-meta=""
-                    className={`${s.dim} col-start-1 row-start-1 text-[13px] tabular-nums text-signal sm:text-[14px] lg:text-[15px]`}
+                    className={`${s.dim} ${s.idx} col-start-1 row-start-1 text-[13px] tabular-nums sm:text-[14px] lg:text-[15px]`}
                   >
                     {svc.index}
                   </span>

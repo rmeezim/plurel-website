@@ -222,7 +222,8 @@
   .clients-track {
     animation: marquee 42s linear infinite;
   }
-  .clients-rail:hover .clients-track {
+  .clients-rail:hover .clients-track,
+  .clients-track[data-off] {
     animation-play-state: paused;
   }
 

@@ -115,13 +115,31 @@
   transform-origin: 0 50%;
   transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+/* Focus is a ring; pressed is a heavier 2px bar: they never look alike */
 .btn:focus-visible {
-  outline: none;
+  outline: 1px solid var(--color-paper);
+  outline-offset: 3px;
 }
 .btn[aria-pressed="true"]::after,
-.btn[data-lit]::after,
-.btn:focus-visible::after {
+.btn[data-lit]::after {
   transform: scaleX(1);
+}
+.btn[aria-pressed="true"]::after {
+  height: 2px;
+  bottom: 6px;
+}
+/* Without JS the chain is just words (the buttons would do nothing); the
+   plain word has the button's exact box, so nothing shifts when it swaps */
+.plain {
+  margin-block: -10px;
+  padding-block: 10px;
+  color: var(--color-paper);
+}
+:global(html:not([data-js])) .btn {
+  display: none;
+}
+:global(html[data-js]) .plain {
+  display: none;
 }
 @media (hover: hover) {
   .btn:hover::after {
@@ -196,6 +214,15 @@
     opacity 0.3s,
     color 0.3s;
 }
+/* The small meta (index, stage, line) never steps back below 4.5:1 on
+   graphite: its dimming is floored at 0.66 (fog 4.8:1), and a stepped-back
+   row's index turns fog (--idx), since signal red cannot dim at all */
+.dim[data-meta]:not(.arr) {
+  opacity: calc(var(--r, 1) * max(var(--dimk, 1), 0.66));
+}
+.idx {
+  color: var(--idx, var(--color-signal));
+}
 .arr {
   transition:
     transform 0.3s,
@@ -237,17 +264,19 @@
 /* Chain -> rows: a pressed stage (tap, click or Enter, any width) holds
    its rows and steps the rest back, clones included; with a fine
    pointer, hovering a stage does the same while none is pressed.
-   Keyboard focus alone only underlines the stage. Stepped back is 0.36:
-   the names keep 3.2:1 on graphite, and a row pointed at or focused
+   Keyboard focus alone only underlines the stage. Stepped back is 0.5:
+   the names keep 5.1:1 on graphite, and a row pointed at or focused
    comes all the way back. */
 .track[data-filter="narrative"] :is(.row, .clone):not([data-st="narrative"]),
 .track[data-filter="create"] :is(.row, .clone):not([data-st="create"]),
 .track[data-filter="distribute"] :is(.row, .clone):not([data-st="distribute"]),
 .track[data-filter="measure"] :is(.row, .clone):not([data-st="measure"]) {
-  --dimk: 0.36;
+  --dimk: 0.5;
+  --idx: var(--color-fog);
 }
 .track[data-filter][data-filter] .row:has(> a:is(:hover, :focus-visible)) {
   --dimk: 1;
+  --idx: var(--color-signal);
 }
 .track[data-filter="narrative"] .row[data-st="narrative"] .hot,
 .track[data-filter="create"] .row[data-st="create"] .hot,
@@ -260,7 +289,8 @@
   .track:not([data-filter]):has(.btn[data-stage-btn="create"]:hover) :is(.row, .clone):not([data-st="create"]),
   .track:not([data-filter]):has(.btn[data-stage-btn="distribute"]:hover) :is(.row, .clone):not([data-st="distribute"]),
   .track:not([data-filter]):has(.btn[data-stage-btn="measure"]:hover) :is(.row, .clone):not([data-st="measure"]) {
-    --dimk: 0.36;
+    --dimk: 0.5;
+  --idx: var(--color-fog);
   }
   .track:not([data-filter]):has(.btn[data-stage-btn="narrative"]:hover) .row[data-st="narrative"] .hot,
   .track:not([data-filter]):has(.btn[data-stage-btn="create"]:hover) .row[data-st="create"] .hot,

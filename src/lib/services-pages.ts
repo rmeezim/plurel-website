@@ -38,7 +38,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     name: "Website Design",
     tagline: "The one asset every buyer meets.",
     plain: [
-      "Your website is where every channel eventually sends people — ads, search, referrals, AI answers. We design and build editorial, conversion-ready websites: pages that look premium, load fast, read clearly, and turn attention into inquiries.",
+      "Your website is where every relevant channel eventually sends people — ads, search, referrals, AI answers. We design and build editorial, conversion-ready websites: pages that look premium, load fast, read clearly, and turn attention into qualified demand.",
       "Design and engineering happen together — the site ships with performance, analytics, and a schema layer built in, not bolted on.",
     ],
     why: [
@@ -47,7 +47,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         clause: "Buyers infer quality and cost from design before reading a word.",
       },
       {
-        name: "Every channel lands here",
+        name: "Every relevant channel lands here",
         clause: "Paid, search, and referrals all convert — or leak — on the same pages.",
       },
       {
@@ -120,7 +120,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         clause: "Consistency turns every impression into memory instead of noise.",
       },
       {
-        name: "Every channel performs better",
+        name: "Every relevant channel performs better",
         clause: "Strong brand raises the return of ads, content, and PR at once.",
       },
     ],
@@ -320,7 +320,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     why: [
       {
         name: "Speed",
-        clause: "Organic compounds over quarters; paid fills the pipeline this month.",
+        clause: "Organic compounds over quarters; paid brings qualified demand this month.",
       },
       {
         name: "Creative is the multiplier",
@@ -531,7 +531,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
       {
         name: "Leads are expensive",
-        clause: "Every unworked inquiry is marketing spend thrown away.",
+        clause: "Every unworked lead is marketing spend thrown away.",
       },
       {
         name: "Evidence beats opinion",

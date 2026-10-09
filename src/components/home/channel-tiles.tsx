@@ -38,8 +38,9 @@ import s from "./channel-tiles.module.css";
     tile to its width (a container query). On upright tablets (40 to 64rem)
     the wrappers step aside and the cells wrap, the full width, into three
     bands (TALL_CELL: each cell's order, share and aspect). Under 40rem only
-    the phone mosaic's two (MOSAIC_PHONE) stay, stacked at the full width,
-    the search reflowed to PHONE_SEARCH's page.
+    the phone mosaic's four (MOSAIC_PHONE) stay: the answer, the reel beside
+    the film, the search (reflowed to PHONE_SEARCH's page), stacked at the
+    full width.
   - Pinned (the field's AF_PIN_QUERY with JS, mirrored in the CSS module):
     the wrappers step aside (display: contents) and every tile sits at the
     field's top left with transform-origin 0 0, hidden, for the engine to
@@ -529,6 +530,29 @@ const fix = (v: number) => Number(v.toFixed(6));
 /** The tiles a phone shows */
 const ON_PHONE = new Set(mosaicKeys(MOSAIC_PHONE));
 
+/**
+ * Each cell on a phone (static): its place in the flow (--po) and its
+ * share of the line (--ps, plus --pq gutters): a whole line for a tile of
+ * the column, a row's linear share for the tiles that sit side by side
+ */
+const PHONE_CELL: Partial<Record<ChannelKey, Css>> = (() => {
+  const out: Partial<Record<ChannelKey, Css>> = {};
+  let o = 0;
+  const walk = (n: MosaicNode) => {
+    if (typeof n === "string") {
+      out[n] = { "--po": o++, "--ps": 1, "--pq": 0 };
+    } else if ("row" in n) {
+      const sh = shares(n.row);
+      n.row.forEach((k, i) => {
+        if (typeof k === "string") out[k] = { "--po": o++, "--ps": sh[i].p, "--pq": sh[i].q };
+        else walk(k);
+      });
+    } else n.col.forEach(walk);
+  };
+  walk(MOSAIC_PHONE);
+  return out;
+})();
+
 /** A row's shares (--p, --q) for `kids`, from the linear model */
 function shares(kids: readonly MosaicNode[]) {
   const lins = kids.map((k) => mosaicLinear(k));
@@ -582,7 +606,7 @@ const TALL_CELL: Partial<Record<ChannelKey, Css>> = (() => {
 function Node({ n, clips, top = false }: { n: MosaicNode; clips: ChannelClips; top?: boolean }) {
   if (typeof n === "string") {
     const c = CHANNEL[n];
-    const style: Css = { "--ar": `${c.w} / ${c.h}`, ...TALL_CELL[n] };
+    const style: Css = { "--ar": `${c.w} / ${c.h}`, ...TALL_CELL[n], ...PHONE_CELL[n] };
     if (n === "search") {
       style["--pw"] = `${PHONE_SEARCH.w}px`;
       style["--ph"] = `${fix(PHONE_SEARCH.w / PHONE_SEARCH.still)}px`;

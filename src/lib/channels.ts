@@ -88,16 +88,19 @@ export const MOSAIC_TALL: MosaicNode = {
   col: [{ row: ["answer", "reel", "creator"] }, { row: ["search", "press"] }, { row: ["film", "ooh"] }],
 };
 /**
- * Phones: two, sized to read (their body type at 11px or more): the answer
- * over the search, each the full width. The search reflows to a narrower
- * page there (PHONE_SEARCH), and a short phone crops the answer's foot. The
- * static mosaic shows the same two below 40rem.
+ * Phones: four, the two that carry body type sized to read (11px or more)
+ * and a row of footage between them: the answer over the reel and the
+ * film side by side over the search. Footage has no small type, so the row
+ * is not held to that floor. The search reflows to a narrower page there
+ * (PHONE_SEARCH), and a short phone crops the answer's foot. This is also
+ * the static mosaic below 40rem.
  */
-export const MOSAIC_PHONE: MosaicNode = { col: ["answer", "search"] };
-/** A phone wide enough to show the answer and the reel side by side at a size to read */
-export const MOSAIC_PHONE_WIDE: MosaicNode = {
-  col: [{ row: ["answer", "reel"] }, "search"],
-};
+export const MOSAIC_PHONE: MosaicNode = { col: ["answer", { row: ["reel", "film"] }, "search"] };
+/**
+ * A phone too short for that (the film's row is the tallest part): the
+ * billboard takes the film's place, a third of the height.
+ */
+export const MOSAIC_PHONE_SHORT: MosaicNode = { col: ["answer", { row: ["reel", "ooh"] }, "search"] };
 /**
  * The search result's page on a phone: reflowed to this nominal width, at
  * this aspect in the pinned field and a taller one (the whole top result)

@@ -196,14 +196,14 @@ export function ChapterHead({
       <Meta className={`col-span-1 sm:col-span-1 lg:col-span-2 ${t.index}`}>
         ({index})
       </Meta>
-      <div className="col-span-3 sm:col-span-3 lg:col-span-6">
+      <div className="col-span-3 sm:col-span-2 lg:col-span-6">
         <Kicker tone={tone}>
           <span id={id}>{label}</span>
         </Kicker>
       </div>
       {meta && (
         <Meta
-          className={`col-span-2 hidden text-right sm:block lg:col-span-4 ${t.meta}`}
+          className={`col-span-2 hidden text-right sm:col-span-3 sm:block lg:col-span-4 ${t.meta}`}
         >
           {meta}
         </Meta>

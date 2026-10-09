@@ -199,7 +199,7 @@ export function JournalChapter() {
                 <p className="max-w-[34em] text-[clamp(1rem,0.95rem+0.2vw,1.0625rem)] leading-[1.55] text-muted">
                   {lead.excerpt}
                 </p>
-                <CtaLink href={`/blog/${lead.slug}`} className="w-full sm:w-[17rem]">
+                <CtaLink href={`/blog/${lead.slug}`} className="w-full focus-visible:outline-ink! sm:w-[17rem]">
                   Read the essay<span className="sr-only">: {lead.title}</span>
                 </CtaLink>
               </div>

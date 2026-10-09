@@ -94,11 +94,14 @@
     height: var(--tht);
   }
 }
-/* Phones (static): the phone mosaic's two, stacked at the full width and
-   sized to read; the search reflows to a narrower page */
+/* Phones (static): the phone mosaic's four in its order (--po): the answer
+   and the search at the full width, sized to read (the search reflows to a
+   narrower page), the reel and the film side by side between them at one
+   height (--ps, --pq: a share of the line plus gutters) */
 @media (max-width: 39.99rem) {
   .cell {
-    width: 100%;
+    order: var(--po);
+    width: calc(var(--ps) * 100% + var(--pq) * var(--gap) - 0.05px);
     aspect-ratio: var(--ar);
   }
   .cell:not([data-phone]) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   GLASS_FRAG,
   GLASS_VERT,
@@ -47,6 +47,11 @@ const STILL_QUERY = "(prefers-reduced-motion: reduce)";
 const readStill = () =>
   window.matchMedia(STILL_QUERY).matches ||
   Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData);
+function subscribeStill(cb: () => void) {
+  const mq = window.matchMedia(STILL_QUERY);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
 const FILM_W = 192; // the film is drawn this small, so it arrives soft
 
 type Props = {
@@ -63,6 +68,10 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
   const wrap = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const [noGl, setNoGl] = useState(false);
+  // Follows a live change of the motion preference: the effect below
+  // remounts into the still frame (or back into motion). The effect reads
+  // the live value itself, so the first mount after hydration is right.
+  const stillPref = useSyncExternalStore(subscribeStill, readStill, () => false);
 
   useEffect(() => {
     const box = wrap.current;
@@ -319,11 +328,13 @@ export function GlassBand({ film, profile, rest, progress, start = 0.85, end = 0
       }
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
-  }, [film, profile, rest, progress, start, end]);
+  }, [film, profile, rest, progress, start, end, stillPref]);
 
   return (
     <div ref={wrap} className={`relative ${className}`}>
-      <canvas ref={canvas} aria-hidden className="absolute inset-0 block size-full" />
+      {/* A fresh canvas per motion mode: the cleanup loses the old one's
+          WebGL context, which a remount could not get back */}
+      <canvas key={stillPref ? "still" : "live"} ref={canvas} aria-hidden className="absolute inset-0 block size-full" />
       {/* Flat bars in the finished profile: without JS (hidden once JS
           runs) and without WebGL */}
       <div
