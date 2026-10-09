@@ -1,0 +1,406 @@
+/*
+  (02) Services, Fig. 02: one typographic system (services-type.tsx;
+  engine in lib/services-type.ts; markup in services-chapter.tsx).
+
+  Static by default: the finished contents list in flow, the chain live.
+  The gate at the foot pins the figure for a short travel (96svh on
+  phones, 110svh from lg). At first paint it pins only with JS
+  (html[data-js], set before first paint) and TYPE_QUERY, so the track is
+  sized in CSS with no layout shift; keep that media query identical to
+  TYPE_QUERY in lib/services-type.ts. Once the faces are in, the engine
+  checks that the finished frame fits the visible (svh) screen and sets
+  the section's data-type-motion to "on" (pinned, the clones arm) or
+  "off" (static, unpinned); from then on that attribute alone decides.
+
+  Never give .root or any ancestor overflow hidden/clip, or a transform:
+  either breaks sticky. The stage clips itself.
+*/
+
+.root {
+  position: relative;
+  /* #services lands with graphite to the top of the screen (the chapter
+     head has its own clearance for the header) */
+  scroll-margin-top: -4.5rem;
+}
+
+.track {
+  position: relative;
+  margin-top: 72px;
+}
+@media (min-width: 64rem) {
+  .track {
+    margin-top: 96px;
+  }
+}
+.stage,
+.stageIn {
+  position: relative;
+}
+
+/* ---------- the figure head: Fig. 02, the narrator, the chain ---------- */
+
+.head {
+  align-items: end;
+  row-gap: 12px;
+  padding-bottom: 16px;
+}
+@media (min-width: 64rem) {
+  .head {
+    padding-bottom: 18px;
+  }
+}
+
+/* The narrator: three states with motion, one plain statement without.
+   A change is a hand-over, never a crossfade: the old line leaves (up,
+   or down when scrolling back) and is gone before the new one arrives
+   from the other side, so the two never print over each other. */
+.capMotion {
+  display: none;
+}
+.capMotion > span {
+  grid-area: 1 / 1;
+  opacity: 0;
+  translate: 0 0.35em;
+  transition:
+    opacity 0.14s cubic-bezier(0.55, 0, 1, 0.45),
+    translate 0.14s cubic-bezier(0.55, 0, 1, 0.45);
+}
+.cap[data-cap="b"] .ca,
+.cap[data-cap="c"] :is(.ca, .cb) {
+  translate: 0 -0.35em;
+}
+.root[data-type-motion="on"] .capStatic {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.root[data-type-motion="on"] .capMotion {
+  display: grid;
+}
+.cap[data-cap="a"] .ca,
+.cap[data-cap="b"] .cb,
+.cap[data-cap="c"] .cc {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.24s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s,
+    translate 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s;
+}
+
+/* The chain: four stages, each a toggle that isolates its rows */
+.chain[data-dormant] {
+  pointer-events: none;
+}
+.btn {
+  position: relative;
+  margin-block: -10px;
+  padding-block: 10px;
+  color: var(--color-paper);
+  cursor: pointer;
+  transition: color 0.3s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 7px;
+  height: 1px;
+  background: var(--color-signal);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.btn:focus-visible {
+  outline: none;
+}
+.btn[aria-pressed="true"]::after,
+.btn[data-lit]::after,
+.btn:focus-visible::after {
+  transform: scaleX(1);
+}
+@media (hover: hover) {
+  .btn:hover::after {
+    transform: scaleX(1);
+  }
+}
+/* While the names are being set, a stage's word lights with its rows */
+.root[data-type-motion="on"] .btn:not([data-lit], [data-done]) {
+  color: var(--color-fog);
+}
+
+/* ---------- the list: equal rows, names flush on column 4 ---------- */
+
+/*
+  Name sizes are set so every row keeps to two lines on phones (index,
+  name, stage, arrow; then the line) and one line from lg, measured
+  against the longest pair, "Martech & Consulting" + "Measure" (10.55
+  ems wide in the display cut). Phones: line one fills the measure at
+  9vw - 14px; the line under it is 13px (14px from 414px), one line from
+  375px. lg: the name ends a gap before column 8, where the line starts
+  below xl; xl: before column 9.
+*/
+.list {
+  --nm: min(calc(9vw - 14px), 3.1svh, 26px);
+  --rp: clamp(6px, 1.1svh, 12px);
+  grid-auto-rows: 1fr;
+}
+/* Below 375px the longest line ("What the world says when you're not in
+   the room.") needs two lines at 13px: that row alone grows, balanced */
+@media (max-width: 374.98px) {
+  .list {
+    grid-auto-rows: auto;
+  }
+}
+.tag {
+  text-wrap: balance;
+}
+@media (min-width: 40rem) {
+  .list {
+    --nm: min(5.4vw, 4.4svh, 40px);
+  }
+}
+@media (min-width: 64rem) {
+  .list {
+    --nm: min(calc(3.1vw - 4.5px), 5.9svh, 52px);
+    --rp: clamp(8px, 2.2svh - 6px, 20px);
+  }
+}
+@media (min-width: 80rem) {
+  .list {
+    --nm: min(3.5vw, 5.9svh, 52px);
+  }
+}
+.name {
+  font-size: var(--nm);
+}
+
+.hot {
+  transform: scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.cur {
+  display: none;
+  transform: scaleX(0);
+}
+/* --r: the engine's reveal while a stage lands; --dimk: a held or
+   hovered stage stepping the other rows back. Multiplied, so a stage
+   held while names are still being set dims what is shown evenly. */
+.dim {
+  opacity: calc(var(--r, 1) * var(--dimk, 1));
+  transition:
+    opacity 0.3s,
+    color 0.3s;
+}
+.arr {
+  transition:
+    transform 0.3s,
+    color 0.3s,
+    opacity 0.3s;
+}
+
+/* Hover and focus: the red top rule, the arrow, the line lifts */
+.row:has(> a:is(:hover, :focus-visible)) .hot {
+  transform: scaleX(1);
+}
+.row:has(> a:is(:hover, :focus-visible)) .arr {
+  color: var(--color-signal);
+  transform: translate(2px, -2px);
+}
+.row:has(> a:is(:hover, :focus-visible)) .tag {
+  color: var(--color-paper);
+}
+.row:has(> a:focus-visible) [data-nm] {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+
+/* Row -> chain: a discipline lights the stage it belongs to */
+.track:has(.row[data-st="narrative"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="narrative"],
+.track:has(.row[data-st="create"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="create"],
+.track:has(.row[data-st="distribute"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="distribute"],
+.track:has(.row[data-st="measure"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="measure"] {
+  color: var(--color-paper);
+}
+.track:has(.row[data-st="narrative"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="narrative"]::after,
+.track:has(.row[data-st="create"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="create"]::after,
+.track:has(.row[data-st="distribute"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="distribute"]::after,
+.track:has(.row[data-st="measure"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="measure"]::after {
+  transform: scaleX(1);
+}
+
+/* Chain -> rows: a pressed stage (tap, click or Enter, any width) holds
+   its rows and steps the rest back, clones included; with a fine
+   pointer, hovering a stage does the same while none is pressed.
+   Keyboard focus alone only underlines the stage. Stepped back is 0.36:
+   the names keep 3.2:1 on graphite, and a row pointed at or focused
+   comes all the way back. */
+.track[data-filter="narrative"] :is(.row, .clone):not([data-st="narrative"]),
+.track[data-filter="create"] :is(.row, .clone):not([data-st="create"]),
+.track[data-filter="distribute"] :is(.row, .clone):not([data-st="distribute"]),
+.track[data-filter="measure"] :is(.row, .clone):not([data-st="measure"]) {
+  --dimk: 0.36;
+}
+.track[data-filter][data-filter] .row:has(> a:is(:hover, :focus-visible)) {
+  --dimk: 1;
+}
+.track[data-filter="narrative"] .row[data-st="narrative"] .hot,
+.track[data-filter="create"] .row[data-st="create"] .hot,
+.track[data-filter="distribute"] .row[data-st="distribute"] .hot,
+.track[data-filter="measure"] .row[data-st="measure"] .hot {
+  transform: scaleX(1);
+}
+@media (hover: hover) {
+  .track:not([data-filter]):has(.btn[data-stage-btn="narrative"]:hover) :is(.row, .clone):not([data-st="narrative"]),
+  .track:not([data-filter]):has(.btn[data-stage-btn="create"]:hover) :is(.row, .clone):not([data-st="create"]),
+  .track:not([data-filter]):has(.btn[data-stage-btn="distribute"]:hover) :is(.row, .clone):not([data-st="distribute"]),
+  .track:not([data-filter]):has(.btn[data-stage-btn="measure"]:hover) :is(.row, .clone):not([data-st="measure"]) {
+    --dimk: 0.36;
+  }
+  .track:not([data-filter]):has(.btn[data-stage-btn="narrative"]:hover) .row[data-st="narrative"] .hot,
+  .track:not([data-filter]):has(.btn[data-stage-btn="create"]:hover) .row[data-st="create"] .hot,
+  .track:not([data-filter]):has(.btn[data-stage-btn="distribute"]:hover) .row[data-st="distribute"] .hot,
+  .track:not([data-filter]):has(.btn[data-stage-btn="measure"]:hover) .row[data-st="measure"] .hot {
+    transform: scaleX(1);
+  }
+}
+
+/* Forced colours: hairlines and rules in the system text colour */
+@media (forced-colors: active) {
+  .rule,
+  .hot {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+  .btn::after {
+    background: CanvasText;
+  }
+}
+
+/* ---------- the motion layer ---------- */
+
+.fx {
+  display: none;
+}
+.clone {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  line-height: 1;
+  transform-origin: 0 0;
+  font-kerning: normal;
+  opacity: var(--dimk, 1);
+  transition: opacity 0.3s;
+}
+
+/* The pin. The stage is the full (lvh) screen so graphite reaches the
+   floor when a mobile toolbar collapses; the content box is the visible
+   (svh) part, clear of the floating header. */
+.track {
+  --travel: 96svh;
+}
+.stageIn {
+  --pt: 76px;
+  --pb: 16px;
+}
+@media (min-width: 64rem) {
+  .track {
+    --travel: 110svh;
+  }
+  .stageIn {
+    --pt: 84px;
+    --pb: 20px;
+  }
+}
+
+/* Before the engine decides (first paint), TYPE_QUERY alone pins, so the
+   track is sized with no layout shift; phones need 650px of height (a
+   360x640 screen keeps the static list) and lg 640px, just under where
+   the finished frame stops fitting. */
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 360px) and (max-width: 63.99rem) and (min-height: 650px), (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
+  :global(html[data-js]) .root:not([data-type-motion]) .track {
+    height: calc(100vh + var(--travel));
+    height: calc(100lvh + var(--travel));
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100lvh;
+    overflow: clip;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .stageIn {
+    height: 100vh;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: var(--pt);
+    padding-bottom: var(--pb);
+  }
+}
+/* ... then only its verdict does (it re-decides on every change of the
+   query, the motion preference or the size, keeping the reader's place) */
+.root[data-type-motion="on"] .track {
+  height: calc(100vh + var(--travel));
+  height: calc(100lvh + var(--travel));
+}
+.root[data-type-motion="on"] .stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100lvh;
+  overflow: clip;
+}
+.root[data-type-motion="on"] .stageIn {
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: var(--pt);
+  padding-bottom: var(--pb);
+}
+
+/* Armed: the clones carry the names until each row is set */
+.root[data-type-motion="on"] .fx {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* a clone re-set in a new size or face lays out only this layer */
+  contain: strict;
+}
+.root[data-type-motion="on"] .cur {
+  display: block;
+}
+.root[data-type-motion="on"] .row:not([data-set]) [data-nm] {
+  color: transparent;
+}
+.root[data-type-motion="on"] .list[data-unsettled] .row {
+  pointer-events: none;
+}
+/* The engine lifts index, stage, line and arrow into place through --ry:
+   the translate is always there, so the lift never re-lays out a row */
+.root[data-type-motion="on"] [data-meta] {
+  translate: 0 var(--ry, 0px);
+}
+/* While the engine drives the rows, nothing eases behind it */
+.root[data-type-motion="on"] .list[data-unsettled] :is(.dim, .arr, .hot) {
+  transition: none;
+}
+.clone[data-set] {
+  visibility: hidden;
+}
+/* A clone travelling on transform: scale has its own layer while pinned;
+   once laid out at its true size (data-laid) it paints with the rows, so
+   it ends as the very pixels of the row's own text */
+.root[data-type-pinned] .clone:not([data-laid]) {
+  will-change: transform;
+}

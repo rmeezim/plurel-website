@@ -17,8 +17,8 @@ import {
 import type { Film } from "@/lib/film";
 
 /*
-  A band of nine glass flutes over the film (shader and profiles in
-  lib/glass.ts). Scrolling moves the flute bottoms. A mouse or pen brings
+  A band of nine cool glass flutes over the red film (shader and profiles
+  in lib/glass.ts). Scrolling moves the flute bottoms. A mouse or pen brings
   warm light into the scene behind the glass: its path leaves a soft
   ribbon, tinted by the direction of travel, that stays where it was laid
   and fades calmly, and each rod bends its own slice of it. Touch is

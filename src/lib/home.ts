@@ -12,26 +12,6 @@ export const CLIENTS = [
   "Verra",
 ];
 
-/** The fragmentation the manifesto names: each supplier optimizes its own number */
-export const PILLARS = [
-  {
-    word: "Paid",
-    line: "The ads agency reports clicks.",
-  },
-  {
-    word: "Search",
-    line: "The SEO agency reports traffic.",
-  },
-  {
-    word: "Brand",
-    line: "The studio reports consistency.",
-  },
-  {
-    word: "Social",
-    line: "The social team reports impressions.",
-  },
-];
-
 export const PHASES = [
   {
     number: "1",

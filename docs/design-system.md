@@ -32,8 +32,9 @@ they are rebuilt on this one.
 
 - `<Logo />` is the lockup; `variant="upper"` ("Plurel", default) or
   `"lower"` ("plurel"). `<LogoMark />` is the grid on its own.
-- `MARK_CELLS` (`src/lib/mark.ts`) exports the geometry; the services fold
-  animates exactly these cells and hands off to `LogoMark` at rest.
+- `MARK_CELLS` (`src/lib/mark.ts`) exports the geometry (the logo and the
+  journal cover glyphs draw it). The mark is a signature, not a prop: no
+  section splits it, opens it into cards or assembles it as a hub.
 - The mark is exact geometry on a 10-unit square: 2-unit corners and
   edges, a 4-unit center, 1-unit gutters. It paints in `currentColor`.
 - `animated` staggers the nine cells in (flagship moments only).
@@ -65,14 +66,14 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| paper | `bg-paper` | ink | Reading chapters: manifesto, services, results, journal, FAQ, closing, footer |
-| red | `bg-brand` | paper | The manifesto's findings band, the services fold, method |
-| dark | `bg-graphite` | paper, fog | Hero, work, the method's AI layer |
+| paper | `bg-paper` | ink | Reading chapters: clients, manifesto, results, journal, FAQ, footer |
+| red | `bg-brand` | paper | Method, closing |
+| dark | `bg-graphite` | paper, fog | Hero, Attention Field, services, work, the method's AI layer |
 
-All three are flat fills. Alternate tones so no two red or dark chapters
-touch, and keep at least one red room on every page. The one exception is
-the services fold, where the manifesto's red room continues into (02) and
-folds into the mark: one room, not two red chapters.
+All three are flat fills. Alternate tones so every chapter change is a
+clear cut (the homepage runs paper manifesto, graphite services, red
+method, graphite work), no two red chapters touch, and every page keeps at
+least one red room.
 
 ## Type
 
@@ -147,15 +148,18 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
   (`line-rise`, 140ms apart), then copy, actions, and the glass fade up
   (`fade-up`).
 - **Scroll:** `Reveal`, staggering siblings 0.08s. Two chapters are
-  pinned and scrubbed: the Attention Field (under the hero) and the
-  services fold. The manifesto's braid is scrubbed without pinning, and
+  pinned and scrubbed: the Attention Field (under the hero, long) and
+  services' typographic system (brief). The manifesto's braid is scrubbed
+  without pinning, and
   the two glass bands follow scroll as a height profile; nothing else is
   driven by scroll position.
-- **Hover:** a pointer pours light into the glass (below); contents rows
+- **Hover:** a pointer pours light into the glass (below) and pushes the
+  Attention Field's dots aside (its markers can be dragged); contents rows
   take a red top rule; arrows nudge diagonally.
-- **Ambient:** the film behind the glass and the Attention Field's drift
-  (no controls, by the owner's call: they run only while on screen and
-  stop in hidden tabs), and the selected-clients marquee (paused on
+- **Ambient:** the film behind the glass, the Attention Field's drift and
+  its channel tiles while they show (no controls, by the owner's call:
+  they run only while on screen and stop in hidden tabs), and the
+  selected-clients marquee (paused on
   hover). Nothing else moves on its own; all of them sit still for
   reduced motion.
 
@@ -168,12 +172,17 @@ slice of the scene behind it (never flipped, never bowed), rounds off into
 dark seams, and catches a crisp specular line just inside its left edge, a
 fainter rim on its right, a warm fringe right at both and a lit bottom
 lip. That rounded left and right edge is the 3D feel to protect; nothing
-in it wobbles. It reads as glass because the film has lines and points of
-light for the rods to bend. The film is drawn into a 192px canvas before
-it reaches the shader, so it arrives soft. Until the Higgsfield film
-exists, a stand-in studio (red key light, ember wash, blush floor light, a
-window, a few large out-of-focus lights, a beam, people crossing) is
-drawn in the shader.
+in it wobbles. The glass itself is cool: it takes a little red out of what
+it passes (`CAST`), gives the dark of the room a slate, grey-blue cast
+(`SLATE`, `SKY`), and its catch lines, sheen and rims are a cool white
+(`FROST`) with a faint cyan fringe beside the warm one, so the band reads
+as red film behind cool architectural glass rather than all red. It reads
+as glass because the film has lines and points of light for the rods to
+bend. The film is drawn into a 192px canvas before it reaches the shader,
+so it arrives soft. Until the Higgsfield film exists, a stand-in studio
+(red key light, ember wash, cool daylight from the upper left, a lit
+doorway, a slatted window, a few large out-of-focus lights, a beam, people
+crossing) is drawn in the shader.
 
 - **Profiles.** `rise` (the hero): a rest line a little over half the
   band (0.56) that steps into a staircase as the visitor scrolls away.
@@ -184,7 +193,10 @@ drawn in the shader.
   soft ribbon of light along its path in the scene behind the rods,
   tinted by direction of travel, warm tones only: right signal red, up
   warm white, left blush, down light coral, all lifted to one brightness.
-  Never blue or cool. The ribbon stays where it was laid (no drift, no
+  Never blue or cool: the cool of the glass gives way only in the
+  light's core, and the glow's blue is clamped below its red, so a sweep
+  warms the rods without wiping the glass back to all red. The ribbon
+  stays where it was laid (no drift, no
   ripple) and fades evenly over 1.5s; every rod bends its own slice of it.
   Up to 32 points at once (`MAX_SPLATS`), rationed so a fast sweep spaces
   them out rather than dropping visible ones.
@@ -209,32 +221,58 @@ then the glass:
 ## The Attention Field
 
 `home/attention-field.tsx` (markup, client) with the canvas engine in
-`lib/attention-field.ts` and the stage layout in
-`home/attention-field.module.css`. The section right after the hero
-(`#distribution`, graphite): how Plurel distributes, told in thousands of
-points of attention on one canvas, pinned and scrubbed by scroll, with a
-stage control at the foot (01 Noise to 05 Demand, and "See the method").
+`lib/attention-field.ts`, the stage layout in
+`home/attention-field.module.css`, and the channel tiles in
+`home/channel-tiles.tsx` (data in `lib/channels.ts`). The section right
+after the hero (`#distribution`, graphite): how Plurel distributes, told
+in thousands of points of attention on one canvas, pinned and scrubbed by
+scroll. No chrome round it: no running head, no stage tabs, no indices.
+The five stage headings carry it, and the one action, "See the method",
+arrives only with the final readout (focusing it early jumps straight to
+that stage, so keyboards still reach it).
 
-1. **Noise.** "Attention is everywhere." Fog dots drifting as noise.
-2. **Story.** "One story, cut for every surface." The dots condense into
-   the Plurel mark, which opens into outlined format cards with crop
-   marks (Reel 9:16, Film 16:9, Feed 1:1, AI answer, Creator cut 4:5, Out
-   of home 48-sheet), after concept A of the flow board.
-3. **Lanes.** "Be where it gathers." The cards fly to the heads of nine
-   lanes, one per glass flute: Owned (Search, Social, Video), Earned (AI
-   answers, Press, UGC), Paid (Creators, Paid media, Events).
+1. **Noise.** "Attention is everywhere." Fog dots drifting in nine loose
+   pools, one per surface, each with its marker and name. The mesh answers
+   a fine pointer (a soft lens pushes the nearest dots aside and lifts
+   them), and, unannounced, a marker can be picked up and dragged: its
+   pool follows on a spring, shouldering neighbours aside, and stays where
+   it is dropped until the story gathers it. Scrolling back restores the
+   layout. Mouse and pen only for the lens; a drag only when it starts on
+   a marker, so page scrolling is never taken.
+2. **Story.** "One story, cut for every surface." The dots settle into one
+   master frame, a dot screen reading Halden's line "Heat, without the
+   noise.", and a red blade cuts it along the mosaic's gutters into seven
+   live tiles, each a recording of a real surface carrying the same story:
+   an AI answer streaming with citations, a search results page, a reel, a
+   film, a press review, a creator's post, a 48-sheet out of home. Halden
+   (quiet heat pumps, sold to homeowners and developers) is a sample
+   brief, and a quiet line under the mosaic says so. Phones show the
+   answer and search full width, sized to read.
+3. **Lanes.** "Be where it gathers." Each tile shrinks in place and slides
+   to the head of its lane, top lane first, and its lane pours from it:
+   Owned (Search, Social, Video), Earned (AI answers, Press, UGC), Paid
+   (Creators, Paid media, Events).
 4. **System.** "Run it as one system." The lanes bend into one funnel;
    the dots that pass through turn signal red.
 5. **Demand.** "Qualified demand." The red stream rises to one bright
-   point; the readout is an index (1.0× to 3.2× vs. baseline,
+   point; the readout is an index (1.0x to 3.2x vs. baseline,
    illustrative), so it reads for B2B and B2C alike. Never "inquiries" or
    "pipeline" here.
 
+Tiles are DOM, not canvas (crisp type), placed by the engine with
+transforms; each plays only while it is on screen in the Story stage, and
+holds a designed still frame otherwise. Each is also a slot for real
+footage: drop `public/video/channels/<key>.mp4` (keys: answer, search,
+reel, film, press, creator, ooh; optional `<key>.jpg` poster) and
+`lib/clips.ts` picks it up at build time, muted and looped, with
+`preload="none"`.
+
 Rules: pinned only with JS, motion allowed and a viewport at least 360px
-wide and 560px tall; otherwise a designed static version (the five stages
-as a list beside one still frame). Nothing that contains the sticky stage
-may clip (`overflow: hidden/clip` breaks it). The loop runs only while
-the section is on screen and the tab visible; no pause control (the
+wide and 560px tall; otherwise a designed static version (the tiles as one
+mosaic of still frames, then the five stages as a list beside one still
+frame of the system, then the link). Nothing that contains the sticky
+stage may clip (`overflow: hidden/clip` breaks it). The loop runs only
+while the section is on screen and the tab visible; no pause control (the
 owner's call, as with the glass). When the mode flips (a phone rotates, a
 window gets short, reduced motion toggles), the engine keeps the reader's
 place: inside the field they land at its start, below it they stay on the
@@ -242,55 +280,60 @@ same chapter.
 
 ## The manifesto braid
 
-`home/braid-strip.tsx` with the engine in `lib/braid.ts`: "Fig. 01 · Ten
-suppliers, one system", the closing figure of the manifesto's red band,
-under the four suppliers. Scrubbed by scroll as it passes, never pinned:
-ten tangled paper strands, each a supplier with its vanity metric (six on
-phones), straighten into lanes in the order of the list above it, then
-braid through the Plurel mark into one strand: "One system · one number".
-As it forms, the ten metrics fade out (ten numbers become one); the
-supplier names stay legible. It moves only with the visitor's scroll and
-rests otherwise. Paper and blush only on the red; reduced motion shows the
-finished braid.
+(01) is one paper chapter: the statement, then its figure. Fig. 01, "Who
+owns the number" (`home/braid-strip.tsx`, engine in `lib/braid.ts`), is
+the chapter's centrepiece, not an appendix: its caption sits in the
+margin, its lead "Every supplier reports its own number. *Nobody owns the
+outcome.*" (an h3) on the content column, and the canvas takes the full
+width below. Scrubbed by scroll as it passes, never pinned: ten tangled
+ink hairline strands, each a supplier with the number it reports (six on
+phones, which the caption says), straighten into lanes, then funnel into
+one strand that turns brand red where it joins and plaits to "One system.
+One number." (HTML, brand red, beside the end). As it forms, the ten
+metrics delete themselves and the names glide to the spine (ten numbers
+become one). No logo hub: the colour change is the junction. It moves only
+with the visitor's scroll and rests otherwise; reduced motion shows the
+finished braid, and without JS a static drawing of the end state names
+the suppliers in the margin. Generous paper closes the chapter before
+(02) cuts to graphite.
 
-## The services fold
+## Services: one typographic system
 
-The homepage's one scroll-scrubbed moment (`services-fold.tsx`, markup in
-`home/services-chapter.tsx`, timeline in `lib/fold.ts`). As the visitor
-leaves the red manifesto, the red continues into (02) Services:
+(02) Services sits on graphite, a hard cut from the paper manifesto and
+from the red Method after it. Markup in `home/services-chapter.tsx`, the
+motion in `home/services-type.tsx` (client) with the engine in
+`lib/services-type.ts` and the pin and clone rules in
+`home/services-type.module.css`. Fig. 02 is the contents list itself, so
+the chapter's artifact makes Plurel's argument (integration, not a menu)
+in the one place that has to show a menu:
 
-1. **Room.** One flat red screen reading "*Your brand.*"
-2. **Plan.** Paper gutters cut it into nine panels at the mark's 2:4:2
-   proportions, landing exactly on GRID columns (lg 1-3 | 4-9 | 10-12,
-   base 1 | 2-3 | 4). The eight disciplines label themselves clockwise
-   around "Your brand", the same order as the rows below.
-3. **Mark.** The panels fold into the exact Plurel mark beside the
-   headline; the (02) running head fades in and its column ticks register
-   on the edges the panels just used. At rest the mark is a pointer index:
-   hovering a cell floods it ink and names the discipline; a click opens it.
+1. **Eight voices.** "Eight disciplines, eight voices." The eight names
+   arrive set the way eight different suppliers would set them: condensed
+   lowercase, tracked thin caps, a rotated italic, a huge red extended
+   black, a vertical name, a light display cut, mono caps. Mismatched, but
+   composed; the house face pushed to its extremes, no other fonts.
+2. **Still a menu.** "Lined up, it's still a menu." They drop onto the
+   rows of the list, still in their own voices.
+3. **One system.** "Set as one, it's a system." Stage by stage along the
+   chain (Narrative, Create, Distribute, Measure, each lit as its rows
+   set), the names take one face, one scale and one rhythm, and the stage
+   tags and lines arrive, until the figure is simply the list.
 
 Rules:
-- It moves only with the visitor's own scroll and stops when they stop.
-  Native scroll only: no wheel or touch handlers, no snap, no smoothing.
-- The gate (`FOLD_QUERY` in `lib/fold.ts`, mirrored in `globals.css`):
-  motion only with no reduced-motion preference, no forced colors, with JS,
-  at least 22.5rem wide, and at least 35rem tall on phones (40rem from the
-  sm breakpoint up), which is where the resolved frame measurably fits. Everything else, and a failed fit
-  check, gets the finished static figure: the mark with indexes 01-08
-  around "Your brand", captioned "Fig. 02". A failed fit is retried on
-  resize; if the pin switches off mid-fold, the visitor lands on the
-  static chapter.
-- While the fold is live, anchor jumps and focus scrolls are instant
-  (`scroll-behavior: auto`): a smooth scroll would play the fold on its
-  own, faster than any hand.
-- The pinned track is sized in CSS from `html[data-js]` (set by the inline
-  script in `layout.tsx` before first paint), so there is no layout shift
-  and deep links land correctly. `#services` points at the resolved frame.
-- Sticky breaks silently if `main`, `#main`, `body` or the section ever
-  gets `overflow: hidden/clip` or a transform. Never wrap anything inside
-  the stage in `Reveal`.
-- The hot path reads only `scrollY` and writes cached transform/opacity
-  strings; all layout reads happen in `measure()`.
+- The real list is server-rendered and is what assistive tech, no-JS,
+  reduced motion, forced colours and screens too short to pin (phones
+  under 650px tall, 640px from lg; 360x640 keeps the list) get. Eight
+  aria-hidden clones carry the motion; each row hands back to the real
+  text, pixel for pixel, the moment its name is set.
+- Pinned briefly (at most 110svh of travel on desktop, 96svh on phones)
+  and moved only by the visitor's scroll; transforms and opacity only,
+  measured after fonts load and on resize, which keeps the reader's place.
+  Colours morph in OKLab, so no red passes through pink.
+- The four chain stages are toggles at every width (`aria-pressed`): one
+  holds its rows and steps the others back (names stay above 3:1), a
+  second press or Escape clears. `#services` lands on the chapter.
+- The pure parts are unit tested:
+  `npx -y tsx --test src/lib/services-type.test.ts`.
 
 ## Imagery
 
@@ -332,7 +375,7 @@ one step of that argument:
 | Hero | The promise: made to be seen, everywhere; distribution as how the right clients find you |
 | Attention Field | The mechanism: attention everywhere, one story, nine lanes, one system, qualified demand |
 | (01) Manifesto | The problem: "Your marketing shouldn't be ten companies." Each supplier reports its own number; the braid shows ten becoming one |
-| (02) Services | The answer: every relevant channel, run as one system (Narrative → Create → Distribute → Measure) |
+| (02) Services | The answer: every relevant channel, run as one system (Narrative → Create → Distribute → Measure); eight voices set as one |
 | (03) Method | Diagnose where the system breaks, then design, deploy, compound |
 | (04)-(06) Work, results, journal | Proof, measured as one system |
 | (07) FAQ | The real objections: every channel? how is this not full-service? |

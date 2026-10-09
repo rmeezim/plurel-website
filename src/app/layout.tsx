@@ -102,8 +102,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      /* The inline script below adds data-js before first paint, so the
-         services fold can size its track in CSS with no layout shift */
+      /* The inline script below adds data-js before first paint, so
+         pinned chapters can size their tracks in CSS with no layout shift */
       suppressHydrationWarning
       /* Lets the router force an instant jump to top on page navigations
          while keeping smooth scrolling for in-page anchors */
@@ -121,7 +121,7 @@ export default function RootLayout({
             cascade, never mid-scroll. Runs before the browser restores
             the previous scroll position. An internal link switches the
             mode to auto, so Back returns the reader to where they left. Also marks html[data-js] so
-            scroll-driven layout (the services fold) is sized in CSS
+            scroll-driven layout (the pinned chapters) is sized in CSS
             before first paint. */}
         <script
           dangerouslySetInnerHTML={{

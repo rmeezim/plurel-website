@@ -1,8 +1,7 @@
 /**
  * The Plurel mark's cells as [x, y, w, h] on its 10-unit square: four 2x2
  * corners, four 2x4 / 4x2 edges, one 4x4 center, 1-unit gutters. Row-major
- * order, so index 4 is the center. The logo draws these exactly, and the
- * services fold animates exactly these cells before handing off to it.
+ * order, so index 4 is the center. The logo draws these exactly.
  */
 export const MARK_CELLS: readonly (readonly [number, number, number, number])[] = [
   [0, 0, 2, 2],

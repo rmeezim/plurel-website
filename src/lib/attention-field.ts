@@ -1,4 +1,14 @@
-import { MARK_CELLS } from "@/lib/mark";
+import {
+  CHANNELS,
+  HALDEN,
+  MOSAIC_PHONE_WIDE,
+  MOSAIC_TALL,
+  MOSAIC_WIDE,
+  PHONE_SEARCH,
+  mosaicJogs,
+  mosaicLayout,
+  type MosaicLayout,
+} from "@/lib/channels";
 
 /*
   The Attention Field: the engine behind the section that follows the hero
@@ -6,21 +16,36 @@ import { MARK_CELLS } from "@/lib/mark";
 
   One canvas of dots tells the distribution story in five scroll-scrubbed
   stages:
-    NOISE   attention drifts in nine pools, one per surface
-    STORY   the dots condense into the Plurel mark, which opens into the
-            formats one story is cut into (outlined cards, crop marks)
-    LANES   the cards fly to the starts of nine lanes (owned, earned, paid)
-            and become their markers; each lane pours out of its marker
+    NOISE   attention gathers in nine pools, one per surface, each a
+            body round its marker with a lit core. The mesh
+            answers a fine pointer (a soft lens that pushes the nearest
+            dots aside and lights them), and each pool's marker can be
+            picked up and dragged, its dots following on a spring
+            (see "touch" below)
+    STORY   the dots settle into one master frame, a dot screen carrying
+            the story's line; a blade cuts it along the gutters of a
+            mosaic, outermost cut first, the pieces parting behind it like
+            a cut sheet, and each piece develops into a live recording of
+            that one story in one format (the channel tiles: an AI answer,
+            a search result, a reel...)
+    LANES   the recordings hand over to the heads of nine lanes (owned,
+            earned, paid): one by one each shrinks in place and slides to
+            its head, and its lane pours out of it as it lands
     SYSTEM  the lanes bend into one funnel; what passes through turns red
     DEMAND  the red stream rises along one curve: qualified demand as an
-            index over baseline (illustrative, never inquiries or pipeline)
+            index over baseline (illustrative, never inquiries or pipeline),
+            and the one link, to the method, arrives with the readout
 
   Framework-free. mountAttentionField finds its parts inside `root` by data
   attributes, draws only while on screen in a visible tab (no pause control,
   as with the hero and footer glass), caps DPR at 2, sizes the particle
-  count to the area, and reads only the track's rect per frame. Unpinned
-  (reduced motion, or a screen too short to pin) it draws one still frame
-  of the whole system instead: lanes, funnel and the rising curve.
+  count to the area, and reads only the track's rect per frame. The tiles
+  are DOM (components/home/channel-tiles.tsx): pinned, the engine places
+  each with a transform and lets it play (data-play) only while it shows
+  in the STORY mosaic, its scene loops (data-fx) only near full size.
+  Unpinned (reduced motion, or a screen too short to pin) it draws one
+  still frame of the whole system instead, and the tiles sit in their
+  static mosaic as still frames (data-still).
 */
 
 /**
@@ -88,18 +113,6 @@ export const AF_LANES: readonly Lane[] = [
   { name: "Events", group: 2, share: 0.08, speed: 0.017, qual: 0.31, icon: "events" },
 ];
 
-type Card = { key: AfIcon; name: string; spec: string; size: string; ar: number };
-
-/** The formats one story is cut into; each lands on the lane with its icon */
-export const AF_CARDS: readonly Card[] = [
-  { key: "reel", name: "Reel", spec: "9:16", size: "1080×1920", ar: 9 / 16 },
-  { key: "film", name: "Film", spec: "16:9", size: "3840×2160", ar: 16 / 9 },
-  { key: "ai", name: "AI answer", spec: "(cited)", size: "Source [1]", ar: 3 / 2 },
-  { key: "feed", name: "Feed", spec: "1:1", size: "1080×1080", ar: 1 },
-  { key: "creator", name: "Creator cut", spec: "4:5", size: "1080×1350", ar: 4 / 5 },
-  { key: "ooh", name: "Out of home", spec: "48-sheet", size: "6096×3048", ar: 2 },
-];
-
 /** The demand index the curve reaches (×, vs. baseline 1.0) */
 export const AF_INDEX = 3.2;
 
@@ -116,7 +129,6 @@ const sm5 = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const frac = (v: number) => v - Math.floor(v);
 const mod = (v: number, m: number) => ((v % m) + m) % m;
-const eoc = (t: number) => 1 - (1 - t) * (1 - t) * (1 - t);
 /** The demand curve's shape, 0..1 over 0..1 */
 const CURVE_K = 2.4;
 const curveF = (s: number) => (Math.exp(CURVE_K * s) - 1) / (Math.exp(CURVE_K) - 1);
@@ -151,50 +163,80 @@ const POOLS_PHONE: readonly [number, number][] = [
   [0.1, 0.2], [0.58, 0.31], [0.12, 0.44], [0.48, 0.15], [0.58, 0.58],
   [0.16, 0.69], [0.62, 0.45], [0.14, 0.84], [0.6, 0.79],
 ];
-/** Marker sizes at a lane's head, px at desktop scale */
-const ICON: Record<AfIcon, readonly [number, number]> = {
-  search: [30, 11],
-  reel: [12, 21],
-  film: [30, 17],
-  ai: [26, 17],
-  press: [16, 21],
-  feed: [18, 18],
-  creator: [16, 20],
-  ooh: [32, 16],
-  events: [24, 16],
+/** The aspect of a drawn head (a lane with no tile; every head in the
+    still frame takes its tile's from lib/channels.ts) */
+const HEAD_AR: Record<AfIcon, number> = {
+  search: 16 / 9, reel: 9 / 16, film: 16 / 9, ai: 0.8, press: 0.8, feed: 1, creator: 0.8, ooh: 3, events: 1.5,
 };
-const CARD_LANE = AF_CARDS.map((c) => AF_LANES.findIndex((l) => l.icon === c.key));
+const NT = CHANNELS.length;
+/** Each lane's tile (-1: none, it keeps a drawn head), and each tile's lane */
+const LANE_TILE = AF_LANES.map((L) => CHANNELS.findIndex((c) => c.lane === L.name));
+const TILE_LANE = CHANNELS.map((c) => AF_LANES.findIndex((L) => L.name === c.lane));
 
 /* Scroll timeline, p in [0, 1]: five stages of 0.2. Each heading rises in at
    its stage's start, holds while the visual changes under it (dimmed), then
    lifts away and the visual holds the stage on its own. */
-// The two handoffs play clear of type: the STORY heading has lifted before
-// the mark stamps, and the cards fly to their lanes before LANES rises.
-// LANES lifts early so the nine labelled lanes hold the stage on their own
-// (0.525 to 0.6) before SYSTEM rises and bends them.
+// STORY gets the longest stretch: its heading has lifted before the story's
+// line comes up, so the line, the cut and the mosaic of recordings hold the
+// stage on their own, and the tiles reach their lanes before LANES rises.
+// LANES lifts early so the nine lanes hold the stage on their own (0.53 to
+// 0.6) before SYSTEM bends them.
 const HEAD: readonly [number, number, number, number][] = [
   [-1, 0, 0.06, 0.1],
-  [0.165, 0.195, 0.225, 0.25],
-  [0.45, 0.47, 0.5, 0.525],
+  [0.165, 0.195, 0.222, 0.245],
+  [0.468, 0.488, 0.515, 0.54],
   [0.6, 0.63, 0.685, 0.715],
   [0.785, 0.815, 0.865, 0.9],
 ];
-// STORY gets the longest stretch: its cards need a hold of their own
-const STAGE_AT = [0, 0.18, 0.385, 0.6, 0.8, 1.0001];
-/** Where a tab lands: its heading, fully in */
-const TAB_TO = [0, 0.21, 0.485, 0.66, 0.84];
-/** The running head's readout per stage: fixed words, never a device count */
-const READ = ["Signals", "6 formats", "9 surfaces", "1 narrative", "1 number"];
-/* The flight to the lanes: the cards leave one after another over KC0..KC1,
-   in an order chosen per layout so that no card crosses another */
-const KC0 = 0.385, KC1 = 0.45, FL_STG = 0.06, FL_DUR = 0.7;
-/** When a lane with no card opens: its drawn marker is in */
-const HEAD_NEW = 0.445;
-/** A dot's run into its lane: to the head, then out along the lane (in p) */
-const IN_T = 0.035, OUT_T = 0.032, HEAD_JIT = 0.024;
+/** The link to the method: in over END0..END1, and where focusing it lands */
+const END0 = 0.9, END1 = 0.94, END_AT = 0.96;
+/* STORY, in p. The dots settle into one master frame over G0..G1 (under
+   the heading), an even dot screen; the story's line comes up in it once
+   the heading has nearly gone (INK0..INK1: the letters' cells split into
+   finer points and brighten). The blade then makes the mosaic's cuts,
+   outermost first, each over CUT_T, all inside CUT0..CUT1: behind the
+   blade the gutter opens, each piece's points closing up into its tile's
+   rectangle (a dot takes OPEN_T to move, parting a little past it and
+   settling) and its cut edge staying lit, so the frame visibly becomes
+   pieces. Each piece then develops into its recording over DEV_T, top to
+   bottom, in the order the story is told (CHANNELS), and a line under the
+   mosaic says Halden is a sample (NOTE0..). The build-up is brisk so that
+   the finished mosaic, the recordings the reader came for, holds and plays
+   for the longest stretch of STORY (about a third of a screen of scroll,
+   DEV0 + NT·DEV_STG + DEV_T to KC0). Then the tiles hand over to the lanes'
+   heads over KC0..KC1, one after another (FL_STG apart, nearest the lanes
+   first, so the column of heads is clear before anything lands in it):
+   each shrinks in place to its head's size, then slides to the head, on
+   top of every tile bound for a lower lane (see flightRect). Its lane
+   pours out of it as it lands. A tile plays until it leaves the mosaic,
+   then holds its frame: in flight it is one raster the compositor scales,
+   and as a head a few dozen pixels tall it costs nothing. */
+const G0 = 0.17, G1 = 0.248, INK0 = 0.24, INK1 = 0.256;
+const CUT0 = 0.258, CUT1 = 0.288, CUT_T = 0.011, OPEN_T = 0.008;
+const DEV0 = 0.293, DEV_STG = 0.004, DEV_T = 0.012;
+const NOTE0 = 0.316, NOTE1 = 0.332;
+const KC0 = 0.412, KC1 = 0.47, FL_STG = 0.1;
+/** When a lane with no tile opens: its drawn head is in */
+const HEAD_NEW = 0.44;
+/** A dot's run into its lane (in p): on a phone down out of its head
+    (IN_T), then along the lane (OUT_T); a lane starts to pour when its
+    tile is POUR_AT through its flight */
+const IN_T = 0.012, OUT_T = 0.034, HEAD_JIT = 0.024, POUR_AT = 0.86;
+/** The scene loops in a tile run only at this scale or more */
+const FX_SCALE = 0.8;
+
+/* Touch, in NOISE only. The lens: radius in CSS px, and how far it pushes
+   the dot at its centre, as a share of the radius (under 0.5, so the dots
+   never cross: a clean hole with a lit, crowded rim). The springs are
+   stiffness and damping per second; a dragged pool's core follows its
+   marker closely, its rim lags and overshoots, so it moves like a body. */
+const LENS_R = 110, LENS_R_PHONE = 84, LENS_PUSH = 0.42;
+const DOT_K = 110, DOT_C = 9.5;
+const MK_K = 180, MK_C = 20;
+const CORE_K = 420, CORE_C = 33;
+const RIM_K = 70, RIM_C = 6.4;
 
 /* ---------- palette ---------- */
-const FOG = "185,188,194";
 const PAPER = "251,250,246";
 const SIG = "232,86,78";
 const rgba = (c: string, a: number) => `rgba(${c},${clamp(a, 0, 1).toFixed(3)})`;
@@ -235,24 +277,21 @@ export function mountAttentionField(root: HTMLElement): () => void {
   const figQ = one("[data-af-fig]");
   const canvasQ = one<HTMLCanvasElement>("[data-af-canvas]");
   const steps = all("[data-af-step]");
-  const tabs = all("[data-af-tab]");
-  const progs = all("[data-af-prog]");
   const laneEls = all("[data-af-lane]");
   const grpEls = all("[data-af-group]");
-  const cardEls = all("[data-af-card]");
-  const qEls = all("[data-af-q]");
-  const storyQ = one("[data-af-story]");
   const throatQ = one("[data-af-throat]");
-  const baseQ = one("[data-af-base]");
-  const capQ = one("[data-af-cap]");
   const readoutQ = one("[data-af-readout]");
   const valueQ = one("[data-af-value]");
-  const readEl = one("[data-af-read]");
+  const endQ = one("[data-af-end]");
+  // the recordings (components/home/channel-tiles.tsx), in CHANNELS order
+  const tilesRoot = one("[data-af-tiles]");
+  const tileEls = CHANNELS.map((c) => one(`[data-af-tile="${c.key}"]`));
+  // the line under the mosaic: Halden is a sample
+  const noteEl = one("[data-af-note]");
   const ctxQ = canvasQ ? canvasQ.getContext("2d") : null;
   if (
-    !trackQ || !figQ || !canvasQ || !ctxQ || !storyQ || !throatQ || !baseQ || !capQ ||
-    !readoutQ || !valueQ || steps.length !== AF_STAGES.length || tabs.length !== AF_STAGES.length ||
-    laneEls.length !== NL || grpEls.length !== 3 || cardEls.length !== AF_CARDS.length || qEls.length !== 4
+    !trackQ || !figQ || !canvasQ || !ctxQ || !throatQ || !readoutQ || !valueQ || !endQ ||
+    steps.length !== AF_STAGES.length || laneEls.length !== NL || grpEls.length !== 3
   ) {
     return () => {};
   }
@@ -261,13 +300,12 @@ export function mountAttentionField(root: HTMLElement): () => void {
   const fig: HTMLElement = figQ;
   const canvas: HTMLCanvasElement = canvasQ;
   const ctx: CanvasRenderingContext2D = ctxQ;
-  const storyEl: HTMLElement = storyQ;
   const throatEl: HTMLElement = throatQ;
-  const baseEl: HTMLElement = baseQ;
-  const capEl: HTMLElement = capQ;
   const readoutEl: HTMLElement = readoutQ;
   const valueEl: HTMLElement = valueQ;
-  const labelEls = [...laneEls, ...grpEls, ...cardEls, ...qEls, storyEl, throatEl, baseEl, capEl, readoutEl];
+  const endEl: HTMLElement = endQ;
+  const labelEls = [...laneEls, ...grpEls, throatEl, readoutEl];
+  const tiles = tileEls.filter((el): el is HTMLElement => el !== null);
 
   /* ---------- state ---------- */
   const pinMQ = window.matchMedia(AF_PIN_QUERY);
@@ -278,7 +316,9 @@ export function mountAttentionField(root: HTMLElement): () => void {
   // Hs: the part of the stage always on screen (svh), H: the whole (lvh)
   let pad = 24, Fy = 0, Fh = 0, Hs = 0;
   let laneWs: number[] = [];
-  let A0 = 0, A1 = 0, grpX = 0, brX = 0, labX = 0, dashX = 0, dashW = 8, iconX = 0, iconS = 1;
+  // headsOn: the lanes have heads; headR: their right edge (iconX, pinned
+  // phones: their left)
+  let A0 = 0, A1 = 0, grpX = 0, brX = 0, labX = 0, iconX = 0, headR = 0, headsOn = true;
   let pitch = 50, bh = 12, Cc = 0, um = 0.38, ut = 0.78;
   const gT = 0.016, wT = 0.11;
   const C = new Float32Array(NL);
@@ -288,28 +328,84 @@ export function mountAttentionField(root: HTMLElement): () => void {
   const TN = 241;
   const cvX = new Float32Array(TN), cvY = new Float32Array(TN), cvNX = new Float32Array(TN), cvNY = new Float32Array(TN);
   let xL = 0, xR = 0, yb = 0, yt = 0, spread = 20;
-  // story
-  let MX = 0, MY = 0, MS = 100;
-  let cards: Rect[] = AF_CARDS.map(() => ({ x: 0, y: 0, w: 0, h: 0 }));
-  let icons: Rect[] = AF_LANES.map(() => ({ x: 0, y: 0, w: 0, h: 0 }));
-  // each card's place in the departure order, and when each lane opens (p)
-  let rank: number[] = AF_CARDS.map((_, j) => j);
-  let rowFirst = false;
+  // story: the mosaic (its frame, the tiles' places and the cuts), which
+  // tiles it shows, and each lane's head (a tile at the end of its flight,
+  // or a drawn thumbnail)
+  let lay: MosaicLayout = { frame: { x: 0, y: 0, w: 0, h: 0 }, tiles: {}, cuts: [], scale: {}, aspect: {} };
+  const shown = new Uint8Array(NT);
+  const tR: Rect[] = CHANNELS.map(() => ({ x: 0, y: 0, w: 0, h: 0 }));
+  // each tile's aspect in the mosaic (a flexible one's can differ from
+  // CHANNELS), its piece of the master frame (the tile and half of each
+  // gutter round it) and the cuts on its four sides (255: the frame's edge)
+  const tAR = CHANNELS.map((c) => c.aspect);
+  // and its nominal width (a phone reflows the answer and the search)
+  const tNW = CHANNELS.map((c) => c.w);
+  const reg: Rect[] = CHANNELS.map(() => ({ x: 0, y: 0, w: 0, h: 0 }));
+  const sideCut = CHANNELS.map(() => new Uint8Array(4).fill(255));
+  let heads: Rect[] = AF_LANES.map(() => ({ x: 0, y: 0, w: 0, h: 0 }));
+  // when each cut starts and each tile develops (p), each tile's place in
+  // the departure order, and when each lane opens
+  let cutAt: number[] = [];
+  const devAt = new Float32Array(NT);
+  const rank = new Float32Array(NT);
+  let flStg = 0;
   const headAt = new Float32Array(NL);
   // still
   let stillCurveSplit = false;
-  let mono = "monospace";
+  let readH = 90;
+
+  // touch (NOISE only; the handlers and the step are under "touch" below).
+  // The pointer in client px, and the lens' eased centre, radius and
+  // strength in stage px
+  let ptrCX = 0, ptrCY = 0, hover = false;
+  // the marker under a fine pointer (-1 none); the pool held or pointed at,
+  // and how lit it is (eased)
+  let hoverK = -1, heldK = -1, heldA = 0;
+  let lensX = 0, lensY = 0, lensR = LENS_R, lensA = 0;
+  // some dot still has give to spend
+  let jOn = false;
+  // Per pool, as offsets from its home: where its marker is shown (mk),
+  // where a dropped marker settles (tg), and the two followers its dots
+  // ride on (core, rim), each with a velocity
+  const mkX = new Float32Array(NL), mkY = new Float32Array(NL), mkVX = new Float32Array(NL), mkVY = new Float32Array(NL);
+  const tgX = new Float32Array(NL), tgY = new Float32Array(NL);
+  const coX = new Float32Array(NL), coY = new Float32Array(NL), coVX = new Float32Array(NL), coVY = new Float32Array(NL);
+  const rmX = new Float32Array(NL), rmY = new Float32Array(NL), rmVX = new Float32Array(NL), rmVY = new Float32Array(NL);
+  // the pool in hand (-1 none), its pointer, and where on the marker it was taken
+  let dragK = -1, dragId = -1, grabDX = 0, grabDY = 0;
+  // the pools' spread (px), set each frame
+  let poolSX = 60, poolSY = 50;
+  // where the stage sits in the viewport (read with the track's rect)
+  let stageL = 0, stageT = 0;
 
   // particles
   let N = 0, drawN = 0;
   let stray = new Uint8Array(0), ln = new Uint8Array(0), qd = new Uint8Array(0), cl = new Uint8Array(0);
-  let hi = new Uint8Array(0), tw = new Uint8Array(0), mc = new Uint8Array(0), oc = new Uint8Array(0);
+  let hi = new Uint8Array(0), tw = new Uint8Array(0);
   let gx = new Float32Array(0), gy = new Float32Array(0), nx = new Float32Array(0), ny = new Float32Array(0);
   let dvx = new Float32Array(0), dvy = new Float32Array(0), amp = new Float32Array(0), fr = new Float32Array(0);
   let ph = new Float32Array(0), u0 = new Float32Array(0), sp = new Float32Array(0), off = new Float32Array(0);
   let br = new Float32Array(0), sz = new Float32Array(0), dl = new Float32Array(0), arc = new Float32Array(0);
-  let ps0 = new Float32Array(0), pof = new Float32Array(0), mu = new Float32Array(0), mv = new Float32Array(0);
-  let ost = new Float32Array(0), osw = new Float32Array(0), ox = new Float32Array(0), oy = new Float32Array(0);
+  let ps0 = new Float32Array(0), pof = new Float32Array(0);
+  // how near a pooled dot sits to its pool's core (0..1): the core is lit
+  let pc = new Float32Array(0);
+  // story: each dot's point in the master frame (fp), the centre of its
+  // cell there (fc: the line's cells hold up to four points, gathered at
+  // the centre until the line comes up, each then carrying fsh of the
+  // cell's light), the piece it belongs to (ft) and where in that piece
+  // (fu, fv: 0..1 across it); fdup marks a dot beyond the frame's points,
+  // which dissolves as it arrives
+  let fpx = new Float32Array(0), fpy = new Float32Array(0), fcx = new Float32Array(0), fcy = new Float32Array(0);
+  let fsh = new Float32Array(0), fu = new Float32Array(0), fv = new Float32Array(0);
+  let ft = new Uint8Array(0), fdup = new Uint8Array(0);
+  // the frame's dot pitch (px)
+  let fPitch = 12;
+  // and how much of the story's line its point carries (0..1)
+  let fink = new Float32Array(0);
+  // touch: each dot's give (displacement, velocity) and how far it trails
+  // its pool's marker (0 core .. 1 rim)
+  let jx = new Float32Array(0), jy = new Float32Array(0), jvx = new Float32Array(0), jvy = new Float32Array(0);
+  let lw = new Float32Array(0);
   // draw slots (twice N: the still draws qualified dots on their lane and on the curve)
   let sx = new Float32Array(0), sy = new Float32Array(0), ss2 = new Float32Array(0);
   let sb = new Uint16Array(0), order = new Int32Array(0);
@@ -321,29 +417,34 @@ export function mountAttentionField(root: HTMLElement): () => void {
     const r = rng(20261007);
     const gauss = () => Math.sqrt(-2 * Math.log(1 - r())) * Math.cos(TAU * r());
     const U8 = () => new Uint8Array(n), F = () => new Float32Array(n);
-    stray = U8(); ln = U8(); qd = U8(); cl = U8(); hi = U8(); tw = U8(); mc = U8(); oc = U8();
+    stray = U8(); ln = U8(); qd = U8(); cl = U8(); hi = U8(); tw = U8();
     gx = F(); gy = F(); nx = F(); ny = F(); dvx = F(); dvy = F(); amp = F(); fr = F(); ph = F();
     u0 = F(); sp = F(); off = F(); br = F(); sz = F(); dl = F(); arc = F(); ps0 = F(); pof = F();
-    mu = F(); mv = F(); ost = F(); osw = F(); ox = F(); oy = F();
+    fpx = F(); fpy = F(); fcx = F(); fcy = F(); fsh = F(); fu = F(); fv = F(); ft = U8(); fdup = U8(); fink = F();
+    jx = F(); jy = F(); jvx = F(); jvy = F(); lw = F(); pc = F();
+    jOn = false;
     sx = new Float32Array(2 * n); sy = new Float32Array(2 * n); ss2 = new Float32Array(2 * n);
     sb = new Uint16Array(2 * n); order = new Int32Array(2 * n);
     const cum: number[] = [];
     let acc = 0;
     for (const L of AF_LANES) cum.push((acc += L.share));
-    const areas = MARK_CELLS.map((c) => c[2] * c[3]);
-    const aTot = areas.reduce((a, b) => a + b, 0);
+    // A few strays drift over the whole field; most of each surface's
+    // attention pools round its marker, two in five of those in a tight,
+    // lit core, so every pool reads as a body at rest (and as something to
+    // pick up); the rest of the lane's dots wander
     for (let i = 0; i < n; i++) {
-      stray[i] = r() < 0.08 ? 1 : 0;
+      stray[i] = r() < 0.04 ? 1 : 0;
       const x = r() * acc;
       let k = 0;
       while (k < NL - 1 && x > cum[k]) k++;
       ln[i] = k;
       qd[i] = !stray[i] && r() < AF_LANES[k].qual ? 1 : 0;
-      cl[i] = !stray[i] && r() < 0.5 ? 1 : 0;
+      cl[i] = !stray[i] && r() < 0.7 ? 1 : 0;
       hi[i] = r() < 0.05 ? 1 : 0;
       tw[i] = r() < 0.05 ? 1 : 0;
-      gx[i] = clamp(gauss(), -3, 3);
-      gy[i] = clamp(gauss(), -3, 3);
+      const core = r() < 0.4 ? 0.42 : 1;
+      gx[i] = clamp(gauss(), -3, 3) * core;
+      gy[i] = clamp(gauss(), -3, 3) * core;
       nx[i] = r(); ny[i] = r();
       dvx[i] = (r() - 0.5) * 9; dvy[i] = (r() - 0.5) * 6;
       amp[i] = 2 + r() * 9; fr[i] = 0.12 + r() * 0.38; ph[i] = r() * TAU;
@@ -354,12 +455,8 @@ export function mountAttentionField(root: HTMLElement): () => void {
       sz[i] = s < 0.7 ? 1.1 : s < 0.97 ? 1.6 : 2.1;
       dl[i] = r(); arc[i] = (r() - 0.5) * 70;
       ps0[i] = r(); pof[i] = clamp(gauss() * 0.5, -1.4, 1.4);
-      // a place inside the mark, cells weighted by area
-      let m = r() * aTot, c = 0;
-      while (c < 8 && m > areas[c]) m -= areas[c++];
-      mc[i] = c; mu[i] = r(); mv[i] = r();
-      ost[i] = r() * 0.32; osw[i] = (r() - 0.5) * 70;
-      oc[i] = 255;
+      lw[i] = 0.85 * Math.pow(Math.min(1, Math.hypot(gx[i], gy[i]) / 2.6), 1.2) + 0.15 * dl[i];
+      pc[i] = Math.max(0, 1 - Math.hypot(gx[i], gy[i]) / 1.3);
     }
   }
 
@@ -370,15 +467,16 @@ export function mountAttentionField(root: HTMLElement): () => void {
     pad = phone ? 16 : Math.max(clamp(W * 0.036, 24, 64), (W - 1440) / 2 + 48);
     // the composition keeps to the always-visible part of the stage; the
     // dots of the noise still reach the floor under a collapsed toolbar
-    const top = phone ? 104 : 112, bot = phone ? 90 : 104;
+    const top = phone ? 92 : 100, bot = phone ? 60 : 72;
     Fy = top;
     Fh = Hs - top - bot;
+    headsOn = true;
     if (phone) {
-      grpX = pad + 4; brX = pad + 13; dashX = pad + 19; dashW = 6; A0 = pad + 32; A1 = W - pad; labX = A0;
-      iconS = 0.55; iconX = labX;
+      grpX = pad + 4; brX = pad + 13; A0 = pad + 32; A1 = W - pad; labX = A0;
+      iconX = labX;
     } else {
-      grpX = pad; brX = pad + 72; labX = pad + 88; A0 = pad + 292; dashX = A0 - 20; dashW = 8; A1 = W - pad - 64;
-      iconS = 1; iconX = A0 - 48;
+      grpX = pad; brX = pad + 72; labX = pad + 88; A0 = pad + 292; A1 = W - pad - 64;
+      headR = A0 - 30;
     }
     const S = phone ? Math.min(Fh * 0.84, 540) : Math.min(Fh * 0.78, 560);
     pitch = S / SPAN;
@@ -397,211 +495,314 @@ export function mountAttentionField(root: HTMLElement): () => void {
       yb = Fy + Fh * 0.86; yt = Fy + Fh * 0.12; spread = 22;
     }
     buildCurve();
-    layoutIcons();
     layoutStory();
-    assignOutlines();
-    orderFlight();
+    layoutHeads();
+    assignFrame();
+    orderStory();
     placeFixed();
   }
+  /** A lane's head takes its tile's aspect as the mosaic shows it */
+  const headAspect = (k: number) => {
+    const j = LANE_TILE[k];
+    if (j < 0) return HEAD_AR[AF_LANES[k].icon];
+    return pinned && shown[j] ? tAR[j] : CHANNELS[j].aspect;
+  };
 
-  function layoutIcons() {
-    icons = AF_LANES.map((L, k) => {
-      const [w0, h0] = ICON[L.icon];
-      const w = Math.round(w0 * iconS), h = Math.round(h0 * iconS);
-      if (phone && pinned) {
-        const y = C[k] - bh - 9;
-        return { x: iconX, y: y - h / 2, w, h };
-      }
-      return { x: iconX - w / 2, y: C[k] - h / 2, w, h };
-    });
-  }
-
-  function layoutStory() {
-    const Fw = W - 2 * pad;
-    const rect = (cx: number, cy: number, w: number, h: number): Rect => ({
-      x: Math.round(cx - w / 2), y: Math.round(cy - h / 2), w: Math.round(w), h: Math.round(h),
-    });
-    // portrait stages (phones, tablets upright) stack the cards in rows
-    const tall = phone || W / Hs < 0.85;
-    if (!tall) {
-      const U = Math.min(Fh, W * 0.56);
-      MS = Math.round(clamp(U * 0.17, 72, 128) / 2) * 2;
-      MX = Math.round(W / 2);
-      MY = Math.round(Fy + Fh * 0.5);
-      const at = (fx: number, fy: number) => [W / 2 + fx * Fw, Fy + fy * Fh] as const;
-      const by = (key: AfIcon, cxy: readonly [number, number], size: number, byH: boolean) => {
-        const ar = AF_CARDS.find((c) => c.key === key)?.ar ?? 1;
-        const w = byH ? size * ar : size, h = byH ? size : size / ar;
-        return rect(cxy[0], cxy[1], w, h);
-      };
-      // narrow landscape (iPad, small laptops): the two cards that flank the
-      // mark's caption step out from it
-      const tight = Fw / U < 1.85;
-      cards = AF_CARDS.map((c) => {
-        switch (c.key) {
-          case "reel": return by(c.key, at(-0.33, 0.53), U * 0.44, true);
-          case "film": return by(c.key, at(0.19, 0.22), U * 0.44, false);
-          case "ai": return by(c.key, at(0.33, 0.62), U * 0.37, false);
-          case "feed": return by(c.key, tight ? at(0.115, 0.835) : at(0.11, 0.8), U * 0.23, false);
-          case "creator": return by(c.key, at(tight ? -0.155 : -0.13, 0.79), U * 0.29, true);
-          default: return by(c.key, at(-0.12, 0.2), U * 0.37, false);
-        }
-      });
+  /**
+   * Each lane's head, in its tile's aspect: right-aligned on one column
+   * before the lane (pinned phones: left of the name, over the lane)
+   */
+  function layoutHeads() {
+    let h0: number, maxW: number;
+    if (pinned && phone) {
+      h0 = 15;
+      maxW = 30;
+    } else if (pinned) {
+      h0 = Math.round(clamp(pitch * 0.58, 22, 36));
+      maxW = Math.round(h0 * 1.8);
     } else {
-      // three rows (film + feed, reel + mark + creator, out of home + AI
-      // answer), each under a two-line label, spread evenly down the field
-      // phones use the width; upright tablets a centred column
-      // phones inset 10px a side so the crop marks stay inside the gutter
-      const Fw2 = phone ? W - 2 * pad - 20 : Math.min(W - 2 * pad, Fh * 0.56), g = phone ? 12 : 20, lab = 36;
-      const L0 = Math.round((W - Fw2) / 2), R0 = L0 + Fw2;
-      const filmW = Fw2 * 0.6, filmH = (filmW * 9) / 16;
-      const feedS = Math.min(Fw2 - filmW - g, filmH * 1.15);
-      const creW = Fw2 * 0.3, creH = (creW * 5) / 4;
-      const oohW = Fw2 * 0.52, oohH = oohW / 2;
-      const aiW = Fw2 - oohW - g, aiH = aiW / 1.5;
-      let reelH = Math.max(creH, Fh * 0.27);
-      const hA = Math.max(filmH, feedS), hC = Math.max(oohH, aiH);
-      let hB = Math.max(reelH, creH);
-      const k = Math.min(1, (Fh - 3 * lab - 2 * 14) / (hA + hB + hC));
-      reelH *= k;
-      hB *= k;
-      // the three rows at their final (scaled) heights
-      const rows = (hA + hC) * k + hB;
-      const gap = Math.min(56, (Fh - 3 * lab - rows) / 2);
-      const used = 3 * lab + rows + 2 * gap;
-      const yA = Fy + (Fh - used) / 2 + lab, yB = yA + hA * k + gap + lab, yC = yB + hB + gap + lab;
-      MS = Math.round(clamp(Fw2 * (phone ? 0.2 : 0.15), 52, phone ? 80 : 112) * Math.min(1, k * 1.1) / 2) * 2;
-      MX = Math.round(W / 2);
-      MY = Math.round(yB + hB / 2);
-      const box = (x: number, y: number, w: number, h: number): Rect => ({
-        x: Math.round(x), y: Math.round(y), w: Math.round(w * k), h: Math.round(h * k),
-      });
-      cards = AF_CARDS.map((c) => {
-        switch (c.key) {
-          case "film": return box(L0, yA, filmW, filmH);
-          case "feed": return box(R0 - feedS * k, yA, feedS, feedS);
-          case "reel": return box(L0, yB + (hB - reelH) / 2, (reelH / k) * 9 / 16, reelH / k);
-          case "creator": return box(R0 - creW * k, yB + (hB - creH * k) / 2, creW, creH);
-          case "ooh": return box(L0, yC + (hC * k - oohH * k) / 2, oohW, oohH);
-          default: return box(R0 - aiW * k, yC + (hC * k - aiH * k) / 2, aiW, aiH);
-        }
-      });
+      h0 = Math.round(clamp(pitch * 0.42, 12, 20));
+      maxW = Math.round(h0 * 1.8);
     }
+    heads = AF_LANES.map((_, k) => {
+      const ar = headAspect(k);
+      let w = h0 * ar, h = h0;
+      if (w > maxW) {
+        w = maxW;
+        h = w / ar;
+      }
+      if (pinned && phone) return { x: iconX, y: C[k] - bh - 9 - h / 2, w, h };
+      return { x: headR - w, y: C[k] - h / 2, w, h };
+    });
   }
 
-  /** Give each card's outline its share of dots, evenly round its perimeter */
-  function assignOutlines() {
-    oc.fill(255);
-    const per = cards.map((r) => 2 * (r.w + r.h));
-    const total = per.reduce((a, b) => a + b, 0);
+  /**
+   * Phones: the answer over the search (MOSAIC_PHONE), the full width, each
+   * at a scale that keeps its body type at 11px or more. Both reflow to the
+   * width (the search to a narrower page, PHONE_SEARCH). The answer takes
+   * what its written answer needs (about 1:1.12; a short phone crops its
+   * foot, see the tiles' CSS), the search PHONE_SEARCH's aspect or, given
+   * the room, more of its page. If even the shortest pair does not fit,
+   * both shrink together.
+   */
+  function phoneLayout(box: Rect, g: number): MosaicLayout {
+    let w = box.w;
+    let L: MosaicLayout = lay;
+    for (let pass = 0; pass < 3; pass++) {
+      const sA = clamp(w / CHANNELS[0].w, 0.9, 1.1), sS = clamp(w / PHONE_SEARCH.w, 0.94, 1.1);
+      const minA = w * 0.82;
+      let hS = w / PHONE_SEARCH.aspect;
+      let hA = Math.min(w * 1.12, box.h - g - hS);
+      if (hA < minA) {
+        hS = Math.max(w / 1.9, box.h - g - minA);
+        hA = Math.max(minA, box.h - g - hS);
+      } else hS = Math.min(w / 1.3, box.h - g - hA);
+      const h = hA + g + hS;
+      const x = box.x + (box.w - w) / 2, y = box.y + Math.max(0, (box.h - h) / 2);
+      L = {
+        frame: { x, y, w, h },
+        tiles: { answer: { x, y, w, h: hA }, search: { x, y: y + hA + g, w, h: hS } },
+        cuts: [{ x, y: y + hA, w, h: g, depth: 0, vertical: false }],
+        scale: { answer: sA, search: sS },
+        aspect: { answer: w / hA, search: w / hS },
+      };
+      if (h <= box.h + 0.5) break;
+      w *= box.h / h;
+    }
+    return L;
+  }
+
+  /**
+   * The mosaic: on phones two tiles (three where the reel fits beside the
+   * answer at a size to read), elsewhere all seven, in whichever
+   * arrangement shows the answer and the search larger and keeps its cuts
+   * in line (mosaicJogs). Flexible tiles take the aspect the mosaic gives
+   * them, reflowed tiles their width: the engine sets the tile's size.
+   */
+  function layoutStory() {
+    const box = { x: pad, y: Fy, w: W - 2 * pad, h: Fh };
+    const g = phone ? 10 : W < 1100 ? 14 : 16;
+    if (phone) {
+      const three = mosaicLayout(MOSAIC_PHONE_WIDE, box, g, 1.1, true);
+      const reads = (three.scale.answer ?? 0) >= 0.88 && (three.scale.search ?? 0) >= 0.96;
+      lay = reads ? three : phoneLayout(box, g);
+    } else {
+      const read = (L: MosaicLayout) => Math.min(L.scale.answer ?? 0, L.scale.search ?? 0);
+      const wide = mosaicLayout(MOSAIC_WIDE, box, g, 1.1, true), tall = mosaicLayout(MOSAIC_TALL, box, g, 1.1, true);
+      const pref = read(tall) > read(wide) * 1.04 ? [tall, wide] : [wide, tall];
+      lay = pref.find((L) => !mosaicJogs(L, g).length) ?? pref[0];
+    }
+    CHANNELS.forEach((c, j) => {
+      const r = lay.tiles[c.key];
+      shown[j] = r ? 1 : 0;
+      tAR[j] = lay.aspect[c.key] ?? c.aspect;
+      tNW[j] = r ? r.w / (lay.scale[c.key] ?? r.w / c.w) : c.w;
+      // whole pixels, so every tile's type sits on the pixel grid
+      if (r) tR[j] = { x: Math.round(r.x), y: Math.round(r.y), w: r.w, h: r.h };
+      const el = tileEls[j];
+      if (!el) return;
+      const nw = Math.abs(tNW[j] - c.w) > 0.01, nh = nw || Math.abs(tAR[j] - c.aspect) > 1e-4;
+      el.style.width = nw ? `${tNW[j].toFixed(2)}px` : "";
+      el.style.height = nh ? `${(tNW[j] / tAR[j]).toFixed(2)}px` : "";
+    });
+    // each piece: the tile and half of each gutter beside it, and the cut
+    // that makes each side (the frame's own edge has none)
+    const g2 = g / 2;
+    CHANNELS.forEach((c, j) => {
+      const r = lay.tiles[c.key];
+      if (!r) return;
+      const sc = sideCut[j];
+      sc.fill(255);
+      lay.cuts.forEach((cu, ci) => {
+        if (cu.vertical) {
+          if (cu.y > r.y + r.h - 1 || cu.y + cu.h < r.y + 1) return;
+          if (Math.abs(cu.x + cu.w - r.x) < 0.75) sc[0] = ci;
+          else if (Math.abs(cu.x - (r.x + r.w)) < 0.75) sc[1] = ci;
+        } else {
+          if (cu.x > r.x + r.w - 1 || cu.x + cu.w < r.x + 1) return;
+          if (Math.abs(cu.y + cu.h - r.y) < 0.75) sc[2] = ci;
+          else if (Math.abs(cu.y - (r.y + r.h)) < 0.75) sc[3] = ci;
+        }
+      });
+      const l = sc[0] < 255 ? g2 : 0, rr = sc[1] < 255 ? g2 : 0, t = sc[2] < 255 ? g2 : 0, b = sc[3] < 255 ? g2 : 0;
+      reg[j] = { x: r.x - l, y: r.y - t, w: r.w + l + rr, h: r.h + t + b };
+    });
+  }
+
+  /**
+   * The master frame: a dot screen over the mosaic's whole rectangle, its
+   * gutters included, with the story's line set in it at twice the pitch
+   * (a fine grid inside the letters, a coarse one round them, which keeps
+   * clear of their edges). Until the line comes up a cell's fine points
+   * sit at its centre, sharing its light, so the screen reads even. About
+   * half the dots make its points, so it stays whole when dots are shed
+   * for cost (never below 0.55 N); the rest double up and dissolve on
+   * arrival. Each point belongs to the piece of the frame it lies in.
+   */
+  function assignFrame() {
+    const F = lay.frame;
     let avail = 0;
     for (let i = 0; i < N; i++) if (!stray[i]) avail++;
-    let gap = phone ? 3.2 : 3.4;
-    if (total / gap > avail * 0.5) gap = total / (avail * 0.5);
-    let i = 0;
-    for (let j = 0; j < cards.length; j++) {
-      const r = cards[j], P = per[j], cnt = Math.round(P / gap);
-      for (let k = 0; k < cnt; k++) {
-        while (i < N && stray[i]) i++;
-        if (i >= N) return;
-        let d = (k / cnt) * P, tx: number, ty: number;
-        if (d < r.w) { tx = r.x + d; ty = r.y; }
-        else if ((d -= r.w) < r.h) { tx = r.x + r.w; ty = r.y + d; }
-        else if ((d -= r.h) < r.w) { tx = r.x + r.w - d; ty = r.y + r.h; }
-        else { d -= r.w; tx = r.x; ty = r.y + r.h - d; }
-        oc[i] = j; ox[i] = tx; oy[i] = ty;
-        i++;
-      }
-    }
-  }
-
-  /**
-   * A card's rect at flight progress kj: card to lane marker. Its size eases
-   * out ahead of its travel, so it is near marker size before it reaches
-   * the column of markers already landed. With `rowFirst` it also finds its
-   * lane's height early and comes in along the row (chosen per layout).
-   */
-  function flightBox(j: number, kj: number, rf: boolean, o: Float32Array, at: number) {
-    const r0 = cards[j], ic = icons[CARD_LANE[j]], ks = eoc(kj);
-    const w = lerp(r0.w, ic.w, ks), h = lerp(r0.h, ic.h, ks);
-    o[at] = lerp(r0.x + r0.w / 2, ic.x + ic.w / 2, kj) - w / 2;
-    o[at + 1] = lerp(r0.y + r0.h / 2, ic.y + ic.h / 2, rf ? ks : kj) - h / 2;
-    o[at + 2] = w;
-    o[at + 3] = h;
-  }
-  const fb = new Float32Array(4);
-  function flightRect(j: number, kj: number): Rect {
-    flightBox(j, kj, rowFirst, fb, 0);
-    return { x: fb[0], y: fb[1], w: fb[2], h: fb[3] };
-  }
-  const flightAt = (kc: number, j: number) => eio(seg(kc, rank[j] * FL_STG, rank[j] * FL_STG + FL_DUR));
-
-  /**
-   * The departure order and the path: of all 720 orders, each with either
-   * path, the one whose cards overlap least in flight (a card in the air
-   * over one still in place, a marker landed, or another in the air),
-   * nearest the lanes first on a tie. Then each lane's opening.
-   */
-  function orderFlight() {
-    const n = cards.length, S = 40, M = 10;
-    const kjs = new Float32Array(n), fr4 = new Float32Array(4 * n);
-    const perm = cards.map((_, j) => j);
-    const dist = cards.map((r, j) => r.x + r.w / 2 - icons[CARD_LANE[j]].x);
-    let best = Infinity, bestRank = rank.slice(), bestRf = false, rf = false;
-    const score = () => {
-      const rk = new Array<number>(n);
-      perm.forEach((j, i) => (rk[j] = i));
-      let cost = 0;
-      for (let s = 0; s <= S; s++) {
-        const kc = s / S;
-        for (let j = 0; j < n; j++) {
-          const kj = (kjs[j] = eio(seg(kc, rk[j] * FL_STG, rk[j] * FL_STG + FL_DUR)));
-          flightBox(j, kj, rf, fr4, 4 * j);
-        }
-        for (let a = 0; a < n; a++) {
-          for (let b = a + 1; b < n; b++) {
-            const ma = kjs[a] > 0 && kjs[a] < 1, mb = kjs[b] > 0 && kjs[b] < 1;
-            if (!ma && !mb) continue;
-            const A = 4 * a, B = 4 * b;
-            const ox = Math.min(fr4[A] + fr4[A + 2], fr4[B] + fr4[B + 2]) + M - Math.max(fr4[A], fr4[B]);
-            const oy = Math.min(fr4[A + 1] + fr4[A + 3], fr4[B + 1] + fr4[B + 3]) + M - Math.max(fr4[A + 1], fr4[B + 1]);
-            // as a share of the smaller, so a brush over a small marker counts
-            if (ox > 0 && oy > 0) cost += (ox * oy) / Math.min((fr4[A + 2] + M) * (fr4[A + 3] + M), (fr4[B + 2] + M) * (fr4[B + 3] + M));
+    const budget = Math.max(16, avail * 0.5);
+    const px: number[] = [], py: number[] = [], pk: number[] = [], pcx: number[] = [], pcy: number[] = [], psh: number[] = [];
+    let sp = Math.sqrt((F.w * F.h) / (budget * 0.8));
+    for (let pass = 0; pass < 4; pass++) {
+      px.length = py.length = pk.length = pcx.length = pcy.length = psh.length = 0;
+      const cols = Math.max(2, Math.round(F.w / sp)), rows = Math.max(2, Math.round(F.h / sp));
+      const dx = F.w / cols, dy = F.h / rows, c2 = cols * 2;
+      fPitch = Math.max(dx, dy);
+      const ink = inkMask(c2, rows * 2);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const at = (u: number, v: number) => (ink ? ink[(r * 2 + v) * c2 + c * 2 + u] : 0);
+          const cx = F.x + (c + 0.5) * dx, cy = F.y + (r + 0.5) * dy;
+          if (Math.max(at(0, 0), at(1, 0), at(0, 1), at(1, 1)) < 0.12) {
+            px.push(cx);
+            py.push(cy);
+            pk.push(0);
+            pcx.push(cx);
+            pcy.push(cy);
+            psh.push(1);
+            continue;
           }
+          const n0 = px.length;
+          for (let v = 0; v < 2; v++) {
+            for (let u = 0; u < 2; u++) {
+              const k = at(u, v);
+              if (k < 0.3) continue;
+              px.push(F.x + (c + 0.25 + u * 0.5) * dx);
+              py.push(F.y + (r + 0.25 + v * 0.5) * dy);
+              pk.push(k);
+              pcx.push(cx);
+              pcy.push(cy);
+            }
+          }
+          const n1 = px.length - n0;
+          for (let q = 0; q < n1; q++) psh.push(1 / n1);
         }
-        // already no better than the best: stop (most orders end here early)
-        if (cost >= best) return;
       }
-      for (let j = 0; j < n; j++) cost += rk[j] * dist[j] * 1e-6;
-      if (cost < best) {
-        best = cost;
-        bestRank = rk;
-        bestRf = rf;
+      if (px.length <= budget) break;
+      sp *= Math.sqrt(px.length / budget) * 1.02;
+    }
+    const pts = px.length;
+    const ks = CHANNELS.map((_, j) => j).filter((j) => shown[j]);
+    let n = 0;
+    for (let i = 0; i < N; i++) {
+      if (stray[i]) continue;
+      const q = n % pts;
+      fdup[i] = n >= pts ? 1 : 0;
+      n++;
+      const x = px[q], y = py[q];
+      fpx[i] = x;
+      fpy[i] = y;
+      fcx[i] = pcx[q];
+      fcy[i] = pcy[q];
+      fsh[i] = psh[q];
+      fink[i] = pk[q];
+      // the piece it lies in (the pieces tile the frame), or the nearest
+      let best = -1, bd = Infinity;
+      for (const j of ks) {
+        const r = reg[j];
+        const ex = Math.max(r.x - x, 0, x - (r.x + r.w)), ey = Math.max(r.y - y, 0, y - (r.y + r.h));
+        const d = ex * ex + ey * ey;
+        if (d < bd) {
+          bd = d;
+          best = j;
+          if (d === 0) break;
+        }
       }
-    };
-    for (const mode of [false, true]) {
-      rf = mode;
-      // Heap's algorithm over every order
-      for (let j = 0; j < n; j++) perm[j] = j;
-      const cnt = new Array<number>(n).fill(0);
-      score();
-      for (let i = 1; i < n; ) {
-        if (cnt[i] < i) {
-          const sw = i % 2 ? cnt[i] : 0;
-          [perm[sw], perm[i]] = [perm[i], perm[sw]];
-          score();
-          cnt[i]++;
-          i = 1;
-        } else cnt[i++] = 0;
+      ft[i] = best < 0 ? 255 : best;
+      if (best >= 0) {
+        const r = reg[best];
+        fu[i] = clamp((x - r.x) / r.w, 0, 1);
+        fv[i] = clamp((y - r.y) / r.h, 0, 1);
       }
     }
-    rank = bestRank;
-    rowFirst = bestRf;
-    // a lane opens as its card lands; the rest as their markers come in
+  }
+
+  /**
+   * The story's line set in a grid, one value per cell: the share of the
+   * cell the type covers (eased), or null when the grid is too coarse to
+   * carry it legibly. Left-aligned on two lines (more on a narrow frame),
+   * in the display face.
+   */
+  function inkMask(cols: number, rows: number): Float32Array | null {
+    const R = 3, cw = cols * R, chh = rows * R;
+    const words = HALDEN.line.split(" ");
+    const lines = cols / rows > 1.2
+      ? [words.slice(0, 2).join(" "), words.slice(2).join(" ")]
+      : cols / rows > 0.75
+        ? [words[0], words[1], words.slice(2).join(" ")]
+        : [words[0], words[1], words[2], words.slice(3).join(" ")];
+    const off = document.createElement("canvas");
+    off.width = cw;
+    off.height = chh;
+    const o = off.getContext("2d", { willReadFrequently: true });
+    if (!o) return null;
+    const fam = getComputedStyle(steps[0].firstElementChild ?? steps[0]).fontFamily || "sans-serif";
+    const font = (px: number) => `760 ${px}px ${fam}`;
+    o.font = font(100);
+    const widest = Math.max(...lines.map((l) => o.measureText(l).width));
+    // as large as fits 86% of the width and 76% of the height (lines 1.0 apart)
+    const size = Math.min((cw * 0.86 * 100) / widest, (chh * 0.76) / lines.length);
+    // under about eight cells to a line the letters break up: no line
+    if (size / R < 8) return null;
+    o.font = font(size);
+    o.fillStyle = "#fff";
+    const x0 = Math.round(cw * 0.06);
+    const block = size * lines.length;
+    lines.forEach((l, i) => o.fillText(l, x0, (chh - block) / 2 + size * (i + 0.8)));
+    const d = o.getImageData(0, 0, cw, chh).data;
+    const out = new Float32Array(cols * rows);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        let a = 0;
+        for (let v = 0; v < R; v++) for (let u = 0; u < R; u++) a += d[((r * R + v) * cw + c * R + u) * 4 + 3];
+        out[r * cols + c] = ss(0.2, 0.6, a / (R * R * 255));
+      }
+    }
+    return out;
+  }
+
+  /**
+   * The story's order: the cuts as the guillotine makes them, the pieces
+   * developing in the order the story is told, and the hand-over, nearest
+   * the lanes first (the tiles over the column of heads clear it before
+   * anything lands there), a column's tiles top lane first. A lane starts
+   * to pour as its tile lands; one with no tile as its drawn head comes in.
+   */
+  function orderStory() {
+    const nc = lay.cuts.length;
+    cutAt = lay.cuts.map((_, j) => CUT0 + (nc > 1 ? (j * (CUT1 - CUT0 - CUT_T)) / (nc - 1) : 0));
+    const ks = CHANNELS.map((_, j) => j).filter((j) => shown[j]);
+    ks.forEach((j, i) => (devAt[j] = DEV0 + i * DEV_STG));
+    const cx = (j: number) => tR[j].x + tR[j].w / 2;
+    const byX = ks.slice().sort((a, b) => (Math.abs(cx(a) - cx(b)) > 8 ? cx(a) - cx(b) : TILE_LANE[a] - TILE_LANE[b]));
+    byX.forEach((j, i) => (rank[j] = i));
+    // a tile's flight takes what the stagger leaves of KC0..KC1
+    flStg = ks.length > 1 ? Math.min(FL_STG, 0.6 / (ks.length - 1)) : 0;
+    flDur = 1 - (ks.length - 1) * flStg;
     headAt.fill(HEAD_NEW);
-    CARD_LANE.forEach((k, j) => {
-      headAt[k] = KC0 + (KC1 - KC0) * (rank[j] * FL_STG + FL_DUR * 0.74);
-    });
+    // (the first of its dots leaves the tile as it is POUR_AT of the way in)
+    for (const j of ks) headAt[TILE_LANE[j]] = KC0 + (KC1 - KC0) * (rank[j] * flStg + POUR_AT * flDur) + (phone ? IN_T : 0);
+  }
+  let flDur = 1;
+  const flightAt = (kc: number, j: number) => seg(kc, rank[j] * flStg, rank[j] * flStg + flDur);
+  /** A tile's rect at flight progress kj, mosaic to lane head. It shrinks
+      first, in place about its centre (a quick ease-out, done in the first
+      45% of its flight), then slides to its head (from 28% on, eased in
+      and out): a recording never crosses the stage at size, and the few
+      in the air at once are small */
+  const flt: Rect = { x: 0, y: 0, w: 0, h: 0 };
+  function flightRect(j: number, kj: number): Rect {
+    const r0 = tR[j], r1 = heads[TILE_LANE[j]];
+    const k = 1 - seg(kj, 0, 0.45), ks = 1 - k * k * k, q = eio(seg(kj, 0.28, 1));
+    const w = lerp(r0.w, r1.w, ks), h = lerp(r0.h, r1.h, ks);
+    flt.x = lerp(r0.x + r0.w / 2, r1.x + r1.w / 2, q) - w / 2;
+    flt.y = lerp(r0.y + r0.h / 2, r1.y + r1.h / 2, q) - h / 2;
+    flt.w = w;
+    flt.h = h;
+    return flt;
   }
 
   function buildCurve() {
@@ -624,12 +825,10 @@ export function mountAttentionField(root: HTMLElement): () => void {
     stillCurveSplit = phone;
     pad = 0;
     if (!phone) {
-      // labels | markers | lanes into the funnel | the curve rising out of it
-      const withIcons = W >= 760;
-      iconS = withIcons ? 1 : 0;
-      grpX = 0; brX = 70; labX = 86; iconX = labX + 128; dashW = 8;
-      dashX = withIcons ? labX + 150 : labX + 108;
-      A0 = withIcons ? labX + 170 : labX + 128;
+      // labels | heads | lanes into the funnel | the curve rising out of it
+      headsOn = W >= 760;
+      grpX = 0; brX = 70; labX = 86; headR = labX + 142;
+      A0 = headsOn ? labX + 170 : labX + 128;
       const tx = Math.round(A0 + (W - A0) * 0.5);
       ut = 0.86; um = 0.42;
       A1 = A0 + (tx - A0) / ut;
@@ -643,8 +842,8 @@ export function mountAttentionField(root: HTMLElement): () => void {
       xL = tx; yb = Cc; xR = W - 12; yt = Math.max(H * 0.14, rh + 26); spread = 16;
     } else {
       // two panels: lanes into the funnel above, the curve below
-      iconS = 0;
-      grpX = 5; brX = 13; labX = 22; dashX = -99; dashW = 0; A0 = labX + 102; iconX = -99;
+      headsOn = false;
+      grpX = 5; brX = 13; labX = 22; A0 = labX + 102;
       const tx = Math.round(W * 0.78);
       ut = 0.84; um = 0.36;
       A1 = A0 + (tx - A0) / ut;
@@ -656,7 +855,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
       xL = 2; xR = W - 14; yb = H - 46; yt = H * 0.68; spread = 10;
     }
     buildCurve();
-    layoutIcons();
+    layoutHeads();
   }
 
   /* ---------- DOM writers (write-only, cached) ---------- */
@@ -692,235 +891,281 @@ export function mountAttentionField(root: HTMLElement): () => void {
       el.style.transform = `translate3d(0,${ty.toFixed(1)}px,0)`;
     }
   }
+  /* The link to the method. Never `visibility: hidden` (put's way): hidden
+     it keeps its place in the tab order, and focusing it jumps to it */
+  const endCache = { x: NaN, y: NaN, o: -1 };
+  function putEnd(x: number, y: number, o: number) {
+    o = Math.round(o * 500) / 500;
+    if (!(Math.abs(endCache.x - x) <= 0.05 && Math.abs(endCache.y - y) <= 0.05)) {
+      endCache.x = x;
+      endCache.y = y;
+      endEl.style.transform = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`;
+    }
+    if (o !== endCache.o) {
+      endCache.o = o;
+      endEl.style.opacity = String(o);
+      if (o > 0.9) endEl.dataset.on = "";
+      else delete endEl.dataset.on;
+    }
+  }
+
+  /* The tiles: placed by transform (translate, then scale from the
+     nominal width, origin top left), stacked by zIndex, played by
+     data-play; their scene loops run with data-fx, only near full size.
+     In flight a tile keeps one raster (will-change), so its shrinking
+     costs a scale on the compositor, not a repaint per frame. */
+  type TileCache = { x: number; y: number; s: number; o: number; z: number; v: number; play: boolean; fx: boolean; fly: boolean };
+  const tileCache: TileCache[] = CHANNELS.map(() => ({ x: NaN, y: NaN, s: NaN, o: -1, z: -1, v: -1, play: false, fx: false, fly: false }));
+  /** `v`: how much of the tile has developed, top down (1: all of it) */
+  function putTile(j: number, r: Rect | null, o: number, z: number, v: number, play: boolean, fly = false) {
+    const el = tileEls[j];
+    if (!el) return;
+    const c = tileCache[j];
+    if (r) {
+      const sc = r.w / tNW[j];
+      if (!(Math.abs(c.x - r.x) <= 0.05 && Math.abs(c.y - r.y) <= 0.05 && Math.abs(c.s - sc) <= 1e-4)) {
+        c.x = r.x;
+        c.y = r.y;
+        c.s = sc;
+        el.style.transform = `translate(${r.x.toFixed(2)}px,${r.y.toFixed(2)}px) scale(${sc.toFixed(5)})`;
+      }
+    }
+    o = r ? Math.round(o * 500) / 500 : 0;
+    if (o !== c.o) {
+      c.o = o;
+      el.style.opacity = String(o);
+      el.style.visibility = o > 0 ? "visible" : "hidden";
+    }
+    if (z !== c.z) {
+      c.z = z;
+      el.style.zIndex = String(z);
+    }
+    v = v >= 0.999 ? 1 : Math.round(v * 1000) / 1000;
+    if (v !== c.v) {
+      c.v = v;
+      el.style.clipPath = v >= 1 ? "" : `inset(0 0 ${((1 - v) * 100).toFixed(2)}% 0)`;
+    }
+    play = play && o > 0;
+    if (play !== c.play) {
+      c.play = play;
+      if (play) el.dataset.play = "";
+      else delete el.dataset.play;
+    }
+    const fx = play && !fly && c.s >= FX_SCALE;
+    if (fx !== c.fx) {
+      c.fx = fx;
+      if (fx) el.dataset.fx = "";
+      else delete el.dataset.fx;
+    }
+    fly = fly && o > 0;
+    if (fly !== c.fly) {
+      c.fly = fly;
+      el.style.willChange = fly ? "transform" : "";
+    }
+  }
+  /** Hold every tile's frame (the loop stopped: off screen, a hidden tab) */
+  function holdTiles() {
+    tileCache.forEach((c, j) => {
+      if (!c.play) return;
+      c.play = c.fx = false;
+      delete tileEls[j]?.dataset.play;
+      delete tileEls[j]?.dataset.fx;
+    });
+  }
+
   function clearInline() {
-    for (const el of [...steps, ...labelEls]) {
+    for (const el of [...steps, ...labelEls, endEl, ...tiles, ...(noteEl ? [noteEl] : [])]) {
       el.style.transform = "";
       el.style.opacity = "";
       el.style.visibility = "";
     }
-    for (const el of progs) el.style.transform = "";
+    CHANNELS.forEach((c, j) => {
+      const el = tileEls[j];
+      if (!el) return;
+      el.style.zIndex = "";
+      el.style.clipPath = "";
+      el.style.willChange = "";
+      el.style.width = "";
+      el.style.height = "";
+      tNW[j] = c.w;
+      delete el.dataset.play;
+      delete el.dataset.fx;
+    });
+    for (const c of tileCache) {
+      c.x = c.y = c.s = NaN;
+      c.o = c.z = c.v = -1;
+      c.play = c.fx = c.fly = false;
+    }
+    for (const el of laneEls) {
+      delete el.dataset.pool;
+      delete el.dataset.grab;
+      delete el.dataset.drag;
+    }
+    delete endEl.dataset.on;
     cache.clear();
     stepCache.clear();
+    endCache.o = -1;
+    endCache.x = endCache.y = NaN;
   }
 
   /** Positions that only change on resize; opacity is written per frame */
   function placeFixed() {
     cache.clear();
     laneWs = laneEls.map((el) => (el.firstElementChild as HTMLElement | null)?.offsetWidth ?? 80);
+    readH = (readoutEl.firstElementChild as HTMLElement | null)?.offsetHeight || 90;
     GROUP_RANGE.forEach(([a, b], g) => {
       align(grpEls[g], phone ? "rot" : "l");
       put(grpEls[g], grpX, (C[a] + C[b]) / 2, 0);
     });
     if (pinned) {
-      // the mark and its caption keep the card labels off them
-      const capY = MY + MS / 2 + 22;
-      const capW = ((storyEl.firstElementChild as HTMLElement | null)?.offsetWidth ?? 70) / 2 + 12;
-      const keep: [number, number, number, number][] = [
-        [MX - MS / 2 - 12, MX + MS / 2 + 12, MY - MS / 2 - 8, MY + MS / 2 + 8],
-        [MX - capW, MX + capW, capY - 12, capY + 12],
-      ];
-      AF_CARDS.forEach((_, j) => {
-        const r = cards[j], el = cardEls[j];
-        const inner = el.firstElementChild as HTMLElement | null;
-        let over = false;
-        const measure = (stack: boolean) => {
-          el.dataset.stack = stack ? "1" : "";
-          const lw = inner?.offsetWidth ?? 0, lh = inner?.offsetHeight ?? 11;
-          // a label that would run off the stage hangs from the card's right edge
-          over = r.x + lw > W - 6;
-          const x0 = over ? r.x + r.w - lw : r.x, y0 = r.y - 9 - lh - 3, y1 = r.y - 6;
-          return keep.some(([a, b, c, d]) => x0 < b && x0 + lw > a && y0 < d && y1 > c);
-        };
-        // phones always stack the pixel size; elsewhere only when that
-        // clears the mark (a taller label that still hits stays on one line)
-        if (!phone && measure(false) && measure(true)) measure(false);
-        else if (phone) measure(true);
-        align(el, over ? "upr" : "up");
-        put(el, over ? r.x + r.w : r.x, r.y - 9, 0);
-      });
-      align(storyEl, "c");
-      put(storyEl, MX, capY, 0);
       align(throatEl, "l");
-      put(throatEl, A0 + ut * (A1 - A0) + 16, Cc - 17, 0);
+      put(throatEl, A0 + ut * (A1 - A0) + 16, Cc - 18, 0);
     } else {
-      for (const el of cardEls) put(el, 0, 0, 0);
-      put(storyEl, 0, 0, 0);
       // narrow: above the stream; wide: centred over the throat, clear of the curve
       align(throatEl, phone ? "l" : "c");
       put(throatEl, A0 + ut * (A1 - A0) + (phone ? 8 : 0), Cc - (phone ? 15 : 28), 0);
     }
-    qEls.forEach((el, i) => {
-      align(el, "c");
-      put(el, xL + (i + 0.5) * (xR - xL) / 4, yb + 17, 0);
-    });
-    align(capEl, "l");
-    put(capEl, xL, yb + 38, 0);
-    // the legend row under the quarters: what the figure is, what the dashes
-    // are; a chart too narrow for both on one row drops the baseline a row
-    const capW = (capEl.firstElementChild as HTMLElement | null)?.offsetWidth ?? 0;
-    const baseW = (baseEl.firstElementChild as HTMLElement | null)?.offsetWidth ?? 0;
-    align(baseEl, "r");
-    put(baseEl, xR, yb + (xL + capW + 20 > xR - baseW ? 58 : 38), 0);
   }
 
   /* ---------- canvas helpers ---------- */
-  function strokeRect(r: Rect, col: string, a: number) {
-    if (a <= 0.01) return;
-    ctx.strokeStyle = rgba(col, a);
-    ctx.lineWidth = 1;
-    ctx.strokeRect(Math.round(r.x) + 0.5, Math.round(r.y) + 0.5, Math.round(r.w), Math.round(r.h));
-  }
-  function hline(x1: number, x2: number, y: number, col: string, a: number, w = 1) {
-    if (a <= 0.01 || x2 <= x1) return;
-    ctx.fillStyle = rgba(col, a);
-    ctx.fillRect(Math.round(x1), Math.round(y - w / 2), Math.round(x2 - x1), w);
-  }
-  function crop(r: Rect, a: number) {
-    if (a <= 0.01) return;
-    const g = 4, l = 6, x0 = Math.round(r.x), y0 = Math.round(r.y), x1 = x0 + Math.round(r.w), y1 = y0 + Math.round(r.h);
-    const c = ctx;
-    c.fillStyle = rgba(FOG, a);
-    for (const [x, y, dx, dy] of [[x0, y0, -1, -1], [x1, y0, 1, -1], [x0, y1, -1, 1], [x1, y1, 1, 1]]) {
-      c.fillRect(dx < 0 ? x - g - l : x + g + 1, y, l, 1);
-      c.fillRect(x, dy < 0 ? y - g - l : y + g + 1, 1, l);
-    }
-  }
-  /** The Plurel mark: paper cells round a signal centre. `push` spreads the cells apart. */
-  function drawMark(cx: number, cy: number, size: number, a: number, outer = 0.94, push = 0) {
-    if (a <= 0.01 || size < 2) return;
-    const c = ctx;
-    const u = size / 10, x0 = cx - size / 2, y0 = cy - size / 2;
-    for (let j = 0; j < 9; j++) {
-      const [mx, my, mw, mh] = MARK_CELLS[j];
-      const dx = (mx + mw / 2 - 5) / 5, dy = (my + mh / 2 - 5) / 5;
-      c.fillStyle = j === 4 ? rgba(SIG, a) : rgba(PAPER, a * outer);
-      c.fillRect(x0 + mx * u + dx * push, y0 + my * u + dy * push, mw * u, mh * u);
-    }
-  }
-  function cardInner(key: AfIcon, r: Rect, a: number) {
-    if (a <= 0.01) return;
-    const { x, y, w, h } = r, cx = x + w / 2, cy = y + h / 2;
-    const c = ctx;
-    if (key === "reel") {
-      drawMark(cx, y + h * 0.4, Math.round(w * 0.36), a * 0.9, 0.42);
-      hline(cx - w * 0.3, cx + w * 0.3, y + h * 0.7, FOG, 0.55 * a);
-      hline(cx - w * 0.3, cx + w * 0.08, y + h * 0.76, FOG, 0.4 * a);
-    } else if (key === "film") {
-      drawMark(x + w * 0.28, cy - h * 0.04, Math.round(h * 0.38), a * 0.9, 0.42);
-      hline(x + w * 0.5, x + w * 0.84, cy - h * 0.1, FOG, 0.55 * a);
-      hline(x + w * 0.5, x + w * 0.72, cy + h * 0.02, FOG, 0.4 * a);
-      hline(x + 8, x + w - 8, y + h - 9, FOG, 0.25 * a);
-      hline(x + 8, x + 8 + (w - 16) * 0.38, y + h - 9, SIG, 0.95 * a);
-    } else if (key === "feed") {
-      drawMark(cx, cy - h * 0.06, Math.round(w * 0.38), a * 0.9, 0.42);
-      hline(cx - w * 0.19, cx + w * 0.19, y + h * 0.82, FOG, 0.4 * a);
-    } else if (key === "ai") {
-      const p = Math.max(8, w * 0.08), iw = w - p * 2;
-      c.fillStyle = rgba(SIG, a);
-      c.fillRect(Math.round(x + p), Math.round(y + p + 2), 4, 4);
-      hline(x + p + 12, x + p + iw * 0.5, y + p + 4, PAPER, 0.6 * a);
-      const ys = [0.42, 0.56, 0.7], ws = [0.9, 0.78, 0.46];
-      for (let i = 0; i < 3; i++) hline(x + p, x + p + iw * ws[i], y + h * ys[i], FOG, 0.45 * a);
-      if (w > 90) {
-        c.font = `400 ${w > 160 ? 11 : 9}px ${mono}`;
-        c.textBaseline = "middle";
-        c.textAlign = "left";
-        c.fillStyle = rgba(SIG, a);
-        c.fillText("[1]", x + p + iw * 0.46 + 8, y + h * 0.7 + 0.5);
-      }
-    } else if (key === "creator") {
-      const rr = Math.max(3, w * 0.07);
-      c.strokeStyle = rgba(PAPER, 0.6 * a);
-      c.lineWidth = 1;
-      c.beginPath();
-      c.arc(x + w * 0.12 + rr, y + w * 0.12 + rr, rr, 0, TAU);
-      c.stroke();
-      hline(x + w * 0.12 + rr * 2 + 6, x + w * 0.62, y + w * 0.12 + rr, FOG, 0.5 * a);
-      drawMark(cx, cy + h * 0.02, Math.round(w * 0.34), a * 0.9, 0.42);
-      hline(x + w * 0.14, x + w * 0.86, y + h * 0.8, FOG, 0.5 * a);
-      hline(x + w * 0.14, x + w * 0.5, y + h * 0.86, FOG, 0.35 * a);
-    } else if (key === "ooh") {
-      drawMark(x + h * 0.5, cy, Math.round(h * 0.5), a * 0.9, 0.42);
-      hline(x + h, x + h + w * 0.42, cy - h * 0.1, PAPER, 0.6 * a, 2);
-      hline(x + h, x + h + w * 0.28, cy + h * 0.12, FOG, 0.45 * a);
-    }
-  }
-  /** A card's identity at marker size: one cue from its contents survives */
-  function cue(key: AfIcon, r: Rect, a: number) {
+  /**
+   * A lane's head where no tile lands (and every head in the still frame):
+   * a thumbnail of the format in the tiles' own colours, so a column of
+   * heads reads as one set of recordings
+   */
+  function drawHead(key: AfIcon, r: Rect, a: number) {
     if (a <= 0.01) return;
     const c = ctx;
-    const x = Math.round(r.x), y = Math.round(r.y), w = Math.round(r.w), h = Math.round(r.h);
-    const cx = x + w / 2, cy = y + h / 2;
-    const d = h < 14 ? 2 : 3, m = Math.min(w, h) < 14 ? 2 : 4;
-    const dot = (px: number, py: number) => {
-      c.fillStyle = rgba(SIG, a);
-      c.fillRect(Math.round(px - d / 2), Math.round(py - d / 2), d, d);
+    const x = Math.round(r.x), y = Math.round(r.y);
+    const w = Math.max(4, Math.round(r.w)), h = Math.max(4, Math.round(r.h));
+    const ga = c.globalAlpha;
+    c.save();
+    c.globalAlpha = ga * a;
+    c.beginPath();
+    c.rect(x, y, w, h);
+    c.clip();
+    // a block at fractions of the head
+    const f = (col: string | CanvasGradient, fx: number, fy: number, fw: number, fh: number, min = 1) => {
+      c.fillStyle = col;
+      c.fillRect(Math.round(x + fx * w), Math.round(y + fy * h), Math.max(min, Math.round(fw * w)), Math.max(min, Math.round(fh * h)));
     };
-    if (key === "reel") {
-      // upright: the mark high, a caption under it
-      dot(cx, y + h * 0.36);
-      hline(x + m, x + w - m + 1, y + h * 0.7, FOG, 0.65 * a);
-    } else if (key === "film") {
-      // the mark left of a title, a progress bar along the foot
-      dot(x + w * 0.27, cy - 1);
-      hline(x + w * 0.48, x + w - m, cy - 1, FOG, 0.55 * a);
-      hline(x + m, x + w - m + 1, y + h - m + 1, FOG, 0.3 * a);
-      hline(x + m, x + m + (w - 2 * m) * 0.4, y + h - m + 1, SIG, a);
-    } else if (key === "ai") {
-      // the cited source, then a line of answer
-      c.fillStyle = rgba(SIG, a);
-      c.fillRect(x + m, y + m, 2, 2);
-      hline(x + m + 5, Math.max(x + m + 8, x + w * 0.62), y + m + 1, PAPER, 0.7 * a);
-      hline(x + m, x + w - m + 1, y + h - m - (h < 14 ? 0 : 2), FOG, 0.5 * a);
-    } else if (key === "feed") {
-      // a grid of posts, one of them lit
-      // marker-sized even while the card is still shrinking onto the lane
-      const g = w < 14 ? 1 : 2, s = clamp(Math.floor((w - 2 * m - g) / 2), 2, 4);
-      const x0 = Math.round(cx - s - g / 2), y0 = Math.round(cy - s - g / 2);
-      for (let i = 0; i < 4; i++) {
-        c.fillStyle = i === 0 ? rgba(SIG, a) : rgba(FOG, 0.55 * a);
-        c.fillRect(x0 + (i % 2) * (s + g), y0 + (i >> 1) * (s + g), s, s);
+    const vg = (top: string, bot: string) => {
+      const g = c.createLinearGradient(0, y, 0, y + h);
+      g.addColorStop(0, top);
+      g.addColorStop(1, bot);
+      return g;
+    };
+    switch (key) {
+      case "search":
+        f("#fbfaf6", 0, 0, 1, 1);
+        f("#e6e2da", 0, 0, 1, 0.13);
+        f("#d8d2c8", 0.08, 0.24, 0.5, 0.09);
+        f("#1a35b0", 0.08, 0.46, 0.66, 0.09);
+        f("#b9b4ab", 0.08, 0.62, 0.8, 0.05);
+        f("#b9b4ab", 0.08, 0.72, 0.56, 0.05);
+        break;
+      case "reel":
+        f(vg("#5a1b16", "#140707"), 0, 0, 1, 1);
+        f("#d9cfc6", 0.22, 0.42, 0.56, 0.2);
+        f("#fbfaf6", 0.08, 0.03, 0.84, 0.012);
+        f("#fbfaf6", 0.2, 0.28, 0.6, 0.045);
+        break;
+      case "film": {
+        const g = c.createLinearGradient(x, 0, x + w, 0);
+        g.addColorStop(0, "#c2563a");
+        g.addColorStop(0.45, "#5a1d17");
+        g.addColorStop(1, "#1b2434");
+        f(g, 0, 0, 1, 1);
+        f("#050303", 0, 0, 1, 0.12);
+        f("#050303", 0, 0.88, 1, 0.12);
+        f("#fbfaf6", 0.34, 0.68, 0.32, 0.05);
+        f("#e8564e", 0.05, 0.92, 0.42, 0.02);
+        break;
       }
-    } else if (key === "creator") {
-      // a face in the corner, the mark under it
-      const rr = w < 14 ? 1.5 : 2.5;
-      c.strokeStyle = rgba(PAPER, 0.75 * a);
-      c.lineWidth = 1;
-      c.beginPath();
-      c.arc(x + m + rr, y + m + rr, rr, 0, TAU);
-      c.stroke();
-      dot(cx, y + h * 0.6);
-    } else {
-      // out of home: the mark at the left of one heavy line
-      dot(x + h * 0.5, cy);
-      hline(x + h, x + w - m, cy, PAPER, 0.65 * a, 2);
+      case "ai":
+        f("#202124", 0, 0, 1, 1);
+        f("#3a3b3f", 0.34, 0.1, 0.58, 0.13);
+        f("#b9bcc2", 0.08, 0.34, 0.84, 0.045);
+        f("#b9bcc2", 0.08, 0.44, 0.78, 0.045);
+        f("#b9bcc2", 0.08, 0.54, 0.5, 0.045);
+        f("#e8564e", 0.62, 0.53, 0.08, 0.065);
+        f("#2c2d31", 0.08, 0.82, 0.84, 0.1);
+        break;
+      case "press":
+        f("#f4f1ea", 0, 0, 1, 1);
+        f("#110f0a", 0.22, 0.06, 0.56, 0.045);
+        f("#110f0a", 0.08, 0.18, 0.8, 0.07);
+        f("#110f0a", 0.08, 0.28, 0.5, 0.07);
+        f(vg("#a8462f", "#4a1a14"), 0.08, 0.42, 0.84, 0.28);
+        f("#a39d93", 0.08, 0.78, 0.84, 0.04);
+        f("#a39d93", 0.08, 0.86, 0.6, 0.04);
+        break;
+      case "feed": {
+        // a customer's phone photo of their unit against the brick, with
+        // the post's caption bar over its foot
+        f(vg("#7a2a22", "#2a0d0b"), 0, 0, 1, 1);
+        for (let r = 0; r < 6; r++) f("rgba(20,6,5,0.45)", 0, 0.06 + r * 0.15, 1, 0.012, 0.5);
+        f("#efe4dc", 0.18, 0.3, 0.6, 0.42);
+        f("rgba(120,80,72,0.55)", 0.73, 0.3, 0.05, 0.42);
+        c.fillStyle = "#2c1715";
+        c.beginPath();
+        c.arc(x + w * 0.4, y + h * 0.51, Math.max(1, Math.min(w, h) * 0.15), 0, TAU);
+        c.fill();
+        f("rgba(8,3,3,0.72)", 0, 0.78, 1, 0.22);
+        c.fillStyle = "#d39a83";
+        c.beginPath();
+        c.arc(x + w * 0.12, y + h * 0.89, Math.max(1, h * 0.055), 0, TAU);
+        c.fill();
+        f("#fbfaf6", 0.22, 0.85, 0.5, 0.035);
+        f("#b9bcc2", 0.22, 0.91, 0.34, 0.03);
+        break;
+      }
+      case "creator":
+        f("#ffffff", 0, 0, 1, 1);
+        c.fillStyle = "#c96f55";
+        c.beginPath();
+        c.arc(x + w * 0.16, y + h * 0.1, Math.max(1, w * 0.08), 0, TAU);
+        c.fill();
+        f("#110f0a", 0.3, 0.08, 0.4, 0.04);
+        f(vg("#a8462f", "#3b1410"), 0.06, 0.24, 0.88, 0.5);
+        f("#b9b4ab", 0.06, 0.8, 0.8, 0.04);
+        f("#b9b4ab", 0.06, 0.88, 0.5, 0.04);
+        break;
+      case "ooh":
+        f(vg("#2b1a33", "#c0604a"), 0, 0, 1, 1);
+        f("#140c10", 0, 0.8, 1, 0.2);
+        f("#3a2a2e", 0.53, 0.62, 0.02, 0.2);
+        f("#ece6dc", 0.36, 0.16, 0.36, 0.48);
+        f("#110f0a", 0.4, 0.26, 0.18, 0.08);
+        break;
+      default: {
+        // events: a stage, the campaign on the screen behind, a lit Halden
+        // lectern and the audience's heads against the light
+        f("#0d0809", 0, 0, 1, 1);
+        f("#1c1214", 0.12, 0.1, 0.76, 0.42);
+        f("#e8564e", 0.2, 0.22, 0.4, 0.06);
+        f("#f2c9bf", 0.2, 0.33, 0.26, 0.04);
+        const g = c.createRadialGradient(x + w * 0.66, y + h * 0.5, 0, x + w * 0.66, y + h * 0.5, Math.max(w, h) * 0.42);
+        g.addColorStop(0, "rgba(255,226,194,0.42)");
+        g.addColorStop(1, "rgba(255,226,194,0)");
+        f(g, 0, 0, 1, 1);
+        f("#2a1a1a", 0, 0.66, 1, 0.08);
+        f("#efe6dc", 0.6, 0.48, 0.14, 0.22);
+        f("#110f0a", 0.64, 0.53, 0.06, 0.035);
+        c.fillStyle = "#050304";
+        for (let i = 0; i < 6; i++) {
+          c.beginPath();
+          c.arc(x + w * (0.08 + i * 0.17), y + h * 0.9, Math.max(1, h * 0.08), 0, TAU);
+          c.fill();
+        }
+        f("#050304", 0, 0.92, 1, 0.08);
+      }
     }
-  }
-  /** Small lane marker: the card it came from, or a drawn surface */
-  function drawIcon(key: AfIcon, r: Rect, a: number, fresh: boolean) {
-    if (a <= 0.01) return;
-    strokeRect(r, PAPER, 0.8 * a);
-    if (!fresh) {
-      cue(key, r, a);
-      return;
-    }
-    const c = ctx;
-    const cy = Math.round(r.y + r.h / 2);
-    const d = r.h < 14 ? 2 : 3;
-    c.fillStyle = rgba(SIG, a);
-    if (key === "search") {
-      hline(r.x + 4, r.x + r.w * 0.45, cy, FOG, 0.6 * a);
-      c.fillStyle = rgba(SIG, a);
-      c.fillRect(Math.round(r.x + r.w - 4 - d), cy - d / 2, d, d);
-    } else if (key === "press") {
-      for (let i = 0; i < 3; i++) hline(r.x + 3, r.x + r.w - 3, r.y + r.h * (0.3 + i * 0.2), FOG, 0.5 * a);
-    } else {
-      const px = Math.round(r.x + r.w * 0.66);
-      c.fillStyle = rgba(FOG, 0.55 * a);
-      for (let y = Math.round(r.y) + 3; y < r.y + r.h - 2; y += 3) c.fillRect(px, y, 1, 1.5);
-      c.fillStyle = rgba(SIG, a);
-      c.fillRect(Math.round(r.x + r.w * 0.33 - d / 2), cy - d / 2, d, d);
-    }
+    c.restore();
+    // the screen's edge, as on the tiles
+    c.strokeStyle = rgba(PAPER, 0.16 * a * ga);
+    c.lineWidth = 1;
+    c.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
   }
   function laneY(k: number, u: number, o: number, b: number) {
     let g = 1, ws = 1;
@@ -971,16 +1216,9 @@ export function mountAttentionField(root: HTMLElement): () => void {
     }
     c.globalAlpha = 1;
   }
-  function drawFurniture(tickA: number, grpA: number) {
+  /** The three groups' brackets */
+  function drawFurniture(grpA: number) {
     const c = ctx;
-    if (tickA > 0.002 && dashW > 0) {
-      c.globalAlpha = tickA;
-      c.fillStyle = "rgba(185,188,194,0.55)";
-      for (let k = 0; k < NL; k++) {
-        for (let j = 0; j < 4; j++) c.fillRect(dashX, Math.round(C[k] + (j - 1.5) * 4.5), dashW, 1);
-      }
-      c.globalAlpha = 1;
-    }
     if (grpA > 0.002) {
       c.globalAlpha = grpA;
       c.fillStyle = "rgba(185,188,194,0.45)";
@@ -1026,7 +1264,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
     c.lineCap = "butt";
     c.globalAlpha = 1;
   }
-  /** Baseline (dashed), quarter ticks, and the drop from the head */
+  /** Baseline (dashed) and the drop from the head */
   function drawAxis(a: number, hx: number, hy: number) {
     if (a <= 0.002) return;
     const c = ctx;
@@ -1034,8 +1272,6 @@ export function mountAttentionField(root: HTMLElement): () => void {
     c.fillStyle = "rgba(185,188,194,0.42)";
     const y = Math.round(yb);
     for (let x = xL; x < xR; x += 6) c.fillRect(Math.round(x), y, Math.min(3, xR - x), 1);
-    c.fillStyle = "rgba(185,188,194,0.6)";
-    for (let i = 0; i <= 4; i++) c.fillRect(Math.round(xL + (i * (xR - xL)) / 4), y + 3, 1, 6);
     c.fillStyle = "rgba(232,86,78,0.55)";
     for (let yy = hy + 10; yy < yb - 3; yy += 5) c.fillRect(Math.round(hx), yy, 1, 2);
     c.globalAlpha = 1;
@@ -1105,13 +1341,168 @@ export function mountAttentionField(root: HTMLElement): () => void {
     return vn + 1;
   }
 
+  /* ---------- touch: the mesh answers the pointer (NOISE only) ----------
+     Two things, both off the instant the stage moves on and free while
+     the pointer is elsewhere:
+     - the lens: a fine pointer over the field (pointerType mouse or pen;
+       touch has no hover) pushes the nearest dots aside and lights them.
+       Its centre, radius and strength ease; each dot rides a damped
+       spring to its push and back (jx/jy, stepped in render's dot loop
+       only while some dot has give left: jOn).
+     - the easter egg: press a pool's marker (its name and square, which
+       take the pointer only while grabbable: data-grab) and drag. The
+       marker follows the pointer, rubber-banded at the field's edges; the
+       pool's dots follow on two springs (a tight core, a loose rim), and
+       the lens moves with the pool to part the dots round it. Dropped, it
+       springs to a place inside the field and clear of every other pool
+       (endDrag), and stays until STORY has gathered every dot; then all
+       pools go home, so coming back to NOISE shows the original layout. Pointer capture is on the marker alone and only
+       the marker has touch-action: none, so a page scroll is never taken.
+     The handlers only record; touchStep (called by render) does the work. */
+  const rubber = (v: number, lo: number, hi: number) =>
+    v < lo ? lo - (60 * (lo - v)) / (lo - v + 60) : v > hi ? hi + (60 * (v - hi)) / (v - hi + 60) : v;
+  let poolsDirty = false, poolsMoving = false;
+  function homePools() {
+    for (const a of [mkX, mkY, mkVX, mkVY, tgX, tgY, coX, coY, coVX, coVY, rmX, rmY, rmVX, rmVY]) a.fill(0);
+    poolsDirty = poolsMoving = false;
+  }
+  function endDrag() {
+    const k = dragK;
+    if (k < 0) return;
+    dragK = -1;
+    const grip = laneEls[k].firstElementChild;
+    if (grip && dragId >= 0 && grip.hasPointerCapture(dragId)) grip.releasePointerCapture(dragId);
+    dragId = -1;
+    delete laneEls[k].dataset.drag;
+    // dropped: it settles where it was let go, inside the field and clear
+    // of every other pool (outside an ellipse of 2.2 spreads round each,
+    // which the pools at home keep too), springing there from the drop
+    const rx = poolSX * 2.2, ry = poolSY * 2.2;
+    const inX = (v: number) => clamp(v, pad + 12, W - pad - 12), inY = (v: number) => clamp(v, Fy + 12, Fy + Fh - 12);
+    let x = inX(ax[k] + mkX[k]), y = inY(ay[k] + mkY[k]);
+    for (let it = 0; it < 8; it++) {
+      let moved = false;
+      for (let o = 0; o < NL; o++) {
+        if (o === k) continue;
+        const ox = ax[o] + tgX[o], oy = ay[o] + tgY[o];
+        const dx = (x - ox) / rx, dy = (y - oy) / ry, d = Math.hypot(dx, dy);
+        if (d >= 1) continue;
+        // out along the line from the other pool (straight down if on it)
+        const ux = d > 1e-3 ? dx / d : 0, uy = d > 1e-3 ? dy / d : 1;
+        x = ox + ux * rx * 1.01;
+        y = oy + uy * ry * 1.01;
+        moved = true;
+      }
+      x = inX(x);
+      y = inY(y);
+      if (!moved) break;
+    }
+    tgX[k] = x - ax[k];
+    tgY[k] = y - ay[k];
+  }
+  /** One step of the touch state; `sg` is the pools' spread (px) */
+  function touchStep(dt: number, noiseW: number, grabV: number, sg: number) {
+    if (noiseW <= 0) {
+      // STORY has every dot: whatever was moved goes home
+      endDrag();
+      if (poolsDirty) homePools();
+    } else if (grabV < 0.5) endDrag();
+    const px = ptrCX - stageL, py = ptrCY - stageT;
+    let want = 0, cx = 0, cy = 0, R = phone ? LENS_R_PHONE : LENS_R;
+    if (dragK >= 0) {
+      const k = dragK;
+      mkX[k] = rubber(px - grabDX, pad + 12, W - pad - 12) - ax[k];
+      mkY[k] = rubber(py - grabDY, Fy + 12, Fy + Fh - 12) - ay[k];
+      mkVX[k] = mkVY[k] = 0;
+      tgX[k] = mkX[k];
+      tgY[k] = mkY[k];
+      cx = ax[k] + coX[k];
+      cy = ay[k] + coY[k];
+      R = Math.max(R, sg * 1.7);
+      want = 1;
+    } else if (hover && py >= 0 && py <= H) {
+      cx = px;
+      cy = py;
+      want = 1;
+    }
+    want *= noiseW;
+    if (dt > 0) {
+      lensA += (want - lensA) * (1 - Math.exp(-dt * 7));
+      if (want > 0) {
+        const e = 1 - Math.exp(-dt * 20);
+        // a fresh lens starts where it is wanted, not across the field
+        if (lensA < 0.02) {
+          lensX = cx;
+          lensY = cy;
+        } else {
+          lensX += (cx - lensX) * e;
+          lensY += (cy - lensY) * e;
+        }
+        lensR += (R - lensR) * e;
+      } else if (lensA < 0.003) lensA = 0;
+    }
+    if (lensA > 0) jOn = true;
+    // the pool in hand, or under the pointer, keeps its dots and lights up
+    const hk = dragK >= 0 ? dragK : hover ? hoverK : -1;
+    if (hk >= 0) heldK = hk;
+    if (dt > 0) {
+      heldA += ((hk >= 0 ? 1 : 0) - heldA) * (1 - Math.exp(-dt * 10));
+      if (hk < 0 && heldA < 0.01) {
+        heldA = 0;
+        heldK = -1;
+      }
+    }
+    if (!poolsMoving || dt <= 0) return;
+    // the pools' springs, in two half steps when a frame runs long
+    const n = dt > 1 / 50 ? 2 : 1, h = dt / n;
+    let busy = dragK >= 0;
+    for (let s = 0; s < n; s++) {
+      for (let k = 0; k < NL; k++) {
+        if (k !== dragK) {
+          mkVX[k] += ((tgX[k] - mkX[k]) * MK_K - mkVX[k] * MK_C) * h;
+          mkVY[k] += ((tgY[k] - mkY[k]) * MK_K - mkVY[k] * MK_C) * h;
+          mkX[k] += mkVX[k] * h;
+          mkY[k] += mkVY[k] * h;
+        }
+        coVX[k] += ((mkX[k] - coX[k]) * CORE_K - coVX[k] * CORE_C) * h;
+        coVY[k] += ((mkY[k] - coY[k]) * CORE_K - coVY[k] * CORE_C) * h;
+        coX[k] += coVX[k] * h;
+        coY[k] += coVY[k] * h;
+        rmVX[k] += ((mkX[k] - rmX[k]) * RIM_K - rmVX[k] * RIM_C) * h;
+        rmVY[k] += ((mkY[k] - rmY[k]) * RIM_K - rmVY[k] * RIM_C) * h;
+        rmX[k] += rmVX[k] * h;
+        rmY[k] += rmVY[k] * h;
+      }
+    }
+    for (let k = 0; k < NL && !busy; k++) {
+      const v = Math.abs(mkVX[k]) + Math.abs(mkVY[k]) + Math.abs(coVX[k]) + Math.abs(coVY[k]) + Math.abs(rmVX[k]) + Math.abs(rmVY[k]);
+      const d = Math.abs(tgX[k] - mkX[k]) + Math.abs(tgY[k] - mkY[k]) + Math.abs(mkX[k] - rmX[k]) + Math.abs(mkY[k] - rmY[k]) + Math.abs(mkX[k] - coX[k]) + Math.abs(mkY[k] - coY[k]);
+      if (v > 0.5 || d > 0.3) busy = true;
+    }
+    if (!busy) {
+      // at rest: snap the last fraction of a pixel and stop stepping
+      for (let k = 0; k < NL; k++) {
+        mkX[k] = coX[k] = rmX[k] = tgX[k];
+        mkY[k] = coY[k] = rmY[k] = tgY[k];
+        mkVX[k] = mkVY[k] = coVX[k] = coVY[k] = rmVX[k] = rmVY[k] = 0;
+      }
+      poolsMoving = false;
+    }
+  }
+
   /* ---------- pinned render ---------- */
-  let curStage = -1, lastRead = "", lastVal = "", lastQ = -1;
-  const flKj = new Float32Array(AF_CARDS.length), flKey = new Float32Array(AF_CARDS.length);
-  const flOrd: number[] = AF_CARDS.map((_, j) => j);
+  let lastVal = "", lastT = -1, poolOn = false, grabOn = false;
+  // each piece's development (0..1) this frame
+  const dev = new Float32Array(NT);
+  // where each lane pours from this frame: its tile, in flight or landed,
+  // or its drawn head
+  const src: Rect[] = AF_LANES.map(() => ({ x: 0, y: 0, w: 0, h: 0 }));
 
   function render(p: number, t: number) {
     const c = ctx;
+    // the springs' step: real time, capped so a stall never flings anything
+    const dt = lastT < 0 ? 0 : clamp(t - lastT, 0, 1 / 30);
+    lastT = t;
     // headings
     let hmax = 0;
     for (let i = 0; i < 5; i++) {
@@ -1124,19 +1515,17 @@ export function mountAttentionField(root: HTMLElement): () => void {
     const dimLab = 1 - 0.88 * hmax;
     const dim = 1 - 0.56 * hmax;
 
-    // phases
-    const poolV = ss(0.085, 0.115, p) * (1 - ss(0.155, 0.18, p));
-    const k1 = seg(p, 0.17, 0.26);
-    const solid = ss(0.25, 0.275, p);
-    const fOpen = seg(p, 0.27, 0.33);
+    // phases (the markers have gone before STORY's heading is a third in)
+    const poolV = ss(0.085, 0.115, p) * (1 - ss(0.148, 0.168, p));
+    // the gather into the master frame
+    const k1 = seg(p, G0, G1);
     // the flight to the lanes plays alone, before the LANES heading rises
     const kc = seg(p, KC0, KC1);
-    const markOut = ss(0.385, 0.415, p);
-    // the dots leave the story (all hidden by now under the mark and the
-    // card outlines) for their lanes
-    const lanesOn = p > 0.38;
-    const labV = ss(0.44, 0.48, p) * (1 - ss(0.805, 0.84, p));
-    const grpV = ss(0.455, 0.5, p) * (1 - ss(0.805, 0.84, p));
+    // the dots leave the story (all hidden by now under the tiles) for
+    // their lanes
+    const lanesOn = p > KC0 - 0.01;
+    const labV = ss(0.444, 0.478, p) * (1 - ss(0.805, 0.84, p));
+    const grpV = ss(0.458, 0.498, p) * (1 - ss(0.805, 0.84, p));
     const newV = ss(HEAD_NEW - 0.015, HEAD_NEW + 0.02, p) * (1 - ss(0.805, 0.84, p));
     const beta = eio(seg(p, 0.64, 0.745));
     const throatV = ss(0.72, 0.76, p) * (1 - ss(0.8, 0.83, p));
@@ -1149,40 +1538,62 @@ export function mountAttentionField(root: HTMLElement): () => void {
     // the index climbs from baseline as it fades in, and lands with the head
     const readV = ss(0.86, 0.9, p);
     const tickV = ss(0.86, 0.94, p);
-    const strayA = lerp(0.34, 0.13, ss(0.17, 0.27, p)) * lerp(1, 0.55, ss(0.8, 0.91, p));
+    const strayA = lerp(0.34, 0.1, ss(0.17, 0.3, p)) * lerp(1, 0.55, ss(0.8, 0.91, p));
     const noiseW = 1 - k1;
-    // cards
-    const fo = ss(0.72, 1, fOpen);
-    const fi = ss(0.85, 1, fOpen);
-    const fl = ss(0.32, 0.345, p) * (1 - ss(0.38, 0.393, p));
-    const con = ss(0.7, 1, fOpen) * (1 - ss(0.38, 0.395, p));
+    // the heads and the lanes' names go as the funnel hands over to the curve
     const keep = 1 - ss(0.805, 0.84, p);
-    const push = Math.sin(Math.PI * seg(fOpen, 0, 0.7)) * MS * 0.07;
+    for (let j = 0; j < NT; j++) dev[j] = shown[j] ? eio(seg(p, devAt[j], devAt[j] + DEV_T)) : 0;
+    // the story's line comes up in the frame as the heading lifts
+    const inkV = ss(INK0, INK1, p);
 
-    // drifting pools of attention
+    // drifting pools of attention: each pool's home; its marker and its
+    // dots add their touch offsets
     for (let k = 0; k < NL; k++) {
       ax[k] = pad + pools[k][0] * (W - 2 * pad) + Math.sin(t * 0.11 + k * 1.7) * 14;
       ay[k] = Fy + pools[k][1] * Fh + Math.cos(t * 0.09 + k * 2.3) * 10;
     }
+    const sgx = W * (phone ? 0.078 : 0.054), sgy = H * (phone ? 0.046 : 0.07);
+    poolSX = sgx;
+    poolSY = sgy;
+    // the markers can be taken while their names are well in
+    const grabV = poolV * dimLab;
+    touchStep(dt, noiseW, grabV, Math.max(sgx, sgy));
 
     /* --- DOM --- */
     const pooled = p < 0.29;
+    if (pooled !== poolOn) {
+      poolOn = pooled;
+      for (const el of laneEls) {
+        if (pooled) el.dataset.pool = "";
+        else delete el.dataset.pool;
+      }
+    }
+    const canGrab = pooled && grabV > 0.5;
+    if (canGrab !== grabOn) {
+      grabOn = canGrab;
+      for (const el of laneEls) {
+        if (canGrab) el.dataset.grab = "";
+        else delete el.dataset.grab;
+      }
+    }
     for (let k = 0; k < NL; k++) {
       const el = laneEls[k];
-      if (pooled) put(el, clamp(ax[k] + 10, pad, W - pad - laneWs[k]), ay[k], poolV * dimLab);
-      else {
+      if (pooled) {
+        // the name hangs right of its marker (the square at the marker
+        // itself), or left of it near the right edge
+        const mx = ax[k] + mkX[k], my = ay[k] + mkY[k];
+        const left = mx + 13 + laneWs[k] > W - pad;
+        align(el, left ? "r" : "l");
+        put(el, left ? mx - 13 : mx + 13, my, grabV);
+      } else {
         const ly = phone ? C[k] - bh - 9 : C[k];
-        const lx = phone ? labX + icons[k].w + 8 : labX;
+        const lx = phone ? labX + heads[k].w + 8 : labX;
+        align(el, "l");
         put(el, lx, ly, labV * dimLab);
       }
     }
     for (let g = 0; g < 3; g++) put(grpEls[g], null, 0, grpV * dimLab);
-    for (let j = 0; j < cardEls.length; j++) put(cardEls[j], null, 0, fl * dimLab);
-    put(storyEl, null, 0, ss(0.275, 0.3, p) * (1 - ss(0.38, 0.393, p)) * dimLab);
     put(throatEl, null, 0, throatV * dimLab);
-    for (let i = 0; i < 4; i++) put(qEls[i], null, 0, axisV * dimLab);
-    put(capEl, null, 0, axisV * dimLab);
-    put(baseEl, null, 0, axisV * dimLab);
     const hj = headS * (TN - 1), h0 = Math.floor(hj), hf = hj - h0, h1 = Math.min(TN - 1, h0 + 1);
     const hx = lerp(cvX[h0], cvX[h1], hf), hy = lerp(cvY[h0], cvY[h1], hf);
     if (phone) {
@@ -1192,43 +1603,44 @@ export function mountAttentionField(root: HTMLElement): () => void {
       align(readoutEl, "l");
       put(readoutEl, hx + 24, hy, readV * dimLab);
     }
+    // the one link arrives with the readout, lifting into place
+    const endV = ss(END0, END1, p);
+    const endLift = (1 - endV) * 14;
+    if (phone) putEnd(xL, yb + 28 + endLift, endV);
+    else putEnd(hx + 24, hy + readH / 2 + 28 + endLift, endV);
     const val = `${(1 + (AF_INDEX - 1) * curveF(tickV)).toFixed(1)}×`;
     if (val !== lastVal) {
       lastVal = val;
       valueEl.textContent = val;
     }
-    const qn = Math.min(3, Math.floor(headS * 4 - 1e-6));
-    if (qn !== lastQ) {
-      lastQ = qn;
-      qEls.forEach((el, i) => {
-        if (i === qn) el.dataset.on = "";
-        else delete el.dataset.on;
-      });
+    // the tiles: each develops in its piece of the mosaic, holds, then flies
+    // to its lane's head (in the air over every tile still in place, and
+    // over those bound for lower lanes); they play while they show in STORY
+    // and hold their frame once landed. Each lane pours out of where its
+    // tile is now (src)
+    for (let k = 0; k < NL; k++) {
+      const r = heads[k];
+      src[k].x = r.x; src[k].y = r.y; src[k].w = r.w; src[k].h = r.h;
     }
-    let st = 0;
-    while (st < 4 && p >= STAGE_AT[st + 1]) st++;
-    if (st !== curStage) {
-      curStage = st;
-      tabs.forEach((b, i) => {
-        if (i === st) b.setAttribute("aria-current", "step");
-        else b.removeAttribute("aria-current");
-      });
-    }
-    if (readEl) {
-      const rd = READ[st];
-      if (rd !== lastRead) {
-        lastRead = rd;
-        readEl.textContent = rd;
+    for (let j = 0; j < NT; j++) {
+      if (!dev[j]) {
+        putTile(j, null, 0, 1, 0, false);
+        continue;
       }
-    }
-    progs.forEach((el, i) => {
-      const v = i === st ? seg(p, STAGE_AT[i], Math.min(1, STAGE_AT[i + 1])) : 0;
-      const s = (Math.round(v * 400) / 400).toString();
-      if (el.dataset.v !== s) {
-        el.dataset.v = s;
-        el.style.transform = `scaleX(${s})`;
+      const kj = flightAt(kc, j);
+      const z = kj <= 0 ? 1 : kj >= 1 ? 2 : 3 + NL - TILE_LANE[j];
+      const r = kj > 0 ? flightRect(j, kj) : tR[j];
+      if (kj < 1) {
+        const sr = src[TILE_LANE[j]];
+        sr.x = r.x; sr.y = r.y; sr.w = r.w; sr.h = r.h;
       }
-    });
+      putTile(j, r, keep * dim, z, dev[j], running && kj <= 0, kj > 0 && kj < 1);
+    }
+    // the line under the mosaic, while it holds
+    if (noteEl) {
+      const F = lay.frame;
+      put(noteEl, Math.round(F.x), Math.round(F.y + F.h + 14), ss(NOTE0, NOTE1, p) * (1 - ss(KC0 - 0.004, KC0 + 0.008, p)) * dim);
+    }
 
     /* --- canvas --- */
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -1249,146 +1661,127 @@ export function mountAttentionField(root: HTMLElement): () => void {
       c.globalAlpha = 1;
     }
 
-    drawFurniture(labV * dim, grpV * dim);
+    drawFurniture(grpV * dim);
 
-    // pool markers in the noise
-    const mk = poolV * dim;
-    if (mk > 0.002) {
-      c.globalAlpha = mk;
-      c.fillStyle = "#e8564e";
-      for (let k = 0; k < NL; k++) c.fillRect(ax[k] - 1.5, ay[k] - 1.5, 4, 4);
-      c.globalAlpha = 1;
-    }
-
-    // once the cards fly, the fading mark stays under them
-    const storyMark = () => {
-      if (solid > 0.01 && markOut < 1) {
-        drawMark(MX, MY, MS * lerp(1, 0.55, markOut), solid * (1 - markOut) * dim, 0.94, push);
-      }
-    };
-    if (p >= KC0) storyMark();
-
-    // story: the cut from the mark to each format
-    if (con > 0.01) {
-      c.globalAlpha = dim;
-      c.setLineDash([2, 4]);
-      c.lineWidth = 1;
-      c.strokeStyle = rgba(FOG, 0.3 * con);
-      c.beginPath();
-      const half = MS / 2 + 10;
-      for (const r of cards) {
-        const cx = r.x + r.w / 2, cy = r.y + r.h / 2;
-        const dx = cx - MX, dy = cy - MY;
-        const t0 = Math.min(half / Math.abs(dx || 1e-6), half / Math.abs(dy || 1e-6));
-        const t1 = 1 - Math.min((r.w / 2 + 8) / Math.abs(dx || 1e-6), (r.h / 2 + 8) / Math.abs(dy || 1e-6));
-        if (t1 <= t0) continue;
-        const te = lerp(t0, t1, ss(0.7, 1, fOpen));
-        c.moveTo(MX + dx * t0, MY + dy * t0);
-        c.lineTo(MX + dx * te, MY + dy * te);
-      }
-      c.stroke();
-      c.setLineDash([]);
-      c.globalAlpha = 1;
-    }
-    // cards: outline, crop marks, contents; then they fly to their lanes.
-    // Each is a solid graphite card, drawn still ones first, landed markers
-    // next and cards in the air last, so a passing card cleanly covers.
-    if (fo > 0.01) {
-      c.globalAlpha = dim;
-      for (let j = 0; j < cards.length; j++) {
-        const kj = flightAt(kc, j);
-        flKj[j] = kj;
-        flOrd[j] = j;
-        flKey[j] = kj <= 0 ? 0 : kj > 0.99 ? 1 : 2 + kj;
-      }
-      flOrd.sort((a, b) => flKey[a] - flKey[b]);
-      for (const j of flOrd) {
-        const kj = flKj[j];
-        const r = flightRect(j, kj);
-        const fa = fo * (kj > 0.99 ? keep : 1);
-        if (kj > 0.99) {
-          drawIcon(AF_CARDS[j].key, r, fa, false);
-        } else {
-          c.fillStyle = `rgba(20,21,23,${fa.toFixed(3)})`;
-          c.fillRect(Math.round(r.x), Math.round(r.y), Math.round(r.w) + 1, Math.round(r.h) + 1);
-          strokeRect(r, PAPER, lerp(0.58, 0.8, kj) * fa);
-          // crop marks go as it leaves; the contents ride with the card most
-          // of the way, then hand over to the cue the marker keeps
-          crop(r, 0.5 * fi * (1 - ss(0, 0.3, kj)));
-          cardInner(AF_CARDS[j].key, r, fi * (1 - ss(0.6, 0.85, kj)));
-          cue(AF_CARDS[j].key, r, ss(0.6, 0.95, kj) * fa);
-        }
-      }
-      c.globalAlpha = 1;
-    }
-    // lanes without a card get a drawn marker
+    // lanes with no tile here get a drawn head
     if (newV > 0.01) {
       c.globalAlpha = dim;
       for (let k = 0; k < NL; k++) {
-        if (CARD_LANE.includes(k)) continue;
-        const r = icons[k], s = lerp(0.6, 1, newV);
-        const rs: Rect = { x: r.x + (r.w * (1 - s)) / 2, y: r.y + (r.h * (1 - s)) / 2, w: r.w * s, h: r.h * s };
-        drawIcon(AF_LANES[k].icon, rs, newV, true);
+        if (LANE_TILE[k] >= 0 && shown[LANE_TILE[k]]) continue;
+        const r = heads[k], sc = lerp(0.7, 1, newV);
+        const rs: Rect = { x: r.x + r.w * (1 - sc), y: r.y + (r.h * (1 - sc)) / 2, w: r.w * sc, h: r.h * sc };
+        drawHead(AF_LANES[k].icon, rs, newV);
       }
       c.globalAlpha = 1;
     }
 
     /* --- particles --- */
-    let vn = 0;
-    const sgx = W * (phone ? 0.085 : 0.06), sgy = H * (phone ? 0.05 : 0.075);
+    let vn = 0, jMoving = 0;
     const twOn = !reduced() && noiseW > 0;
-    const u = MS / 10, mx0 = MX - MS / 2, my0 = MY - MS / 2;
-    const oFade = 1 - ss(0.84, 1, fOpen);
+    const cutting = p > CUT0;
     for (let i = 0; i < drawN; i++) {
       const k = ln[i];
-      let x = 0, y = 0, a = 0, col = 0;
+      let x = 0, y = 0, a = 0, col = 0, size = sz[i];
       let nxp = 0, nyp = 0, na = 0;
       const needNoise = stray[i] === 1 || k1 < 1;
+      let lit = 0;
       if (needNoise) {
         const w = ph[i], A = amp[i], f = fr[i];
         if (cl[i]) {
-          nxp = ax[k] + gx[i] * sgx + A * Math.sin(f * t + w);
-          nyp = ay[k] + gy[i] * sgy + A * Math.cos(f * 0.83 * t + w * 1.3);
-          na = 0.2 + 0.36 * br[i];
+          // a pooled dot rides between its pool's core and rim followers
+          const q = lw[i];
+          nxp = ax[k] + coX[k] + (rmX[k] - coX[k]) * q + gx[i] * sgx + A * Math.sin(f * t + w);
+          nyp = ay[k] + coY[k] + (rmY[k] - coY[k]) * q + gy[i] * sgy + A * Math.cos(f * 0.83 * t + w * 1.3);
+          na = 0.2 + 0.36 * br[i] + 0.3 * pc[i] + (k === heldK ? 0.26 * heldA : 0);
         } else {
           nxp = mod(nx[i] * W + dvx[i] * t + A * Math.sin(f * t + w), W);
           nyp = mod(ny[i] * H + dvy[i] * t + A * Math.cos(f * 0.83 * t + w * 1.3), H);
           na = 0.12 + 0.3 * br[i];
         }
+        if (jOn) {
+          // the lens' push on this dot (none on the pool in hand), and the
+          // spring that carries it there and back
+          let tx = 0, ty = 0;
+          if (lensA > 0 && !(cl[i] && k === heldK)) {
+            const dx = nxp - lensX, dy = nyp - lensY;
+            if (dx < lensR && dx > -lensR && dy < lensR && dy > -lensR) {
+              const d = Math.sqrt(dx * dx + dy * dy) + 1e-3;
+              if (d < lensR) {
+                const f1 = 1 - d / lensR;
+                lit = f1 * f1 * lensA;
+                const pu = (lensR * LENS_PUSH * lit) / d;
+                tx = dx * pu;
+                ty = dy * pu;
+              }
+            }
+          }
+          // a dot at rest outside the lens costs one test
+          if (tx !== 0 || ty !== 0 || jx[i] !== 0 || jy[i] !== 0 || jvx[i] !== 0 || jvy[i] !== 0) {
+            const vx = (jvx[i] += ((tx - jx[i]) * DOT_K - jvx[i] * DOT_C) * dt);
+            const vy = (jvy[i] += ((ty - jy[i]) * DOT_K - jvy[i] * DOT_C) * dt);
+            const ex = (jx[i] += vx * dt), ey = (jy[i] += vy * dt);
+            if (ex * ex + ey * ey > 0.01 || vx * vx + vy * vy > 0.25) jMoving++;
+            else if (tx === 0 && ty === 0) jx[i] = jy[i] = jvx[i] = jvy[i] = 0;
+            nxp += ex;
+            nyp += ey;
+            // the nearest light up
+            na += 0.55 * lit;
+          }
+        }
       }
       if (stray[i]) {
-        vn = slot(vn, nxp, nyp, strayA * br[i], 0, sz[i]);
+        vn = slot(vn, nxp, nyp, strayA * br[i] + 0.5 * lit, lit > 0.3 ? C_PAPER : 0, sz[i]);
         continue;
       }
-      // its place in the mark
-      const cell = MARK_CELLS[mc[i]];
-      const cdx = (cell[0] + cell[2] / 2 - 5) / 5, cdy = (cell[1] + cell[3] / 2 - 5) / 5;
-      const mxp = mx0 + (cell[0] + mu[i] * cell[2]) * u + cdx * push;
-      const myp = my0 + (cell[1] + mv[i] * cell[3]) * u + cdy * push;
       const lu = frac(u0[i] + t * AF_LANES[k].speed * sp[i]);
       if (!lanesOn) {
-        // noise, condensing into the mark, then out to the card outlines
+        // noise, settling into its cell of the master frame; as the line
+        // comes up the cell splits into its points. Behind the blade each
+        // piece closes up into its tile's rectangle, opening the gutter
+        // (its edge dots lit as it goes), and the recording develops over it
         const kk = eio(seg(k1, dl[i] * 0.4, dl[i] * 0.4 + 0.6));
-        x = lerp(nxp, mxp, kk);
-        y = lerp(nyp, myp, kk) + Math.sin(kk * Math.PI) * arc[i];
-        a = lerp(na, (0.35 + 0.55 * br[i]) * (1 - solid), kk);
-        col = kk > 0.55 ? (mc[i] === 4 ? C_SIG : C_PAPER) : 0;
+        let fx = lerp(fcx[i], fpx[i], inkV), fy = lerp(fcy[i], fpy[i], inkV);
+        const iv = fink[i] * inkV;
+        let fa = fdup[i] ? 0 : lerp((0.24 + 0.3 * br[i]) * (1 - 0.35 * inkV), 0.8 + 0.2 * br[i], iv) * lerp(fsh[i], 1, inkV);
+        const fj = ft[i];
+        let flash = 0, edge = 0;
+        if (cutting && fj !== 255) {
+          const sc = sideCut[fj], r = reg[fj], t = tR[fj], u = fu[i], v = fv[i];
+          // each side: how far its cut has opened here (parting a little
+          // past the gutter, then settling), and the push
+          for (let sd = 0; sd < 4; sd++) {
+            const ci = sc[sd];
+            if (ci === 255) continue;
+            const cu = lay.cuts[ci];
+            const along = cu.vertical ? (fpy[i] - cu.y) / cu.h : (fpx[i] - cu.x) / cu.w;
+            const tc = cutAt[ci] + clamp(along, 0, 1) * CUT_T;
+            const q = seg(p, tc, tc + OPEN_T);
+            if (q <= 0) continue;
+            const e = q >= 1 ? 1 : 1 - (1 - q) * (1 - q) * (1 - q) + 0.9 * Math.sin(Math.PI * q) * (1 - q);
+            if (sd === 0) fx += e * (t.x - r.x) * (1 - u);
+            else if (sd === 1) fx -= e * (r.x + r.w - t.x - t.w) * u;
+            else if (sd === 2) fy += e * (t.y - r.y) * (1 - v);
+            else fy -= e * (r.y + r.h - t.y - t.h) * v;
+            // the dots along the fresh edge: a flash as it parts, then lit
+            const d = sd === 0 ? u * r.w : sd === 1 ? (1 - u) * r.w : sd === 2 ? v * r.h : (1 - v) * r.h;
+            if (d < 26) flash = Math.max(flash, Math.sin(Math.PI * q) * (1 - d / 26));
+            if (d < fPitch) edge = Math.max(edge, ss(0.2, 0.8, q));
+          }
+          fa = Math.max(fa, lerp(fa, 0.62 + 0.3 * br[i], edge)) + 0.6 * flash;
+        }
+        // its piece develops from the top: gone once the edge has passed it
+        if (fj !== 255 && dev[fj] > 0 && fy < tR[fj].y + dev[fj] * tR[fj].h + 1) fa = 0;
+        x = lerp(nxp, fx, kk);
+        y = lerp(nyp, fy, kk) + Math.sin(kk * Math.PI) * arc[i];
+        a = lerp(na, fa, kk);
+        size = lerp(size, 1.5 + 0.4 * iv, kk);
+        col = kk > 0.55 && (iv > 0.5 || inkV < 0.5 || flash > 0.3 || edge > 0.5) ? C_PAPER : 0;
         if (twOn && tw[i] && kk < 0.5) {
           const tws = Math.pow(Math.max(0, Math.sin(t * 0.7 + ph[i] * 5)), 14) * noiseW;
           a += tws * 0.6;
           if (tws > 0.3) col = C_PAPER;
         }
-        if (oc[i] !== 255 && fOpen > 0) {
-          const e = eio(seg(fOpen, ost[i], ost[i] + 0.6));
-          if (e > 0) {
-            const dx = ox[i] - mxp, dy = oy[i] - myp, dd = Math.hypot(dx, dy) || 1;
-            const sw = Math.sin(Math.PI * e) * osw[i];
-            x = mxp + dx * e - (dy / dd) * sw;
-            y = myp + dy * e + (dx / dd) * sw;
-            a = 0.85 * oFade;
-            col = C_PAPER;
-          }
-        }
+        if (lit > 0.3 && kk < 0.5) col = C_PAPER;
       } else {
         const ef = ss(0, 0.045, lu) * (1 - ss(0.94, 1, lu));
         const lx = A0 + lu * AW;
@@ -1404,24 +1797,31 @@ export function mountAttentionField(root: HTMLElement): () => void {
           if (qd[i]) mix = beta * ss(um + 0.12, ut, lu);
           else la *= 1 - beta * ss(um + 0.04, ut - 0.01, lu);
         }
-        // into the lane through its head (as its card lands there), then
-        // out along it, so each lane grows rightward from its marker
+        // out of its tile as it lands, fading in, then along the lane, so
+        // each lane grows rightward from its head: from the head's right
+        // edge straight into the lane (a phone's head sits above its lane:
+        // down from its foot to the lane's mouth first)
         const ar = headAt[k] + dl[i] * HEAD_JIT;
         const e2 = seg(p, ar, ar + OUT_T);
-        if (e2 < 1) {
+        if (e2 < 1 && !phone) {
+          const hr = src[k], q = 1 - Math.pow(1 - e2, 3);
+          x = lerp(hr.x + hr.w - 1, lx, q);
+          y = lerp(hr.y + hr.h / 2 + off[i] * hr.h * 0.3, ly, eio(seg(e2, 0, 0.3)));
+          a = la * lerp(0.32, ef, q) * ss(0, 0.12, e2);
+          col = hi[i] ? C_PAPER : 0;
+        } else if (e2 < 1) {
           const e1 = seg(p, ar - IN_T, ar);
           if (e1 < 1) {
-            const q = eio(e1);
-            const sx0 = oc[i] !== 255 ? ox[i] : mxp, sy0 = oc[i] !== 255 ? oy[i] : myp;
-            x = lerp(sx0, A0, q);
-            y = lerp(sy0, ly, q) + Math.sin(q * Math.PI) * arc[i] * 0.5;
-            a = la * 0.6 * ss(0.3, 1, e1);
-            col = q < 0.5 && oc[i] === 255 ? (mc[i] === 4 ? C_SIG : C_PAPER) : 0;
+            const hr = src[k];
+            x = lerp(hr.x + hr.w / 2, A0, e1);
+            y = lerp(hr.y + hr.h, ly, eio(e1));
+            a = la * 0.5 * ss(0.1, 0.7, e1);
+            col = hi[i] ? C_PAPER : 0;
           } else {
             const q = 1 - Math.pow(1 - e2, 3);
             x = lerp(A0, lx, q);
             y = ly;
-            a = la * lerp(0.6, ef, q);
+            a = la * lerp(0.32, ef, q);
             col = hi[i] ? C_PAPER : 0;
           }
         } else if (m3 > 0) {
@@ -1448,12 +1848,60 @@ export function mountAttentionField(root: HTMLElement): () => void {
           col = mix > 0.02 ? Math.round(1 + mix * 4) : hi[i] && beta < 0.5 ? C_PAPER : 0;
         }
       }
-      vn = slot(vn, x, y, a, col, sz[i]);
+      vn = slot(vn, x, y, a, col, size);
     }
     flush(vn, dim);
+    // every dot has come to rest and nothing pushes: the give is spent
+    if (jOn && lensA === 0 && (jMoving === 0 || k1 >= 1)) {
+      jOn = false;
+      jx.fill(0);
+      jy.fill(0);
+      jvx.fill(0);
+      jvy.fill(0);
+    }
 
-    // the mark, over the dots that made it (until the cards take off)
-    if (p < KC0) storyMark();
+    // the blade: each cut runs the length of its gutter as it is made, a
+    // 2px signal line with a bright point at its edge, the gutter opening
+    // behind it, and fades once the cut is through
+    if (cutting && p < CUT1 + 0.03) {
+      c.globalAlpha = dim;
+      lay.cuts.forEach((cu, j) => {
+        const q = seg(p, cutAt[j], cutAt[j] + CUT_T);
+        const fade = 1 - ss(cutAt[j] + CUT_T, cutAt[j] + CUT_T + 0.012, p);
+        if (q <= 0 || fade <= 0) return;
+        const v = cu.vertical;
+        const x0 = Math.round(cu.x + (v ? cu.w / 2 : 0)) - (v ? 1 : 0), y0 = Math.round(cu.y + (v ? 0 : cu.h / 2)) - (v ? 0 : 1);
+        const len = (v ? cu.h : cu.w) * q;
+        c.fillStyle = rgba(SIG, 0.95 * fade);
+        if (v) c.fillRect(x0, y0, 2, len);
+        else c.fillRect(x0, y0, len, 2);
+        if (q < 1) {
+          const tx = v ? x0 + 1 : x0 + len, ty = v ? y0 + len : y0 + 1;
+          const glow = c.createRadialGradient(tx, ty, 0, tx, ty, 9);
+          glow.addColorStop(0, "rgba(255,236,226,0.9)");
+          glow.addColorStop(0.4, "rgba(232,86,78,0.35)");
+          glow.addColorStop(1, "rgba(232,86,78,0)");
+          c.fillStyle = glow;
+          c.fillRect(tx - 9, ty - 9, 18, 18);
+          c.fillStyle = rgba(PAPER, 1);
+          c.fillRect(Math.round(tx) - 1.5, Math.round(ty) - 1.5, 3, 3);
+        }
+      });
+      c.globalAlpha = 1;
+    }
+
+    // each piece's developing edge, a hairline running down it
+    if (p > DEV0 && p < DEV0 + NT * DEV_STG + DEV_T) {
+      c.globalAlpha = dim;
+      for (let j = 0; j < NT; j++) {
+        const v = dev[j];
+        if (v <= 0 || v >= 1) continue;
+        const r = tR[j];
+        c.fillStyle = rgba(PAPER, 0.85 * Math.sin(Math.PI * v));
+        c.fillRect(Math.round(r.x), Math.round(r.y + v * r.h), Math.round(r.w), 1);
+      }
+      c.globalAlpha = 1;
+    }
 
     // demand curve
     if (curveV > 0.002) drawCurve(curveV * dim, Math.max(1, Math.round(headS * (TN - 1))), hx, hy);
@@ -1480,11 +1928,6 @@ export function mountAttentionField(root: HTMLElement): () => void {
     }
     for (let g = 0; g < 3; g++) put(grpEls[g], null, 0, 1);
     put(throatEl, null, 0, 1);
-    for (let i = 0; i < 4; i++) put(qEls[i], null, 0, 1);
-    qEls.forEach((el) => delete el.dataset.on);
-    qEls[3].dataset.on = "";
-    put(capEl, null, 0, 1);
-    put(baseEl, null, 0, 1);
     const hx = cvX[TN - 1], hy = cvY[TN - 1];
     if (stillCurveSplit) {
       align(readoutEl, "upr");
@@ -1506,13 +1949,8 @@ export function mountAttentionField(root: HTMLElement): () => void {
       c.fillStyle = "rgba(232,86,78,0.75)";
       c.fillRect(tx, Cc - 0.5, W - tx, 1);
     }
-    drawFurniture(1, 1);
-    if (iconS > 0) {
-      for (let k = 0; k < NL; k++) {
-        const fresh = !CARD_LANE.includes(k);
-        drawIcon(AF_LANES[k].icon, icons[k], 0.9, fresh);
-      }
-    }
+    drawFurniture(1);
+    if (headsOn) for (let k = 0; k < NL; k++) drawHead(AF_LANES[k].icon, heads[k], 0.92);
     let vn = 0;
     for (let i = 0; i < N; i++) {
       const k = ln[i];
@@ -1566,6 +2004,9 @@ export function mountAttentionField(root: HTMLElement): () => void {
   function progress() {
     const r = track.getBoundingClientRect();
     trackTop = r.top;
+    // the sticky stage's place in the viewport, for the pointer
+    stageL = r.left;
+    stageT = Math.min(Math.max(r.top, 0), r.bottom - H);
     const span = r.height - H;
     return span > 0 ? clamp(-r.top / span, 0, 1) : 0;
   }
@@ -1614,11 +2055,7 @@ export function mountAttentionField(root: HTMLElement): () => void {
   function stop() {
     running = false;
     cancelAnimationFrame(raf);
-  }
-
-  function readMono() {
-    const f = getComputedStyle(laneEls[0]).fontFamily;
-    if (f) mono = f;
+    holdTiles();
   }
 
   function resize() {
@@ -1632,13 +2069,12 @@ export function mountAttentionField(root: HTMLElement): () => void {
     Hs = sv > 0 && sv < h ? sv : h;
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
-    readMono();
     const target = Math.round(clamp((w * h) / (w < 700 ? 130 : 150), 1200, 8400));
     if (!N || Math.abs(target - N) > N * 0.12) build(target);
     if (pinned) {
       layoutPinned();
-      curStage = -1;
-      lastQ = -1;
+      endDrag();
+      homePools();
       render(lastP < 0 ? progress() : lastP, clock(performance.now()));
     } else {
       layoutStill();
@@ -1653,7 +2089,6 @@ export function mountAttentionField(root: HTMLElement): () => void {
     rotates, a window gets short, reduced motion toggles) the track changes
     height by thousands of pixels, so syncMode puts the reader back: inside
     the field they land at its start, below it they stay on the same content.
-    Like the services fold's keepPlace.
   */
   type Geo = { top: number; h: number; y: number; vw: number; vh: number; anchor: Element | null; at: number };
   let geo: Geo = { top: 0, h: 0, y: 0, vw: 0, vh: 0, anchor: null, at: 0 };
@@ -1701,20 +2136,19 @@ export function mountAttentionField(root: HTMLElement): () => void {
     const flipped = N > 0;
     pinned = next;
     stop();
+    endDrag();
+    homePools();
     clearInline();
     lastP = -1;
-    curStage = -1;
-    if (pinned) {
-      tabs.forEach((b, i) => {
-        if (i === 0) b.setAttribute("aria-current", "step");
-        else b.removeAttribute("aria-current");
-      });
-    } else {
-      tabs.forEach((b) => b.removeAttribute("aria-current"));
-      for (const el of steps) {
-        el.style.opacity = "";
-        el.style.transform = "";
-      }
+    lastT = -1;
+    poolOn = grabOn = false;
+    hover = false;
+    hoverK = heldK = -1;
+    lensA = heldA = 0;
+    // unpinned, the tiles sit in their static mosaic as designed stills
+    if (tilesRoot) {
+      if (pinned) delete tilesRoot.dataset.still;
+      else tilesRoot.dataset.still = "";
     }
     resize();
     if (flipped) keepPlace();
@@ -1765,34 +2199,75 @@ export function mountAttentionField(root: HTMLElement): () => void {
   };
   document.addEventListener("visibilitychange", onVis);
 
-  const onTab = (i: number) => () => {
-    if (!pinned) return;
+  // The link is the one stop in the tab order. Hidden (any stage before
+  // DEMAND's readout), focusing it jumps straight to where it shows
+  const onFocusIn = (e: FocusEvent) => {
+    if (!pinned || !endEl.contains(e.target as Node | null)) return;
     const r = track.getBoundingClientRect();
     const span = r.height - H;
-    const top = window.scrollY + r.top + TAB_TO[i] * span + 1;
-    window.scrollTo({ top, behavior: "smooth" });
-  };
-  const handlers = tabs.map((b, i) => {
-    const fn = onTab(i);
-    b.addEventListener("click", fn);
-    return fn;
-  });
-  // Tabbing in from outside lands where that tab's stage is fully shown
-  const onFocusIn = (e: FocusEvent) => {
-    if (!pinned || root.contains(e.relatedTarget as Node | null)) return;
-    const i = tabs.indexOf(e.target as HTMLElement);
-    if (i < 0) return;
-    const r = track.getBoundingClientRect();
-    const top = window.scrollY + r.top + TAB_TO[i] * (r.height - H) + 1;
-    window.scrollTo({ top, behavior: "instant" });
+    if (span <= 0) return;
+    const p = -r.top / span;
+    if (p >= END1 && p <= 1) return;
+    window.scrollTo({ top: window.scrollY + r.top + END_AT * span, behavior: "instant" });
   };
   root.addEventListener("focusin", onFocusIn);
+
+  // touch (see "touch" above): the handlers only record
+  const laneAt = (t: EventTarget | null) => {
+    const lane = (t as Element | null)?.closest("[data-af-lane]");
+    return lane ? laneEls.indexOf(lane as HTMLElement) : -1;
+  };
+  const onPointerMove = (e: PointerEvent) => {
+    if (!pinned) return;
+    if (e.pointerId === dragId || (dragK < 0 && e.pointerType !== "touch")) {
+      ptrCX = e.clientX;
+      ptrCY = e.clientY;
+      if (e.pointerType !== "touch") {
+        hover = true;
+        if (dragK < 0) hoverK = laneAt(e.target);
+      }
+    }
+  };
+  const onPointerLeave = (e: PointerEvent) => {
+    if (e.pointerType === "touch") return;
+    hover = false;
+    hoverK = -1;
+  };
+  const onPointerDown = (e: PointerEvent) => {
+    if (!pinned || dragK >= 0 || (e.pointerType === "mouse" && e.button !== 0)) return;
+    const k = laneAt(e.target);
+    if (k < 0 || !("grab" in laneEls[k].dataset)) return;
+    // the marker takes this pointer: no text selection, no page scroll
+    e.preventDefault();
+    const grip = laneEls[k].firstElementChild as HTMLElement;
+    try {
+      grip.setPointerCapture(e.pointerId);
+    } catch {
+      return;
+    }
+    dragK = k;
+    dragId = e.pointerId;
+    ptrCX = e.clientX;
+    ptrCY = e.clientY;
+    grabDX = e.clientX - stageL - (ax[k] + mkX[k]);
+    grabDY = e.clientY - stageT - (ay[k] + mkY[k]);
+    laneEls[k].dataset.drag = "";
+    poolsDirty = poolsMoving = true;
+  };
+  const onPointerEnd = (e: PointerEvent) => {
+    if (e.pointerId === dragId) endDrag();
+  };
+  fig.addEventListener("pointermove", onPointerMove, { passive: true });
+  fig.addEventListener("pointerleave", onPointerLeave);
+  fig.addEventListener("pointerdown", onPointerDown);
+  fig.addEventListener("pointerup", onPointerEnd);
+  fig.addEventListener("pointercancel", onPointerEnd);
+  fig.addEventListener("lostpointercapture", onPointerEnd);
 
   let alive = true;
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
       if (!alive || !W) return;
-      readMono();
       if (pinned) {
         // label widths were measured in the fallback face
         layoutPinned();
@@ -1818,8 +2293,13 @@ export function mountAttentionField(root: HTMLElement): () => void {
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", onResize);
     cancelAnimationFrame(resizeRaf);
-    tabs.forEach((b, i) => b.removeEventListener("click", handlers[i]));
     root.removeEventListener("focusin", onFocusIn);
+    fig.removeEventListener("pointermove", onPointerMove);
+    fig.removeEventListener("pointerleave", onPointerLeave);
+    fig.removeEventListener("pointerdown", onPointerDown);
+    fig.removeEventListener("pointerup", onPointerEnd);
+    fig.removeEventListener("pointercancel", onPointerEnd);
+    fig.removeEventListener("lostpointercapture", onPointerEnd);
     document.removeEventListener("visibilitychange", onVis);
   };
 }

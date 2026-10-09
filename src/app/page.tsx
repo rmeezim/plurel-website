@@ -9,6 +9,7 @@ import { MethodChapter } from "@/components/home/method-chapter";
 import { ResultsChapter } from "@/components/home/results-chapter";
 import { ServicesChapter } from "@/components/home/services-chapter";
 import { WorkChapter } from "@/components/home/work-chapter";
+import { channelClips } from "@/lib/clips";
 
 /*
   Home: the glass over the film, the Attention Field (how Plurel
@@ -20,7 +21,7 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <AttentionField />
+      <AttentionField clips={channelClips()} />
       <ClientsStrip />
       <ManifestoChapter />
       <ServicesChapter />

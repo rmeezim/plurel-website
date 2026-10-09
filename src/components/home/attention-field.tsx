@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { CtaLink } from "@/components/system";
+import { ChannelTiles } from "@/components/home/channel-tiles";
+import { CHANNELS, HALDEN, type ChannelClips } from "@/lib/channels";
 import {
-  AF_CARDS,
   AF_GROUPS,
   AF_INDEX,
   AF_LANES,
@@ -14,26 +15,39 @@ import s from "./attention-field.module.css";
 
 /*
   The Attention Field: how Plurel distributes, as one canvas of dots
-  (engine in lib/attention-field.ts). Directly after the hero, on graphite.
+  (engine in lib/attention-field.ts) and seven recordings of one client's
+  one story (the channel tiles). Directly after the hero, on graphite.
 
   Pinned and scrubbed by the visitor's own scroll when JS is on, motion is
   allowed and the screen is at least 360 x 560 (AF_PIN_QUERY, mirrored in
-  the CSS module): five stages, NOISE / STORY / LANES / SYSTEM / DEMAND,
-  each a heading that lifts away as the visual takes the stage, with a
-  stage control at the foot (the stage tabs, a nav, then the link to the
-  method). The field drifts on its own while pinned, with no pause control,
-  as the hero and footer glass do. Everywhere else it is a calm static
-  chapter: the five stages as a list beside one still frame of the whole
-  system, and only the link shows.
+  the CSS modules): five stages, NOISE / STORY / LANES / SYSTEM / DEMAND,
+  each a heading that lifts away as the visual takes the stage. No chrome
+  round it: the one action, the link to the method, arrives with the
+  final readout. In NOISE the mesh answers a fine pointer, and each
+  surface's marker can be picked up and its pool dragged about (an
+  unannounced easter egg; the engine owns the pointer code). In STORY the
+  dots settle into one frame that is cut into the tiles, which play (muted
+  footage from public/video/channels where it exists, see lib/clips.ts)
+  and then become the heads of their lanes. The field drifts on its own
+  while pinned, with no pause control, as the hero and footer glass do.
+  Everywhere else it is a calm static chapter: the tiles as one mosaic of
+  still frames, the five stages as a list beside one still frame of the
+  whole system, then the link. Under the mosaic, pinned or not, one quiet
+  line says Halden is a sample brief.
 
   The five stages are always real headings in the accessibility tree; the
-  canvas and its labels are decoration. Sticky breaks if this section or
-  any ancestor gets overflow hidden/clip; the stage clips itself.
+  canvas, its labels and the tiles are decoration. Sticky breaks if this
+  section or any ancestor gets overflow hidden/clip; the stage clips
+  itself.
 */
 
-const two = (n: number) => String(n).padStart(2, "0");
+// "an AI answer, a search result, ..." for the figure's description
+const FORMATS = CHANNELS.map(({ name }) => {
+  const n = name.startsWith("AI") ? name : name.toLowerCase();
+  return `${/^[aeiou]/i.test(n) ? "an" : "a"} ${n}`;
+});
 
-export function AttentionField() {
+export function AttentionField({ clips = {} }: { clips?: ChannelClips }) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -56,17 +70,6 @@ export function AttentionField() {
       </h2>
       <div className={s.track} data-af-track="">
         <div className={s.stage}>
-          <div className={s.meta} aria-hidden="true">
-            <span className={s.metaKey}>
-              <i className={s.sq} />
-              Attention field
-            </span>
-            <span className={s.metaRead} data-af-read="">
-              Signals
-            </span>
-            <span className={s.metaFig}>Still frame</span>
-          </div>
-
           <div className={s.fig} data-af-fig="">
             <p className="sr-only">
               The figure: nine lanes of attention.{" "}
@@ -78,15 +81,15 @@ export function AttentionField() {
               )}
               They run as one funnel into qualified demand, shown as an
               illustrative {AF_INDEX.toFixed(1)}× index over a 1.0× baseline.
+              One story, for {HALDEN.name}, a fictional maker of quiet heat
+              pumps, is cut into {FORMATS.slice(0, -1).join(", ")} and{" "}
+              {FORMATS[FORMATS.length - 1]}, each shown as a short recording.
             </p>
             <canvas className={s.canvas} aria-hidden="true" data-af-canvas="" />
             <div className={s.labels} aria-hidden="true">
-              {AF_LANES.map((l, i) => (
+              {AF_LANES.map((l) => (
                 <span key={l.name} className={`${s.l} ${s.lane}`} data-af-lane="">
-                  <span>
-                    <b>{two(i + 1)}</b>
-                    {l.name}
-                  </span>
+                  <span>{l.name}</span>
                 </span>
               ))}
               {AF_GROUPS.map((g) => (
@@ -94,86 +97,35 @@ export function AttentionField() {
                   <span>{g}</span>
                 </span>
               ))}
-              {AF_CARDS.map((c) => (
-                <span key={c.key} className={`${s.l} ${s.card}`} data-af-card="">
-                  <span>
-                    <b>
-                      {c.name} {c.spec}
-                    </b>
-                    <i>{c.size}</i>
-                  </span>
-                </span>
-              ))}
-              <span className={`${s.l} ${s.story}`} data-af-story="">
-                <span>One story</span>
-              </span>
               <span className={`${s.l} ${s.throat}`} data-af-throat="">
                 <span>Qualified</span>
-              </span>
-              {["Q1", "Q2", "Q3", "Q4"].map((q) => (
-                <span key={q} className={`${s.l} ${s.q}`} data-af-q="">
-                  <span>{q}</span>
-                </span>
-              ))}
-              <span className={`${s.l} ${s.base}`} data-af-base="">
-                <span>Baseline 1.0×</span>
-              </span>
-              <span className={`${s.l} ${s.cap}`} data-af-cap="">
-                <span>Illustrative</span>
               </span>
               <span className={`${s.l} ${s.readout}`} data-af-readout="">
                 <span>
                   <em>Qualified demand</em>
                   <strong data-af-value="">{`${AF_INDEX.toFixed(1)}×`}</strong>
-                  <small>vs. baseline</small>
+                  <small>vs. baseline · Illustrative</small>
                 </span>
               </span>
             </div>
           </div>
 
+          <ChannelTiles clips={clips} note={`${HALDEN.name} is a sample brief.`} className={s.tiles} />
+
           <ol className={s.steps}>
-            {AF_STAGES.map((st, i) => (
+            {AF_STAGES.map((st) => (
               <li key={st.tab} className={s.step} data-af-step="">
-                <p className={s.index} aria-hidden="true">
-                  {two(i + 1)}
-                  <span className={s.of}> / {two(AF_STAGES.length)}</span>
-                </p>
                 <h3 className={`${s.title} type-display`}>{st.title}</h3>
                 <p className={s.line}>{st.line}</p>
               </li>
             ))}
           </ol>
 
-          <div className={s.ctrl}>
-            <nav className={s.tabs} aria-label="Stages">
-              {AF_STAGES.map((st, i) => (
-                <button
-                  key={st.tab}
-                  type="button"
-                  className={s.tab}
-                  data-af-tab=""
-                  aria-label={`${two(i + 1)} ${st.tab}`}
-                  aria-current={i === 0 ? "step" : undefined}
-                >
-                  <i className={s.tabMark} aria-hidden="true" />
-                  <span className={s.tabNum} aria-hidden="true">
-                    {two(i + 1)}
-                  </span>
-                  <span className={s.tabName}>{st.tab}</span>
-                  <span className={s.prog} aria-hidden="true" data-af-prog="" />
-                </button>
-              ))}
-            </nav>
-            <span className={s.sep} aria-hidden="true" />
-            <Link href="/methodology" className={s.cta}>
-              <span>
-                <span className={s.ctaLong}>See the </span>
-                method
-              </span>
-              <span aria-hidden="true" className={s.arrow}>
-                →
-              </span>
-            </Link>
+          {/* The one action: pinned, it arrives with the final readout */}
+          <div className={s.end} data-af-end="">
+            <CtaLink href="/methodology" size="md">
+              See the method
+            </CtaLink>
           </div>
         </div>
       </div>

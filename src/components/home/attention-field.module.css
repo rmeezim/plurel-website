@@ -1,16 +1,19 @@
 /*
   The Attention Field (attention-field.tsx; engine in lib/attention-field.ts).
 
-  Static by default: the five stages as a list beside one still frame of
-  the whole system. The block at the foot pins it (a 560svh track with a
-  sticky stage) only with JS (html[data-js], set before first paint) and
-  AF_PIN_QUERY. Keep that media query identical to AF_PIN_QUERY in
-  lib/attention-field.ts.
+  Static by default: the channel tiles as one mosaic of still frames
+  (their layout is in channel-tiles.module.css), then the five stages as a
+  list beside one still frame of the whole system, then the link to the
+  method. The block at the foot
+  pins it (a 560svh track with a sticky stage) only with JS (html[data-js],
+  set before first paint) and AF_PIN_QUERY. Keep that media query
+  identical to AF_PIN_QUERY in lib/attention-field.ts.
 
   Pinned, the stage is the full (lvh) screen so the field reaches the
-  floor when a mobile toolbar collapses, and the texts and the control sit
-  in the visible (svh) part, as the services fold does. The engine lays
-  the composition out in that svh box (the .steps height).
+  floor when a mobile toolbar collapses, and the texts sit in the visible
+  (svh) part. The engine lays the composition
+  out in that svh box (the .steps height), places the tiles (whose
+  wrappers step aside) and the link with the final readout.
 
   Never give .root or any ancestor overflow hidden/clip, or a transform:
   either breaks sticky. The stage clips itself.
@@ -18,16 +21,9 @@
 
 .root {
   --af-rule: color-mix(in srgb, var(--color-paper) 15%, transparent);
-  --af-fog-50: color-mix(in srgb, var(--color-fog) 50%, transparent);
   --af-fog-62: color-mix(in srgb, var(--color-fog) 70%, transparent);
   --af-fog-78: color-mix(in srgb, var(--color-fog) 78%, transparent);
-  --af-pad: 16px;
   position: relative;
-}
-@media (min-width: 700px) {
-  .root {
-    --af-pad: max(clamp(24px, 3.6vw, 64px), calc((100vw - 1440px) / 2 + 48px));
-  }
 }
 
 .track {
@@ -49,6 +45,10 @@
     padding-inline: 32px;
   }
 }
+/* the mosaic opens the chapter */
+.tiles {
+  order: -1;
+}
 @media (min-width: 64rem) {
   .stage {
     padding: 144px 48px;
@@ -57,8 +57,9 @@
     row-gap: 56px;
     align-items: start;
   }
-  .meta {
+  .tiles {
     grid-column: 1 / -1;
+    grid-row: 1;
   }
   .steps {
     grid-column: 1 / span 4;
@@ -68,48 +69,12 @@
     grid-column: 5 / -1;
     grid-row: 2 / span 2;
   }
-  .ctrl {
+  /* the link closes the list, level with the foot of the frame */
+  .end {
     grid-column: 1 / span 4;
     grid-row: 3;
+    align-self: end;
   }
-}
-
-/* Running head: hairline, square marker, mono caps */
-.meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  border-top: 1px solid var(--af-rule);
-  padding-top: 20px;
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--af-fog-62);
-  pointer-events: none;
-}
-.metaKey {
-  display: inline-flex;
-  align-items: center;
-  color: var(--color-paper);
-  white-space: nowrap;
-}
-.sq {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  margin-right: 10px;
-  background: var(--color-signal);
-}
-.metaRead {
-  display: none;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-.metaFig {
-  white-space: nowrap;
 }
 
 /* The figure: one still frame, sized by aspect */
@@ -133,11 +98,17 @@
   }
 }
 /* Short screens (landscape phones, short laptop windows) never pin: the
-   still frame fits the viewport so it can be seen whole */
+   still frame and the mosaic (about 2.2 : 1) fit the viewport so each can
+   be seen whole, the mosaic centred when the height limits it */
 @media (max-height: 559px) {
   .fig {
     aspect-ratio: auto;
     height: clamp(260px, calc(100svh - 110px), 520px);
+  }
+  .tiles {
+    width: 100%;
+    max-width: calc((100svh - 110px) * 2.2);
+    justify-self: center;
   }
 }
 .canvas {
@@ -148,8 +119,7 @@
   height: 100%;
 }
 /* Without JS there is no frame to draw */
-:global(html:not([data-js])) .fig,
-:global(html:not([data-js])) .metaFig {
+:global(html:not([data-js])) .fig {
   display: none;
 }
 
@@ -167,18 +137,6 @@
   border-top: 1px solid var(--af-rule);
   padding: 18px 0 24px;
 }
-.index {
-  margin: 0;
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.03em;
-  color: var(--color-signal);
-}
-.of {
-  display: none;
-  color: var(--af-fog-50);
-}
 .title {
   margin: 0;
   font-size: 22px;
@@ -194,7 +152,7 @@
 }
 @media (min-width: 40rem) and (max-width: 63.99rem) {
   .step {
-    grid-template-columns: 64px minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     column-gap: 24px;
     align-items: baseline;
   }
@@ -203,8 +161,12 @@
   .title {
     font-size: 24px;
   }
-  :global(html:not([data-js])) .steps {
+  :global(html:not([data-js])) .steps,
+  :global(html:not([data-js])) .end {
     grid-column: 1 / -1;
+    grid-row: auto;
+  }
+  :global(html:not([data-js])) .steps {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     column-gap: 32px;
   }
@@ -214,38 +176,9 @@
   }
 }
 
-/* Stage control: in the static chapter only the link to the method shows
-   (the tabs' nav is hidden, so no landmark stands empty) */
-.ctrl {
+/* The link to the method: in the static chapter it simply closes it */
+.end {
   display: flex;
-  align-items: center;
-}
-.tabs,
-.sep {
-  display: none;
-}
-.cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid var(--color-signal);
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--color-paper);
-  text-decoration: none;
-}
-.cta:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 4px;
-}
-.arrow {
-  display: inline-block;
-  transition: transform 0.3s ease;
-}
-.cta:hover .arrow {
-  transform: translateX(4px);
 }
 
 /* ---------- canvas labels (positioned by the engine) ---------- */
@@ -253,18 +186,18 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* unhinted, so small names keep their true letter spacing on Linux too */
+  text-rendering: geometricPrecision;
 }
 .l {
   position: absolute;
   left: 0;
   top: 0;
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
-  font-size: 11px;
-  line-height: 1;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 1.2;
   white-space: nowrap;
-  color: color-mix(in srgb, var(--color-paper) 86%, transparent);
+  color: color-mix(in srgb, var(--color-paper) 88%, transparent);
   opacity: 0;
   visibility: hidden;
   will-change: transform, opacity;
@@ -296,65 +229,101 @@
 .l[data-align="rot"] > span {
   transform: translate(-50%, -50%) rotate(-90deg);
 }
-.lane b {
-  font-weight: 400;
-  color: var(--af-fog-50);
-  margin-right: 10px;
-}
 .grp {
-  color: var(--af-fog-62);
-}
-.card b {
+  font-size: 13px;
   font-weight: 400;
-  color: var(--color-paper);
-}
-.card i {
-  font-style: normal;
-  margin-left: 10px;
   color: var(--af-fog-62);
-}
-.card[data-stack="1"] i {
-  display: block;
-  margin: 5px 0 0;
-}
-.story {
-  color: var(--af-fog-78);
 }
 .throat {
   color: var(--color-signal);
 }
-.q {
-  color: var(--af-fog-62);
+
+/* A surface's marker in the noise: a signal square left of its name (off
+   the text box, so the engine measures the name alone). In NOISE the
+   engine marks it grabbable: the hit area grows past the square, and only
+   there does a touch belong to the marker instead of the page. */
+.lane > span {
+  position: relative;
 }
-.q[data-on] {
+.lane[data-pool] > span::before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin-top: -3px;
+  background: var(--color-signal);
+  transition: transform 0.2s ease;
+}
+.lane[data-pool][data-align="r"] > span::before {
+  left: auto;
+  right: -16px;
+}
+.lane[data-grab] > span {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s ease;
+}
+.lane[data-grab] > span::after {
+  content: "";
+  position: absolute;
+  inset: -14px -12px -14px -28px;
+}
+.lane[data-grab][data-align="r"] > span::after {
+  inset: -14px -28px -14px -12px;
+}
+/* a finger's hit area stays small: only there is a page scroll not the page's */
+@media (pointer: coarse) {
+  .lane[data-grab] > span::after {
+    inset: -10px -8px -10px -26px;
+  }
+  .lane[data-grab][data-align="r"] > span::after {
+    inset: -10px -26px -10px -8px;
+  }
+}
+.lane[data-drag] > span {
+  cursor: grabbing;
   color: var(--color-paper);
 }
-/* the disclaimer and the baseline stay readable small: about 7:1 */
-.base,
-.cap {
-  color: var(--af-fog-78);
+.lane[data-drag] > span::before {
+  transform: scale(1.6);
 }
+@media (hover: hover) {
+  .lane[data-grab] > span:hover {
+    color: var(--color-paper);
+  }
+  .lane[data-grab] > span:hover::before {
+    transform: scale(1.6);
+  }
+}
+
+/* The final readout: the index, what it is, and that it is illustrative */
 .readout em {
   display: block;
   font-style: normal;
-  color: var(--af-fog-78);
+  font-size: 15px;
+  color: var(--color-fog);
 }
 .readout strong {
   display: block;
-  margin: 10px 0 8px;
-  font-family: var(--font-mona), system-ui, sans-serif;
+  margin: 6px 0 8px;
   font-stretch: 110%;
   font-weight: 430;
-  font-size: clamp(30px, 2.6vw, 42px);
+  font-size: clamp(40px, 3.4vw, 56px);
   line-height: 1;
   letter-spacing: -0.018em;
   font-variant-numeric: lining-nums proportional-nums;
-  text-transform: none;
   color: var(--color-paper);
 }
 .readout small {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
+  font-weight: 400;
   color: var(--af-fog-62);
 }
 
@@ -374,21 +343,6 @@
     overflow: hidden;
     background: var(--color-graphite);
   }
-  :global(html[data-js]) .meta {
-    position: absolute;
-    z-index: 2;
-    top: 72px;
-    left: var(--af-pad);
-    right: var(--af-pad);
-    border: 0;
-    padding: 0;
-  }
-  :global(html[data-js]) .metaRead {
-    display: inline;
-  }
-  :global(html[data-js]) .metaFig {
-    display: none;
-  }
   :global(html[data-js]) .fig {
     position: absolute;
     inset: 0;
@@ -397,9 +351,10 @@
   }
 
   /* One heading at a time, centred; the engine lifts each away */
+  /* over the tiles, which the engine stacks from 1 */
   :global(html[data-js]) .steps {
     position: absolute;
-    z-index: 1;
+    z-index: 10;
     top: 0;
     left: 0;
     right: 0;
@@ -423,12 +378,6 @@
   :global(html[data-js]) .step:first-child {
     opacity: 1;
   }
-  :global(html[data-js]) .index {
-    margin-bottom: clamp(16px, 2vw, 28px);
-  }
-  :global(html[data-js]) .of {
-    display: inline;
-  }
   :global(html[data-js]) .title {
     font-size: clamp(40px, 5.6vw, 96px);
     line-height: 1.02;
@@ -445,159 +394,28 @@
     }
   }
 
-  /* Segmented stage control, squared off */
-  :global(html[data-js]) .ctrl {
+  /* The link waits, unseen and unclickable, for the final readout; it
+     stays in the tab order (focusing it jumps there) */
+  :global(html[data-js]) .end {
     position: absolute;
-    z-index: 3;
-    left: 50%;
-    bottom: 24px;
-    bottom: calc(24px + 100lvh - 100svh);
-    transform: translateX(-50%);
-    gap: 2px;
-    max-width: calc(100% - 32px);
-    padding: 4px;
-    border: 1px solid color-mix(in srgb, var(--color-fog) 16%, transparent);
-    border-radius: 2px;
-    background: color-mix(in srgb, var(--color-paper) 4%, var(--color-graphite));
-  }
-  :global(html[data-js]) .tabs {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-  :global(html[data-js]) .tab,
-  :global(html[data-js]) .cta {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 34px;
-    min-height: 0;
-    margin: 0;
-    padding: 0 14px;
-    border: 0;
-    border-radius: 1px;
-    background: transparent;
-    font-family: var(--font-jetbrains), ui-monospace, monospace;
-    font-size: 11px;
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: color-mix(in srgb, var(--color-fog) 72%, transparent);
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    transition:
-      color 0.2s ease,
-      background-color 0.2s ease;
-  }
-  :global(html[data-js]) .cta {
-    color: var(--color-paper);
-  }
-  :global(html[data-js]) .arrow {
-    margin-left: 2px;
-  }
-  :global(html[data-js]) .tab:hover,
-  :global(html[data-js]) .cta:hover {
-    color: var(--color-paper);
-  }
-  :global(html[data-js]) .tab:focus-visible,
-  :global(html[data-js]) .cta:focus-visible {
-    outline: 1px solid var(--color-signal);
-    outline-offset: 1px;
-  }
-  :global(html[data-js]) .tab[aria-current] {
-    color: var(--color-paper);
-    background: color-mix(in srgb, var(--color-paper) 7%, transparent);
-  }
-  .tabMark {
-    flex: none;
-    width: 5px;
-    height: 5px;
-    background: currentColor;
-    opacity: 0.4;
-  }
-  .tab[aria-current] .tabMark {
-    background: var(--color-signal);
-    opacity: 1;
-  }
-  .tabNum {
-    display: none;
-  }
-  .prog {
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: 4px;
-    height: 1px;
-    background: var(--color-signal);
-    transform-origin: 0 50%;
-    transform: scaleX(0);
+    z-index: 12;
+    left: 0;
+    top: 0;
     opacity: 0;
+    pointer-events: none;
+    will-change: transform, opacity;
   }
-  .tab[aria-current] .prog {
-    opacity: 0.9;
-  }
-  :global(html[data-js]) .sep {
-    display: block;
-    flex: none;
-    width: 1px;
-    height: 18px;
-    margin: 0 4px;
-    background: color-mix(in srgb, var(--color-fog) 20%, transparent);
+  :global(html[data-js]) .end[data-on] {
+    pointer-events: auto;
   }
 }
 
-/* Phones, pinned: tabs collapse to their index; the current one keeps its name */
+/* Phones, pinned: names a step smaller */
 @media (prefers-reduced-motion: no-preference) and (min-width: 360px) and (max-width: 699px) and (min-height: 560px) {
-  :global(html[data-js]) .meta {
-    top: 70px;
+  :global(html[data-js]) .l {
+    font-size: 13px;
   }
-  :global(html[data-js]) .ctrl {
-    bottom: 18px;
-    bottom: calc(18px + 100lvh - 100svh);
-    gap: 0;
-    padding: 3px;
-  }
-  :global(html[data-js]) .tabs {
-    gap: 0;
-  }
-  :global(html[data-js]) .tab,
-  :global(html[data-js]) .cta {
-    height: 38px;
-    padding: 0 10px;
-    gap: 6px;
-  }
-  :global(html[data-js]) .sep {
-    margin: 0 2px;
-  }
-  .tab:not([aria-current]) .tabMark {
-    display: none;
-  }
-  /* the current name always takes the room of the longest (six mono
-     characters), so the bar holds still as the stages change */
-  .tab[aria-current] .tabName {
-    display: inline-block;
-    min-width: calc(6ch + 0.18em);
-    text-align: center;
-  }
-  .tab:not([aria-current]) .tabNum {
-    display: inline;
-  }
-  .tab:not([aria-current]) .tabName,
-  :global(html[data-js]) .ctaLong {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-}
-@media (prefers-reduced-motion: no-preference) and (min-width: 360px) and (max-width: 389px) and (min-height: 560px) {
-  :global(html[data-js]) .tab,
-  :global(html[data-js]) .cta {
-    padding: 0 8px;
+  :global(html[data-js]) .grp {
+    font-size: 12px;
   }
 }

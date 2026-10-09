@@ -24,7 +24,7 @@ Creative Direction, and Martech & Consulting. Its sister division Kelwin
 ## Design language: Cinematic Red x Swiss Systems
 
 Read `docs/design-system.md` before building any page. In short: red is
-the environment (flat red chapters, a red-graded film behind fluted glass),
+the environment (flat red chapters, a red-graded film behind cool fluted glass),
 graphite is the dark tone, the footer is paper, surfaces are flat color
 with no gradients or drawn grid lines, structure
 is Swiss (a strict 12-column grid that is felt, not drawn, numbered
@@ -80,13 +80,18 @@ argument onto the homepage chapters.
 - Keep animations light and tasteful, all gated behind
   `prefers-reduced-motion` in `globals.css`. The hero load sequence is the
   one orchestrated load moment; the Attention Field (`home/attention-field.tsx`)
-  and the services fold (`services-fold.tsx`) are the two pinned,
-  scroll-scrubbed chapters, and the manifesto's braid strip is scrubbed
-  without pinning. The fluted glass (`glass-band.tsx`)
+  and services' typographic system (`home/services-type.tsx`) are the two
+  pinned, scroll-scrubbed chapters, and the manifesto's braid strip is
+  scrubbed without pinning. The fluted glass (`glass-band.tsx`)
   is the one WebGL surface; elsewhere use `Reveal`. No heavy 3D.
-- The film behind the glass loops muted with no control (the owner's
-  call); it stops off screen and in hidden tabs, and reduced motion or
-  data saver get a still frame. The clients marquee pauses on hover and
+- Keep chrome sparse: no sprinkle of tiny mono labels, no placeholder
+  boxes, and the Plurel mark is a signature, never a prop that splits,
+  opens or assembles. Show real-looking content (the Attention Field's
+  channel tiles) and let fewer, larger words carry each chapter.
+- The film behind the glass and the Attention Field's channel tiles loop
+  muted with no control (the owner's call); they stop off screen and in
+  hidden tabs, and reduced motion or data saver get a still frame. Real
+  tile footage goes in `public/video/channels/<key>.mp4`. The clients marquee pauses on hover and
   sits still for reduced motion. Any other auto-moving media needs a
   pause control.
 - Design for mobile first; the layout must hold up from 360px to wide desktop.
