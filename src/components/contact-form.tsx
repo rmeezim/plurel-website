@@ -12,13 +12,12 @@ const SERVICES = [
   "Paid Ads",
   "PR & Reputation",
   "Creative Direction",
-  "Consulting",
+  "Martech & Consulting",
 ] as const;
 
 const BUDGETS = [
-  "Under $5k",
-  "$5k – $15k",
-  "$15k – $50k",
+  "$10k – $25k",
+  "$25k – $50k",
   "$50k+",
   "Not sure yet",
 ] as const;
@@ -52,15 +51,15 @@ export function ContactForm() {
     const lines = [
       `Name: ${data.get("name")}`,
       `Email: ${data.get("email")}`,
-      `Company: ${data.get("company") || "—"}`,
-      `Website: ${data.get("website") || "—"}`,
-      `Interested in: ${services.length ? services.join(", ") : "—"}`,
-      `Budget: ${data.get("budget") || "—"}`,
+      `Company: ${data.get("company") || "-"}`,
+      `Website: ${data.get("website") || "-"}`,
+      `Interested in: ${services.length ? services.join(", ") : "-"}`,
+      `Budget: ${data.get("budget") || "-"}`,
       "",
       `${data.get("message")}`,
     ];
     const subject = encodeURIComponent(
-      `Diagnostic request — ${data.get("name")}`,
+      `Diagnostic request from ${data.get("name")}`,
     );
     const body = encodeURIComponent(lines.join("\n"));
     window.location.href = `mailto:hello@plurel.com?subject=${subject}&body=${body}`;
@@ -78,8 +77,8 @@ export function ContactForm() {
           className="word-in mt-3 max-w-[48ch] text-[15px] leading-relaxed text-ink/75"
           style={{ animationDelay: "450ms" }}
         >
-          We&rsquo;ve opened your email app with everything filled in &mdash;
-          hit send and we&rsquo;ll reply within one business day. If nothing
+          We&rsquo;ve opened your email app with everything filled in. Hit
+          send and a strategist will reply within one business day. If nothing
           opened, email us directly at{" "}
           <a
             href="mailto:hello@plurel.com"
@@ -223,8 +222,7 @@ export function ContactForm() {
 
       <div className="mt-8 flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
         <p className="max-w-[38ch] text-[13px] leading-relaxed text-muted">
-          We reply within one business day &mdash; with a first read, not a
-          form letter.
+          A strategist replies within one business day.
         </p>
         <button
           type="submit"

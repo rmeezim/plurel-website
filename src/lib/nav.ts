@@ -28,8 +28,8 @@ export const COMPANY = [
   { name: "About", desc: "Who we are, and what every engagement includes.", href: "/about" },
   { name: "Work", desc: "Sample engagements, until real cases can be published.", href: "/work" },
   { name: "Methodology", desc: "The four phases, starting with the Diagnostic.", href: "/methodology" },
-  { name: "Studio", desc: "Where the work gets made, and what we make it with.", href: "/studio" },
-  { name: "Careers", desc: "Open roles, and how hiring works.", href: "/careers" },
+  { name: "Studio", desc: "Where the work gets made.", href: "/studio" },
+  { name: "Careers", desc: "The kinds of roles we hire for, and how to introduce yourself.", href: "/careers" },
   { name: "Journal", desc: "What we're learning about AI search, brand and growth.", href: "/blog" },
   { name: "Contact", desc: "Request a diagnostic, or just write to us.", href: "/contact" },
 ];

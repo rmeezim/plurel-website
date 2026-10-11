@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Reveal } from "@/components/reveal";
-import { GRID, Meta } from "@/components/system";
+import { GRID } from "@/components/system";
 import { mountBraid, SUPPLIERS } from "@/lib/braid";
 
 /*
@@ -28,8 +28,8 @@ import { mountBraid, SUPPLIERS } from "@/lib/braid";
   canvas, its lines named in the margin and the end statement beside it.
   The figure has no visible title (the lead is its title); the caption
   lists the suppliers for screen readers. Below 560px of figure width
-  (the engine's narrow layout, matched here with a container query) it
-  draws six of the ten strands, and the caption says so.
+  (the engine's narrow layout) it draws six of the ten strands, and the
+  caption says so; nothing else announces it on screen.
 */
 
 const SR_LIST = SUPPLIERS.map((s) => `${s.name}, ${s.metric}`).join("; ");
@@ -138,19 +138,12 @@ export function BraidStrip() {
       </div>
 
       {/* No title: the lead says what the figure shows. The caption is
-          for screen readers, plus the one fact a phone needs to know. */}
-      <figcaption className="col-span-4 mt-6 sm:col-span-6 lg:sr-only">
-        <Meta
-          as="p"
-          className="hidden text-muted [html[data-js]_&]:@max-[559px]:block"
-        >
-          6 of 10 suppliers shown
-        </Meta>
-        <span className="sr-only">
-          One strand per supplier, each with the number it reports: {SR_LIST}. The
-          tangle straightens into lanes, then the lanes braid into one red strand: one
-          team, one number.
-        </span>
+          for screen readers; a phone draws six of the ten strands and
+          the caption says so. */}
+      <figcaption className="sr-only">
+        One strand per supplier, each with the number it reports: {SR_LIST}. On a
+        narrow screen six of the ten are drawn. The tangle straightens into lanes,
+        then the lanes braid into one red strand: one team, one number.
       </figcaption>
     </figure>
   );

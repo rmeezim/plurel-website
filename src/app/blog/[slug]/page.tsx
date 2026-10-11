@@ -16,9 +16,9 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const post = getPost(slug);
-  if (!post) return { title: "Article — Plurel Journal" };
+  if (!post) return { title: "Article | Plurel Journal" };
   return {
-    title: `${post.title} — Plurel Journal`,
+    title: `${post.title} | Plurel Journal`,
     description: post.excerpt,
   };
 }
@@ -86,7 +86,7 @@ export default async function ArticlePage(props: PageProps<"/blog/[slug]">) {
               <span className="text-brand">{post.category}</span>
               <span className="text-muted">
                 {" "}
-                &middot; {post.date} &middot; {post.readTime}
+                &middot; {post.readTime}
               </span>
             </p>
             <h1 className="mt-4 font-serif text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.12] text-ink">
@@ -101,7 +101,7 @@ export default async function ArticlePage(props: PageProps<"/blog/[slug]">) {
               </span>
               <span>
                 <span className="block text-sm font-medium text-ink">
-                  Plurel Strategy Team
+                  Plurel
                 </span>
                 <span className="block text-[13px] text-muted">
                   The Journal

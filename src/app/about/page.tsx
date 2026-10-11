@@ -8,9 +8,9 @@ import { VisualPlate } from "@/components/visual-plate";
 import { SITE_URL } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About — Plurel",
+  title: "About | Plurel",
   description:
-    "Plurel is Northeon's distribution engineering company: a small senior team that answers for how growth-stage companies are found, trusted and chosen, across brand, website, AI search, content and creators, campaigns and the martech underneath.",
+    "Plurel is Northeon's distribution engineering company: a small senior team that answers for how growth-stage companies get chosen, across brand, website, AI search, content and creators, campaigns and the martech underneath.",
   alternates: { canonical: "/about/" },
 };
 
@@ -54,7 +54,7 @@ const STANDARDS = [
     number: "01",
     name: "Diagnosis before design",
     detail:
-      "No build before evidence: every engagement opens with the Diagnostic and a signed Diagnostic Report.",
+      "No build before evidence: every engagement opens with the free Diagnostic, then a signed diagnosis report before any design.",
   },
   {
     number: "02",
@@ -70,9 +70,9 @@ const STANDARDS = [
   },
   {
     number: "04",
-    name: "Six signals from launch",
+    name: "One number from launch",
     detail:
-      "Measured from day one, reviewed every month and reset every quarter.",
+      "Qualified demand is measured from day one, with the signals behind it. Reviewed monthly, reset every quarter.",
   },
 ];
 
@@ -87,9 +87,9 @@ const EXPLORE = [
   {
     code: "CRW",
     name: "Careers",
-    desc: "A small senior team, with seats open.",
+    desc: "A small senior team, and the kinds of roles we hire for.",
     href: "/careers",
-    label: "See open roles",
+    label: "See the roles",
   },
   {
     code: "JNL",
@@ -133,9 +133,9 @@ export default function AboutPage() {
               </h1>
               <p className="fade-up mt-6 max-w-[58ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
                 Plurel is Northeon&rsquo;s distribution engineering company.
-                One senior team answers for how businesses are found, trusted
-                and chosen: brand, website, AI search, content, campaigns and
-                the martech underneath, all working from the same brief.
+                One senior team answers for how businesses get chosen: brand,
+                website, AI search, content, campaigns and the martech
+                underneath, all working from the same brief.
               </p>
             </div>
 
@@ -206,9 +206,8 @@ export default function AboutPage() {
               </p>
               <p>
                 Buying now begins inside AI answers as often as in search
-                results, so that is the direction we build in. Plurel is
-                growing into Northeon&rsquo;s AI and technology division for
-                martech, marketing and growth.
+                results, so everything we build is made to be read by both
+                people and assistants.
               </p>
             </Reveal>
             <Reveal delay={0.18} className="lg:col-span-4">
@@ -361,7 +360,7 @@ export default function AboutPage() {
       {/* ------------------------------------------- The mandate */}
       <StatementSection
         kicker="The mandate"
-        note="Found · Trusted · Chosen · Remembered"
+        note="Distribution engineering"
         surface="ink"
       >
         Good business, made{" "}
@@ -450,9 +449,9 @@ export default function AboutPage() {
                 <p>
                   Rameez founded Plurel after years of watching good
                   businesses lose the moments that decide a shortlist, and
-                  built the method so it never comes down to luck. He leads
-                  the first two weeks of every engagement personally, and the
-                  Diagnostic carries his signature.
+                  built the method so it never comes down to luck. He reads
+                  every Diagnostic before it goes out and leads the diagnosis
+                  that follows it.
                 </p>
               </div>
               <div className="mt-7 flex flex-wrap items-center gap-x-10 gap-y-4">
@@ -528,12 +527,12 @@ export default function AboutPage() {
               id="about-cta-heading"
               className="mt-6 max-w-[20ch] font-sans text-[clamp(2rem,4.8vw,4rem)] font-normal leading-[1.05] tracking-[-0.02em]"
             >
-              Thirty minutes tells you{" "}
+              The Diagnostic tells you{" "}
               <em className="italic">more than any about page</em>.
             </h2>
             <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Book the call. You&rsquo;ll leave with a sharper read on your
-              brand, your visibility and your next move, whatever you decide
+              Request a diagnostic and you&rsquo;ll have a scored read of
+              your distribution within a business day, whatever you decide
               about us.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
@@ -541,7 +540,7 @@ export default function AboutPage() {
                 href="/contact"
                 className="group inline-flex items-center gap-2 rounded-lg bg-paper px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-canvas"
               >
-                Book Strategy Call
+                Request a diagnostic
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <a

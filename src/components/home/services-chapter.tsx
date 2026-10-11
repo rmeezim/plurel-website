@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { ServicesType } from "@/components/home/services-type";
-import { ChapterHead, CONTAINER, CtaLink, GRID } from "@/components/system";
+import { ChapterHead, CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
 import { SERVICES } from "@/lib/nav";
 import { SERVICE_STAGE, stageName } from "@/lib/services-type";
 import s from "./services-type.module.css";
@@ -14,9 +14,9 @@ import s from "./services-type.module.css";
   The figure (ServicesType) is the contents list itself: the eight names
   first appear in eight suppliers' voices, line up on the rows ("still a
   menu"), then are set in one face, stage by stage along the chain. The
-  narrator's last line is the one place the page says "system" as the
-  payoff. Everything here is the server-rendered, finished chapter; with
-  motion off it is simply the list, with the chain live.
+  narrator ends on "Set as one, it's a system." Everything here is the
+  server-rendered, finished chapter; with motion off it is simply the
+  list, with the chain live.
 
   The rows: equal heights, hairlines on the container measure, index in
   column 1, stage in 2 to 3, the
@@ -42,7 +42,7 @@ export function ServicesChapter() {
           />
           <h2
             id="services-heading"
-            className="type-display col-span-4 text-[clamp(2.25rem,1.4rem+3.6vw,5.25rem)] leading-none sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-span-2 lg:row-start-1"
+            className={`${H2} col-span-4 sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-span-2 lg:row-start-1`}
           >
             Everything that makes you visible, built as one system.
           </h2>

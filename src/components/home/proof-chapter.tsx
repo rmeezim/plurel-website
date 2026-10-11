@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, CtaLink, GRID, Kicker, Meta } from "@/components/system";
+import { CONTAINER, CtaLink, GRID, H2, Kicker, Meta } from "@/components/system";
 import { AUDIT_HREF } from "@/lib/nav";
 import { PROOF_ID, SAMPLE_DIAGNOSTIC as D, SAMPLE_TOTAL } from "@/lib/proof";
 
@@ -12,8 +12,11 @@ import { PROOF_ID, SAMPLE_DIAGNOSTIC as D, SAMPLE_TOTAL } from "@/lib/proof";
   brief), labelled as a sample in its top bar. It is set as a sheet of
   paper on the graphite room, laid out like the printed report: section
   heads hang in the first three columns, the content runs on the other
-  nine through subgrid. Mono only for data (scores, months, the B2B/B2C
-  tags). Brand red marks the two weakest scores and the first fix.
+  nine through subgrid. Mono only for the three month heads of the plan;
+  scores are figures in the display face, with "out of 10" said once in
+  the section head. Brand red marks the two weakest scores and the first
+  fix. The read is the one Halden had before the work in the Attention
+  Field ran, and the intro says so.
 
   Server component; the only motion is Reveal plus the score bars and
   the plan's month cells drawing in once their block is revealed (gated
@@ -73,13 +76,12 @@ function Score({ score, delay }: { score: number; delay: number }) {
       aria-label={`${score} out of 10`}
       role="img"
     >
-      <p aria-hidden className="flex w-[3.25rem] shrink-0 items-baseline gap-1">
+      <p aria-hidden className="flex w-10 shrink-0 items-baseline">
         <span
           className={`type-display figures text-[28px] leading-none ${weak ? "text-brand" : ""}`}
         >
           {score}
         </span>
-        <Meta className="text-muted">/10</Meta>
       </p>
       <span aria-hidden className="relative h-[6px] flex-1 bg-ink/8">
         <span
@@ -172,12 +174,9 @@ function Plan() {
             <h5 className="col-span-2 text-[16px] font-medium sm:col-span-3 lg:col-span-2">
               {s.stage}
             </h5>
-            <Meta
-              as="p"
-              className="col-span-2 self-baseline text-right text-muted sm:col-span-3 lg:hidden"
-            >
+            <p className="col-span-2 self-baseline text-right text-[14px] text-muted sm:col-span-3 lg:hidden">
               {monthSpan(s.months)}
-            </Meta>
+            </p>
             {/* Three month cells: one per column at lg */}
             <div
               aria-hidden
@@ -216,9 +215,8 @@ function Measure() {
       <dl className="grid gap-y-8 sm:grid-cols-2 sm:gap-x-6 lg:col-span-8 lg:grid-cols-subgrid lg:gap-x-8">
         {D.measure.map((m) => (
           <div key={m.buyer} className="lg:col-span-4">
-            <dt className="flex items-baseline gap-2.5 text-[15px] font-medium">
+            <dt className="text-[15px] font-medium">
               {m.buyer}
-              <Meta className="text-muted">{m.tag}</Meta>
             </dt>
             <dd className="type-display mt-3 max-w-[24ch] text-[clamp(1.375rem,2vw,1.625rem)] leading-[1.15]">
               {m.definition}
@@ -247,7 +245,7 @@ export function ProofChapter() {
             <Kicker tone="dark">Proof</Kicker>
             <h2
               id="proof-heading"
-              className="type-display mt-8 text-[clamp(2.5rem,4.7vw,3.75rem)] leading-none lg:mt-10"
+              className={`${H2} mt-8 lg:mt-10`}
             >
               What a Diagnostic finds.
             </h2>
@@ -258,8 +256,8 @@ export function ProofChapter() {
           >
             <p className="max-w-[40ch] text-[16px] leading-[1.55] text-fog">
               Before you send us anything, see what comes back. This is an
-              excerpt of the read, run on Halden, the sample brief from the top
-              of the page.
+              excerpt of the read on Halden, the sample brief from the top of
+              the page, as it stood before that work ran.
             </p>
           </Reveal>
         </div>
@@ -307,11 +305,11 @@ export function ProofChapter() {
                   className={`grid grid-cols-[6.5rem_minmax(0,1fr)] items-baseline gap-x-4 border-y ${RULE} py-2.5`}
                 >
                   <dt className="text-muted">Overall</dt>
-                  <dd className="flex items-baseline gap-1">
+                  <dd className="flex items-baseline gap-2">
                     <span className="type-display figures text-[22px] leading-none">
                       {SAMPLE_TOTAL}
                     </span>
-                    <Meta className="text-muted">/60</Meta>
+                    <span className="text-[14px] text-muted">out of 60</span>
                   </dd>
                 </div>
               </dl>
@@ -320,7 +318,7 @@ export function ProofChapter() {
 
           <div className="mt-14 space-y-14 sm:mt-16 sm:space-y-16 lg:mt-20 lg:space-y-20">
             <Reveal>
-              <SheetSection head="Six parts, scored" id="proof-parts">
+              <SheetSection head="Six parts, scored out of 10" id="proof-parts">
                 <Parts />
               </SheetSection>
             </Reveal>
@@ -343,7 +341,7 @@ export function ProofChapter() {
         </article>
 
         <Reveal className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 lg:mt-12">
-          <CtaLink href={AUDIT_HREF}>Request your diagnostic</CtaLink>
+          <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
           <p className="text-[15px] text-fog">
             Yours is free, and back within a business day.
           </p>

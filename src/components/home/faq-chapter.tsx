@@ -1,7 +1,7 @@
 import { Fragment, type ReactNode } from "react";
 import { ArrowUpRight } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
-import { ChapterHead, CONTAINER, GRID } from "@/components/system";
+import { ChapterHead, CONTAINER, GRID, H2 } from "@/components/system";
 import { FAQS } from "@/lib/home";
 import { CONTACT_EMAIL } from "@/lib/nav";
 
@@ -136,7 +136,7 @@ export function FaqChapter() {
         <header className={`${GRID} mt-8 gap-y-6 lg:mt-10 lg:items-end`}>
           <h2
             id="faq-heading"
-            className="type-display col-span-4 text-[clamp(3.25rem,6.875vw,5.5rem)] leading-none sm:col-span-6 lg:col-span-8"
+            className={`${H2} col-span-4 sm:col-span-6 lg:col-span-8`}
           >
             Straight answers.
           </h2>

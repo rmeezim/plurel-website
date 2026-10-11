@@ -1,14 +1,13 @@
 import { Reveal } from "@/components/reveal";
-import { ChapterHead, CONTAINER, GRID, Meta, TextLink } from "@/components/system";
+import { ChapterHead, CONTAINER, GRID, H2, Meta, TextLink } from "@/components/system";
 import { PHASES } from "@/lib/home";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
 /*
   Method: the four phases as a time chart in a red room. Phase 01 is the
-  Diagnostic, named here so the closing can pay it off. Mono only where
-  it carries data: the four phase numbers (their order is real) and the
-  time axis.
+  Diagnostic, named here so the closing can pay it off. Mono only for the
+  four phase numbers, whose order is real; the time axis is plain sans.
 
   Desktop: each phase is one column (span 3) whose rows line up across
   all four through subgrid: bar, name, description, deliverables. Mobile
@@ -69,7 +68,7 @@ export function MethodChapter() {
           <Reveal className="col-span-4 sm:col-span-6 lg:col-span-8">
             <h2
               id="method-heading"
-              className="type-display text-[clamp(2.5rem,4.7vw,3.75rem)] leading-none"
+              className={H2}
             >
               One operating model, from first diagnosis to compounding growth.
             </h2>
@@ -94,11 +93,11 @@ export function MethodChapter() {
           <div aria-hidden className="hidden lg:block">
             <div className={GRID}>
               <div className="relative col-span-9 pb-3">
-                <Meta className="block">Quarter one</Meta>
+                <span className="block text-[14px] font-medium">Quarter one</span>
                 <span className="absolute inset-x-0 bottom-0 h-[7px] border border-b-0 border-paper" />
               </div>
               <div className="relative col-span-3 pb-3">
-                <Meta className="block">Always on</Meta>
+                <span className="block text-[14px] font-medium">Always on</span>
                 <span className="absolute inset-x-0 bottom-0 h-[7px] border-l border-t border-paper" />
                 <span className="absolute bottom-[3px] right-px size-2 rotate-45 border-r border-t border-paper" />
               </div>
@@ -128,9 +127,9 @@ export function MethodChapter() {
                     className="lg:row-span-4 lg:grid lg:grid-rows-subgrid"
                   >
                     {RAIL_LABEL[i] && (
-                      <Meta as="p" className="mb-4 lg:sr-only">
+                      <p className="mb-4 text-[14px] font-medium lg:sr-only">
                         {RAIL_LABEL[i]}
-                      </Meta>
+                      </p>
                     )}
 
                     {/* Row 1: the phase's bar on the staircase */}

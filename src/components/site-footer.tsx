@@ -3,22 +3,20 @@ import { CityClock } from "@/components/city-clock";
 import { ArrowUpRight } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, GRID, Meta } from "@/components/system";
+import { CONTAINER, GRID } from "@/components/system";
 import { AUDIT_HREF, COMPANY, CONTACT_EMAIL, SERVICES } from "@/lib/nav";
 
 /*
   Footer: the quiet firm index every page ends on. The closing chapter
   above does the inviting, so there is no headline and no second CTA here:
-  the lockup and the Northeon line frame the identity column, Services hangs
-  its indexes in the gutter, and the legal bar registers to the same column
-  edges as the index above it, marked by the ticked hairline.
+  the lockup and the Northeon line frame the identity column, and the legal
+  bar registers to the same column edges as the index above it, under one
+  plain hairline. No numbers, no mono: it is a list of links.
 
   Paper room, ink type, muted labels, brand red only as markers and the
   lockup's signature. The top 72/96px stays empty for the glass band that
   hangs over the footer's top edge.
 */
-
-const count = (n: number) => String(n).padStart(2, "0");
 
 /* One row pitch across all three lists, so rows line up horizontally:
    30px for a mouse on desktop (the mock), 40px wherever a finger taps. */
@@ -34,12 +32,6 @@ const LABEL =
   "flex gap-2.5 text-[12px] font-medium uppercase leading-4 tracking-[0.09em] text-muted";
 
 const BAR_LINK = `inline-flex min-h-10 items-center transition-colors hover:text-ink ${FOCUS}`;
-
-/* Ticked hairline: phones mark the four column edges; from sm up both
-   edges of every column, so the gutters read like registration marks. */
-const TICK = Array.from({ length: 12 }, (_, i) =>
-  i < 4 ? "block" : i < 6 ? "hidden sm:block" : "hidden lg:block",
-);
 
 export function SiteFooter() {
   return (
@@ -64,25 +56,17 @@ export function SiteFooter() {
               className="col-span-4 min-[390px]:col-span-2 lg:col-span-3 lg:col-start-5"
             >
               <p className={LABEL}>
-                Services <span className="font-normal tabular-nums">{count(SERVICES.length)}</span>
+                Services
               </p>
-              <ol className={LIST}>
+              <ul className={LIST}>
                 {SERVICES.map((s) => (
-                  <li
-                    key={s.slug}
-                    className="grid grid-cols-[24px_minmax(0,1fr)] items-baseline lg:-ml-[30px] lg:grid-cols-[30px_minmax(0,1fr)]"
-                  >
-                    <span aria-hidden className="text-[11px] leading-none">
-                      <Meta className="tabular-nums text-muted">{s.index}</Meta>
-                    </span>
-                    <span className="flex">
-                      <Link href={s.href} className={LINK}>
-                        {s.name}
-                      </Link>
-                    </span>
+                  <li key={s.slug} className="flex">
+                    <Link href={s.href} className={LINK}>
+                      {s.name}
+                    </Link>
                   </li>
                 ))}
-              </ol>
+              </ul>
             </nav>
 
             <nav
@@ -90,7 +74,7 @@ export function SiteFooter() {
               className="col-span-4 min-[390px]:col-span-2 lg:col-span-2 lg:col-start-8"
             >
               <p className={LABEL}>
-                Company <span className="font-normal tabular-nums">{count(COMPANY.length)}</span>
+                Company
               </p>
               <ul className={LIST}>
                 {COMPANY.map((item) => (
@@ -135,37 +119,26 @@ export function SiteFooter() {
           </div>
         </Reveal>
 
-        {/* Ticked hairline: the bar items below start on the same column
-            edges as the index above */}
-        <div aria-hidden className="relative mt-14 border-t border-ink/15 lg:mt-20">
-          <div className={`${GRID} pointer-events-none absolute inset-x-0 top-0`}>
-            {TICK.map((show, i) => (
-              <span key={i} className={`h-[6px] border-l border-ink/30 sm:border-r ${show}`} />
-            ))}
-          </div>
-        </div>
-
-        {/* Legal bar. Phones: copyright and Back to top, then Privacy and
-            Terms. Desktop: registered to the col 1, 5, 8 and 10 ticks. */}
-        <div className={`${GRID} pt-1 text-muted`}>
-          <Meta as="p" className="order-1 col-span-2 flex min-h-10 items-center sm:order-none lg:col-span-4">
+        {/* Legal bar under one plain hairline. Phones: copyright and Back
+            to top, then Privacy and Terms. Desktop: registered to the
+            columns at 1, 5, 8 and 10. */}
+        <div className={`${GRID} mt-14 border-t border-ink/15 pt-1 text-[14px] text-muted lg:mt-20`}>
+          <p className="order-1 col-span-2 flex min-h-10 items-center sm:order-none lg:col-span-4">
             &copy; 2026 Plurel
-          </Meta>
+          </p>
           <p className="order-3 col-span-2 sm:order-none sm:col-span-1 lg:col-span-3">
             <Link href="/privacy" className={BAR_LINK}>
-              <Meta>Privacy</Meta>
+              Privacy
             </Link>
           </p>
           <p className="order-4 col-span-2 sm:order-none sm:col-span-1 lg:col-span-2">
             <Link href="/terms" className={BAR_LINK}>
-              <Meta>Terms</Meta>
+              Terms
             </Link>
           </p>
           <p className="order-2 col-span-2 sm:order-none lg:col-span-3">
             <a href="#top" className={BAR_LINK}>
-              <Meta>
-                Back to top <span aria-hidden>&uarr;</span>
-              </Meta>
+              Back to top <span aria-hidden>&uarr;</span>
             </a>
           </p>
         </div>

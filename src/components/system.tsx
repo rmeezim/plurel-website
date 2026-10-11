@@ -21,6 +21,12 @@ export const CONTAINER = "mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12";
 export const GRID =
   "grid grid-cols-4 gap-x-5 sm:grid-cols-6 sm:gap-x-6 lg:grid-cols-12 lg:gap-x-8";
 
+/**
+ * One scale for every chapter headline (the hero and the closing keep
+ * their own): 36px on a phone, 64px from a wide laptop up.
+ */
+export const H2 = "type-display leading-none text-[clamp(2.25rem,1.6rem+2.6vw,4rem)]";
+
 export type Tone = "paper" | "red" | "dark";
 
 const KICKER_TONE: Record<Tone, { text: string; mark: string }> = {

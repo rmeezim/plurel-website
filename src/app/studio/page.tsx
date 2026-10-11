@@ -7,9 +7,9 @@ import { StatementSection } from "@/components/statement-section";
 import { VisualPlate } from "@/components/visual-plate";
 
 export const metadata: Metadata = {
-  title: "The Studio — Plurel",
+  title: "The Studio | Plurel",
   description:
-    "Inside the Plurel studio: designers, engineers and editors working from the same brief on brand, design and build, editorial and AEO, growth and martech, with something shipped every week.",
+    "How the Plurel studio works: a small senior team on one brief across brand, design and build, editorial and AI search, and growth and martech, with something shipped every week.",
   alternates: { canonical: "/studio/" },
 };
 
@@ -34,18 +34,6 @@ const DISCIPLINES = [
     name: "Growth & martech",
     line: "Campaigns, creators, CRM and automation.",
   },
-];
-
-const STACK = [
-  { name: "Figma", className: "font-semibold tracking-[0.08em]" },
-  { name: "Next.js", className: "font-medium tracking-[0.02em]" },
-  { name: "Tailwind", className: "tracking-[0.16em] uppercase text-[13px]" },
-  { name: "Vercel", className: "font-semibold uppercase tracking-[0.2em] text-[13px]" },
-  { name: "HubSpot", className: "font-medium tracking-[0.04em]" },
-  { name: "Segment", className: "tracking-[0.12em] uppercase text-[13px]" },
-  { name: "GA4", className: "font-semibold tracking-[0.14em]" },
-  { name: "Linear", className: "font-medium uppercase tracking-[0.24em] text-[13px]" },
-  { name: "Notion", className: "font-semibold tracking-[0.02em]" },
 ];
 
 export default function StudioPage() {
@@ -75,8 +63,8 @@ export default function StudioPage() {
                 </em>
               </h1>
               <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-                Designers, engineers and editors in one room, working from
-                the same brief and shipping something every week.
+                A small senior team working from one brief, with something
+                shipped every week.
               </p>
             </div>
 
@@ -102,7 +90,7 @@ export default function StudioPage() {
                   <dd className="text-ink">Weekly ships</dd>
                 </div>
                 <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
-                  <dt className="text-muted">Doors</dt>
+                  <dt className="text-muted">Base</dt>
                   <dd className="text-brand">New York &middot; remote</dd>
                 </div>
               </dl>
@@ -126,7 +114,7 @@ export default function StudioPage() {
               id="disciplines-heading"
               className="mt-5 max-w-[22ch] font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
             >
-              Everything the system needs, in-house.
+              Everything the system needs, from one team.
             </h2>
           </Reveal>
           <div className="mt-10 grid grid-cols-1 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4">
@@ -185,7 +173,7 @@ export default function StudioPage() {
             <Reveal delay={0.08}>
               <VisualPlate
                 kind="room"
-                label="The room · work in progress"
+                label="The studio · work in progress"
                 className="aspect-[4/5]"
               />
             </Reveal>
@@ -197,33 +185,6 @@ export default function StudioPage() {
               />
             </Reveal>
           </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------- The desk */}
-      <section
-        aria-labelledby="stack-heading"
-        className="border-t border-line bg-paper"
-      >
-        <div className="mx-auto w-full max-w-[1440px] px-5 py-12 sm:px-8 sm:py-14 lg:px-12">
-          <Reveal className="flex flex-wrap items-center justify-between gap-x-12 gap-y-6">
-            <h2
-              id="stack-heading"
-              className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
-            >
-              The desk: what the studio runs on
-            </h2>
-            <ul className="flex flex-wrap items-baseline gap-x-9 gap-y-4 text-[15px] text-muted">
-              {STACK.map((tool) => (
-                <li
-                  key={tool.name}
-                  className={`transition-colors hover:text-ink ${tool.className}`}
-                >
-                  {tool.name}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
         </div>
       </section>
 
@@ -244,10 +205,10 @@ export default function StudioPage() {
                   Join the studio
                 </p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
-                  Small and senior, with seats open.
+                  Small and senior. See the kinds of roles we hire for.
                 </p>
                 <p className="mt-5 flex items-center gap-1.5 pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink/70 transition-colors group-hover:text-brand">
-                  See open roles
+                  See the roles
                   <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </p>
               </Link>

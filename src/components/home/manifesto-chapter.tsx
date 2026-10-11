@@ -1,6 +1,6 @@
 import { BraidStrip } from "@/components/home/braid-strip";
 import { Reveal } from "@/components/reveal";
-import { ChapterHead, CONTAINER, GRID, TextLink } from "@/components/system";
+import { ChapterHead, CONTAINER, GRID, H2, TextLink } from "@/components/system";
 import { AUDIT_HREF } from "@/lib/nav";
 
 /*
@@ -26,7 +26,7 @@ export function ManifestoChapter() {
           <Reveal className="col-span-4 mt-7 sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-start-1 lg:mt-0">
             <h2
               id="manifesto-heading"
-              className="type-display text-[clamp(2.25rem,1.5rem+2.95vw,3rem)] leading-none text-ink lg:text-[clamp(3rem,4.84vw,4.25rem)]"
+              className={`${H2} text-ink`}
             >
               <span className="block">
                 Your marketing shouldn&rsquo;t be ten companies.

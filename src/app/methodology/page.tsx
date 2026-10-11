@@ -6,7 +6,7 @@ import { MethodHud } from "@/components/method-hud";
 import { Reveal } from "@/components/reveal";
 
 export const metadata: Metadata = {
-  title: "The Plurel Method — Methodology",
+  title: "The Plurel Method | Methodology",
   description:
     "The Plurel Method (MTD·04) runs every engagement in four phases: Diagnose, Design, Deploy and Compound. It starts with the Diagnostic, six parts of your distribution scored, and settles into a monthly partnership judged on qualified demand.",
   alternates: { canonical: "/methodology/" },
@@ -44,7 +44,7 @@ const LAWS = [
   {
     code: "L·05",
     name: "Instrument everything",
-    rule: "Unseen signals can't be steered. Six run from launch.",
+    rule: "What isn't measured can't be steered. Qualified demand and its supporting signals run from launch.",
   },
   {
     code: "L·06",
@@ -73,16 +73,16 @@ const PHASES: Phase[] = [
     name: "Diagnose",
     intent: "Know where you stand.",
     window: "WK 00–02",
-    gateName: "The Diagnostic Review",
-    why: "Every engagement starts with evidence. Before a single pixel moves, we establish ground truth: where your presence wins, where it leaks, and which fixes move revenue first. Diagnosis is why our roadmaps survive contact with reality.",
+    gateName: "The Diagnosis Review",
+    why: "Every engagement starts with evidence. The free Diagnostic comes first: six parts of your distribution scored and a prioritized read, back within a business day. Diagnose is the paid two weeks that follow it. We go deeper on where your presence wins, where it leaks, and which fixes move revenue first, before a single pixel moves.",
     experience:
-      "Two working interviews, one access checklist, one questionnaire. We carry the rest while you keep running your business.",
+      "Two working interviews, one access checklist and one questionnaire, all after the free Diagnostic. We carry the rest while you keep running your business.",
     workstreams: [
       {
         code: "D·01",
         name: "Presence audit",
         detail:
-          "Market, narrative, touchpoints, assets, distribution and measurement: the six parts of your distribution, each scored.",
+          "Market, narrative, touchpoints, assets, distribution and measurement: the six parts the Diagnostic scored, now worked through in depth.",
       },
       {
         code: "D·02",
@@ -110,14 +110,14 @@ const PHASES: Phase[] = [
       },
     ],
     artifacts: [
-      "Diagnostic Report",
+      "Diagnosis report",
       "Six-part scorecard",
       "Competitor map",
       "AEO baseline",
       "Prioritized fix list",
     ],
     gate: "A working session where findings become priorities. Nothing proceeds until the report is agreed and signed. If we're not the right partner, the report is still yours.",
-    handoff: "Hands off: a signed Diagnostic Report",
+    handoff: "Hands off: a signed diagnosis report",
   },
   {
     number: "02",
@@ -157,7 +157,7 @@ const PHASES: Phase[] = [
         code: "B·05",
         name: "Stack blueprint",
         detail:
-          "CRM, automation, analytics and the tracking plan: your six signals defined and given targets, and the hand-off to sales agreed.",
+          "CRM, automation, analytics and the tracking plan: qualified demand and its supporting signals defined and given targets, and the hand-off to sales agreed.",
       },
     ],
     artifacts: [
@@ -208,7 +208,7 @@ const PHASES: Phase[] = [
         code: "S·05",
         name: "Stack wiring",
         detail:
-          "CRM, automation flows and dashboards live, all six signals reporting from day one, and qualified leads handed to sales. Where it helps, Kelwin, our sister division for RevOps and go-to-market, takes them on from there.",
+          "CRM, automation flows and dashboards live, qualified demand and its supporting signals reporting from day one, and qualified leads handed to sales. Where it helps, Kelwin, our sister division for RevOps and go-to-market, takes them on from there.",
       },
     ],
     artifacts: [
@@ -235,7 +235,7 @@ const PHASES: Phase[] = [
         code: "C·01",
         name: "Signal operations",
         detail:
-          "A monthly read of all six signals against target, with the next moves proposed.",
+          "A monthly read of qualified demand against target and the signals behind it, with the next moves proposed.",
       },
       {
         code: "C·02",
@@ -291,7 +291,7 @@ const RHYTHM = [
   {
     cadence: "Monthly",
     name: "The signal digest",
-    detail: "All six signals against targets, in a five-minute read.",
+    detail: "Qualified demand against target, and why it moved, in a five-minute read.",
     output: "Evidence you can act on",
   },
   {
@@ -313,11 +313,11 @@ const FAQS = [
   },
   {
     q: "What do the first two weeks look like?",
-    a: "Two working interviews, one access checklist and one questionnaire. Then we disappear into the Diagnostic. You get the Diagnostic Report and a prioritized fix list at the Diagnostic Review. If you stop there, the findings are still yours to keep.",
+    a: "You already have the Diagnostic by then: the free read, back within a business day. The two weeks after it go deeper. Two working interviews, one access checklist and one questionnaire turn that read into a full diagnosis report, which we agree with you at the Diagnosis Review. If you stop there, the report is still yours.",
   },
   {
     q: "How do you measure success?",
-    a: "Six signals, instrumented from launch: AI search visibility, demand quality, conversion readiness, content velocity, reputation signals, and campaign efficiency. Each has a target agreed in Design and reviewed monthly, with a quarterly council that scales what's working and cuts what isn't. Demand quality is counted the way your sales team counts it.",
+    a: "One number: qualified demand, counted the way your sales team counts it and split by buyer if you sell to both businesses and consumers. Five supporting signals explain why it moved: AI search visibility, conversion, publishing pace, reviews and press, and campaign cost. Targets are agreed in Design, read monthly and reset each quarter, and a quarterly council scales what's working and cuts what isn't.",
   },
   {
     q: "Who actually does the work?",
@@ -590,8 +590,9 @@ export default function MethodologyPage() {
             <p className="mt-8 max-w-[54ch] text-[15px] leading-relaxed text-paper/60 sm:text-base">
               The method exists so every piece we ship, from the brand to a
               single campaign, connects to the rest and is measured on the
-              same terms, with one team answering for it. Six signals steer
-              the work, and every quarter they feed the next diagnosis.
+              same terms, with one team answering for it. Qualified demand is
+              the number we answer for, and five supporting signals tell us
+              why it moved. Every quarter they feed the next diagnosis.
             </p>
             <p className="mt-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-paper/40">
               <span aria-hidden className="text-brand">
@@ -614,7 +615,7 @@ export default function MethodologyPage() {
               id="laws-heading"
               className="text-[10px] font-semibold uppercase tracking-[0.22em] text-paper/45"
             >
-              The operating laws &mdash; L&middot;01&ndash;06
+              The operating laws &middot; L&middot;01&ndash;06
             </h2>
             <p className="max-w-[38ch] text-[13px] leading-relaxed text-paper/50">
               These are constraints. Work that breaks one doesn&rsquo;t
@@ -692,7 +693,7 @@ export default function MethodologyPage() {
                 id="rhythm-heading"
                 className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
               >
-                The rhythm it runs on &mdash; RTM&middot;04
+                The rhythm it runs on &middot; RTM&middot;04
               </h2>
               <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
                 Four rituals carry every engagement. The cadence is the
@@ -769,11 +770,11 @@ export default function MethodologyPage() {
                     label: "See the system",
                   },
                   {
-                    code: "SIG·06",
-                    name: "The Signal Console",
-                    desc: "Six signals that measure the work, reviewed monthly and reset every quarter.",
+                    code: "NUM·01",
+                    name: "The One Number",
+                    desc: "Qualified demand, read monthly and reset every quarter, with five supporting signals that explain why it moved.",
                     href: null,
-                    label: "Listed in the FAQ below",
+                    label: "Explained in the FAQ below",
                   },
                 ].map((plate, i) => (
                   <div key={plate.code} className="contents">
@@ -926,7 +927,8 @@ export default function MethodologyPage() {
             <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
               Every engagement starts with the Diagnostic: the six parts of
               your distribution scored, and the first fix named, within a
-              business day. It&rsquo;s yours to keep, whatever you decide.
+              business day. It&rsquo;s free, and yours to keep whatever you decide.
+              The paid work starts after it.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
               <Link

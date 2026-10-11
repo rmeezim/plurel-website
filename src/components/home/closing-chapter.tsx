@@ -6,8 +6,9 @@ import { CONTAINER, GRID } from "@/components/system";
 import { heroFilm } from "@/lib/film";
 import { AUDIT_HREF, CONTACT_EMAIL } from "@/lib/nav";
 
-/* What the Diagnostic hands back, said once on the page, here */
-const OUTPUT = ["Where you win.", "Where you leak.", "What to fix first."];
+/* What comes back, in a sentence. The Proof chapter has already shown its
+   win, leak and fix headings, so they are not repeated here. */
+const OUTPUT = ["The same read as Halden's,", "run on your business."];
 
 const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-paper";
@@ -16,8 +17,8 @@ const FOCUS =
   The last red room before the footer: the offer, specified, with one
   action and a person to write to. No running head: the headline names
   the chapter. Each fact lands once: what is scored (the sub-line), what
-  comes back (the list), what it costs and how fast (under the button),
-  and that it is yours to keep.
+  comes back (the sentence on the right), what it costs and how fast
+  (under the button), and that it is yours to keep.
 */
 export function ClosingChapter() {
   return (
@@ -68,20 +69,15 @@ export function ClosingChapter() {
 
           {/* Columns 8 to 12: what comes back */}
           <div className="col-span-4 sm:col-span-6 lg:col-span-5 lg:col-start-8">
-            <ol aria-label="What you get back" className="border-b border-paper/30 pb-5">
-              {OUTPUT.map((line, i) => (
-                <li key={line}>
-                  <Reveal
-                    delay={0.08 * (i + 1)}
-                    className={`type-display block pb-2.5 text-[clamp(1.625rem,2.66vw,2.125rem)] leading-[1.12] ${
-                      i === OUTPUT.length - 1 ? "text-blush" : "text-paper"
-                    }`}
-                  >
+            <Reveal delay={0.08} className="border-b border-paper/30 pb-6">
+              <p className="type-display text-[clamp(1.625rem,2.66vw,2.125rem)] leading-[1.12]">
+                {OUTPUT.map((line, i) => (
+                  <span key={line} className={`block ${i === OUTPUT.length - 1 ? "text-blush" : ""}`}>
                     {line}
-                  </Reveal>
-                </li>
-              ))}
-            </ol>
+                  </span>
+                ))}
+              </p>
+            </Reveal>
             <p className="pt-4 text-[16px] leading-[1.45]">Yours to keep, whatever you decide.</p>
           </div>
         </div>

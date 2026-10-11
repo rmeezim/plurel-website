@@ -125,12 +125,10 @@ export const SAMPLE_DIAGNOSTIC = {
   measure: [
     {
       buyer: "Homeowners",
-      tag: "B2C",
       definition: "A booked home survey at an address where the Q7 fits.",
     },
     {
       buyer: "Housebuilders",
-      tag: "B2B",
       definition: "A request for specs or pricing, tied to a named site.",
     },
   ],

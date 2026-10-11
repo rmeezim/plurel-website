@@ -7,9 +7,9 @@ import { StatementSection } from "@/components/statement-section";
 import { VisualPlate } from "@/components/visual-plate";
 
 export const metadata: Metadata = {
-  title: "Careers — Plurel",
+  title: "Careers | Plurel",
   description:
-    "Join a small senior team doing brand, web, AI search, content and campaign work that ships in public. Open roles at Plurel, Northeon's distribution engineering company.",
+    "Careers at Plurel, Northeon's distribution engineering company: a small senior team doing brand, web, AI search, content and campaign work. See the kinds of roles we hire for and how to introduce yourself.",
   alternates: { canonical: "/careers/" },
 };
 
@@ -65,24 +65,18 @@ const QUALITIES = [
 const ROLES = [
   {
     code: "R·01",
-    name: "Founding Brand Designer",
-    discipline: "Brand & identity systems",
-    type: "Full-time",
-    location: "Remote",
+    name: "Brand designer",
+    discipline: "Brand and identity systems",
   },
   {
     code: "R·02",
-    name: "Growth Engineer",
-    discipline: "Martech, automation & analytics",
-    type: "Full-time",
-    location: "Remote",
+    name: "Growth engineer",
+    discipline: "Martech, automation and analytics",
   },
   {
     code: "R·03",
-    name: "Content Strategist",
-    discipline: "Editorial, AEO & founder POV",
-    type: "Contract to hire",
-    location: "Remote",
+    name: "Content strategist",
+    discipline: "Editorial, AI search and founder voice",
   },
 ];
 
@@ -101,9 +95,8 @@ const PROCESS = [
   },
   {
     number: "03",
-    name: "Decision in days",
-    detail:
-      "An offer, or a straight no with reasons. Two weeks from start to finish.",
+    name: "A straight answer",
+    detail: "An offer, or a no with reasons. We keep it short.",
   },
 ];
 
@@ -163,10 +156,8 @@ export default function CareersPage() {
                   <dd className="text-ink">Weekly ships</dd>
                 </div>
                 <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
-                  <dt className="text-muted">Open roles</dt>
-                  <dd className="tabular-nums text-brand">
-                    {String(ROLES.length).padStart(2, "0")}
-                  </dd>
+                  <dt className="text-muted">Hiring</dt>
+                  <dd className="text-brand">By introduction</dd>
                 </div>
               </dl>
             </Reveal>
@@ -180,7 +171,7 @@ export default function CareersPage() {
           <Reveal>
             <VisualPlate
               kind="room"
-              label="The studio · seats open"
+              label="The studio"
               className="aspect-[16/9] w-full sm:aspect-[21/8]"
             />
           </Reveal>
@@ -309,51 +300,40 @@ export default function CareersPage() {
             <div>
               <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
                 <Spark className="size-3.5 text-brand" aria-hidden />
-                Open roles
+                Who we hire
               </p>
               <h2
                 id="roles-heading"
                 className="mt-5 font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
               >
-                {String(ROLES.length).padStart(2, "0")} seats open.
+                The roles we hire for.
               </h2>
             </div>
             <p className="max-w-[40ch] text-[14px] leading-relaxed text-muted">
-              Apply by email. A short note and links to shipped work beat
-              any résumé format.
+              These are the kinds of roles we hire for, not a list of
+              listings. If one is yours, send a short note and links to
+              shipped work.
             </p>
           </Reveal>
 
           <div className="mt-10 border-b border-line sm:mt-12">
             <ol>
               {ROLES.map((role) => (
-                <li key={role.code} className="border-t border-line">
-                  <a
-                    href={`mailto:hello@plurel.com?subject=${encodeURIComponent(
-                      `Application: ${role.name}`,
-                    )}`}
-                    className="group grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-x-4 py-5 sm:grid-cols-[3.5rem_minmax(0,1fr)_auto] sm:gap-x-6 sm:py-6"
-                  >
-                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.08em] text-muted">
-                      {role.code}
+                <li
+                  key={role.code}
+                  className="grid grid-cols-[3rem_minmax(0,1fr)] items-baseline gap-x-4 border-t border-line py-5 sm:grid-cols-[3.5rem_minmax(0,1fr)] sm:gap-x-6 sm:py-6"
+                >
+                  <span className="text-[11px] font-semibold tabular-nums tracking-[0.08em] text-muted">
+                    {role.code}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[clamp(1.3rem,1.9vw,1.65rem)] font-normal leading-tight tracking-[-0.01em] text-ink">
+                      {role.name}
                     </span>
-                    <span className="min-w-0">
-                      <span className="block text-[clamp(1.3rem,1.9vw,1.65rem)] font-normal leading-tight tracking-[-0.01em] text-ink transition-colors duration-300 group-hover:text-brand">
-                        {role.name}
-                      </span>
-                      <span className="mt-1 block text-[13px] leading-snug text-muted">
-                        {role.discipline}
-                        <span className="px-2 text-line">/</span>
-                        {role.type}
-                        <span className="px-2 text-line">/</span>
-                        {role.location}
-                      </span>
+                    <span className="mt-1 block text-[13px] leading-snug text-muted">
+                      {role.discipline}
                     </span>
-                    <span className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors duration-300 group-hover:text-brand">
-                      <span className="hidden sm:inline">Apply</span>
-                      <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                    </span>
-                  </a>
+                  </span>
                 </li>
               ))}
             </ol>
@@ -361,8 +341,8 @@ export default function CareersPage() {
 
           <Reveal className="mt-8 flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
             <p className="max-w-[52ch] text-[13px] leading-relaxed text-muted">
-              No fit above? Introduce yourself anyway. The best hires rarely
-              match a listing.
+              Don&rsquo;t see your discipline? Introduce yourself anyway.
+              Tell us what you would own.
             </p>
             <a
               href="mailto:hello@plurel.com?subject=Introduction"
@@ -390,7 +370,7 @@ export default function CareersPage() {
               id="hiring-heading"
               className="mt-5 font-sans text-[clamp(2rem,4.4vw,3.75rem)] font-normal leading-[1.05] tracking-[-0.02em]"
             >
-              Two weeks, <em className="italic text-clay">start to finish</em>.
+              A short process, <em className="italic text-clay">no spec work</em>.
             </h2>
           </Reveal>
 
@@ -421,7 +401,7 @@ export default function CareersPage() {
                 ))}
               </div>
               <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-t border-paper/15 px-5 py-3.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-paper/45">
-                <span>We reply to every application</span>
+                <span>How we expect to hire</span>
                 <span className="flex items-center gap-2">
                   <Spark className="size-3 text-brand" aria-hidden />A Plurel
                   operating standard
@@ -451,12 +431,12 @@ export default function CareersPage() {
               id="careers-cta-heading"
               className="mt-6 max-w-[20ch] font-sans text-[clamp(2rem,4.8vw,4rem)] font-normal leading-[1.05] tracking-[-0.02em]"
             >
-              Introduce yourself &mdash; show us something{" "}
+              Introduce yourself. Show us something{" "}
               <em className="italic">you shipped</em>.
             </h2>
             <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              A short note, links to real work, and what you want to own.
-              We reply within one business day, every time.
+              A short note, links to real work and what you want to own,
+              sent to hello@plurel.com.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
               <a

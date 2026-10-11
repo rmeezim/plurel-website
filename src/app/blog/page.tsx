@@ -5,9 +5,9 @@ import { BlogIndex } from "@/components/blog-index";
 import { POSTS } from "@/lib/posts";
 
 export const metadata: Metadata = {
-  title: "Journal — Plurel",
+  title: "Journal | Plurel",
   description:
-    "Notes on staying visible: AI search, brand systems, growth strategy, martech, and reputation — Plurel's point of view on the visible layer of growth.",
+    "Plurel's journal: short essays on AI search, brand, martech and reputation, with checks you can run on your own business.",
 };
 
 export default function BlogPage() {
@@ -30,9 +30,8 @@ export default function BlogPage() {
             </em>
           </h1>
           <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-            A point of view on the visible layer of growth &mdash; AI search,
-            brand systems, growth strategy, martech, and reputation. Written
-            from client work, not theory.
+            Short essays on AI search, brand, martech and reputation, each
+            with checks you can run on your own business.
           </p>
         </div>
       </section>

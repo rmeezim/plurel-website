@@ -72,7 +72,7 @@ export const FAQS = [
   },
   {
     q: "We already have an in-house team or agency. Where do you fit?",
-    a: "Usually alongside them. We diagnose the whole setup, then either run parts of it end to end or direct your team and suppliers from one plan. Good people usually stay. What changes is that someone answers for the result.",
+    a: "Usually alongside them. We diagnose the whole setup, then either run parts of it end to end or direct your team and suppliers from one plan. Good people stay. What changes is that someone answers for the result.",
   },
   {
     q: "What does it cost?",

@@ -7,7 +7,7 @@ import { StatementSection } from "@/components/statement-section";
 import { SERVICE_PAGES } from "@/lib/services-pages";
 
 export const metadata: Metadata = {
-  title: "Services — Plurel",
+  title: "Services | Plurel",
   description:
     "Eight kinds of work, run by one Plurel team from the same brief: website design, brand identity, AI search and SEO, content and creator programs, paid ads, PR and reputation, creative direction, and the martech underneath.",
   alternates: { canonical: "/services/" },
@@ -17,12 +17,12 @@ const MODELS = [
   {
     number: "01",
     name: "Project",
-    detail: "One piece of work, fixed scope: a website, an identity, a launch.",
+    detail: "One piece of work with a fixed scope, like a new website or an identity.",
   },
   {
     number: "02",
     name: "Retainer",
-    detail: "One channel, run every week: content, paid or PR.",
+    detail: "A smaller monthly scope: the channels the Diagnostic ranks first, run by the same team and reported on the same number.",
   },
   {
     number: "03",
@@ -123,7 +123,7 @@ export default function ServicesIndexPage() {
       {/* ------------------------------------------ The point */}
       <StatementSection
         kicker="Why one team"
-        note="SYS·09 · nine layers, one scoreboard"
+        note="SYS·09 · nine layers, one number"
         surface="ink"
       >
         Eight services. <em className="italic text-clay">One system.</em>

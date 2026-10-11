@@ -22,7 +22,7 @@ export async function generateMetadata({
   const service = getServicePage(slug);
   if (!service) return {};
   return {
-    title: `${service.name} — Plurel`,
+    title: `${service.name} | Plurel`,
     description: `${service.tagline} ${service.plain[0]}`,
     alternates: { canonical: `/services/${service.slug}/` },
   };
@@ -165,7 +165,11 @@ export default async function ServicePage({
           </Reveal>
           <Reveal delay={0.08} className="mt-8">
             <div className="overflow-hidden rounded-3xl border border-line">
-              <div className="grid grid-cols-1 gap-px bg-line sm:grid-cols-3">
+              <div
+                className={`grid grid-cols-1 gap-px bg-line ${
+                  service.stats.length === 2 ? "sm:grid-cols-2" : "sm:grid-cols-3"
+                }`}
+              >
                 {service.stats.map((stat) => (
                   <div key={stat.label} className="bg-paper p-6 sm:p-7">
                     <p className="text-[clamp(2.5rem,4.5vw,3.5rem)] font-normal leading-none tracking-[-0.02em] text-brand">

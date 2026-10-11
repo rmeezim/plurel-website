@@ -22,6 +22,7 @@ export interface Post {
   slug: string;
   category: PostCategory;
   cover: CoverKind;
+  /** Not shown until the essays carry real publication dates */
   date: string;
   readTime: string;
   title: string;
@@ -51,7 +52,7 @@ export const POSTS: Post[] = [
     readTime: "6 min read",
     title: "How AI assistants decide which companies to name",
     excerpt:
-      "More buyers now ask an assistant instead of a search bar, and it answers with two or three names. What it weighs when it picks them, and how to check whether yours is one.",
+      "More buyers now ask an assistant instead of a search bar. What it weighs when it picks the companies it names, and how to check whether yours is one.",
     content: [
       {
         type: "p",
@@ -80,19 +81,19 @@ export const POSTS: Post[] = [
         type: "quote",
         text: "An assistant names two or three companies. Make yours the easiest correct one to name.",
       },
-      { type: "h2", text: "How we approach it" },
+      { type: "h2", text: "How to approach it" },
       {
         type: "p",
-        text: "Every engagement starts with a baseline: a fixed panel of buying-intent prompts, run across the major assistants and recorded. Then we fix the entity layer, restructure the highest-intent pages into answerable sections, and build corroboration through PR and reviews. These are the same signals that make people trust you, written down for machines.",
+        text: "Start with a baseline: a fixed panel of buying-intent prompts, run across the major assistants and recorded. Then fix the entity layer, restructure the highest-intent pages into answerable sections, and build corroboration through PR and reviews. These are the same signals that make people trust you, written down for machines.",
       },
       {
         type: "p",
-        text: "Measurement mirrors the setup: the same prompt panel, run again every month. We track share of answer the way media teams track share of voice: which questions you appear in, how you're described, and who appears beside you.",
+        text: "Measurement mirrors the setup: run the same prompt panel again every month. Track share of answer the way media teams track share of voice: which questions you appear in, how you're described, and who appears beside you.",
       },
       { type: "h2", text: "Where to start" },
       {
         type: "p",
-        text: "Write down five ways a real customer would ask an assistant for what you sell. Ask them. If you are missing from the answers, that is the first line of your Diagnostic, and the clearest case for treating AI visibility as a channel of its own.",
+        text: "Write down five ways a real customer would ask an assistant for what you sell. Ask them. If you are missing from the answers, that is the first thing to fix, and the clearest case for treating AI visibility as a channel of its own.",
       },
     ],
   },
@@ -174,7 +175,7 @@ export const POSTS: Post[] = [
       },
       {
         type: "p",
-        text: "Score each signal 0, 1 or 2: absent, present or persuasive. If you land under 12 of 24, look at where the misses cluster. Typical patterns are a strong product with no visible proof, good design with stale content, or great reviews with no search presence.",
+        text: "Score each signal 0, 1 or 2: absent, present or persuasive. If you land under 12 of 24, look at where the misses cluster. Common patterns are a strong product with no visible proof, good design with stale content, or great reviews with no search presence.",
       },
       {
         type: "quote",
@@ -227,7 +228,7 @@ export const POSTS: Post[] = [
       },
       {
         type: "p",
-        text: "We wire this layer into every engagement because good marketing leaks without it. The new site brings people in; the stack makes sure each lead is counted, answered, attributed and handed to sales the way sales wants it.",
+        text: "Wire this layer in before you scale spend, because good marketing leaks without it. A new site brings people in; the stack makes sure each lead is counted, answered, attributed and handed to sales the way sales wants it.",
       },
     ],
   },

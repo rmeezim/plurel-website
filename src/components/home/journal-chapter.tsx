@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Reveal } from "@/components/reveal";
-import { ChapterHead, CONTAINER, CtaLink, GRID, Meta } from "@/components/system";
+import { ChapterHead, CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
 import { MARK_CELLS } from "@/lib/mark";
 import { CATEGORIES, POSTS, type Post, type PostBlock, type PostCategory } from "@/lib/posts";
 
 /*
   Journal, after the questions: a masthead (nameplate + deck) with a key
   to the five series, a red report plate for the latest note, and the
-  further notes with small paper-tint covers. Mono only for data: each
-  note's series, date and reading time.
+  further notes with small paper-tint covers. Mono only for the dates;
+  a note's series is plain sans and there is no reading time.
 
   Every cover glyph is the Plurel mark itself (MARK_CELLS, 2:1:4:1:2 on a
   10-unit square) with a topic's cells lit. On hover or keyboard focus a
@@ -110,11 +110,9 @@ export function JournalChapter() {
         {/* Masthead: nameplate and deck, with the series key */}
         <div className={`${GRID} mt-8 items-end gap-y-10 lg:mt-10`}>
           <Reveal className="col-span-4 sm:col-span-6 lg:col-span-8">
-            <h2 id="journal-heading" className="type-display">
-              <span className="block text-[clamp(3.5rem,17vw,7.5rem)] leading-[0.95] lg:text-[min(10.6vw,9.5rem)]">
-                Field notes
-              </span>{" "}
-              <span className="mt-3 block text-[clamp(1.5rem,1.1rem+2.4vw,2.75rem)] leading-[1.08] lg:mt-3.5">
+            <h2 id="journal-heading" className={H2}>
+              <span className="block">Field notes</span>{" "}
+              <span className="mt-2 block text-[clamp(1.25rem,1rem+1.2vw,1.75rem)] leading-[1.12] text-muted lg:mt-3">
                 on AI search, brand, and growth.
               </span>
             </h2>
@@ -126,7 +124,7 @@ export function JournalChapter() {
           >
             <ul
               aria-label="The series"
-              className="grid grid-cols-2 gap-x-5 border-t border-ink/15 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-1"
+              className="border-t border-ink/15 sm:max-w-[22rem]"
             >
               {CATEGORIES.map((category) => (
                 <li
@@ -146,9 +144,8 @@ export function JournalChapter() {
           <Reveal className="col-span-4 flex flex-col sm:col-span-6 lg:col-span-7">
             <article className="flex flex-1 flex-col">
               <div className="group/note relative -mx-5 grid aspect-[4/5] grid-rows-[auto_1fr_auto] bg-brand p-5 text-paper sm:mx-0 sm:aspect-[16/9] sm:px-7 sm:pb-7 sm:pt-6 lg:aspect-[677/440] lg:px-8 lg:pb-8 lg:pt-7">
-                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-paper/30 pb-4">
-                  <Meta>{lead.category}</Meta>
-                  <Meta className="shrink-0">{lead.date}</Meta>
+                <div className="border-b border-paper/30 pb-4">
+                  <span className="text-[15px] font-medium">{lead.category}</span>
                 </div>
 
                 <div className="pt-6 sm:pt-8 lg:pt-10">
@@ -167,8 +164,7 @@ export function JournalChapter() {
                   )}
                 </div>
 
-                <div className="flex items-end justify-between gap-6 pt-6">
-                  <Meta>{lead.readTime}</Meta>
+                <div className="flex items-end justify-end gap-6 pt-6">
                   <Glyph
                     category={lead.category}
                     tone="red"
@@ -209,10 +205,7 @@ export function JournalChapter() {
                       <Glyph category={post.category} play className="size-10 sm:size-[60px]" />
                     </span>
                     <div className="pt-px">
-                      <Meta className="flex flex-wrap gap-x-3.5 text-muted">
-                        <span className="text-ink">{post.category}</span>
-                        <span>{post.date}</span>
-                      </Meta>
+                      <p className="text-[14px] font-medium">{post.category}</p>
                       <h4 className="mt-2.5 text-[clamp(1rem,0.85rem+0.5vw,1.1875rem)] font-medium leading-[1.25] tracking-[-0.01em] transition-colors duration-300 group-hover/note:text-brand">
                         {post.title}
                       </h4>

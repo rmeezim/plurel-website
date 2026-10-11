@@ -4,26 +4,26 @@ import { Spark } from "@/components/icons";
 import { ContactForm } from "@/components/contact-form";
 
 export const metadata: Metadata = {
-  title: "Contact — Plurel",
+  title: "Contact | Plurel",
   description:
-    "Book a strategy call or request a diagnostic. Tell us where your distribution stands today — we'll map what it could be doing for you.",
+    "Request a diagnostic. Tell us where your distribution stands today and a strategist will send back a scored read within a business day.",
 };
 
 const NEXT_STEPS = [
   {
     number: "01",
-    title: "We reply within one business day",
-    detail: "A first read on your presence — from a person, not a pipeline.",
+    title: "Your Diagnostic, within a business day",
+    detail: "Six parts scored by a strategist, and the first fix named.",
   },
   {
     number: "02",
-    title: "A 30-minute strategy call",
-    detail: "Where you stand across brand, web, search, and reputation.",
+    title: "A 30-minute call",
+    detail: "We walk you through the read and answer your questions.",
   },
   {
     number: "03",
-    title: "Your diagnostic & roadmap",
-    detail: "What to fix first, what it costs, and what it should return.",
+    title: "A scope, if there is one",
+    detail: "What to fix first, what it costs and what it should return.",
   },
 ] as const;
 
@@ -47,9 +47,9 @@ export default function ContactPage() {
             </em>
           </h1>
           <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-            Book a 30-minute strategy call or request a diagnostic &mdash;
-            either way, you&rsquo;ll leave with a sharper read on your brand,
-            your visibility, and your next move.
+            Request a diagnostic and a strategist will send you a scored read
+            of your distribution within a business day. If you&rsquo;d rather
+            talk first, say so in the form.
           </p>
         </div>
       </section>
@@ -79,24 +79,11 @@ export default function ContactPage() {
                       </span>
                     </a>
                   </li>
-                  <li>
-                    <a
-                      href="tel:+15550123456"
-                      className="group flex items-baseline justify-between gap-4 py-4"
-                    >
-                      <span className="text-[13px] text-muted">Phone</span>
-                      <span className="text-[15px] text-ink transition-colors group-hover:text-brand">
-                        +1 (555) 012-3456
-                      </span>
-                    </a>
-                  </li>
                   <li className="flex items-baseline justify-between gap-4 py-4">
-                    <span className="text-[13px] text-muted">Office</span>
-                    <address className="text-right text-[15px] not-italic leading-relaxed text-ink">
-                      12 Harbor Lane, Suite 400
-                      <br />
-                      New York, NY
-                    </address>
+                    <span className="text-[13px] text-muted">Base</span>
+                    <span className="text-[15px] text-ink">
+                      New York &middot; Remote
+                    </span>
                   </li>
                   <li className="flex items-baseline justify-between gap-4 py-4">
                     <span className="text-[13px] text-muted">Hours</span>
@@ -138,9 +125,8 @@ export default function ContactPage() {
                   A Northeon division
                 </p>
                 <p className="mt-3 text-[14px] leading-relaxed text-paper/75">
-                  Plurel engagements draw on Northeon&rsquo;s global delivery
-                  network &mdash; senior strategy, design, and martech under
-                  one roof.
+                  Plurel draws on Northeon&rsquo;s delivery network for extra
+                  hands. Your work is still run by one Plurel team.
                 </p>
               </div>
             </aside>

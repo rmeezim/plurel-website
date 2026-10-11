@@ -1,8 +1,8 @@
 /*
  * The services layer: one entry per service page. Copy follows the
  * pacing rules (short clauses, one idea per line). Every statistic is
- * from independent, published research and carries its source inline;
- * nothing here is invented. Names and taglines mirror SERVICE_LIST in
+ * attributed to a named source inline and none is Plurel's own. A figure
+ * we cannot attribute correctly is dropped, never softened or guessed. Names and taglines mirror SERVICE_LIST in
  * nav.ts. Creators and UGC sit inside Content Marketing (the programs)
  * and Paid Ads (the amplification); the hand-off to sales is named on
  * Martech, where Kelwin takes it on.
@@ -41,7 +41,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     name: "Website Design",
     tagline: "Every buyer meets it, and most judge you by it.",
     plain: [
-      "Your website is where every relevant channel eventually sends people: ads, search, referrals, AI answers. We design and build editorial, conversion-ready websites that look premium, load fast, read clearly and turn attention into qualified demand.",
+      "Your website is where every relevant channel eventually sends people: ads, search, referrals, AI answers. We design and build websites that load fast, say plainly what you sell, and make it easy for the right buyer to take the next step.",
       "Design and engineering happen together, so the site ships with performance, analytics and a schema layer built in from the first page.",
     ],
     why: [
@@ -65,9 +65,9 @@ export const SERVICE_PAGES: ServicePage[] = [
         source: "Stanford Web Credibility Research",
       },
       {
-        value: "0.05s",
-        label: "for visitors to form a first impression of your site",
-        source: "Google research",
+        value: "50ms",
+        label: "for visitors to form a lasting opinion of how appealing a site looks",
+        source: "Lindgaard et al., Carleton University, 2006",
       },
       {
         value: "+200%",
@@ -137,11 +137,6 @@ export const SERVICE_PAGES: ServicePage[] = [
         value: "46%",
         label: "of consumers will pay more for a brand name they trust",
         source: "Salsify",
-      },
-      {
-        value: "+80%",
-        label: "brand recognition gained through consistent signature color",
-        source: "University of Loyola",
       },
     ],
     risks: [
@@ -220,7 +215,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
       {
         name: "Page two is invisible",
-        clause: "Under 1% of searchers ever click a second-page result.",
+        clause: "Buyers rarely scroll past the first page to find you.",
       },
       {
         name: "Paid becomes the only lever",
@@ -229,8 +224,8 @@ export const SERVICE_PAGES: ServicePage[] = [
     ],
     riskStat: {
       value: "−25%",
-      label: "predicted drop in traditional search volume by 2026 as AI answers take over",
-      source: "Gartner",
+      label: "drop in traditional search volume that Gartner forecast for 2026, as AI answers take queries",
+      source: "Gartner forecast, 2024",
     },
     how: [
       { phase: "Diagnose", action: "AEO baseline: how engines read, rank and cite you today." },
@@ -318,7 +313,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     tagline: "Rent attention on purpose. Keep what it earns.",
     plain: [
       "Paid media buys the attention your brand hasn't earned yet: search, social and retargeting campaigns that put you in front of buyers now, and budget behind your best creator and UGC posts.",
-      "We build paid around sharp creative, landing pages built to convert, and a testing plan that makes every dollar smarter than the last. What each test teaches goes back into the brief.",
+      "We build paid around sharp creative, landing pages built to convert, and a testing plan where each test answers one question about your buyers. What each test teaches goes back into the brief.",
     ],
     why: [
       {
@@ -495,7 +490,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         clause: "Vendors and channels slowly pull the brand in six directions.",
       },
       {
-        name: "The sameness tax",
+        name: "Category-standard work",
         clause: "Category-standard creative earns category-standard results.",
       },
       {
@@ -581,7 +576,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       { phase: "Diagnose", action: "Stack and data review: what exists, and what's connected." },
       { phase: "Design", action: "The schematic and tracking plan, with the hand-off to sales agreed." },
       { phase: "Deploy", action: "CRM, automations and dashboards wired and live." },
-      { phase: "Compound", action: "Six signals reviewed monthly, so the stack earns its keep." },
+      { phase: "Compound", action: "Qualified demand and its signals reviewed monthly, so the stack earns its keep." },
     ],
     layers: ["06 CRM", "07 Automation", "08 Analytics"],
     plate: { kind: "schematic", label: "The stack · wired" },

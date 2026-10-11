@@ -23,7 +23,8 @@ import s from "./services-type.module.css";
 
   Static (no JS, reduced motion, forced colours, a screen too short for
   the finished frame) it is simply the list, unpinned, and the narrator
-  answers its own "still a menu" outright: "Not a menu. A chain."
+  answers its own "still a menu" outright: "Eight kinds of work, set on
+  one chain."
 */
 
 export function ServicesType({
@@ -74,8 +75,8 @@ export function ServicesType({
               >
                 <span className="type-display block text-[20px] leading-[1.12] text-paper lg:text-[clamp(1.25rem,1.5vw,1.375rem)]">
                   <span className={s.capStatic}>
-                    <span className="lg:block">Not a menu.</span>{" "}
-                    <span className="lg:block">A chain.</span>
+                    <span className="lg:block">Eight kinds of work,</span>{" "}
+                    <span className="lg:block">set on one chain.</span>
                   </span>
                   <span aria-hidden className={s.capMotion}>
                     <span className={s.ca}>Eight disciplines, eight voices.</span>
