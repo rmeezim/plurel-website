@@ -27,11 +27,12 @@ Read `docs/design-system.md` before building any page. In short: red is
 the environment (flat red chapters, a red-graded film behind cool fluted glass),
 graphite is the dark tone, the footer is paper, surfaces are flat color
 with no gradients or drawn grid lines, structure
-is Swiss (a strict 12-column grid that is felt, not drawn, numbered
-chapters, mono metadata), and the layout follows the Northeon family
+is Swiss (a strict 12-column grid that is felt, not drawn; one quiet
+label per chapter at most, no chapter numbers or rulers; mono only for
+data), and the layout follows the Northeon family
 shared with the sister divisions. Primitives live in `src/components/system.tsx`; the
 homepage (`src/components/home/`) is the reference build. The hero film
-brief and Higgsfield prompts are in `docs/hero-video.md`.
+brief (real footage, not AI-generated) is in `docs/hero-video.md`.
 
 ## Brand tokens (defined in `globals.css` `@theme`)
 
@@ -91,7 +92,8 @@ argument onto the homepage chapters.
 - The film behind the glass and the Attention Field's channel tiles loop
   muted with no control (the owner's call); they stop off screen and in
   hidden tabs, and reduced motion or data saver get a still frame. Real
-  tile footage goes in `public/video/channels/<key>.mp4`. The clients marquee pauses on hover and
-  sits still for reduced motion. Any other auto-moving media needs a
-  pause control.
+  tile footage goes in `public/video/channels/<key>.mp4`. Any other
+  auto-moving media needs a pause control.
+- Never invent proof: no client, person, quote, logo or result is shown as
+  real unless it is; samples are labelled as samples in plain view.
 - Design for mobile first; the layout must hold up from 360px to wide desktop.

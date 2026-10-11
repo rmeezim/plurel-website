@@ -9,7 +9,7 @@ import { SERVICE_PAGES } from "@/lib/services-pages";
 export const metadata: Metadata = {
   title: "Services — Plurel",
   description:
-    "Plurel builds the visible layer of growth as one system: website design, brand identity, AI search & SEO, content marketing, paid ads, PR & reputation, creative direction, and the martech underneath.",
+    "Eight kinds of work, run by one Plurel team from the same brief: website design, brand identity, AI search and SEO, content and creator programs, paid ads, PR and reputation, creative direction, and the martech underneath.",
   alternates: { canonical: "/services/" },
 };
 
@@ -17,17 +17,17 @@ const MODELS = [
   {
     number: "01",
     name: "Project",
-    detail: "One layer, fixed scope — a website, an identity, a launch.",
+    detail: "One piece of work, fixed scope: a website, an identity, a launch.",
   },
   {
     number: "02",
     name: "Retainer",
-    detail: "A standing lane run on the weekly rhythm — content, paid, PR.",
+    detail: "One channel, run every week: content, paid or PR.",
   },
   {
     number: "03",
-    name: "Growth transformation",
-    detail: "The full system, all four phases — diagnosis to compounding.",
+    name: "Monthly partnership",
+    detail: "All four phases on every relevant channel, run by one team and priced as a whole, never per channel.",
   },
 ];
 
@@ -40,7 +40,7 @@ export default function ServicesIndexPage() {
           <div className="max-w-[760px]">
             <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
               <Spark className="size-3.5 text-brand" aria-hidden />
-              Services &mdash; SVC&middot;01&ndash;08
+              Services &middot; SVC&middot;01&ndash;08
             </p>
             <h1
               id="services-page-heading"
@@ -58,10 +58,10 @@ export default function ServicesIndexPage() {
             </h1>
             <p className="fade-up mt-6 max-w-[60ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
               In plain terms: Plurel builds everything a buyer meets before
-              they talk to you &mdash; your brand, your website, how you show
-              up in Google and AI answers, your content, your ads, and your
-              reputation &mdash; and wires it into one measured system
-              instead of eight disconnected vendors.
+              they talk to you. Your brand, your website, how you show up in
+              Google and AI answers, your content and creators, your ads and
+              your reputation, run by one team and judged on qualified
+              demand, instead of split across eight suppliers.
             </p>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function ServicesIndexPage() {
               id="service-index-heading"
               className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
             >
-              The eight services &mdash; each explained on its own page
+              The eight services, each explained on its own page
             </h2>
             <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
               What it is, why it matters, the research, and the cost of
@@ -113,7 +113,7 @@ export default function ServicesIndexPage() {
               href="/#distribution"
               className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
             >
-              How the eight connect &mdash; the growth system
+              See how the eight connect
               <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
           </Reveal>
@@ -123,7 +123,7 @@ export default function ServicesIndexPage() {
       {/* ------------------------------------------ The point */}
       <StatementSection
         kicker="Why one team"
-        note="SYS·09 — nine layers, one scoreboard"
+        note="SYS·09 · nine layers, one scoreboard"
         surface="ink"
       >
         Eight services. <em className="italic text-clay">One system.</em>
@@ -170,14 +170,14 @@ export default function ServicesIndexPage() {
           </div>
           <Reveal className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-line pt-6">
             <p className="max-w-[52ch] text-[13px] leading-relaxed text-muted">
-              Every engagement &mdash; any size &mdash; starts with the
-              Diagnostic, so scope comes from evidence.
+              Every engagement, whatever its size, starts with the
+              Diagnostic, so the scope comes from evidence.
             </p>
             <Link
               href="/contact"
               className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
             >
-              Book Strategy Call
+              Request a diagnostic
               <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
             </Link>
           </Reveal>

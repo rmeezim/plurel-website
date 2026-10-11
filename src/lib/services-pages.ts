@@ -1,8 +1,11 @@
 /*
- * The services layer — one entry per service page. Copy follows the
+ * The services layer: one entry per service page. Copy follows the
  * pacing rules (short clauses, one idea per line). Every statistic is
  * from independent, published research and carries its source inline;
- * nothing here is invented.
+ * nothing here is invented. Names and taglines mirror SERVICE_LIST in
+ * nav.ts. Creators and UGC sit inside Content Marketing (the programs)
+ * and Paid Ads (the amplification); the hand-off to sales is named on
+ * Martech, where Kelwin takes it on.
  */
 
 export type ServiceStat = { value: string; label: string; source: string };
@@ -36,10 +39,10 @@ export const SERVICE_PAGES: ServicePage[] = [
     code: "SVC·01",
     slug: "website-design",
     name: "Website Design",
-    tagline: "The one asset every buyer meets.",
+    tagline: "Every buyer meets it, and most judge you by it.",
     plain: [
-      "Your website is where every relevant channel eventually sends people — ads, search, referrals, AI answers. We design and build editorial, conversion-ready websites: pages that look premium, load fast, read clearly, and turn attention into qualified demand.",
-      "Design and engineering happen together — the site ships with performance, analytics, and a schema layer built in, not bolted on.",
+      "Your website is where every relevant channel eventually sends people: ads, search, referrals, AI answers. We design and build editorial, conversion-ready websites that look premium, load fast, read clearly and turn attention into qualified demand.",
+      "Design and engineering happen together, so the site ships with performance, analytics and a schema layer built in from the first page.",
     ],
     why: [
       {
@@ -48,7 +51,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
       {
         name: "Every relevant channel lands here",
-        clause: "Paid, search, and referrals all convert — or leak — on the same pages.",
+        clause: "Paid, search and referrals all convert or leak on the same pages.",
       },
       {
         name: "It works while you don't",
@@ -83,7 +86,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
       {
         name: "Invisible to machines",
-        clause: "Without structure, AI assistants can't read — or cite — you.",
+        clause: "Without structure, AI assistants can't read you, let alone cite you.",
       },
     ],
     riskStat: {
@@ -93,12 +96,12 @@ export const SERVICE_PAGES: ServicePage[] = [
     },
     how: [
       { phase: "Diagnose", action: "Trace the buyer journey and score where pages leak." },
-      { phase: "Design", action: "Conversion architecture, wireframes, and the design system." },
-      { phase: "Deploy", action: "Build, performance pass, schema layer — live in weeks." },
-      { phase: "Compound", action: "Conversion readiness tracked and tuned quarterly." },
+      { phase: "Design", action: "Conversion architecture, wireframes and the design system." },
+      { phase: "Deploy", action: "Build, performance pass and schema layer, live in weeks." },
+      { phase: "Compound", action: "Conversion tracked, and the pages tuned every quarter." },
     ],
     layers: ["02 Website", "03 AI Search", "08 Analytics"],
-    plate: { kind: "device", label: "The build — conversion-ready" },
+    plate: { kind: "device", label: "The build · conversion-ready" },
     related: ["brand-identity", "aeo-seo"],
   },
   {
@@ -107,8 +110,8 @@ export const SERVICE_PAGES: ServicePage[] = [
     name: "Brand Identity",
     tagline: "Look like the choice before you say a word.",
     plain: [
-      "Brand identity is the system of how you look, sound, and feel — positioning, visual language, voice, and the standards that keep them consistent everywhere a buyer meets you.",
-      "We build identities as systems, not logo files: every template, profile, and page carries the same signal, so recognition compounds instead of resetting.",
+      "Brand identity is how you look, sound and feel: positioning, visual language, voice, and the standards that keep them consistent wherever a buyer meets you.",
+      "We build identities your team can use without asking. Every template, profile and page carries the same signal, so recognition builds instead of resetting.",
     ],
     why: [
       {
@@ -116,12 +119,12 @@ export const SERVICE_PAGES: ServicePage[] = [
         clause: "Indistinct businesses get compared on price alone.",
       },
       {
-        name: "Recognition compounds",
+        name: "Recognition adds up",
         clause: "Consistency turns every impression into memory instead of noise.",
       },
       {
         name: "Every relevant channel performs better",
-        clause: "Strong brand raises the return of ads, content, and PR at once.",
+        clause: "A strong brand raises the return on ads, content and PR at once.",
       },
     ],
     stats: [
@@ -161,13 +164,13 @@ export const SERVICE_PAGES: ServicePage[] = [
       source: "Nielsen",
     },
     how: [
-      { phase: "Diagnose", action: "Positioning audit — where you win, where you blend in." },
+      { phase: "Diagnose", action: "Positioning audit: where you win, and where you blend in." },
       { phase: "Design", action: "Identity system: visual language, voice, usage standards." },
-      { phase: "Deploy", action: "Rollout across site, templates, and every buyer-facing profile." },
-      { phase: "Compound", action: "Consistency guarded as channels and campaigns multiply." },
+      { phase: "Deploy", action: "Rollout across the site, templates and every profile buyers check." },
+      { phase: "Compound", action: "Consistency kept as channels and campaigns multiply." },
     ],
     layers: ["01 Brand", "02 Website", "09 Reputation"],
-    plate: { kind: "identity", label: "Identity — systems, not logos" },
+    plate: { kind: "identity", label: "Identity · built to be used" },
     related: ["website-design", "creative-direction"],
   },
   {
@@ -176,8 +179,8 @@ export const SERVICE_PAGES: ServicePage[] = [
     name: "AI Search & SEO",
     tagline: "Be the answer, wherever the question is asked.",
     plain: [
-      "Buyers now ask Google and AI assistants before they ask anyone else. AEO — answer engine optimization — is SEO evolved for that reality: structuring your site, content, and proof so both search engines and AI assistants can read, rank, and cite you.",
-      "We build the machine-readable layer — schema, entities, citable content — and the authority that earns the answer spot.",
+      "Buyers now ask Google and AI assistants before they ask anyone else. AEO (answer engine optimization) is SEO for that reality: structuring your site, content and proof so search engines and AI assistants can read, rank and cite you.",
+      "We build the machine-readable layer (schema, entities, content worth citing) and the authority that earns the answer spot.",
     ],
     why: [
       {
@@ -185,7 +188,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         clause: "Discovery starts in search bars and AI chats, not on your homepage.",
       },
       {
-        name: "Compounding, not rented",
+        name: "It keeps working",
         clause: "Rankings and citations keep working long after they're earned.",
       },
       {
@@ -213,7 +216,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     risks: [
       {
         name: "Answered without you",
-        clause: "Assistants summarize your category — citing whoever is readable.",
+        clause: "Assistants summarize your category and cite whoever is readable.",
       },
       {
         name: "Page two is invisible",
@@ -230,23 +233,23 @@ export const SERVICE_PAGES: ServicePage[] = [
       source: "Gartner",
     },
     how: [
-      { phase: "Diagnose", action: "AEO baseline — how engines read, rank, and cite you today." },
+      { phase: "Diagnose", action: "AEO baseline: how engines read, rank and cite you today." },
       { phase: "Design", action: "Entity and schema architecture; the citable-content plan." },
       { phase: "Deploy", action: "Technical layer live, first answer-ready content published." },
       { phase: "Compound", action: "Visibility tracked monthly across Google and assistants." },
     ],
     layers: ["03 AI Search", "02 Website", "04 Content"],
-    plate: { kind: "schematic", label: "Answer engine — machine-readable" },
+    plate: { kind: "schematic", label: "Answer engine · machine-readable" },
     related: ["content-marketing", "website-design"],
   },
   {
     code: "SVC·04",
     slug: "content-marketing",
     name: "Content Marketing",
-    tagline: "Proof and perspective, published on a system.",
+    tagline: "Found by buyers long before they're ready.",
     plain: [
-      "Content marketing is publishing useful proof and perspective — articles, case studies, founder point-of-view — so buyers find you, trust you, and arrive half-convinced.",
-      "We run it as an engine, not a blog: an editorial spine tied to what buyers actually ask, structured so people read it and AI assistants cite it.",
+      "Content marketing is publishing what buyers go looking for: articles, case studies, founder posts, and creator and UGC programs, where people your buyers already follow make and share the work. Done well, buyers find you, trust you and arrive half-convinced.",
+      "We tie the editorial plan to what buyers actually ask, write it so people read it and AI assistants cite it, and brief creators from the same story. When a creator post earns attention, Paid Ads puts budget behind it.",
     ],
     why: [
       {
@@ -258,7 +261,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         clause: "Content powers search, social, email, and the answers assistants give.",
       },
       {
-        name: "Assets, not ads",
+        name: "It outlasts the ad",
         clause: "A good article works for years; an ad stops the day you stop paying.",
       },
     ],
@@ -295,32 +298,32 @@ export const SERVICE_PAGES: ServicePage[] = [
     ],
     riskStat: {
       value: "~60%",
-      label: "of searches now end without a click — the answer wins, not the link",
+      label: "of searches now end without a click on any result",
       source: "SparkToro / Similarweb analysis",
     },
     how: [
       { phase: "Diagnose", action: "Map the questions that decide your shortlist." },
-      { phase: "Design", action: "Editorial spine: topics, formats, cadence, distribution." },
-      { phase: "Deploy", action: "First cycle live — founder POV and citable articles." },
-      { phase: "Compound", action: "Publish, refresh, and redistribute on a weekly rhythm." },
+      { phase: "Design", action: "Editorial plan: topics, formats, creators and cadence." },
+      { phase: "Deploy", action: "First cycle live: founder posts, citable articles, the first creator briefs." },
+      { phase: "Compound", action: "Publish, refresh and redistribute every week." },
     ],
     layers: ["04 Content", "03 AI Search", "09 Reputation"],
-    plate: { kind: "campaign", label: "The engine — worth citing", line: "Worth citing." },
+    plate: { kind: "campaign", label: "Content · worth citing", line: "Worth citing." },
     related: ["aeo-seo", "pr-reputation"],
   },
   {
     code: "SVC·05",
     slug: "paid-ads",
     name: "Paid Ads",
-    tagline: "Buy attention a system can hold.",
+    tagline: "Rent attention on purpose. Keep what it earns.",
     plain: [
-      "Paid media buys the attention your brand hasn't earned yet — search, social, and retargeting campaigns that put you in front of buyers now.",
-      "We build paid as a system: sharp creative, landing pages built to convert, and a testing harness that makes every dollar smarter than the last.",
+      "Paid media buys the attention your brand hasn't earned yet: search, social and retargeting campaigns that put you in front of buyers now, and budget behind your best creator and UGC posts.",
+      "We build paid around sharp creative, landing pages built to convert, and a testing plan that makes every dollar smarter than the last. What each test teaches goes back into the brief.",
     ],
     why: [
       {
         name: "Speed",
-        clause: "Organic compounds over quarters; paid brings qualified demand this month.",
+        clause: "Organic builds over quarters; paid brings qualified demand this month.",
       },
       {
         name: "Creative is the multiplier",
@@ -328,7 +331,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
       {
         name: "A learning machine",
-        clause: "Run right, campaigns are research — every test teaches the brand.",
+        clause: "Run right, every campaign is research, and every test teaches the brand something.",
       },
     ],
     stats: [
@@ -370,21 +373,21 @@ export const SERVICE_PAGES: ServicePage[] = [
     how: [
       { phase: "Diagnose", action: "Audit spend, creative, and where paid traffic leaks." },
       { phase: "Design", action: "Campaign architecture, offers, and the testing plan." },
-      { phase: "Deploy", action: "Accounts, landing pages, and creative harness live." },
-      { phase: "Compound", action: "Budget reallocated monthly toward what compounds." },
+      { phase: "Deploy", action: "Accounts, landing pages and the creative tests live." },
+      { phase: "Compound", action: "Budget moved every month toward what returns." },
     ],
     layers: ["05 Paid Growth", "02 Website", "08 Analytics"],
-    plate: { kind: "campaign", label: "Campaigns — built to learn", line: "Built to learn." },
+    plate: { kind: "campaign", label: "Campaigns · built to learn", line: "Built to learn." },
     related: ["website-design", "martech-consulting"],
   },
   {
     code: "SVC·06",
     slug: "pr-reputation",
     name: "PR & Reputation",
-    tagline: "What the world says when you're not in the room.",
+    tagline: "What people say when you're not in the room.",
     plain: [
-      "Reputation is the layer buyers check last — reviews, press, rankings, and what AI assistants say about you. PR earns that third-party proof; reputation management makes sure it's found.",
-      "We build the proof pipeline: placements, review velocity, and trust signals that feed back into everything else.",
+      "Reputation is the layer buyers check last: reviews, press, rankings, and what AI assistants say about you. PR earns that third-party proof; reputation management makes sure it's found.",
+      "We keep proof coming in: press placements, a steady flow of reviews, and trust signals that feed back into everything else.",
     ],
     why: [
       {
@@ -428,7 +431,7 @@ export const SERVICE_PAGES: ServicePage[] = [
       },
       {
         name: "Invisible authority",
-        clause: "Unreviewed and unmentioned reads as unproven — to people and machines.",
+        clause: "Unreviewed and unmentioned reads as unproven, to people and to machines.",
       },
     ],
     riskStat: {
@@ -437,23 +440,23 @@ export const SERVICE_PAGES: ServicePage[] = [
       source: "Moz",
     },
     how: [
-      { phase: "Diagnose", action: "Reputation audit — reviews, press, and assistant answers." },
-      { phase: "Design", action: "The proof pipeline: stories, targets, review cadence." },
-      { phase: "Deploy", action: "First placements and the review engine running." },
-      { phase: "Compound", action: "Trust signals monitored and fed back into brand." },
+      { phase: "Diagnose", action: "Reputation audit: reviews, press and what assistants answer." },
+      { phase: "Design", action: "The proof plan: stories, target outlets, review cadence." },
+      { phase: "Deploy", action: "First placements landed, and reviews coming in." },
+      { phase: "Compound", action: "Trust signals watched, and fed back into the brand." },
     ],
     layers: ["09 Reputation", "04 Content", "01 Brand"],
-    plate: { kind: "room", label: "Trust — accumulating" },
+    plate: { kind: "room", label: "Trust · accumulating" },
     related: ["content-marketing", "brand-identity"],
   },
   {
     code: "SVC·07",
     slug: "creative-direction",
     name: "Creative Direction",
-    tagline: "Taste, applied consistently.",
+    tagline: "Someone with taste in every review.",
     plain: [
-      "Creative direction is the discipline that keeps everything you ship — campaigns, content, product surfaces — coherent, distinctive, and unmistakably yours.",
-      "We act as the standing creative brain: one point of view across every artifact, so growth never comes at the cost of the brand.",
+      "Creative direction keeps everything you ship coherent, distinctive and unmistakably yours: campaigns, content, product pages and the work creators make for you.",
+      "A creative director sits in every review and holds the same point of view across every piece, so growth never comes at the cost of the brand.",
     ],
     why: [
       {
@@ -461,7 +464,7 @@ export const SERVICE_PAGES: ServicePage[] = [
         clause: "Design-led companies grow faster than their categories.",
       },
       {
-        name: "Coherence is leverage",
+        name: "Coherence pays",
         clause: "One strong idea, carried everywhere, beats ten disconnected ones.",
       },
       {
@@ -507,22 +510,22 @@ export const SERVICE_PAGES: ServicePage[] = [
     },
     how: [
       { phase: "Diagnose", action: "Audit everything shipping under the brand today." },
-      { phase: "Design", action: "The creative platform — idea, standards, references." },
-      { phase: "Deploy", action: "Direction across every artifact leaving the studio." },
+      { phase: "Design", action: "The creative platform: the idea, the standards, the references." },
+      { phase: "Deploy", action: "Direction on every piece that leaves the studio." },
       { phase: "Compound", action: "Quarterly creative reviews against the platform." },
     ],
     layers: ["01 Brand", "04 Content", "05 Paid Growth"],
-    plate: { kind: "campaign", label: "Direction — one point of view", line: "Taste, applied." },
+    plate: { kind: "campaign", label: "Direction · one point of view", line: "Taste, applied." },
     related: ["brand-identity", "paid-ads"],
   },
   {
     code: "SVC·08",
     slug: "martech-consulting",
     name: "Martech & Consulting",
-    tagline: "The machinery under the marketing.",
+    tagline: "The wiring nobody sees until it breaks.",
     plain: [
-      "Martech is the machinery under your marketing — CRM, automation, analytics, and the connections between them. Consulting is us designing that machinery around how your business actually sells.",
-      "We wire the stack so no lead leaks, every follow-up fires, and decisions run on signals instead of anecdotes.",
+      "Martech is the wiring under your marketing: CRM, automation, analytics and the connections between them. Consulting is us designing that wiring around how your business actually sells.",
+      "We wire it so no lead leaks, every follow-up fires, and marketing and sales count qualified demand the same way. Where demand reaches sales, Kelwin, Plurel's sister division for RevOps and go-to-market, can carry it through to revenue.",
     ],
     why: [
       {
@@ -558,7 +561,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     risks: [
       {
         name: "Shelfware",
-        clause: "Tools you pay for and barely use — the most common stack state.",
+        clause: "Tools you pay for and barely use. The most common state of a stack.",
       },
       {
         name: "The silent leak",
@@ -575,13 +578,13 @@ export const SERVICE_PAGES: ServicePage[] = [
       source: "Gartner",
     },
     how: [
-      { phase: "Diagnose", action: "Stack and data review — what exists, what's connected." },
-      { phase: "Design", action: "The martech schematic and tracking plan, tool by tool." },
-      { phase: "Deploy", action: "CRM, automations, and dashboards wired and live." },
-      { phase: "Compound", action: "Six signals reviewed monthly; the stack earns its keep." },
+      { phase: "Diagnose", action: "Stack and data review: what exists, and what's connected." },
+      { phase: "Design", action: "The schematic and tracking plan, with the hand-off to sales agreed." },
+      { phase: "Deploy", action: "CRM, automations and dashboards wired and live." },
+      { phase: "Compound", action: "Six signals reviewed monthly, so the stack earns its keep." },
     ],
     layers: ["06 CRM", "07 Automation", "08 Analytics"],
-    plate: { kind: "schematic", label: "The stack — wired" },
+    plate: { kind: "schematic", label: "The stack · wired" },
     related: ["paid-ads", "aeo-seo"],
   },
 ];

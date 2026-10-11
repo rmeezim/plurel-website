@@ -6,18 +6,17 @@ import { GRID, Meta } from "@/components/system";
 import { mountBraid, SUPPLIERS } from "@/lib/braid";
 
 /*
-  Fig. 01, the manifesto's centrepiece, on paper: ten suppliers' strands,
+  The manifesto's figure, on paper: ten suppliers' strands,
   tangled, then straightened into lanes, then braided into one red strand
   (engine in lib/braid.ts). Scroll scrubs it while it passes through the
   viewport; it is never pinned.
 
   The words are HTML, composed on the page grid like the thesis above:
-  the caption in the margin (columns 1 to 3), the lead (h3) on the content
-  column, read with the tangle under it; the end statement, "One system.
-  One number.", where the braid ends (beside it from lg, at column 10;
-  under its end, right-aligned, below lg), fading in as the strand forms.
-  The suppliers and the numbers they report are drawn on the strands; the
-  caption lists them for screen readers. On desktop the supplier labels
+  the lead (h3) on the content column, read with the tangle under it; the
+  end statement, "One team. One number.", where the braid ends (beside
+  it from lg, at column 10; under its end, right-aligned, below lg),
+  fading in as the strand forms. The suppliers and the numbers they
+  report are drawn on the strands. On desktop the supplier labels
   end on the content column's edge (the spine), where the lanes start, so
   the figure keeps the chapter's axis.
 
@@ -27,9 +26,10 @@ import { mountBraid, SUPPLIERS } from "@/lib/braid";
   viewport's height) alike. Reduced motion shows the finished braid,
   still. Without JS a small drawing of that end state stands in for the
   canvas, its lines named in the margin and the end statement beside it.
-  Below 560px of figure width (the engine's narrow layout, matched here
-  with a container query) it draws six of the ten strands, and the
-  caption says so.
+  The figure has no visible title (the lead is its title); the caption
+  lists the suppliers for screen readers. Below 560px of figure width
+  (the engine's narrow layout, matched here with a container query) it
+  draws six of the ten strands, and the caption says so.
 */
 
 const SR_LIST = SUPPLIERS.map((s) => `${s.name}, ${s.metric}`).join("; ");
@@ -131,26 +131,26 @@ export function BraidStrip() {
             ref={end}
             className="type-display col-span-4 col-start-1 row-start-1 translate-y-[calc(50%+1.25rem)] self-center justify-self-end text-right text-[1.375rem] leading-[1.04] text-brand sm:col-span-6 sm:text-[1.75rem] lg:col-span-3 lg:col-start-10 lg:translate-y-0 lg:justify-self-start lg:text-left lg:text-[clamp(1.75rem,2.36vw,2.125rem)] [html[data-js]_&]:opacity-0"
           >
-            <span className="block">One system.</span>{" "}
+            <span className="block">One team.</span>{" "}
             <span className="block">One number.</span>
           </p>
         </div>
       </div>
 
-      <figcaption className="col-span-4 mt-6 sm:col-span-6 lg:col-span-3 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:pt-2.5">
-        <Meta as="p" className="text-muted">
-          <span className="text-brand">Fig. 01</span>
-          <span aria-hidden className="lg:hidden"> · </span>
-          <span className="lg:mt-1.5 lg:block">Who owns the number</span>
-          <span aria-hidden className="hidden [html[data-js]_&]:@max-[559px]:inline">
-            , 6/10 shown
-          </span>
-          <span className="sr-only">
-            . One strand per supplier, each with the number it reports: {SR_LIST}. The
-            tangle straightens into lanes, then the lanes braid into one red strand: one
-            system, one number.
-          </span>
+      {/* No title: the lead says what the figure shows. The caption is
+          for screen readers, plus the one fact a phone needs to know. */}
+      <figcaption className="col-span-4 mt-6 sm:col-span-6 lg:sr-only">
+        <Meta
+          as="p"
+          className="hidden text-muted [html[data-js]_&]:@max-[559px]:block"
+        >
+          6 of 10 suppliers shown
         </Meta>
+        <span className="sr-only">
+          One strand per supplier, each with the number it reports: {SR_LIST}. The
+          tangle straightens into lanes, then the lanes braid into one red strand: one
+          team, one number.
+        </span>
       </figcaption>
     </figure>
   );

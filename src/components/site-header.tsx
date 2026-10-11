@@ -133,7 +133,7 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
       <div className="col-span-4 sm:col-span-6 lg:col-span-3">
         <Kicker>Services</Kicker>
         <p className="mt-5 max-w-[26ch] text-[22px] leading-[1.15] tracking-[-0.02em] text-ink">
-          Eight disciplines, run as one system.
+          Eight disciplines, run by one team.
         </p>
         <Link
           href="/services"
@@ -229,8 +229,8 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
       <div className="relative col-span-4 bg-graphite flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3">
         <Meta className="relative text-fog">(Northeon)</Meta>
         <p className="relative text-[15px] leading-relaxed text-paper/85">
-          Plurel is Northeon&apos;s distribution engineering company: every
-          relevant channel, run as one system. Its sister, Kelwin, turns that
+          Plurel is Northeon&apos;s distribution engineering company: one
+          team for every relevant channel. Its sister, Kelwin, turns that
           demand into revenue.
         </p>
       </div>

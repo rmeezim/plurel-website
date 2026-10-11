@@ -9,7 +9,7 @@ import { VisualPlate } from "@/components/visual-plate";
 export const metadata: Metadata = {
   title: "Careers — Plurel",
   description:
-    "Join a small senior team building the visible layer of growth — brand, web, AI search, content, and campaigns that ship publicly and compound. Open roles at Plurel, a Northeon division.",
+    "Join a small senior team doing brand, web, AI search, content and campaign work that ships in public. Open roles at Plurel, Northeon's distribution engineering company.",
   alternates: { canonical: "/careers/" },
 };
 
@@ -17,12 +17,12 @@ const PRINCIPLES = [
   {
     code: "W·01",
     name: "Small and senior",
-    rule: "No bench, no account layer — the person in the room does the work.",
+    rule: "No bench and no account layer. The person in the room does the work.",
   },
   {
     code: "W·02",
     name: "The method is the manager",
-    rule: "The same model clients buy runs us — phases, gates, weekly ships.",
+    rule: "We run on the same four phases clients buy, with gates and weekly ships.",
   },
   {
     code: "W·03",
@@ -36,8 +36,8 @@ const PRINCIPLES = [
   },
   {
     code: "W·05",
-    name: "Compound yourself",
-    rule: "Time and budget to learn and publish — your visibility compounds too.",
+    name: "Grow in public",
+    rule: "Time and budget to learn, and to publish under your own name.",
   },
 ];
 
@@ -46,7 +46,7 @@ const QUALITIES = [
     number: "01",
     name: "Craft",
     detail:
-      "You've shipped work you'd sign. You sweat details other people don't notice — until they do.",
+      "You've shipped work you'd sign. You sweat the details other people only notice when they're wrong.",
   },
   {
     number: "02",
@@ -58,7 +58,7 @@ const QUALITIES = [
     number: "03",
     name: "Range",
     detail:
-      "Deep in your discipline, curious about the rest of the system. You can talk brand and pipeline in one sentence.",
+      "Deep in your discipline, curious about the rest of the system. You can talk brand and revenue in the same sentence.",
   },
 ];
 
@@ -89,7 +89,7 @@ const ROLES = [
 const PROCESS = [
   {
     number: "01",
-    name: "Intro call — 30 minutes",
+    name: "Intro call, 30 minutes",
     detail:
       "Mutual fit, honest about where we are as a company and where you are in your career.",
   },
@@ -97,13 +97,13 @@ const PROCESS = [
     number: "02",
     name: "Craft conversation",
     detail:
-      "Walk us through real work you've shipped. If useful, a short paid exercise — never spec work.",
+      "Walk us through real work you've shipped. If useful, a short paid exercise. Never spec work.",
   },
   {
     number: "03",
     name: "Decision in days",
     detail:
-      "An offer, or a straight no with reasons. Two weeks start to finish — your time is respected.",
+      "An offer, or a straight no with reasons. Two weeks from start to finish.",
   },
 ];
 
@@ -134,11 +134,10 @@ export default function CareersPage() {
                 </em>
               </h1>
               <p className="fade-up mt-6 max-w-[56ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-                We&rsquo;re the small senior team inside Northeon building the
-                visible layer of growth &mdash; brand, web, AI search,
-                content, and campaigns that ship publicly and compound. If
-                you want your work in the world rather than in a deck,
-                you&rsquo;ll like it here.
+                We&rsquo;re a small senior team inside Northeon, doing brand,
+                web, AI search, content and campaign work that ships in
+                public. If you want your work in the world rather than in a
+                deck, you&rsquo;ll like it here.
               </p>
             </div>
 
@@ -181,7 +180,7 @@ export default function CareersPage() {
           <Reveal>
             <VisualPlate
               kind="room"
-              label="The studio — seats open"
+              label="The studio · seats open"
               className="aspect-[16/9] w-full sm:aspect-[21/8]"
             />
           </Reveal>
@@ -208,8 +207,8 @@ export default function CareersPage() {
               </h2>
             </div>
             <p className="max-w-[40ch] text-[14px] leading-relaxed text-muted">
-              The same operating model we sell is the one we work inside
-              &mdash; read it before you apply.
+              We work inside the same method we sell. Read it before you
+              apply.
             </p>
           </Reveal>
 
@@ -293,7 +292,7 @@ export default function CareersPage() {
       {/* --------------------------------------------- The deal */}
       <StatementSection
         kicker="The deal"
-        note="W·01–05 — how we work, in practice"
+        note="W·01–05 · how we work, in practice"
         surface="ink"
       >
         No bench. No layers.{" "}
@@ -320,8 +319,8 @@ export default function CareersPage() {
               </h2>
             </div>
             <p className="max-w-[40ch] text-[14px] leading-relaxed text-muted">
-              Applications by email &mdash; a short note and links to shipped
-              work beat any résumé format.
+              Apply by email. A short note and links to shipped work beat
+              any résumé format.
             </p>
           </Reveal>
 
@@ -331,7 +330,7 @@ export default function CareersPage() {
                 <li key={role.code} className="border-t border-line">
                   <a
                     href={`mailto:hello@plurel.com?subject=${encodeURIComponent(
-                      `Application — ${role.name}`,
+                      `Application: ${role.name}`,
                     )}`}
                     className="group grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-x-4 py-5 sm:grid-cols-[3.5rem_minmax(0,1fr)_auto] sm:gap-x-6 sm:py-6"
                   >
@@ -362,8 +361,8 @@ export default function CareersPage() {
 
           <Reveal className="mt-8 flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
             <p className="max-w-[52ch] text-[13px] leading-relaxed text-muted">
-              No fit above? Introduce yourself anyway &mdash; the best hires
-              rarely match a listing.
+              No fit above? Introduce yourself anyway. The best hires rarely
+              match a listing.
             </p>
             <a
               href="mailto:hello@plurel.com?subject=Introduction"
@@ -399,7 +398,7 @@ export default function CareersPage() {
             <div className="overflow-hidden rounded-3xl border border-paper/15">
               <div className="flex items-center justify-between border-b border-paper/15 px-5 py-3.5 text-[10px] font-semibold uppercase tracking-[0.18em]">
                 <span className="text-paper/50">
-                  Hiring process &mdash; every candidate
+                  Hiring process, for every candidate
                 </span>
                 <span className="flex items-center gap-1.5 text-paper/80">
                   <Spark className="size-3 text-brand" aria-hidden />
@@ -457,7 +456,7 @@ export default function CareersPage() {
             </h2>
             <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
               A short note, links to real work, and what you want to own.
-              We&rsquo;ll reply within one business day &mdash; every time.
+              We reply within one business day, every time.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
               <a

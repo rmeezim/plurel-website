@@ -9,7 +9,7 @@ import { VisualPlate } from "@/components/visual-plate";
 export const metadata: Metadata = {
   title: "The Studio — Plurel",
   description:
-    "Inside the Plurel studio: one room of designers, engineers, and editors on the same method — brand, digital design and build, editorial and AEO, growth and martech — shipping the visible layer weekly.",
+    "Inside the Plurel studio: designers, engineers and editors working from the same brief on brand, design and build, editorial and AEO, growth and martech, with something shipped every week.",
   alternates: { canonical: "/studio/" },
 };
 
@@ -17,7 +17,7 @@ const DISCIPLINES = [
   {
     code: "D·01",
     name: "Brand & identity",
-    line: "Positioning, identity systems, and voice.",
+    line: "Positioning, identity and voice.",
   },
   {
     code: "D·02",
@@ -32,7 +32,7 @@ const DISCIPLINES = [
   {
     code: "D·04",
     name: "Growth & martech",
-    line: "Campaigns, CRM, automation, and signals.",
+    line: "Campaigns, creators, CRM and automation.",
   },
 ];
 
@@ -75,8 +75,8 @@ export default function StudioPage() {
                 </em>
               </h1>
               <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-                One room &mdash; designers, engineers, and editors on the same
-                method, shipping the visible layer weekly.
+                Designers, engineers and editors in one room, working from
+                the same brief and shipping something every week.
               </p>
             </div>
 
@@ -167,32 +167,32 @@ export default function StudioPage() {
         <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <Reveal className="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
             <h2 className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted">
-              The wall &mdash; surfaces in progress
+              The wall: work in progress
             </h2>
             <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
-              Composed in the house material language &mdash; photography
-              joins as the studio does.
+              Drawn plates for now. Photographs of the real work replace
+              them as it ships.
             </p>
           </Reveal>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Reveal>
               <VisualPlate
                 kind="identity"
-                label="Identity — systems, not logos"
+                label="Identity · built to be used"
                 className="aspect-[4/5]"
               />
             </Reveal>
             <Reveal delay={0.08}>
               <VisualPlate
                 kind="room"
-                label="The room — work in progress"
+                label="The room · work in progress"
                 className="aspect-[4/5]"
               />
             </Reveal>
             <Reveal delay={0.16}>
               <VisualPlate
                 kind="campaign"
-                label="Campaigns — with a point of view"
+                label="Campaigns · with a point of view"
                 className="aspect-[4/5]"
               />
             </Reveal>
@@ -211,7 +211,7 @@ export default function StudioPage() {
               id="stack-heading"
               className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
             >
-              The desk &mdash; what the studio runs on
+              The desk: what the studio runs on
             </h2>
             <ul className="flex flex-wrap items-baseline gap-x-9 gap-y-4 text-[15px] text-muted">
               {STACK.map((tool) => (
@@ -244,7 +244,7 @@ export default function StudioPage() {
                   Join the studio
                 </p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
-                  Small, senior, no layers &mdash; seats open.
+                  Small and senior, with seats open.
                 </p>
                 <p className="mt-5 flex items-center gap-1.5 pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink/70 transition-colors group-hover:text-brand">
                   See open roles
@@ -263,7 +263,7 @@ export default function StudioPage() {
                   How the studio runs
                 </p>
                 <p className="mt-1.5 text-[13px] leading-relaxed text-muted">
-                  The four-phase operating model, published in full.
+                  The four phases, published in full.
                 </p>
                 <p className="mt-5 flex items-center gap-1.5 pt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-ink/70 transition-colors group-hover:text-brand">
                   Read the methodology
@@ -297,22 +297,22 @@ export default function StudioPage() {
               Bring us the <em className="italic">before</em>.
             </h2>
             <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Book the strategy call &mdash; the Diagnostic tells us both where
-              the work should start.
+              Request a diagnostic. It tells us both where the work should
+              start.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
               <Link
                 href="/contact"
                 className="group inline-flex items-center gap-2 rounded-lg bg-paper px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-canvas"
               >
-                Book Strategy Call
+                Request a diagnostic
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/work"
                 className="border-b border-paper/40 pb-0.5 text-sm text-paper transition-colors hover:border-paper"
               >
-                See the afters
+                See sample engagements
               </Link>
             </div>
           </Reveal>

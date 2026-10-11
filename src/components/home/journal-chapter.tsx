@@ -1,20 +1,14 @@
 import Link from "next/link";
 import { Reveal } from "@/components/reveal";
-import {
-  Accent,
-  ChapterHead,
-  CONTAINER,
-  CtaLink,
-  GRID,
-  Meta,
-} from "@/components/system";
+import { ChapterHead, CONTAINER, CtaLink, GRID, Meta } from "@/components/system";
 import { MARK_CELLS } from "@/lib/mark";
 import { CATEGORIES, POSTS, type Post, type PostBlock, type PostCategory } from "@/lib/posts";
 
 /*
-  (06) Journal as a report series: a masthead (nameplate + deck) with a
-  key to the five series, a red report plate for the latest field note,
-  and the further notes with small paper-tint covers.
+  Journal, after the questions: a masthead (nameplate + deck) with a key
+  to the five series, a red report plate for the latest note, and the
+  further notes with small paper-tint covers. Mono only for data: each
+  note's series, date and reading time.
 
   Every cover glyph is the Plurel mark itself (MARK_CELLS, 2:1:4:1:2 on a
   10-unit square) with a topic's cells lit. On hover or keyboard focus a
@@ -93,8 +87,6 @@ function Glyph({
   );
 }
 
-const serial = (i: number) => `N° ${String(i + 1).padStart(2, "0")}`;
-
 /** The article's own line for the plate: the first two sentences of its pull quote */
 function pullLine(post: Post): string | undefined {
   const quote = post.content.find(
@@ -105,7 +97,7 @@ function pullLine(post: Post): string | undefined {
   return sentences.slice(0, 2).join("").trim();
 }
 
-/** (06) The journal as a report series */
+/** The journal as a report series */
 export function JournalChapter() {
   const [lead, ...further] = POSTS.slice(0, 4);
   const pull = pullLine(lead);
@@ -113,17 +105,17 @@ export function JournalChapter() {
   return (
     <section aria-labelledby="journal-heading" className="bg-paper py-24 text-ink lg:py-36">
       <div className={CONTAINER}>
-        <ChapterHead index="06" label="Journal" meta="Notes on staying visible" />
+        <ChapterHead label="Journal" />
 
         {/* Masthead: nameplate and deck, with the series key */}
-        <div className={`${GRID} mt-12 items-end gap-y-10 lg:mt-16`}>
+        <div className={`${GRID} mt-8 items-end gap-y-10 lg:mt-10`}>
           <Reveal className="col-span-4 sm:col-span-6 lg:col-span-8">
             <h2 id="journal-heading" className="type-display">
               <span className="block text-[clamp(3.5rem,17vw,7.5rem)] leading-[0.95] lg:text-[min(10.6vw,9.5rem)]">
                 Field notes
               </span>{" "}
               <span className="mt-3 block text-[clamp(1.5rem,1.1rem+2.4vw,2.75rem)] leading-[1.08] lg:mt-3.5">
-                on AI search, brand, and <Accent className="text-muted">growth</Accent>.
+                on AI search, brand, and growth.
               </span>
             </h2>
           </Reveal>
@@ -132,12 +124,9 @@ export function JournalChapter() {
             delay={0.1}
             className="col-span-4 sm:col-span-6 lg:col-span-3 lg:col-start-10 lg:pb-1"
           >
-            <Meta as="p" className="border-b border-ink/15 pb-2.5 text-muted">
-              <span id="journal-series">The series</span>
-            </Meta>
             <ul
-              aria-labelledby="journal-series"
-              className="grid grid-cols-2 gap-x-5 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-1"
+              aria-label="The series"
+              className="grid grid-cols-2 gap-x-5 border-t border-ink/15 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-1"
             >
               {CATEGORIES.map((category) => (
                 <li
@@ -153,15 +142,12 @@ export function JournalChapter() {
         </div>
 
         <div className={`${GRID} mt-14 gap-y-16 lg:mt-18`}>
-          {/* The lead: a red report plate for the latest field note */}
+          {/* The lead: a red report plate for the latest note */}
           <Reveal className="col-span-4 flex flex-col sm:col-span-6 lg:col-span-7">
             <article className="flex flex-1 flex-col">
               <div className="group/note relative -mx-5 grid aspect-[4/5] grid-rows-[auto_1fr_auto] bg-brand p-5 text-paper sm:mx-0 sm:aspect-[16/9] sm:px-7 sm:pb-7 sm:pt-6 lg:aspect-[677/440] lg:px-8 lg:pb-8 lg:pt-7">
                 <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b border-paper/30 pb-4">
-                  <Meta>
-                    Field note {serial(0)} <span aria-hidden className="sm:mx-1.5">·</span>{" "}
-                    {lead.category}
-                  </Meta>
+                  <Meta>{lead.category}</Meta>
                   <Meta className="shrink-0">{lead.date}</Meta>
                 </div>
 
@@ -182,10 +168,7 @@ export function JournalChapter() {
                 </div>
 
                 <div className="flex items-end justify-between gap-6 pt-6">
-                  <Meta>
-                    Plurel Journal <span aria-hidden className="sm:mx-1.5">·</span>{" "}
-                    {lead.readTime}
-                  </Meta>
+                  <Meta>{lead.readTime}</Meta>
                   <Glyph
                     category={lead.category}
                     tone="red"
@@ -206,16 +189,14 @@ export function JournalChapter() {
             </article>
           </Reveal>
 
-          {/* Further field notes, each under a small mark cover */}
+          {/* Further notes, each under a small mark cover */}
           <Reveal
             delay={0.1}
             className="col-span-4 flex flex-col sm:col-span-6 lg:col-span-5 lg:col-start-8"
           >
-            <h3>
-              <Meta className="block border-b border-ink pb-3 text-muted">Further field notes</Meta>
-            </h3>
-            <ol className="flex-1">
-              {further.map((post, i) => (
+            <h3 className="sr-only">More notes</h3>
+            <ol className="flex-1 border-t border-ink">
+              {further.map((post) => (
                 <li key={post.slug} className="group/note border-b border-ink/15">
                   <Link
                     href={`/blog/${post.slug}`}
@@ -225,7 +206,6 @@ export function JournalChapter() {
                       aria-hidden
                       className="relative flex aspect-square self-start items-end justify-end bg-ink/5 p-2 sm:aspect-[152/118] sm:p-3"
                     >
-                      <Meta className="absolute left-2.5 top-2 text-muted">{serial(i + 1)}</Meta>
                       <Glyph category={post.category} play className="size-10 sm:size-[60px]" />
                     </span>
                     <div className="pt-px">

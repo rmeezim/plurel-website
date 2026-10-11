@@ -6,10 +6,13 @@ import { ArrowRight, ArrowUpRight } from "@/components/icons";
   Plurel system primitives: Cinematic Red x Swiss Systems.
 
   - CONTAINER and GRID are the Swiss frame. Every chapter lays its content
-    on GRID. The grid is never drawn: it shows through alignment, the
-    hairline running heads, and the mono indexes.
-  - Kicker is the Northeon family label (square marker, tracked caps).
-  - Meta is Plurel's own Swiss metadata voice (mono, small caps).
+    on GRID. The grid is never drawn: it shows only through alignment.
+  - Kicker is the Northeon family label (square marker, tracked caps). A
+    chapter carries one at most (ChapterHead), or none when its headline
+    names it.
+  - Meta is Plurel's own Swiss metadata voice (mono, small caps), kept for
+    data: dates, units, tags, counts with a real order. Never a caption
+    that only announces what follows.
   - Tones: "paper" (light chapters), "red" (brand chapters, hero),
     "dark" (oxblood and ink chapters).
 */
@@ -47,7 +50,7 @@ export function Kicker({
   );
 }
 
-/** Swiss metadata: mono caps for indexes, counts, clocks, parentheticals */
+/** Swiss metadata: mono caps for data only (dates, units, tags, real order) */
 export function Meta({
   children,
   className = "",
@@ -68,8 +71,9 @@ export function Meta({
 
 /**
  * The one quieter phrase in a headline: the same face at a lighter weight,
- * toned by the caller (e.g. text-muted on paper, text-fog on graphite).
- * Emphasis by weight and tone, never by a second typeface.
+ * toned by the caller (e.g. text-fog on graphite). Emphasis by weight and
+ * tone, never by a second typeface. Reserved for the hero and the closing:
+ * every other headline is one weight.
  */
 export function Accent({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <em className={`type-accent not-italic ${className}`}>{children}</em>;
@@ -145,69 +149,30 @@ export function TextLink({
   );
 }
 
-const HEAD_TONE: Record<Tone, { rule: string; tick: string; index: string; meta: string }> = {
-  paper: { rule: "border-ink/15", tick: "border-ink/30", index: "text-brand", meta: "text-muted" },
-  red: { rule: "border-paper/40", tick: "border-paper/50", index: "text-paper", meta: "text-paper" },
-  dark: { rule: "border-paper/15", tick: "border-paper/35", index: "text-signal", meta: "text-fog" },
-};
-
-/* Column ticks: one short mark per grid column on the running-head
-   hairline, like registration marks on a print. The only place the grid
-   is ever drawn. Which ticks show follows GRID (4 / 6 / 12 columns), and
-   the last visible column also marks its right edge. */
-export const TICK_COLUMN = Array.from({ length: 12 }, (_, i) => {
-  const show = i < 4 ? "block" : i < 6 ? "hidden sm:block" : "hidden lg:block";
-  const close =
-    i === 3
-      ? "border-r sm:border-r-0"
-      : i === 5
-        ? "sm:border-r lg:border-r-0"
-        : i === 11
-          ? "lg:border-r"
-          : "";
-  return `${show} ${close}`;
-});
-
 /**
- * Chapter header: the Swiss running head that opens every section.
- * (02)  ■ SERVICES                         EIGHT DISCIPLINES · ONE SYSTEM
+ * Chapter label: the one quiet line that names a chapter ("Services",
+ * "Method"), set as a Kicker. No number, no running head, no ruler: the
+ * headline below carries the chapter. `index` and `meta` are accepted
+ * only so older callers keep compiling; neither renders.
  */
 export function ChapterHead({
-  index,
   label,
-  meta,
   tone = "paper",
   id,
+  className = "",
 }: {
-  index: string;
   label: string;
-  meta?: string;
   tone?: Tone;
   id?: string;
+  className?: string;
+  /** @deprecated chapter numbers are retired; ignored */
+  index?: string;
+  /** @deprecated running heads are retired; ignored */
+  meta?: string;
 }) {
-  const t = HEAD_TONE[tone];
   return (
-    <div className={`${GRID} relative items-center border-t pt-5 ${t.rule}`}>
-      <div aria-hidden data-ticks="" className={`${GRID} pointer-events-none absolute inset-x-0 top-0`}>
-        {TICK_COLUMN.map((cls, i) => (
-          <span key={i} className={`h-[6px] border-l ${t.tick} ${cls}`} />
-        ))}
-      </div>
-      <Meta className={`col-span-1 sm:col-span-1 lg:col-span-2 ${t.index}`}>
-        ({index})
-      </Meta>
-      <div className="col-span-3 sm:col-span-2 lg:col-span-6">
-        <Kicker tone={tone}>
-          <span id={id}>{label}</span>
-        </Kicker>
-      </div>
-      {meta && (
-        <Meta
-          className={`col-span-2 hidden text-right sm:col-span-3 sm:block lg:col-span-4 ${t.meta}`}
-        >
-          {meta}
-        </Meta>
-      )}
-    </div>
+    <Kicker tone={tone} className={className}>
+      <span id={id}>{label}</span>
+    </Kicker>
   );
 }

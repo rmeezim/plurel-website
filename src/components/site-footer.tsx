@@ -53,8 +53,9 @@ export function SiteFooter() {
               <Logo className="block h-auto w-[148px] text-brand" title="Plurel" />
               <p className="max-w-[320px] text-[14px] leading-[22px] text-muted lg:mb-1">
                 Plurel is Northeon&rsquo;s distribution engineering company:
-                every relevant channel, run as one system. Its sister, Kelwin, turns
-                that demand into revenue.
+                one team for every relevant channel, judged on qualified
+                demand. Its sister division, Kelwin, turns that demand into
+                revenue.
               </p>
             </div>
 

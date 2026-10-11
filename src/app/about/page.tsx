@@ -10,7 +10,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About — Plurel",
   description:
-    "Plurel is Northeon's creative and growth division — one senior team accountable for how businesses are found, trusted, chosen, and remembered: brand, website, AI search, content, campaigns, and the martech underneath.",
+    "Plurel is Northeon's distribution engineering company: a small senior team that answers for how growth-stage companies are found, trusted and chosen, across brand, website, AI search, content and creators, campaigns and the martech underneath.",
   alternates: { canonical: "/about/" },
 };
 
@@ -25,7 +25,7 @@ const BELIEFS = [
   {
     code: "B·01",
     name: "Presence is infrastructure",
-    rule: "The operating layer buyers actually meet — it deserves engineering.",
+    rule: "It is the part of you buyers actually meet, so it deserves engineering.",
   },
   {
     code: "B·02",
@@ -34,18 +34,18 @@ const BELIEFS = [
   },
   {
     code: "B·03",
-    name: "Taste is a growth lever",
+    name: "Taste sets the price",
     rule: "Look and feel set price expectations before a word is read.",
   },
   {
     code: "B·04",
-    name: "Proof compounds",
-    rule: "Reputation feeds back into brand — the loop is the moat.",
+    name: "Proof builds on proof",
+    rule: "Every review and placement makes the next one easier to win.",
   },
   {
     code: "B·05",
     name: "One owner beats five vendors",
-    rule: "Whole-system accountability is the difference between deliverables and growth.",
+    rule: "When one team answers for the result, you get growth instead of a pile of deliverables.",
   },
 ];
 
@@ -72,7 +72,7 @@ const STANDARDS = [
     number: "04",
     name: "Six signals from launch",
     detail:
-      "Instrumented from day one, reviewed monthly, reset quarterly. Evidence, not anecdotes.",
+      "Measured from day one, reviewed every month and reset every quarter.",
   },
 ];
 
@@ -80,21 +80,21 @@ const EXPLORE = [
   {
     code: "MTD·04",
     name: "The Method",
-    desc: "The four-phase operating model, published in full.",
+    desc: "The four phases, published in full.",
     href: "/methodology",
     label: "Read the methodology",
   },
   {
     code: "CRW",
     name: "Careers",
-    desc: "A small senior team, run on the method — seats open.",
+    desc: "A small senior team, with seats open.",
     href: "/careers",
     label: "See open roles",
   },
   {
     code: "JNL",
     name: "The Journal",
-    desc: "Notes on staying visible — AI search, brand systems, growth.",
+    desc: "What we’re learning about AI search, brand and growth.",
     href: "/blog",
     label: "Read the journal",
   },
@@ -115,7 +115,7 @@ export default function AboutPage() {
             <div className="max-w-[720px]">
               <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
                 <Spark className="size-3.5 text-brand" aria-hidden />
-                About &mdash; a Northeon division
+                About &middot; a Northeon division
               </p>
               <h1
                 id="about-heading"
@@ -132,11 +132,10 @@ export default function AboutPage() {
                 </em>
               </h1>
               <p className="fade-up mt-6 max-w-[58ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-                Plurel is Northeon&rsquo;s creative and growth division &mdash;
-                one senior team accountable for how businesses are found,
-                trusted, chosen, and remembered: brand, website, AI search,
-                content, campaigns, and the martech underneath, built as one
-                system.
+                Plurel is Northeon&rsquo;s distribution engineering company.
+                One senior team answers for how businesses are found, trusted
+                and chosen: brand, website, AI search, content, campaigns and
+                the martech underneath, all working from the same brief.
               </p>
             </div>
 
@@ -154,7 +153,7 @@ export default function AboutPage() {
                   </dd>
                 </div>
                 <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
-                  <dt className="text-muted">Operating model</dt>
+                  <dt className="text-muted">Method</dt>
                   <dd className="text-ink">MTD&middot;04</dd>
                 </div>
                 <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
@@ -195,27 +194,27 @@ export default function AboutPage() {
               className="space-y-6 text-[15px] leading-[1.75] text-ink/85 sm:text-base lg:col-span-4"
             >
               <p>
-                Good businesses kept losing to visible ones &mdash; great
-                work buried on page four, real results told to no one. The
-                cause was structural: presence built in pieces, with nobody
-                accountable for the whole.
+                Good businesses kept losing to visible ones. Great work sat on
+                page four of the search results, and good outcomes went
+                untold. The cause was structural: marketing bought in pieces,
+                with nobody accountable for the whole.
               </p>
               <p>
-                So Northeon built the division it kept wishing existed: one
-                senior team, one method, one scoreboard &mdash; the whole
-                visible layer, engineered as a single compounding system.
+                So Northeon built the division it kept wishing existed. A
+                small senior team takes the whole job, from the brand to the
+                reporting, and answers for the qualified demand it brings in.
               </p>
               <p>
-                And because buying now begins inside AI answers as often as
-                search results, that&rsquo;s the direction we build in:
-                Plurel is becoming Northeon&rsquo;s global AI and technology
-                division for martech, marketing, and growth transformations.
+                Buying now begins inside AI answers as often as in search
+                results, so that is the direction we build in. Plurel is
+                growing into Northeon&rsquo;s AI and technology division for
+                martech, marketing and growth.
               </p>
             </Reveal>
             <Reveal delay={0.18} className="lg:col-span-4">
               <VisualPlate
                 kind="room"
-                label="Plurel — a Northeon division"
+                label="Plurel · a Northeon division"
                 className="aspect-[16/10] w-full lg:aspect-[4/5]"
               />
             </Reveal>
@@ -244,10 +243,10 @@ export default function AboutPage() {
               </h2>
               <p className="mt-5 max-w-[52ch] text-[14.5px] leading-relaxed text-paper/65">
                 Northeon builds and operates companies with long horizons.
-                Plurel is its creative and growth division &mdash; which
-                means clients get studio-grade craft backed by engineering
-                depth, operating discipline, and a parent that isn&rsquo;t
-                going anywhere.
+                Plurel is its distribution engineering company, and its
+                sister division, Kelwin, runs RevOps and go-to-market. For
+                clients that means studio-grade craft with engineering depth
+                behind it, and a parent that isn&rsquo;t going anywhere.
               </p>
             </Reveal>
             <Reveal delay={0.1} className="lg:col-span-6">
@@ -261,8 +260,8 @@ export default function AboutPage() {
                     Northeon
                   </p>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-paper/55">
-                    Builds and operates companies &mdash; capital, systems,
-                    and long horizons.
+                    Builds and operates companies, with capital and long
+                    horizons.
                   </p>
                 </div>
                 <div aria-hidden className="hidden items-center px-2 sm:flex">
@@ -299,8 +298,8 @@ export default function AboutPage() {
                     Plurel
                   </p>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-paper/55">
-                    The creative &amp; growth division &mdash; presence and
-                    growth systems for clients.
+                    Distribution engineering: one team for every relevant
+                    channel.
                   </p>
                 </div>
               </div>
@@ -329,8 +328,8 @@ export default function AboutPage() {
               </h2>
             </div>
             <p className="max-w-[40ch] text-[14px] leading-relaxed text-muted">
-              The method operationalizes them &mdash; these are the reasons
-              behind its laws.
+              The method puts them into practice. These are the reasons
+              behind its rules.
             </p>
           </Reveal>
 
@@ -380,11 +379,10 @@ export default function AboutPage() {
               id="standards-heading"
               className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
             >
-              What every engagement includes &mdash; STD&middot;04
+              What every engagement includes &middot; STD&middot;04
             </h2>
             <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
-              Not promises &mdash; defaults. They hold on every engagement,
-              at every size.
+              They hold on every engagement, at every size.
             </p>
           </Reveal>
           <Reveal delay={0.08} className="mt-8">
@@ -446,15 +444,15 @@ export default function AboutPage() {
                 Rameez Imran
               </h2>
               <p className="mt-1.5 text-[13px] text-muted">
-                Founder &mdash; Plurel, a Northeon division
+                Founder, Plurel
               </p>
               <div className="mt-6 max-w-[62ch] space-y-5 text-[15px] leading-[1.75] text-ink/85">
                 <p>
                   Rameez founded Plurel after years of watching good
-                  businesses lose the moments that decide a shortlist &mdash;
-                  and built the method so it never comes down to luck. He
-                  leads the first two weeks of every engagement personally:
-                  the Diagnostic carries his signature.
+                  businesses lose the moments that decide a shortlist, and
+                  built the method so it never comes down to luck. He leads
+                  the first two weeks of every engagement personally, and the
+                  Diagnostic carries his signature.
                 </p>
               </div>
               <div className="mt-7 flex flex-wrap items-center gap-x-10 gap-y-4">
@@ -534,9 +532,9 @@ export default function AboutPage() {
               <em className="italic">more than any about page</em>.
             </h2>
             <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Book the strategy call. You&rsquo;ll leave with a sharper read
-              on your brand, your visibility, and your next move &mdash;
-              whatever you decide about us.
+              Book the call. You&rsquo;ll leave with a sharper read on your
+              brand, your visibility and your next move, whatever you decide
+              about us.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
               <Link

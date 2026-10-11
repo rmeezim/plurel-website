@@ -8,7 +8,7 @@ import { Reveal } from "@/components/reveal";
 export const metadata: Metadata = {
   title: "The Plurel Method — Methodology",
   description:
-    "The Plurel Method (MTD·04) is the operating model behind every engagement: four phases — Diagnose, Design, Deploy, Compound — that take a business from an outdated presence to a compounding, instrumented growth system.",
+    "The Plurel Method (MTD·04) runs every engagement in four phases: Diagnose, Design, Deploy and Compound. It starts with the Diagnostic, six parts of your distribution scored, and settles into a monthly partnership judged on qualified demand.",
   alternates: { canonical: "/methodology/" },
 };
 
@@ -28,13 +28,13 @@ const LAWS = [
   },
   {
     code: "L·02",
-    name: "Systems over pieces",
-    rule: "No deliverable ships disconnected from the nine-layer system.",
+    name: "Nothing ships alone",
+    rule: "Every deliverable ships connected to the rest of the work.",
   },
   {
     code: "L·03",
     name: "Ship weekly",
-    rule: "Every week ends with something live — and a note that says so.",
+    rule: "Every week ends with something live, and a note that says so.",
   },
   {
     code: "L·04",
@@ -48,8 +48,8 @@ const LAWS = [
   },
   {
     code: "L·06",
-    name: "Compound, don't campaign",
-    rule: "What compounds gets scaled; what doesn't gets cut.",
+    name: "Keep what works",
+    rule: "What keeps returning gets scaled; what doesn't gets cut.",
   },
 ];
 
@@ -76,19 +76,19 @@ const PHASES: Phase[] = [
     gateName: "The Diagnostic Review",
     why: "Every engagement starts with evidence. Before a single pixel moves, we establish ground truth: where your presence wins, where it leaks, and which fixes move revenue first. Diagnosis is why our roadmaps survive contact with reality.",
     experience:
-      "Two working interviews, one access checklist, one questionnaire. We carry the rest — you keep running your business.",
+      "Two working interviews, one access checklist, one questionnaire. We carry the rest while you keep running your business.",
     workstreams: [
       {
         code: "D·01",
         name: "Presence audit",
         detail:
-          "Market, narrative, touchpoints, assets, distribution and measurement — scored as the six parts of your distribution system.",
+          "Market, narrative, touchpoints, assets, distribution and measurement: the six parts of your distribution, each scored.",
       },
       {
         code: "D·02",
         name: "Market & competitor map",
         detail:
-          "Who wins the moments that decide your shortlist — and the positioning white space they've left open.",
+          "Who wins the moments that decide your shortlist, and the positioning they've left open.",
       },
       {
         code: "D·03",
@@ -100,7 +100,7 @@ const PHASES: Phase[] = [
         code: "D·04",
         name: "AEO & SEO baseline",
         detail:
-          "How Google and AI assistants read, rank, and cite you today — the visibility number we'll be moving.",
+          "How Google and AI assistants read, rank and cite you today. This is the visibility number we'll move.",
       },
       {
         code: "D·05",
@@ -116,8 +116,8 @@ const PHASES: Phase[] = [
       "AEO baseline",
       "Prioritized fix list",
     ],
-    gate: "A working session where findings become priorities. Nothing proceeds until the report is agreed and signed — and if we're not the right partner, the report is still yours.",
-    handoff: "Hands off — a signed Diagnostic Report",
+    gate: "A working session where findings become priorities. Nothing proceeds until the report is agreed and signed. If we're not the right partner, the report is still yours.",
+    handoff: "Hands off: a signed Diagnostic Report",
   },
   {
     number: "02",
@@ -125,9 +125,9 @@ const PHASES: Phase[] = [
     intent: "Decide what to build.",
     window: "WK 02–05",
     gateName: "The Blueprint Review",
-    why: "Design here means the full system blueprint — positioning, identity, conversion architecture, channels, and the martech underneath — sequenced and priced before anything is built. It's the difference between a plan and a mood board.",
+    why: "Design here means the full blueprint: positioning, identity, conversion architecture, channels and the martech underneath, sequenced and priced before anything is built. It's the difference between a plan and a mood board.",
     experience:
-      "Two design reviews with structured feedback windows. No surprise reveals — you approve direction early and often.",
+      "Two design reviews with structured feedback windows. No surprise reveals: you approve the direction early and often.",
     workstreams: [
       {
         code: "B·01",
@@ -139,25 +139,25 @@ const PHASES: Phase[] = [
         code: "B·02",
         name: "Identity system",
         detail:
-          "Visual language, voice, and usage standards — built as a system, not a logo file.",
+          "Visual language, voice and usage standards, built so your team can use them without asking.",
       },
       {
         code: "B·03",
         name: "Conversion architecture",
         detail:
-          "Sitemap, page-level wireframes, proof placement, and offer clarity — engineered from the buyer-journey trace.",
+          "Sitemap, page wireframes, proof placement and offer clarity, drawn from the buyer-journey trace.",
       },
       {
         code: "B·04",
         name: "Channel & content strategy",
         detail:
-          "Which demand layers carry the plan — AI search, editorial, paid — and the publishing spine behind them.",
+          "Which channels carry the plan (AI search, editorial, creators, paid) and the publishing calendar behind them.",
       },
       {
         code: "B·05",
         name: "Stack blueprint",
         detail:
-          "CRM, automation, analytics, and the tracking plan — your six signals defined and targeted.",
+          "CRM, automation, analytics and the tracking plan: your six signals defined and given targets, and the hand-off to sales agreed.",
       },
     ],
     artifacts: [
@@ -167,8 +167,8 @@ const PHASES: Phase[] = [
       "Martech schematic",
       "90-day build roadmap",
     ],
-    gate: "Everything sequenced, priced, and approved. You know exactly what ships, when, and why — before build begins.",
-    handoff: "Hands off — an approved blueprint & roadmap",
+    gate: "Everything sequenced, priced, and approved. Before the build begins, you know exactly what ships, when, and why.",
+    handoff: "Hands off: an approved blueprint and roadmap",
   },
   {
     number: "03",
@@ -176,7 +176,7 @@ const PHASES: Phase[] = [
     intent: "Ship the system.",
     window: "WK 05–12",
     gateName: "The Launch Review",
-    why: "Build runs in weekly increments — nothing disappears into a six-week black box. Every week ends with something live, and a ship note that says what, why, and what's next.",
+    why: "Build runs in weekly increments, so nothing disappears into a six-week black box. Every week ends with something live, and a ship note that says what, why, and what's next.",
     experience:
       "Weekly ship notes, a biweekly working session, one shared tracker. Approvals stay small and fast because direction was locked in Design.",
     workstreams: [
@@ -190,36 +190,36 @@ const PHASES: Phase[] = [
         code: "S·02",
         name: "Brand rollout",
         detail:
-          "Assets, templates, and every profile buyers check — updated to the new standard.",
+          "Assets, templates and every profile buyers check, updated to the new standard.",
       },
       {
         code: "S·03",
-        name: "Content engine",
+        name: "Content program",
         detail:
-          "The editorial spine goes live: first cycle published, founder POV cadence running.",
+          "The editorial plan goes live: the first cycle published, founder posts and creator briefs running.",
       },
       {
         code: "S·04",
-        name: "Campaign systems",
+        name: "Campaigns",
         detail:
-          "Paid accounts, landing pages, and the creative-testing harness — built to learn, not just spend.",
+          "Paid accounts, landing pages and creative tests, set up to learn as well as to spend.",
       },
       {
         code: "S·05",
         name: "Stack wiring",
         detail:
-          "CRM, automation flows, and dashboards live — all six signals streaming from day one.",
+          "CRM, automation flows and dashboards live, all six signals reporting from day one, and qualified leads handed to sales. Where it helps, Kelwin, our sister division for RevOps and go-to-market, takes them on from there.",
       },
     ],
     artifacts: [
       "The live website",
       "Brand kit in circulation",
-      "Content engine in motion",
+      "Content program running",
       "Campaigns live",
       "Instrumented stack",
     ],
-    gate: "The system is live, every signal reports, and the compounding roadmap is set.",
-    handoff: "Hands off — a live, instrumented system",
+    gate: "Everything is live, every signal reports, and the next quarter's roadmap is set.",
+    handoff: "Hands off: live work, measured from day one",
   },
   {
     number: "04",
@@ -227,7 +227,7 @@ const PHASES: Phase[] = [
     intent: "Operate like an investment.",
     window: "Quarterly ∞",
     gateName: "The Growth Council",
-    why: "Launch is the starting line. Compounding is an operating rhythm: read the signals, scale what works, cut what doesn't, and keep raising the system's ceiling — quarter after quarter.",
+    why: "Launch is the starting line. After it comes a rhythm: read the signals, scale what works, cut what doesn't, and raise the ceiling every quarter.",
     experience:
       "A monthly signal digest you can read in five minutes, and a quarterly council where strategy actually changes based on evidence.",
     workstreams: [
@@ -235,7 +235,7 @@ const PHASES: Phase[] = [
         code: "C·01",
         name: "Signal operations",
         detail:
-          "Monthly reads against targets across all six signals — moves proposed, not just reported.",
+          "A monthly read of all six signals against target, with the next moves proposed.",
       },
       {
         code: "C·02",
@@ -247,17 +247,17 @@ const PHASES: Phase[] = [
         code: "C·03",
         name: "Campaign optimization",
         detail:
-          "Creative testing and budget reallocation toward what's compounding.",
+          "Creative testing, and budget moved toward what's returning.",
       },
       {
         code: "C·04",
         name: "Reputation building",
         detail:
-          "PR placements, review velocity, and the proof pipeline that feeds back into brand.",
+          "PR placements, a steady flow of reviews, and proof that feeds back into the brand.",
       },
       {
         code: "C·05",
-        name: "System upgrades",
+        name: "Next builds",
         detail:
           "The roadmap never empties: next-priority builds from the gap list, shipped on the same weekly rhythm.",
       },
@@ -266,10 +266,10 @@ const PHASES: Phase[] = [
       "Monthly signal digest",
       "Quarterly growth council",
       "Refreshed roadmap",
-      "A compounding asset base",
+      "A growing body of work",
     ],
     gate: "Quarterly: targets reset, budget re-aimed, and the next quarter's builds committed.",
-    handoff: "Feeds back — evidence into the next diagnosis ↺",
+    handoff: "Feeds back: evidence into the next diagnosis ↺",
   },
 ];
 
@@ -285,14 +285,14 @@ const RHYTHM = [
     cadence: "Biweekly",
     name: "The working session",
     detail:
-      "Thirty minutes, decisions only — direction stays locked, approvals stay fast.",
+      "Thirty minutes, decisions only, so approvals stay fast.",
     output: "An unblocked build",
   },
   {
     cadence: "Monthly",
     name: "The signal digest",
     detail: "All six signals against targets, in a five-minute read.",
-    output: "Evidence, not anecdotes",
+    output: "Evidence you can act on",
   },
   {
     cadence: "Quarterly",
@@ -304,24 +304,24 @@ const RHYTHM = [
 
 const FAQS = [
   {
-    q: "How long does a full transformation take?",
-    a: "A typical engagement reaches launch in about twelve weeks: two for diagnosis, three for design, and five to seven for the build. Compounding then runs as an ongoing quarterly rhythm. Smaller scopes move faster — the phase structure holds either way.",
+    q: "How long does a full engagement take?",
+    a: "A typical engagement reaches launch in about twelve weeks: two for diagnosis, three for design, and five to seven for the build. After launch the work runs as a monthly partnership, reviewed every quarter. Smaller scopes move faster, and the phases hold either way.",
   },
   {
     q: "Do we have to rebuild everything?",
-    a: "No — that's what Diagnose is for. The Diagnostic Report scores every part of your distribution system; whatever already works is kept and wired into the system. You invest where the evidence says the leak is, not where a pitch deck says it is.",
+    a: "No. That's what the Diagnostic is for. It scores every part of your distribution, and whatever already works is kept and connected to the rest. You put money where the evidence says the leak is.",
   },
   {
     q: "What do the first two weeks look like?",
-    a: "Two working interviews, one access checklist, one questionnaire — then we disappear into the Diagnostic. You get the Diagnostic Report and a prioritized fix list at the Diagnostic Review. If you stop there, the findings are still yours to keep.",
+    a: "Two working interviews, one access checklist and one questionnaire. Then we disappear into the Diagnostic. You get the Diagnostic Report and a prioritized fix list at the Diagnostic Review. If you stop there, the findings are still yours to keep.",
   },
   {
     q: "How do you measure success?",
-    a: "Six signals, instrumented from launch: AI search visibility, demand quality, conversion readiness, content velocity, reputation signals, and campaign efficiency. Each has a target agreed in Design and reviewed monthly, with a quarterly council where what compounds gets scaled and what doesn't gets cut.",
+    a: "Six signals, instrumented from launch: AI search visibility, demand quality, conversion readiness, content velocity, reputation signals, and campaign efficiency. Each has a target agreed in Design and reviewed monthly, with a quarterly council that scales what's working and cuts what isn't. Demand quality is counted the way your sales team counts it.",
   },
   {
     q: "Who actually does the work?",
-    a: "A small senior team with one accountable lead — the person in the room at your reviews is the person doing the thinking. Nothing is handed down to a junior bench, and you're never routed through an account layer.",
+    a: "A small senior team with one accountable lead. The person in the room at your reviews is the person doing the thinking. Nothing is handed down to a junior bench, and you're never routed through an account layer.",
   },
 ];
 
@@ -372,7 +372,7 @@ function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
               04
             </span>
             <span>{phase.window}</span>
-            <span className="text-rust">Gate — {phase.gateName}</span>
+            <span className="text-rust">Gate: {phase.gateName}</span>
           </p>
           <h2
             id={`phase-${phase.number}`}
@@ -414,7 +414,7 @@ function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
             </p>
             <div className="mt-8 border-l-2 border-rust pl-5">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-rust">
-                The gate &mdash; {phase.gateName}
+                The gate: {phase.gateName}
               </p>
               <p className={`mt-2.5 text-[14px] leading-relaxed ${body}`}>
                 {phase.gate}
@@ -521,10 +521,10 @@ export default function MethodologyPage() {
           <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-paper/45">
             <span className="flex items-center gap-2">
               <Spark className="size-3 text-brand" aria-hidden />
-              Plurel &mdash; operating model
+              Plurel &middot; the method
             </span>
             <span className="hidden sm:block">MTD&middot;04</span>
-            <span>Four phases &middot; one system</span>
+            <span>Four phases &middot; one team</span>
           </div>
 
           {/* The claim — sans display, matching the homepage headline system */}
@@ -544,11 +544,10 @@ export default function MethodologyPage() {
               </em>
             </h1>
             <p className="fade-up mt-8 max-w-[56ch] text-[15px] leading-relaxed text-paper/65 sm:text-base [animation-delay:250ms]">
-              The Plurel Method is the operating model behind every
-              engagement: four phases that take a business from an outdated
-              presence to a compounding growth system &mdash; diagnosed like
-              an audit, designed like a product, shipped like software, and
-              operated like an investment.
+              The Plurel Method runs every engagement in four phases, from
+              the first Diagnostic to a monthly partnership judged on
+              qualified demand. Diagnosed like an audit, designed like a
+              product, shipped like software, and run like an investment.
             </p>
           </div>
 
@@ -589,17 +588,16 @@ export default function MethodologyPage() {
               <em className="italic text-clay">Systems do.</em>
             </p>
             <p className="mt-8 max-w-[54ch] text-[15px] leading-relaxed text-paper/60 sm:text-base">
-              The method exists so every asset we ship &mdash; brand, website,
-              content, campaign &mdash; lands inside one instrumented system,
-              with one owner and one scoreboard. It builds the nine-layer
-              growth system and is steered by six living signals; every
-              quarter, the signals feed the next diagnosis.
+              The method exists so every piece we ship, from the brand to a
+              single campaign, connects to the rest and is measured on the
+              same terms, with one team answering for it. Six signals steer
+              the work, and every quarter they feed the next diagnosis.
             </p>
             <p className="mt-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-paper/40">
               <span aria-hidden className="text-brand">
                 &#8634;
               </span>
-              The loop compounds
+              Every quarter, the loop closes
             </p>
           </Reveal>
         </div>
@@ -619,8 +617,8 @@ export default function MethodologyPage() {
               The operating laws &mdash; L&middot;01&ndash;06
             </h2>
             <p className="max-w-[38ch] text-[13px] leading-relaxed text-paper/50">
-              Not values &mdash; constraints. Work that violates one
-              doesn&rsquo;t ship.
+              These are constraints. Work that breaks one doesn&rsquo;t
+              ship.
             </p>
           </Reveal>
           <div className="mt-8 border-b border-paper/12">
@@ -669,7 +667,7 @@ export default function MethodologyPage() {
         <div className="mx-auto w-full max-w-[1440px] px-5 pb-6 pt-2 text-center sm:px-8 lg:px-12">
           <Reveal>
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted">
-              WK 05 &mdash; the system goes live
+              WK 05: the work goes live
             </p>
             <p className="mx-auto mt-5 max-w-[22ch] font-sans text-[clamp(1.9rem,4.6vw,3.5rem)] font-normal italic leading-[1.1] tracking-[-0.02em] text-ink">
               This is where you become visible.
@@ -719,7 +717,7 @@ export default function MethodologyPage() {
                         {ritual.detail}
                       </p>
                       <p className="mt-4 border-t border-dashed border-line pt-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted">
-                        Output &mdash; {ritual.output}
+                        Output: {ritual.output}
                       </p>
                     </div>
                   ))}
@@ -750,8 +748,7 @@ export default function MethodologyPage() {
                 The instruments it runs with
               </h2>
               <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
-                One method, one system, one console &mdash; published, not
-                pitched.
+                Published here in full, before you ever talk to us.
               </p>
             </Reveal>
             <Reveal delay={0.08} className="mt-8">
@@ -760,23 +757,23 @@ export default function MethodologyPage() {
                   {
                     code: "MTD·04",
                     name: "The Method",
-                    desc: "Four phases that carry every engagement — diagnose, design, deploy, compound.",
+                    desc: "The four phases every engagement runs: Diagnose, Design, Deploy, Compound.",
                     href: null,
                     label: "This page",
                   },
                   {
                     code: "SYS·09",
                     name: "The Growth System",
-                    desc: "The nine-layer circuit the method builds — from brand and website to reputation.",
+                    desc: "The nine layers the method builds, from brand and website to reputation.",
                     href: "/#distribution",
                     label: "See the system",
                   },
                   {
                     code: "SIG·06",
                     name: "The Signal Console",
-                    desc: "Six living signals that instrument the system — reviewed monthly, reset quarterly.",
-                    href: "/#results",
-                    label: "See the signals",
+                    desc: "Six signals that measure the work, reviewed monthly and reset every quarter.",
+                    href: null,
+                    label: "Listed in the FAQ below",
                   },
                 ].map((plate, i) => (
                   <div key={plate.code} className="contents">
@@ -847,7 +844,7 @@ export default function MethodologyPage() {
                 <span aria-hidden className="text-brand">
                   &#8634;
                 </span>
-                Signals feed the next diagnosis &mdash; the loop compounds
+                Signals feed the next diagnosis
               </p>
             </Reveal>
           </div>
@@ -872,8 +869,8 @@ export default function MethodologyPage() {
                   The questions clients ask first.
                 </h2>
                 <p className="mt-6 max-w-[36ch] text-[14px] leading-relaxed text-muted">
-                  Anything else &mdash; ask on the strategy call. You&rsquo;ll
-                  get a straight answer either way.
+                  Anything else, ask us when you request your diagnostic.
+                  You&rsquo;ll get a straight answer either way.
                 </p>
               </Reveal>
               <Reveal delay={0.1} className="lg:col-span-8">
@@ -927,16 +924,16 @@ export default function MethodologyPage() {
               <em className="italic">first deliverable</em>.
             </h2>
             <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
-              Every engagement starts with the Diagnostic &mdash; a scored read
-              on the six parts of your distribution system, and what to fix
-              first. Book the call; leave with the truth either way.
+              Every engagement starts with the Diagnostic: the six parts of
+              your distribution scored, and the first fix named, within a
+              business day. It&rsquo;s yours to keep, whatever you decide.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-5">
               <Link
                 href="/contact"
                 className="group inline-flex items-center gap-2 rounded-lg bg-paper px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-canvas"
               >
-                Book Strategy Call
+                Request a diagnostic
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <Link

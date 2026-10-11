@@ -1,13 +1,7 @@
 import { Fragment, type ReactNode } from "react";
 import { ArrowUpRight } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
-import {
-  Accent,
-  ChapterHead,
-  CONTAINER,
-  GRID,
-  Meta,
-} from "@/components/system";
+import { ChapterHead, CONTAINER, GRID } from "@/components/system";
 import { FAQS } from "@/lib/home";
 import { CONTACT_EMAIL } from "@/lib/nav";
 
@@ -22,18 +16,15 @@ const FAQ_JSON_LD = {
   })),
 };
 
-/** Mono index type at sizes other than Meta's 11px: same face, case and tracking */
-const MONO = "font-mono font-normal uppercase leading-snug tracking-[0.03em]";
-
-/** Answer hairlines: the same rule weight as the running head */
+/** Hairlines between answers */
 const RULE = "border-ink/15";
 
 /*
-  The ledger's four topics. Questions are matched by their text in FAQS
-  and keep the FAQS order inside a topic. A question that no topic lists
-  joins CATCH_ALL, so everything in the JSON-LD stays visible on the page.
-  The Diagnostic lifts its parenthetical list of dimensions out of the
-  answer and sets it as a numbered index.
+  The ledger's four topics, in FAQS order. Questions are matched by their
+  text in FAQS and keep the FAQS order inside a topic. A question that no
+  topic lists joins CATCH_ALL, so everything in the JSON-LD stays visible
+  on the page. The Diagnostic lifts its parenthetical list of the six
+  parts out of the answer and sets it as a list.
 */
 const TOPICS = [
   {
@@ -41,23 +32,16 @@ const TOPICS = [
     questions: [
       "How is this different from a full-service agency?",
       "Do we need every channel?",
+      "We already have an in-house team or agency. Where do you fit?",
     ],
   },
   {
-    title: "Engagement & commercials",
-    questions: [
-      "What does a typical engagement look like?",
-      "What does it cost?",
-      "How quickly will we see results?",
-    ],
+    title: "Cost",
+    questions: ["What does it cost?"],
   },
   {
     title: "Fit & team",
-    questions: [
-      "Do you work with companies like ours?",
-      "We already have an in-house team or agency. Where do you fit?",
-      "Who actually does the work?",
-    ],
+    questions: ["Do you work with companies like ours?", "Who actually does the work?"],
   },
   {
     title: "The Diagnostic",
@@ -67,11 +51,8 @@ const TOPICS = [
 ];
 const CATCH_ALL = 2;
 
-const pad = (n: number) => String(n).padStart(2, "0");
-
 const LEDGER = (() => {
   const listed = new Set(TOPICS.flatMap((topic) => topic.questions));
-  let n = 0;
   return TOPICS.map((topic, i) => ({
     title: topic.title,
     dimensions: topic.dimensions ?? false,
@@ -79,7 +60,7 @@ const LEDGER = (() => {
       (item) =>
         topic.questions.includes(item.q) ||
         (i === CATCH_ALL && !listed.has(item.q)),
-    ).map((item) => ({ ...item, n: ++n })),
+    ),
   })).filter((group) => group.items.length > 0);
 })();
 
@@ -127,7 +108,7 @@ function settle(text: string, keepTail = true): ReactNode {
 }
 
 const ANSWER = "max-w-[68ch] text-[15px] leading-[1.55] text-ink/65";
-const ANSWER_CELL = "mt-3 sm:pl-[38px] lg:col-span-5 lg:mt-0 lg:pl-0 xl:col-span-6";
+const ANSWER_CELL = "mt-3 lg:col-span-5 lg:mt-0 xl:col-span-6";
 
 function Answer({ text }: { text: string }) {
   const [lead, rest] = splitLead(text);
@@ -139,7 +120,7 @@ function Answer({ text }: { text: string }) {
   );
 }
 
-/** (07) Straight answers, as a grouped ledger: topic, question, answer */
+/** Questions: a grouped ledger of topic, question, answer */
 export function FaqChapter() {
   return (
     <section id="faq" aria-labelledby="faq-heading" className="bg-paper text-ink">
@@ -150,14 +131,14 @@ export function FaqChapter() {
         }}
       />
       <div className={`${CONTAINER} py-24 lg:py-36`}>
-        <ChapterHead index="07" label="Questions" meta="Asked before every engagement" />
+        <ChapterHead label="Questions" />
 
-        <header className={`${GRID} mt-10 gap-y-6 lg:items-end`}>
+        <header className={`${GRID} mt-8 gap-y-6 lg:mt-10 lg:items-end`}>
           <h2
             id="faq-heading"
             className="type-display col-span-4 text-[clamp(3.25rem,6.875vw,5.5rem)] leading-none sm:col-span-6 lg:col-span-8"
           >
-            Straight <Accent className="text-muted">answers</Accent>.
+            Straight answers.
           </h2>
           <div className="col-span-4 lg:col-span-4 lg:col-start-9 lg:pb-1.5 xl:col-span-3 xl:col-start-10">
             <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/70">
@@ -177,30 +158,16 @@ export function FaqChapter() {
           </div>
         </header>
 
-        <div className="mt-10 border-b border-ink">
-          {/* Column heads: desktop only; below lg each row reads top to bottom */}
-          <div aria-hidden className="hidden border-t border-ink py-[11px] text-muted lg:block">
-            <div className={GRID}>
-              <Meta className="lg:col-span-2">Topic</Meta>
-              <Meta className="lg:col-span-5 xl:col-span-4">Question</Meta>
-              <Meta className="lg:col-span-5 xl:col-span-6">Answer</Meta>
-            </div>
-          </div>
-
+        <div className="mt-12 border-b border-ink lg:mt-16">
           {LEDGER.map((group, g) => {
-            const first = group.items[0].n;
-            const last = group.items[group.items.length - 1].n;
             return (
               <Reveal
                 key={group.title}
                 delay={g * 0.08}
                 className={`${GRID} border-t border-ink lg:items-baseline`}
               >
-                <div className="col-span-4 flex items-baseline gap-x-4 pt-5 sm:col-span-6 lg:col-span-2 lg:block lg:pt-0 xl:pr-2">
-                  <span aria-hidden className={`${MONO} block shrink-0 whitespace-nowrap text-[12px] text-brand`}>
-                    {first === last ? pad(first) : `${pad(first)}–${pad(last)}`}
-                  </span>
-                  <h3 className="type-display text-[20px] leading-[1.1] lg:mt-2 lg:text-[17px] xl:text-[22px]">
+                <div className="col-span-4 pt-5 sm:col-span-6 lg:col-span-2 lg:pt-0 xl:pr-2">
+                  <h3 className="type-display text-[20px] leading-[1.1] text-brand lg:text-[17px] xl:text-[20px]">
                     {group.title}
                   </h3>
                 </div>
@@ -215,11 +182,8 @@ export function FaqChapter() {
                         key={item.q}
                         className={`border-t ${RULE} pb-5 pt-4 first:border-t-0 lg:grid lg:grid-cols-10 lg:items-baseline lg:gap-x-8 lg:pb-[18px]`}
                       >
-                        <h4 className="type-display flex items-baseline text-[22px] leading-[1.14] lg:col-span-5 lg:pr-2 xl:col-span-4 xl:text-[24px]">
-                          <span aria-hidden className={`${MONO} w-[38px] shrink-0 text-[13px] text-brand`}>
-                            {pad(item.n)}
-                          </span>
-                          <span className="min-w-0">{settle(item.q)}</span>
+                        <h4 className="type-display text-[22px] leading-[1.14] lg:col-span-5 lg:pr-2 xl:col-span-4 xl:text-[24px]">
+                          {settle(item.q)}
                         </h4>
 
                         {lifted.dimensions.length > 0 ? (
@@ -227,19 +191,20 @@ export function FaqChapter() {
                             <p className={ANSWER}>
                               <Answer text={lifted.text} />
                             </p>
-                            <ol className="mt-3.5 grid sm:grid-cols-2 sm:gap-x-8">
-                              {lifted.dimensions.map((dimension, d) => (
+                            <ul
+                              aria-label="The six parts"
+                              className="mt-3.5 grid max-w-[68ch] sm:grid-cols-2 sm:gap-x-8"
+                            >
+                              {lifted.dimensions.map((dimension) => (
                                 <li
                                   key={dimension}
-                                  className={`${MONO} whitespace-nowrap border-t ${RULE} py-2 text-[12px] text-ink`}
+                                  className={`flex items-baseline gap-2.5 border-t ${RULE} py-2 text-[14px] leading-[1.35] text-ink`}
                                 >
-                                  <span aria-hidden className="mr-2.5 text-brand">
-                                    {pad(d + 1)}
-                                  </span>
+                                  <span aria-hidden className="size-[5px] shrink-0 -translate-y-0.5 bg-brand" />
                                   {dimension}
                                 </li>
                               ))}
-                            </ol>
+                            </ul>
                           </div>
                         ) : (
                           <p className={`${ANSWER} ${ANSWER_CELL}`}>

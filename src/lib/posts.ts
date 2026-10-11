@@ -37,7 +37,11 @@ export const CATEGORIES: PostCategory[] = [
   "Reputation",
 ];
 
-/** Placeholder editorial content — swap for real articles when ready. */
+/**
+ * Placeholder editorial content: swap for real articles when ready. Each
+ * title says what its post actually contains, and no post claims a study,
+ * a client or a result that does not exist.
+ */
 export const POSTS: Post[] = [
   {
     slug: "aeo-is-the-new-seo",
@@ -45,50 +49,50 @@ export const POSTS: Post[] = [
     cover: "ai-search",
     date: "Jun 12, 2026",
     readTime: "6 min read",
-    title: "AEO is the new SEO: how to get chosen by AI assistants",
+    title: "How AI assistants decide which companies to name",
     excerpt:
-      "Customers increasingly ask an assistant instead of a search bar. Here's how to become the answer it gives — and what that changes about content, structure, and proof.",
+      "More buyers now ask an assistant instead of a search bar, and it answers with two or three names. What it weighs when it picks them, and how to check whether yours is one.",
     content: [
       {
         type: "p",
-        text: "For twenty years, being found meant ranking: ten blue links, and a fight for the top three. That fight still matters — but it is no longer where the buying journey starts. A growing share of your customers now open a conversation instead of a results page, and ask an assistant what they should do.",
+        text: "For twenty years, being found meant ranking: ten blue links, and a fight for the top three. That fight still matters, but it is no longer where every buying journey starts. A growing share of your customers now open a conversation instead of a results page, and ask an assistant what they should do.",
       },
       {
         type: "p",
-        text: "When someone asks an AI assistant which firm to shortlist, the answer is not a list of links. It is a synthesis — two or three names, with reasons. Either your business is in that answer, or, for that customer, you do not exist. Answer Engine Optimization (AEO) is the discipline of earning that place.",
+        text: "When someone asks an AI assistant which firm to shortlist, the answer is a synthesis rather than a list of links: two or three names, with reasons. If your business is not in that answer, then for that customer you do not exist. Answer engine optimization (AEO) is the work of earning that place.",
       },
-      { type: "h2", text: "What changed — and what didn't" },
+      { type: "h2", text: "What changed, and what didn't" },
       {
         type: "p",
-        text: "Assistants read the same web your SEO built. What changes is the weighting. Keyword density and backlink volume matter less; being legible, verifiable, and corroborated matters much more. The assistant is not ranking pages — it is assembling a defensible recommendation, and it prefers sources that make that easy.",
+        text: "Assistants read the same web your SEO built. What changes is the weighting. Keyword density and backlink volume matter less; being legible, verifiable and corroborated matters much more. The assistant is putting together a recommendation it can defend, and it prefers sources that make that easy.",
       },
       {
         type: "list",
         items: [
-          "Entity consistency — your name, offer, and location described identically everywhere they appear",
-          "Answer-shaped content — pages structured so a single section fully resolves a single question",
-          "Structured data — schema that tells machines what you are, not just what you say",
-          "Corroboration — press, reviews, and directories that independently confirm your claims",
-          "Freshness — dated, maintained pages that read as current, not archival",
+          "Entity consistency: your name, offer and location described the same way everywhere they appear",
+          "Answer-shaped content: pages structured so a single section fully answers a single question",
+          "Structured data: schema that tells machines what you are, as well as what you say",
+          "Corroboration: press, reviews and directories that confirm your claims independently",
+          "Freshness: dated, maintained pages that read as current",
         ],
       },
       {
         type: "quote",
-        text: "Assistants don't rank pages. They choose answers. Your job is to be the easiest correct answer to give.",
+        text: "An assistant names two or three companies. Make yours the easiest correct one to name.",
       },
-      { type: "h2", text: "The playbook we run" },
+      { type: "h2", text: "How we approach it" },
       {
         type: "p",
-        text: "Every engagement starts with a baseline: a fixed panel of buying-intent prompts, run across the major assistants, recorded. Then we fix the entity layer, restructure the highest-intent pages into answerable units, and build corroboration through PR and reviews — the same signals that make humans trust you, formalized for machines.",
+        text: "Every engagement starts with a baseline: a fixed panel of buying-intent prompts, run across the major assistants and recorded. Then we fix the entity layer, restructure the highest-intent pages into answerable sections, and build corroboration through PR and reviews. These are the same signals that make people trust you, written down for machines.",
       },
       {
         type: "p",
-        text: "Measurement mirrors the setup: the same prompt panel, re-run monthly. We track share-of-answer the way media teams track share-of-voice — which queries you appear in, how you're described, and who appears beside you.",
+        text: "Measurement mirrors the setup: the same prompt panel, run again every month. We track share of answer the way media teams track share of voice: which questions you appear in, how you're described, and who appears beside you.",
       },
       { type: "h2", text: "Where to start" },
       {
         type: "p",
-        text: "Write down five ways a real customer would ask an assistant for what you sell. Ask them. If you are absent from the answers, that is the first line of your Diagnostic — and the clearest case for treating AI visibility as a first-class channel rather than an afterthought.",
+        text: "Write down five ways a real customer would ask an assistant for what you sell. Ask them. If you are missing from the answers, that is the first line of your Diagnostic, and the clearest case for treating AI visibility as a channel of its own.",
       },
     ],
   },
@@ -98,41 +102,41 @@ export const POSTS: Post[] = [
     cover: "brand-systems",
     date: "May 28, 2026",
     readTime: "5 min read",
-    title: "Your brand isn't a logo — it's an operating system",
+    title: "The brand test: can your team ship without asking?",
     excerpt:
-      "The difference between companies that look consistent and companies that compound: treating brand as a system of decisions, not a folder of assets.",
+      "A logo is one file. A brand is the set of decisions that lets your team make a page, a post or a pitch that looks and sounds like you without checking first. The five parts, and how to keep them in use.",
     content: [
       {
         type: "p",
-        text: "A logo is an artifact. A brand is the system that decides what every artifact looks like, sounds like, and promises — before anyone designs anything. Companies that treat brand as a file to be applied get consistency for a quarter. Companies that treat it as an operating system compound recognition for years.",
+        text: "A logo is an artifact. A brand is the set of decisions behind every artifact: what it looks like, how it sounds and what it promises, made before anyone designs anything. Companies that treat brand as a file to apply stay consistent for a quarter. Companies that treat it as a set of working decisions get recognized for years.",
       },
-      { type: "h2", text: "The system has parts" },
+      { type: "h2", text: "The five parts" },
       {
         type: "list",
         items: [
-          "A voice — how you sound in a headline, an error message, and an invoice",
-          "Tokens — the exact colors, faces, and spacing that make work recognizably yours",
-          "Layouts — repeatable structures for the pages and posts you actually publish",
-          "Proof — how results, clients, and claims are presented and substantiated",
-          "Imagery — what gets photographed, illustrated, or composed, and how",
+          "A voice: how you sound in a headline, an error message and an invoice",
+          "Tokens: the exact colors, typefaces and spacing that make work recognizably yours",
+          "Layouts: repeatable structures for the pages and posts you actually publish",
+          "Proof: how results, clients and claims are presented and backed up",
+          "Imagery: what gets photographed, illustrated or composed, and how",
         ],
       },
       {
         type: "p",
-        text: "When the parts agree, every touchpoint deposits into the same account: the proposal echoes the website, the website echoes the deck, and by the third exposure a prospect recognizes you before they read your name.",
+        text: "When the parts agree, every touchpoint adds to the same memory: the proposal echoes the website, the website echoes the deck, and by the third exposure a prospect recognizes you before they read your name.",
       },
       {
         type: "quote",
-        text: "Consistency isn't aesthetic discipline. It's compounding interest on attention.",
+        text: "Consistency is how attention turns into memory. Every page that looks like you adds to it.",
       },
-      { type: "h2", text: "Operating, not owning" },
+      { type: "h2", text: "Keeping it in use" },
       {
         type: "p",
-        text: "Systems drift without governance. The fix is lightweight: tokens live in one place, templates cover the recurring 80% of output, and a one-page checklist gates anything public. The goal is not policing — it is making the consistent thing the easy thing.",
+        text: "A brand drifts unless someone looks after it. The fix is light: tokens live in one place, templates cover the 80% of output that recurs, and a one-page checklist gates anything public. The aim is to make the consistent thing the easy thing, so nobody has to police it.",
       },
       {
         type: "p",
-        text: "If your team can produce a new page, post, or pitch tomorrow without asking what it should look like, you have a brand system. If they have to ask, you have a logo.",
+        text: "If your team can produce a new page, post or pitch tomorrow without asking what it should look like, you have a brand. If they have to ask, you have a logo.",
       },
     ],
   },
@@ -142,35 +146,35 @@ export const POSTS: Post[] = [
     cover: "growth-strategy",
     date: "May 9, 2026",
     readTime: "8 min read",
-    title: "The presence audit: 12 signals customers judge before they call",
+    title: "Twelve things buyers check before they get in touch",
     excerpt:
-      "What prospects actually check in the first ninety seconds — and how to score yourself honestly before they do.",
+      "What prospects look at in the first minute or two, and how to score yourself honestly before they do.",
     content: [
       {
         type: "p",
-        text: "Before anyone fills in your contact form, they audit you silently. It takes about ninety seconds, it happens across three or four tabs, and you are not in the room to explain anything. The businesses that win treat that invisible audit as a checklist — and pass it on purpose.",
+        text: "Before anyone fills in your contact form or adds to cart, they check you out quietly. It takes a minute or two across three or four tabs, and you are not there to explain anything. The businesses that win treat that silent check as a checklist, and pass it on purpose.",
       },
       { type: "h2", text: "The twelve signals" },
       {
         type: "list",
         items: [
-          "Site speed — does the first page land instantly, or stutter?",
-          "Design currency — does it look maintained this year?",
-          "Clarity of offer — can a stranger say what you do in one sentence?",
-          "Proof — are there results with numbers, or only adjectives?",
-          "Search presence — do you appear when they search the obvious phrase?",
-          "AI answer presence — do assistants name you for your category?",
-          "Reviews — recent, specific, and responded to?",
-          "Press — has anyone independent ever written about you?",
-          "Social recency — is the last post from this quarter or last year?",
-          "Consistency — do your profiles agree on name, offer, and tone?",
-          "Pricing posture — is there any signal of how you charge?",
-          "Responsiveness — does anything promise how fast you reply?",
+          "Site speed: does the first page land instantly, or stutter?",
+          "Design currency: does it look maintained this year?",
+          "Clarity of offer: can a stranger say what you do in one sentence?",
+          "Proof: are there results with numbers, or only adjectives?",
+          "Search presence: do you appear when they search the obvious phrase?",
+          "AI answer presence: do assistants name you for your category?",
+          "Reviews: recent, specific and answered?",
+          "Press: has anyone independent ever written about you?",
+          "Social recency: is the last post from this quarter or last year?",
+          "Consistency: do your profiles agree on name, offer and tone?",
+          "Pricing posture: is there any signal of how you charge?",
+          "Responsiveness: does anything promise how fast you reply?",
         ],
       },
       {
         type: "p",
-        text: "Score each signal 0, 1, or 2 — absent, present, or persuasive. Most companies we audit score under 12 of 24, and the misses cluster: strong product, invisible proof; good design, stale content; great reviews, no search presence.",
+        text: "Score each signal 0, 1 or 2: absent, present or persuasive. If you land under 12 of 24, look at where the misses cluster. Typical patterns are a strong product with no visible proof, good design with stale content, or great reviews with no search presence.",
       },
       {
         type: "quote",
@@ -179,7 +183,7 @@ export const POSTS: Post[] = [
       { type: "h2", text: "Sequencing the fixes" },
       {
         type: "p",
-        text: "Fix in order of exposure, not effort: the signals your highest-intent visitors hit first — site, offer clarity, proof — then the discovery layer of search, AI answers, and reviews. A presence audit is only depressing for a week; after that it is a roadmap.",
+        text: "Fix in order of exposure rather than effort. Start with what your highest-intent visitors hit first (the site, the clarity of the offer, the proof), then the places people discover you: search, AI answers and reviews. A self-audit is depressing for about a week. After that it is a roadmap.",
       },
     ],
   },
@@ -189,28 +193,28 @@ export const POSTS: Post[] = [
     cover: "martech",
     date: "Apr 22, 2026",
     readTime: "7 min read",
-    title: "The minimum viable martech stack for a premium brand",
+    title: "The smallest martech stack that still tells you what's working",
     excerpt:
-      "Five layers, no shelfware: the smallest set of tools that lets a brand measure, follow up, and compound.",
+      "Five layers and no shelfware: the least a growing company needs to measure, follow up and attribute, and the test a new tool has to pass.",
     content: [
       {
         type: "p",
-        text: "Most growing companies do not have a tooling gap — they have a tooling surplus and an integration gap. Licenses accumulate, dashboards multiply, and somehow the one question that matters — what is working? — still takes a meeting to answer.",
+        text: "Most growing companies have plenty of tools and too little connecting them. Licenses pile up, dashboards multiply, and the one question that matters, what is working, still takes a meeting to answer.",
       },
       { type: "h2", text: "The five-layer minimum" },
       {
         type: "list",
         items: [
-          "Analytics you actually read — one property, one weekly view, owned by one person",
-          "A CRM as the single source of truth for every contact and deal",
-          "Email and automation — welcome, follow-up, and nurture that run without anyone remembering",
-          "Attribution basics — UTMs and a naming convention, enforced everywhere",
-          "Content operations — one calendar, one asset home, one publish checklist",
+          "Analytics you actually read: one property, one weekly view, owned by one person",
+          "A CRM that holds every contact and deal, and that everyone treats as the record",
+          "Email and automation: welcome, follow-up and nurture that run without anyone remembering",
+          "Attribution basics: UTMs and a naming convention, used everywhere",
+          "Content operations: one calendar, one home for assets, one publishing checklist",
         ],
       },
       {
         type: "p",
-        text: "Notice what is missing: nothing exotic. The minimum stack is boring on purpose. Integration beats features — five tools that agree with each other outperform fifteen that don't, every time.",
+        text: "Notice what is missing: nothing exotic. The minimum stack is boring on purpose. Five tools that agree with each other do more than fifteen that don't.",
       },
       {
         type: "quote",
@@ -219,11 +223,11 @@ export const POSTS: Post[] = [
       { type: "h2", text: "When to add" },
       {
         type: "p",
-        text: "Add a tool when a motion outgrows a spreadsheet — not when a vendor demo is impressive. If a workflow runs weekly, involves three or more people, and breaks when someone is on holiday, it has earned software. Anything less has earned a template.",
+        text: "Add a tool when a job outgrows a spreadsheet, and never just because a vendor demo was impressive. If a workflow runs weekly, involves three or more people and breaks when someone is on holiday, it has earned software. Anything less has earned a template.",
       },
       {
         type: "p",
-        text: "We wire this layer into every transformation because presence without plumbing leaks: the redesign brings the inquiries, and the stack makes sure each one is counted, answered, and attributed.",
+        text: "We wire this layer into every engagement because good marketing leaks without it. The new site brings people in; the stack makes sure each lead is counted, answered, attributed and handed to sales the way sales wants it.",
       },
     ],
   },
@@ -233,35 +237,35 @@ export const POSTS: Post[] = [
     cover: "reputation",
     date: "Apr 3, 2026",
     readTime: "6 min read",
-    title: "Reputation compounds: turning press and proof into a moat",
+    title: "Build your reputation before you need it",
     excerpt:
-      "Rankings fluctuate and ads stop when the budget does. Reputation is the one growth asset that only appreciates — if you maintain it like one.",
+      "Rankings move, and ads stop when the budget does. A reputation keeps working as long as you look after it: four habits that keep press, reviews and proof coming in.",
     content: [
       {
         type: "p",
-        text: "Every other channel you rent. Rankings move with algorithms, ad costs move with auctions — but reputation, once earned, keeps working while you sleep. It is the slowest asset to build and the hardest for a competitor to copy, which is exactly why it makes the best moat.",
+        text: "Most channels are rented. Rankings move with algorithms and ad costs move with auctions. A reputation, once earned, keeps working while you sleep. It is the slowest asset to build and the hardest for a competitor to copy, which is why it is worth starting early.",
       },
-      { type: "h2", text: "Press, proof, and reviews are one system" },
+      { type: "h2", text: "Press, proof and reviews feed each other" },
       {
         type: "p",
-        text: "Treated separately, each is a chore. Treated as one system, they feed each other: coverage makes the next journalist comfortable, reviews corroborate the coverage, and AI assistants — which lean heavily on third-party confirmation — cite the whole archive back to your buyers.",
+        text: "Treated separately, each is a chore. Run together, they reinforce each other: coverage makes the next journalist comfortable, reviews back up the coverage, and AI assistants, which lean heavily on third-party confirmation, cite the whole archive back to your buyers.",
       },
       {
         type: "list",
         items: [
-          "Harvest proof quarterly — numbers, before/afters, and quotes, while they're fresh",
-          "Run a review cadence — ask at the moment of delight, respond to everything",
-          "Keep a press pipeline — one story in development at all times, not a blast when news happens",
-          "Maintain citations — directories and profiles that agree with each other, everywhere",
+          "Collect proof every quarter: numbers, before-and-afters and quotes, while they're fresh",
+          "Keep a review habit: ask at the moment of delight, and answer every review",
+          "Keep one press story in development at all times, instead of a blast when news happens",
+          "Maintain citations: directories and profiles that agree with each other",
         ],
       },
       {
         type: "quote",
-        text: "Trust arrives on foot and leaves in a headline — build the archive before you need it.",
+        text: "Trust arrives on foot and leaves in a headline. Build the archive before you need it.",
       },
       {
         type: "p",
-        text: "The compounding is the point. A single mention is a spike; a maintained reputation layer is a floor that rises every quarter — under your pricing, your search presence, and every pitch your team makes.",
+        text: "That is why it pays to keep at it. A single mention is a spike; a reputation you maintain is a floor that rises every quarter, under your pricing, your search presence and every pitch your team makes.",
       },
     ],
   },
@@ -271,27 +275,27 @@ export const POSTS: Post[] = [
     cover: "ai-search",
     date: "Mar 18, 2026",
     readTime: "5 min read",
-    title: "Structured for machines, written for people",
+    title: "Write every section so it can be quoted alone",
     excerpt:
-      "AI assistants quote sections, not sites. A field guide to writing content that survives being lifted out of context.",
+      "When an assistant uses your content, it lifts one section and shows it on its own. How to write sections that still make sense when that happens.",
     content: [
       {
         type: "p",
-        text: "When an assistant answers with your content, it does not send the reader to your page — it lifts the useful part and presents it alone. That changes the unit of writing. The page is no longer the product; the section is.",
+        text: "When an assistant answers with your content, it rarely sends the reader to your page. It lifts the useful part and presents it alone. That moves the unit of writing from the page to the section.",
       },
-      { type: "h2", text: "The unit of answerability" },
+      { type: "h2", text: "A section has to stand alone" },
       {
         type: "p",
-        text: "A section earns its place in an answer when it can stand alone: a claim, the evidence, and a concrete example, all inside one heading. If understanding a paragraph requires the three above it, a machine will skip it — and so, increasingly, will a skimming human.",
+        text: "A section earns its place in an answer when it can stand alone: a claim, the evidence and a concrete example, all under one heading. If a paragraph only makes sense after the three above it, a machine will skip it, and so, more and more, will a skimming human.",
       },
       {
         type: "list",
         items: [
-          "One idea per section, resolved fully before the next begins",
-          "Front-load the answer; put the nuance after, not before",
-          "Name entities precisely — your company, product, and place, not \"we\"",
-          "Add schema so the structure is machine-legible, not just visual",
-          "Date your claims — undated advice reads as stale to machines and people alike",
+          "One idea per section, fully resolved before the next begins",
+          "Put the answer first and the nuance after",
+          "Name entities precisely: your company, product and place, rather than \"we\"",
+          "Add schema so the structure is legible to machines as well as to readers",
+          "Date your claims: undated advice reads as stale to machines and people alike",
         ],
       },
       {
@@ -300,7 +304,7 @@ export const POSTS: Post[] = [
       },
       {
         type: "p",
-        text: "None of this is writing for robots. It is the old discipline of clear technical writing, rewarded by a new distribution channel. The brands that win AI search will be the ones whose content was worth quoting all along — structured so the quoting is effortless.",
+        text: "This is the old discipline of clear technical writing, rewarded by a new channel. The brands that win AI search will be the ones whose content was worth quoting all along, and structured so the quoting is easy.",
       },
     ],
   },

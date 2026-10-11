@@ -1,23 +1,25 @@
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { ServicesType } from "@/components/home/services-type";
-import { Accent, ChapterHead, CONTAINER, CtaLink, GRID } from "@/components/system";
+import { ChapterHead, CONTAINER, CtaLink, GRID } from "@/components/system";
 import { SERVICES } from "@/lib/nav";
 import { SERVICE_STAGE, stageName } from "@/lib/services-type";
 import s from "./services-type.module.css";
 
 /*
-  (02) Services, on graphite: a hard cut from the paper manifesto, whose
-  braid ends on "One system. One number.", and before (03) Method on red.
+  Services, on graphite: what the team is made of. A hard cut from the
+  paper manifesto, whose braid ends on "One team. One number.", and
+  before Method on red.
 
-  The figure (Fig. 02, ServicesType) is the contents list itself: the
-  eight names first appear in eight suppliers' voices, line up on the
-  rows ("still a menu"), then are set as one system, stage by stage along
-  the chain. Everything here is the server-rendered, finished chapter;
-  with motion off it is simply the list, with the chain live.
+  The figure (ServicesType) is the contents list itself: the eight names
+  first appear in eight suppliers' voices, line up on the rows ("still a
+  menu"), then are set in one face, stage by stage along the chain. The
+  narrator's last line is the one place the page says "system" as the
+  payoff. Everything here is the server-rendered, finished chapter; with
+  motion off it is simply the list, with the chain live.
 
-  The rows: equal heights, hairlines on the container measure (the same
-  edges as the running head), index in column 1, stage in 2 to 3, the
+  The rows: equal heights, hairlines on the container measure, index in
+  column 1, stage in 2 to 3, the
   name flush on column 4, the line on 9 to 12 (8 to 12 below xl, where
   the names step down to leave it one line). Phones and tablets: index,
   name, stage and arrow, then the line, never wrapping from 360px up.
@@ -32,17 +34,21 @@ export function ServicesChapter() {
       className={`${s.root} bg-graphite text-paper`}
     >
       <div className={`${CONTAINER} pt-24 lg:pt-36`}>
-        <ChapterHead index="02" label="Services" meta="Eight disciplines · One system" tone="dark" />
-
-        <div className={`${GRID} mt-12 items-start gap-y-7 lg:mt-16`}>
+        <div className={`${GRID} items-start gap-y-7 lg:grid-rows-[auto_1fr]`}>
+          <ChapterHead
+            label="Services"
+            tone="dark"
+            className="col-span-4 sm:col-span-6 lg:col-span-3 lg:row-start-1 lg:pt-4"
+          />
           <h2
             id="services-heading"
-            className="type-display col-span-4 text-[clamp(2.25rem,1.4rem+3.6vw,5.25rem)] leading-none sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-start-1"
+            className="type-display col-span-4 text-[clamp(2.25rem,1.4rem+3.6vw,5.25rem)] leading-none sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-span-2 lg:row-start-1"
           >
-            Everything that makes you <Accent className="text-fog">visible</Accent>, built as one system.
+            Everything that makes you visible, built as one system.
           </h2>
-          <p className="col-span-4 max-w-[34ch] text-[17px] leading-[1.5] text-fog lg:col-span-3 lg:col-start-1 lg:row-start-1 lg:pt-3.5 lg:text-[16px]">
-            Every relevant channel, run as one system. The budget follows the bottleneck.
+          <p className="col-span-4 max-w-[34ch] text-[17px] leading-[1.5] text-fog sm:col-span-6 lg:col-span-3 lg:col-start-1 lg:row-start-2 lg:max-w-[30ch] lg:text-[16px]">
+            Only the channels that fit your market. The budget follows the
+            bottleneck.
           </p>
         </div>
       </div>

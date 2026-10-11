@@ -10,8 +10,10 @@ actions, diagonal arrows) with three things of its own:
   behind fluted glass. Graphite is the dark tone (hero, work, the AI
   layer), and the footer is paper.
 - **Swiss Systems.** Structure is strict but never drawn. A 12-column grid
-  sets every edge, chapters are numbered, figures are captioned, metadata
-  is set in mono, and the logo's own 3x3 grid is the source of all of it.
+  sets every edge and the logo's own 3x3 grid is the source of it. The
+  structure is felt, not labelled: no chapter numbers, running heads,
+  rulers or figure captions; mono is kept for data (dates, units, scores,
+  tags, the four Method phases).
 - **Frontier type.** One wide grotesk (Mona Sans) for everything, with a
   mono for the instrumentation. No serif, no italics on the homepage.
 
@@ -66,14 +68,14 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| paper | `bg-paper` | ink | Reading chapters: clients, manifesto, results, journal, FAQ, footer |
+| paper | `bg-paper` | ink | Reading chapters: manifesto, FAQ, journal, footer; the sample Diagnostic sheet |
 | red | `bg-brand` | paper | Method, closing |
-| dark | `bg-graphite` | paper, fog | Hero, Attention Field, services, work, the method's AI layer |
+| dark | `bg-graphite` | paper, fog | Hero, Attention Field, services, proof, the method's AI layer |
 
 All three are flat fills. Alternate tones so every chapter change is a
 clear cut (the homepage runs paper manifesto, graphite services, red
-method, graphite work), no two red chapters touch, and every page keeps at
-least one red room.
+method, graphite proof, paper FAQ and journal, red closing), no two red
+chapters touch, and every page keeps at least one red room.
 
 ## Type
 
@@ -90,10 +92,13 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 - `type-display` (in `globals.css`) sets the face, `font-stretch: 110%`,
   weight 430, `-0.018em` tracking and balanced wrapping. Headlines are
   never bold.
-- One `<Accent>` per headline, on the phrase that carries the claim
-  ("*one system*", "*Everywhere.*", "*visible*"). It is never italic.
+- `<Accent>` (the light weight) ends a headline only in the hero
+  ("*Everywhere.*") and the closing. Every other headline is one weight:
+  a device on every headline reads as a formula. It is never italic.
 - `figures` sets lining, proportional numerals for stats.
-- Parentheticals and figure captions are Meta: `(01)`, `Fig. 02 · …`.
+- Meta (mono, 11px caps) is for data only: dates, read times, units,
+  scores, tags, the Method phase numbers. About fifteen on the whole
+  homepage. Never a label that only announces what comes next.
 - Instrument Serif (`--font-serif`) remains loaded only for interior
   pages that haven't moved over.
 
@@ -103,11 +108,8 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 
 - `CONTAINER`: `max-w-[1440px]`, 20 / 32 / 48px side padding.
 - `GRID`: 4 columns (base), 6 (sm), 12 (lg), with 20 / 24 / 32px gutters.
-- The grid is never drawn as lines. It shows through alignment, the
-  single hairline under each chapter's running head, and the mono
-  indexes. The one exception is the column ticks: `ChapterHead` puts a
-  6px mark on its hairline at every column edge (4 / 6 / 12 by
-  breakpoint), like registration marks on a print.
+- The grid is never drawn: no column lines, no tick rulers. It shows
+  through alignment alone.
 - Lay every chapter's content on `GRID` spans so edges line up from one
   chapter to the next. Common spans at lg: headline 7 or 8, aside 3 or 4
   starting at column 9 or 10, four-up items 3 each.
@@ -115,17 +117,17 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 ## Chapter anatomy
 
 ```
-<ChapterHead index="02" label="Services" meta="Eight disciplines · One system" />
-(02)   ■ SERVICES                                 EIGHT DISCIPLINES · ONE SYSTEM
-───────────────────────────────────────────────────────────────────────────────
-Headline with one accent (lg:col-span-7/8)        Aside + TextLink (lg:col-span-3/4)
+<ChapterHead label="Services" />
+■ Services
+Headline, one weight (lg:col-span-7/8)            Aside + TextLink (lg:col-span-3/4)
 
 Content on GRID
 ```
 
+- One quiet label per chapter at most (`ChapterHead`, a `Kicker` with its
+  square), or none where the headline carries it. No numbers, no running
+  head, no ruler, no second kicker.
 - Padding: `py-24 lg:py-36`; closing chapters `py-28 lg:py-40`.
-- Chapters on a page are numbered in order. The hero and the closing
-  invitation are not numbered.
 - Full-bleed index rows put the hairline on the `li`
   and the content in `CONTAINER` inside the link, so the rule runs edge
   to edge and the hover flood fills the full width.
@@ -158,10 +160,10 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
   take a red top rule; arrows nudge diagonally.
 - **Ambient:** the film behind the glass, the Attention Field's drift and
   its channel tiles while they show (no controls, by the owner's call:
-  they run only while on screen and stop in hidden tabs), and the
-  selected-clients marquee (paused on
-  hover). Nothing else moves on its own; all of them sit still for
-  reduced motion.
+  they run only while on screen and stop in hidden tabs). The
+  selected-clients marquee (`clients-strip.tsx`, paused on hover) returns
+  only once real client names exist. Nothing else moves on its own; all
+  of them sit still for reduced motion.
 
 ## Fluted glass
 
@@ -179,7 +181,7 @@ it passes (`CAST`), gives the dark of the room a slate, grey-blue cast
 as red film behind cool architectural glass rather than all red. It reads
 as glass because the film has lines and points of light for the rods to
 bend. The film is drawn into a 192px canvas before it reaches the shader,
-so it arrives soft. Until the Higgsfield film exists, a stand-in studio
+so it arrives soft. Until real footage exists, a stand-in studio
 (red key light, ember wash, cool daylight from the upper left, a lit
 doorway, a slatted window, a few large out-of-focus lights, a beam, people
 crossing) is drawn in the shader.
@@ -286,16 +288,17 @@ same chapter.
 
 ## The manifesto braid
 
-(01) is one paper chapter: the statement, then its figure. Fig. 01, "Who
-owns the number" (`home/braid-strip.tsx`, engine in `lib/braid.ts`), is
-the chapter's centrepiece, not an appendix: its caption sits in the
-margin, its lead "Every supplier reports its own number. *Nobody owns the
+The manifesto is one paper chapter: the statement, then its figure
+(`home/braid-strip.tsx`, engine in `lib/braid.ts`), the chapter's
+centrepiece, not an appendix. It has no visible caption (an sr-only one
+names the suppliers; phones say six of ten are drawn); its lead "Every supplier reports its own number. *Nobody owns the
 outcome.*" (an h3) on the content column, and the canvas takes the full
 width below. Scrubbed by scroll as it passes, never pinned: ten tangled
 ink hairline strands, each a supplier with the number it reports (six on
 phones, which the caption says), straighten into lanes, then funnel into
-one strand that turns brand red where it joins and plaits to "One system.
-One number." (HTML, brand red, beside the end). As it forms, the ten
+one strand that turns brand red where it joins and plaits to "One team.
+One number." (HTML, brand red, beside the end), with "Find where your
+suppliers disagree" and a link to request a diagnostic under it. As it forms, the ten
 metrics delete themselves and the names glide to the spine (ten numbers
 become one). No logo hub: the colour change is the junction. It moves only
 with the visitor's scroll and rests otherwise; reduced motion shows the
@@ -341,17 +344,27 @@ Rules:
 - The pure parts are unit tested:
   `npx -y tsx --test src/lib/services-type.test.ts`.
 
-## Imagery
+## Imagery and proof
 
-- The hero film is generated in Higgsfield; see `docs/hero-video.md`.
-- Case studies (`work-chapter.tsx`) are typeset, not photographed: one
-  engagement as a graphite exhibit (the client's words, From / Built /
-  To, the result as the loudest number), then a ledger of every
-  engagement on the same columns. Real stills join the exhibit when they
-  exist.
+- Footage is shot, not generated: the hero film and the channel tiles take
+  real footage of real work when it exists (see `docs/hero-video.md`);
+  until then the drawn stand-ins stay. No AI-generated video or stills.
+- Proof is never invented. No client, person, quote, logo or result is
+  shown as real unless it is. Samples are labelled as samples in plain
+  view (the Attention Field's Halden brief; the Proof chapter's sample
+  Diagnostic; the sample engagements on /work).
+- The Proof chapter (`home/proof-chapter.tsx`, data in `lib/proof.ts`) shows
+  what Plurel delivers first: an excerpt of a Diagnostic, run on the
+  Halden sample brief (six parts scored, where you win, where you leak,
+  what to fix first, what runs first, what counts as qualified demand).
+  Real cases join it when they can be published: each opens with what
+  the Diagnostic found and reports one qualified-demand number with its
+  client, cause and period.
+- People (`home/people-chapter.tsx`, `lib/people.ts`) renders only once
+  real people are listed: faces, first names, one line each.
 - Photography direction for stills matches the film: people at work,
-  crimson light against graphite shadow, warm skin tones, shallow depth of field,
-  grain, nothing staged at the camera.
+  crimson light against graphite shadow, warm skin tones, shallow depth of
+  field, nothing staged at the camera.
 
 ## Header and footer
 
@@ -374,19 +387,24 @@ Rules:
 ## Positioning in the homepage
 
 Plurel sells integration, not a menu of services. Every chapter carries
-one step of that argument:
+one step of that argument, and says it once:
 
 | Chapter | Job |
 | --- | --- |
-| Hero | The promise: made to be seen, everywhere; distribution as how the right clients find you |
-| Attention Field | The mechanism: attention everywhere, one story, nine lanes, one system, qualified demand |
-| (01) Manifesto | The problem: "Your marketing shouldn't be ten companies." Each supplier reports its own number; the braid shows ten becoming one |
-| (02) Services | The answer: every relevant channel, run as one system (Narrative → Create → Distribute → Measure); eight voices set as one |
-| (03) Method | Diagnose where the system breaks, then design, deploy, compound |
-| (04)-(06) Work, results, journal | Proof, measured as one system |
-| (07) FAQ | The real objections: every channel? how is this not full-service? |
-| Closing | The Diagnostic as the door in ("Request your diagnostic") |
+| Hero | The promise: made to be seen, everywhere; great work no longer sells itself, distribution does |
+| Attention Field | Distribute: attention is everywhere; one story, cut for every surface, run by one team, ends in qualified demand |
+| Manifesto + braid | Measure: ten suppliers, ten numbers, nobody answers for the outcome; one team, one number |
+| Services | Structure: eight kinds of work as one chain (Narrative, Create, Distribute, Measure); the budget follows the bottleneck |
+| Method | How it starts: the Diagnostic, then the four phases as one monthly partnership |
+| Proof | What a Diagnostic finds (a labelled sample until real cases can be published) |
+| People | Who does the work (shown once real people are listed) |
+| FAQ | The real objections, biggest first: is this a full-service agency? every channel? what about our current agencies? cost |
+| Journal | What we're learning (later: the teardown series) |
+| Closing | The Diagnostic as the door in ("Request your diagnostic"), with an email as the second way in |
 
-Write "every relevant channel", never "every channel". Frame engagements as
-growth transformations; keep AI search, martech and measurement inside the
-method rather than as slogans.
+Write "every relevant channel", never "every channel", and "qualified
+demand", never "inquiries" or "pipeline" alone. Say "one system" once (the
+Services narrator); elsewhere use the concrete noun: team, brief, number,
+report. Keep AI search, martech and measurement inside the method rather
+than as slogans, and keep the voice plain: no triplet lists, no "Not X.
+Y.", no consultancy words.

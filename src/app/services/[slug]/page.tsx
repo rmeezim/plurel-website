@@ -64,7 +64,7 @@ export default async function ServicePage({
             <div className="lg:col-span-7">
               <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
                 <Spark className="size-3.5 text-brand" aria-hidden />
-                Service &mdash; {service.code}
+                Service &middot; {service.code}
               </p>
               <h1
                 id="service-heading"
@@ -157,10 +157,10 @@ export default async function ServicePage({
               id="evidence-heading"
               className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
             >
-              The evidence &mdash; independent research
+              The evidence, from independent research
             </h2>
             <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
-              Published findings, sourced inline &mdash; not our numbers.
+              Published findings, each with its source. None of these numbers are ours.
             </p>
           </Reveal>
           <Reveal delay={0.08} className="mt-8">
@@ -329,14 +329,14 @@ export default async function ServicePage({
       {/* ------------------------------------------------ Closing */}
       <StatementSection
         kicker="Start where every engagement starts"
-        note={`${service.code} — scoped by evidence, not by pitch`}
+        note={`${service.code} · scoped by evidence`}
         surface="brand"
         footer={
           <Link
             href="/contact"
             className="group inline-flex items-center gap-2 rounded-lg bg-paper px-6 py-3.5 text-sm font-medium text-ink transition-colors hover:bg-canvas"
           >
-            Book Strategy Call
+            Request a diagnostic
             <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
         }

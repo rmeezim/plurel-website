@@ -3,184 +3,91 @@
   and the FAQ structured data.
 */
 
-export const CLIENTS = [
-  "Aurem",
-  "Fence Labs",
-  "Northgate Legal",
-  "Mara Atelier",
-  "Halden & Co",
-  "Verra",
-];
+/**
+ * Client names for a future logo list inside Proof. Real clients only, and
+ * only with their permission: until there are some, the list is empty and
+ * ClientsStrip renders nothing.
+ */
+export const CLIENTS: string[] = [];
 
+/*
+  The four phases. Phase 01 is the Diagnostic itself, named so the
+  closing can pay it off. `ai` is the plain line for the rail "Where AI
+  helps, and where a person decides": no tool names until the real stack
+  is confirmed.
+*/
 export const PHASES = [
   {
     number: "1",
     name: "Diagnose",
-    tagline: "Find where the system breaks",
+    tagline: "The Diagnostic: find where it breaks",
     description:
-      "One diagnostic across market, narrative, touchpoints, assets, distribution, and measurement: where you win, where you leak, and what to fix first.",
-    outputs: ["System map", "Narrative & positioning read", "Search & channel baseline", "Priority roadmap"],
-    ai: "AI visibility scan",
+      "We score six parts: market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement. You get a prioritized read within a business day.",
+    outputs: ["Six-part scorecard", "Narrative & positioning read", "Search & AI baseline", "Priority roadmap"],
+    ai: "We ask the AI assistants your buyers use about your category, and record who they name.",
   },
   {
     number: "2",
     name: "Design",
-    tagline: "Rebuild the story and the surfaces",
+    tagline: "Rebuild the story, then what carries it",
     description:
-      "Positioning, messaging, identity, website, and the asset system designed together, so every relevant channel tells the same story.",
-    outputs: ["Narrative & messaging", "Brand identity", "Website & landing pages", "Asset system"],
-    ai: "Generative concepting",
+      "Positioning, messaging, identity, website and assets, designed together so every relevant channel tells the same story.",
+    outputs: ["Narrative & messaging", "Brand identity", "Website & landing pages", "Asset library"],
+    ai: "Machines draft many directions. A creative director keeps one.",
   },
   {
     number: "3",
     name: "Deploy",
-    tagline: "Launch on the channels that matter",
+    tagline: "Launch where your buyers already are",
     description:
-      "Ship to the channels that fit your market, not every channel there is, and wire the data underneath: analytics, CRM handoff, and attribution from day one.",
+      "Go live on the channels the Diagnostic picked, and wire the data underneath from day one: analytics, attribution, and the hand-off into your CRM and sales team.",
     outputs: ["Site build & QA", "Channel launch plan", "Tracking & attribution", "Launch PR"],
-    ai: "Automation & agent wiring",
+    ai: "Routing and follow-up are automated into your CRM, and a person checks them before launch.",
   },
   {
     number: "4",
     name: "Compound",
-    tagline: "Measure, learn, reallocate",
+    tagline: "Run the work, read the numbers",
     description:
-      "Content, search, paid, and earned run as one program. Every quarter the numbers rewrite the brief, and the budget moves to the bottleneck.",
-    outputs: ["Content engine", "Paid & search", "PR & reputation", "Quarterly reallocation"],
-    ai: "Predictive optimization",
+      "Content, search, paid and earned run together. Every quarter the numbers rewrite the brief, and the budget moves with them.",
+    outputs: ["Content program", "Paid & search", "PR & reputation", "Quarterly reallocation"],
+    ai: "Models flag where budget is leaking. A person decides at the quarterly review.",
   },
 ];
 
-export type CaseScene = "red" | "ember" | "blush" | "night";
-
-export const CASES: {
-  name: string;
-  accent: string;
-  services: string;
-  year: string;
-  metric: string;
-  metricLabel: string;
-  before: string;
-  built: string;
-  after: string;
-  scene: CaseScene;
-}[] = [
-  {
-    name: "Aurem",
-    accent: "premium on sight",
-    services: "Brand identity, Web design",
-    year: "2025",
-    metric: "+212%",
-    metricLabel: "Qualified demand",
-    before: "Dated identity, unclear positioning",
-    built: "Brand system, website",
-    after: "Premium perception, higher-quality demand",
-    scene: "red",
-  },
-  {
-    name: "Northgate Legal",
-    accent: "the answer in its category",
-    services: "Website, AI search & SEO",
-    year: "2024",
-    metric: "+185%",
-    metricLabel: "Search visibility",
-    before: "Invisible in search, referral-only",
-    built: "Website, AI search, content",
-    after: "The first answer for its practice areas",
-    scene: "night",
-  },
-  {
-    name: "Fence Labs",
-    accent: "category-distinct",
-    services: "Packaging, Art direction",
-    year: "2025",
-    metric: "+64%",
-    metricLabel: "DTC conversion",
-    before: "Generic shelf presence, no story",
-    built: "Brand, packaging, launch",
-    after: "Category-distinct, stronger conversion",
-    scene: "blush",
-  },
-  {
-    name: "Mara Atelier",
-    accent: "a loyal audience",
-    services: "Brand identity, Content",
-    year: "2024",
-    metric: "2.6×",
-    metricLabel: "Email-driven revenue",
-    before: "Flat brand, weak retention",
-    built: "Brand, content, email system",
-    after: "Loyal audience, compounding revenue",
-    scene: "ember",
-  },
-];
-
-export const STATS = [
-  { value: "3.2×", label: "Average lift in qualified demand" },
-  { value: "+64%", label: "Average conversion-rate improvement" },
-  { value: "+185%", label: "Organic & AI-search visibility gained" },
-  { value: "0.9s", label: "Median page load after rebuild" },
-];
-
-export const VOICES = [
-  {
-    quote: "Within a quarter, prospects stopped asking who we were.",
-    name: "Amelia Hart",
-    role: "Managing Partner, Northgate Legal",
-  },
-  {
-    quote: "The rebrand changed how the market reads us, instantly.",
-    name: "Elena Voss",
-    role: "CEO, Aurem",
-  },
-  {
-    quote: "The rebrand paid for itself before the campaign finished.",
-    name: "Daniel Okafor",
-    role: "Founder, Fence Labs",
-  },
-];
-
+/*
+  The FAQ, in the order a buyer's doubts arrive: what this is, how much of
+  it they need, what happens to the suppliers they have, cost, fit, who
+  does the work, and the Diagnostic. The first sentence of each answer is
+  the takeaway (set in ink on the page).
+*/
 export const FAQS = [
   {
-    q: "What does a typical engagement look like?",
-    a: "Every engagement starts with the Diagnostic, then runs our four-phase operating model: Diagnose, Design, Deploy, Compound. Most clients work with us as one integrated partnership covering narrative, creative, content, and distribution, with the mix reallocated as the bottleneck moves. Focused sprints (a rebrand, a website, a search push) run four to eight weeks.",
-  },
-  {
-    q: "What does it cost?",
-    a: "Partnerships are a monthly engagement scoped to the system you need, not a menu of line items. You are buying an external marketing department, so the work can move from web to film to search without a new contract. Focused sprints start in the low five figures. Every scope states what it should return, and quarterly reviews hold the work to it.",
-  },
-  {
-    q: "How quickly will we see results?",
-    a: "Perception shifts the day the new narrative and site ship. Demand signals, like the quality of who reaches out, search and AI visibility, and conversion, typically move within the first quarter. Programs are reviewed against your targets every quarter.",
-  },
-  {
     q: "How is this different from a full-service agency?",
-    a: "We sell the integration, not the menu. A full-service agency puts many services under one roof; we run one narrative, one creative engine, one data layer, and one accountable team across every relevant channel you use. You stop managing ten suppliers who each optimize their own number.",
+    a: "We sell the integration, not the menu. A full-service agency puts many services under one roof, and each still reports its own number. We run your marketing from one story, with one team and one report, across every relevant channel, and we answer for qualified demand.",
   },
   {
     q: "Do we need every channel?",
-    a: "No. Every relevant channel, run as one system. Sometimes that is search and a founder voice; sometimes it is LinkedIn, events, and research. The Diagnostic decides the mix, and everything in it shares one narrative, one asset system, and one set of numbers.",
+    a: "No, only the relevant ones, and the Diagnostic decides which. For one company that is search and a founder’s voice; for another, LinkedIn, events and research. Consumer brands often need creators and UGC, which we run inside Content Marketing and Paid Ads. Whatever the mix, it all works from the same brief.",
   },
   {
     q: "We already have an in-house team or agency. Where do you fit?",
-    a: "Usually as the system owner. We diagnose and design the whole system, then either run lanes end to end or orchestrate your existing team and suppliers as the partner accountable for the outcome.",
+    a: "Usually alongside them. We diagnose the whole setup, then either run parts of it end to end or direct your team and suppliers from one plan. Good people usually stay. What changes is that someone answers for the result.",
+  },
+  {
+    q: "What does it cost?",
+    a: "Focused sprints start in the low five figures. Partnerships are monthly, scoped to the work, never per channel. You are buying an external marketing department, so the work can move from web to film to search without a new contract.",
   },
   {
     q: "Do you work with companies like ours?",
-    a: "Our best fit is growth-stage companies, B2B and B2C, whose marketing has outgrown one person and fragmented across suppliers: Series A to C technology companies, consumer brands, and established businesses modernizing how they show up. The problem is the same in SaaS, fintech, consumer goods, healthcare, or professional services: everything works, and nothing works together.",
-  },
-  {
-    q: "What exactly is the Diagnostic, and why is it free?",
-    a: "The Plurel Distribution Diagnostic: a strategist scores six parts of your distribution system (market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement) and returns a prioritized read within about a business day. It's free because it's the fastest way for both of us to see whether there's a real system to build.",
+    a: "Our best fit is growth-stage companies, B2B and B2C, whose marketing has outgrown one person and split across suppliers. The industry matters less than the symptom: everything works, and nothing works together.",
   },
   {
     q: "Who actually does the work?",
-    a: "A senior Plurel team that owns the system: strategy, narrative, design, film, motion, web, and distribution in one team, drawing on Northeon's global delivery network. The people who diagnose your system are the people who run it.",
+    a: "A senior Plurel team covering strategy, narrative, design, film, web and distribution, backed by Northeon’s delivery network. The people who run your Diagnostic are the people who run the work. When demand reaches your sales team, Kelwin, our sister division for RevOps and go-to-market, can carry it through to revenue.",
   },
-];
-
-export const NEXT_STEPS = [
-  { title: "We reply in one business day", detail: "A first read from a person, not a pipeline." },
-  { title: "A 30-minute strategy call", detail: "Where you stand, and what to fix first." },
-  { title: "Your diagnostic & roadmap", detail: "Yours to keep, whatever you decide." },
+  {
+    q: "What exactly is the Diagnostic, and why is it free?",
+    a: "The Plurel Distribution Diagnostic: a strategist scores six parts of your distribution (market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement) and returns a prioritized read within a business day. It’s free because it’s the fastest way for both of us to see whether there is real work to do together.",
+  },
 ];

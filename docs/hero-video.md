@@ -1,140 +1,167 @@
-# Plurel — hero film (Higgsfield prompt pack)
+# Plurel: hero film and channel footage (shot list)
 
-The home hero is a red room with a **distribution wall**: one story shown
-as the seven surfaces it ships to (a reel, a search result, a brand film,
-an AI answer, a feed post, a press feature, a billboard), hanging on the
-wall and drifting slowly past.
+**The rule: real, shot footage of real work. Nothing generated.** No
+text-to-video, no image-to-video, no generated stills animated into a
+loop, no generative fill, no stock. Plurel sells real work made by real
+people, and a generated film is the first thing a buyer learns to spot.
+Every frame on the site is shot on a camera, of the team or of work it
+actually did (with the client's permission).
 
-The film is used twice, from a single video file:
+Until that footage exists, the site runs its stand-ins: a code-drawn red
+film behind the glass, and drawn screen recordings in the Attention
+Field's tiles. Both are finished on their own, so nothing waits on the
+shoot, and a stand-in is always better than a generated clip.
 
-1. **Behind everything**, full bleed, blurred and graded red: the room's
-   ambient light.
-2. **Inside the wall's film frames**, sharp and in true color, cropped
-   live to 9:16 (reel), 16:9 (brand film), 1:1 (feed) and a wide
-   billboard panel. Every crop shows the same frame in sync.
+There are two places footage goes:
 
-This doc covers what the film should feel like, how to generate it in
-Higgsfield, how to export it, and where to drop the files so the site picks
-them up. Until the files exist, the room and the frames run a stand-in
-(warm light drifting through red), so nothing on the site waits on the
-film.
+1. **The film behind the glass** (`public/video/plurel-hero.*`), used by
+   the fluted glass band in the hero and again at the closing chapter.
+2. **The channel tiles** in the Attention Field
+   (`public/video/channels/<key>.mp4`), one clip per format.
 
 ---
 
-## 1. The brief
+## 1. The film behind the glass
 
-**Feel:** alive, human, friendly, inviting. People doing thoughtful work
-together in a warm studio, lit in Plurel red. It should feel like a real
-place you'd want to walk into, not stock footage of "business".
+### How the site uses it
 
-**Grade:** deep crimson and oxblood ambient light (Plurel red is
-`#bf3a36`), warm natural skin tones, low-key lighting, soft highlights,
-fine film grain. In the wall's frames the film is shown as graded, with
-no overlay, so it has to look finished on its own.
+`src/lib/film.ts` looks for the files at build time and hands them to
+`GlassBand` (`src/components/glass-band.tsx`), which `hero.tsx` and
+`closing-chapter.tsx` both render. The band draws the film into a tiny
+canvas, 192px wide, so it arrives soft, then refracts it through nine
+cool glass flutes. Visitors never see the film sharp. What they see is
+its color, its light and its movement.
 
-**Composition:** the frames crop the film to 9:16, 1:1, 16:9 and a wide
-panel, so keep the action **center-safe**: the subject should still read
-in a tight vertical crop through the middle of the frame. Avoid important
-detail at the far left and right edges.
+It loops muted with no control (the owner's call), stops when the band is
+off screen or the tab is hidden, and visitors with reduced motion or data
+saver get the poster as a still frame.
 
-**Motion:** slow and continuous. A gentle push-in or lateral drift,
-people moving naturally at half speed. No cuts, no whip pans, no one
-looking into the lens.
+### The brief
 
-**Never:** on-screen text, logos, screens with readable UI, recognizable
-brands or real people's likeness.
+**Subject:** a real working day at Plurel, filmed on site. The people in
+frame are the team, or have signed a release. Client work appears only
+with the client's permission.
 
-**Technical targets**
+**Feel:** alive, human, unhurried. People doing careful work together in
+a warm room, lit red. It should feel like a place you'd want to walk
+into, never like stock footage of "business".
+
+**Grade:** deep crimson and oxblood light (Plurel red is `#bf3a36`),
+warm natural skin tones, low-key lighting, soft highlights, fine grain.
+Get the red in camera where you can: a red gel on a practical, red film
+on a window, a red wall bouncing the key.
+
+**Composition:** keep the action in the middle of the frame. The flutes
+slice the film into vertical strips, so broad shapes of light and dark
+read best; small detail disappears.
+
+**Motion:** slow and continuous. A slow push-in or lateral drift on a
+slider, or a locked-off camera with people moving naturally. No cuts, no
+whip pans, nobody looking into the lens.
+
+**Never:** readable screens, on-screen text, logos, client material
+without written permission, or a shot of anyone who hasn't agreed to it.
+
+### Shot list
+
+Shoot all four if you can; any one of them works on its own.
+
+**Shot A: the review at dusk (recommended).** Three people around a large
+table covered in printed layouts and color swatches, mid-review: one
+leans in and points at a print, another laughs. Red light from a tall
+window on the right, practical lamps warm in the background. 35mm, wide,
+shallow depth of field. People grouped near the center.
+*Camera:* slow push-in toward the table on a slider.
+
+**Shot B: hands on the work.** Close-up of hands arranging printed proofs
+and type specimens on a matte table: a pencil, a ruler, red paper
+samples, a coffee cup at the edge. Warm red key from the right, deep
+shadow, 50mm or macro. *Camera:* locked off; the hands slide one card
+into place and adjust another.
+
+**Shot C: the strategist at the wall.** A real member of the team in
+profile by a tall window at the end of the day, looking at a wall of
+pinned work, a small thoughtful smile. Red sunset light, a little haze.
+Subject just right of center. *Camera:* slow lateral move, left to
+right; the subject turns slightly toward the wall.
+
+**Shot D: the red room (no people).** Warm light crossing a textured red
+wall in the empty studio, shadows of window frames and leaves drifting
+across, dust in the beam. The easiest to get: one clear afternoon and a
+tripod. *Camera:* locked off. Good as the calmer option and for the
+mobile cut.
+
+### Shooting notes
+
+- 24 fps for real-time motion, or 48/50 fps conformed to 24 for a
+  half-speed feel. Lock exposure, white balance and focus.
+- Take 20 to 30 seconds per take, and several takes per shot, so there
+  is room to find a loop.
+- For a clean loop on a moving camera, end the move where it began, or
+  plan to close the seam with the crossfade in section 3.
+
+### Technical targets
 
 | | Desktop | Mobile (optional) |
 | --- | --- | --- |
 | Aspect | 16:9 | 4:5 |
 | Size | 1920 x 1080 | 1080 x 1350 |
-| Length | 8 to 12 s, seamless loop | same clip, reframed |
+| Length | 8 to 12 s, looping cleanly | same clip, reframed |
 | Frame rate | 24 fps | 24 fps |
 | File budget | under 4 MB | under 2 MB |
 | Audio | none | none |
 
----
-
-## 2. Workflow in Higgsfield
-
-1. **Generate the key frame as a still** with Higgsfield's image model,
-   using one of the shot prompts below at 16:9. Make 4 to 8 variations and
-   pick the one with the cleanest left side and the warmest light.
-2. **Animate it with image-to-video.** Use the still as the first frame.
-   If the model you pick supports a start frame *and* an end frame, use the
-   same still for both: the clip then ends where it began and loops
-   without a seam. Choose a slow camera move (slow push-in, slow dolly
-   left, or static with subject motion). Generate 5 to 10 second clips.
-3. **Make 3 or 4 takes** and judge them against the brief: is the motion
-   calm, is the left side quiet, does the loop point disappear?
-4. **If the loop has a visible jump,** close it with the crossfade command
-   in section 4.
-5. **Export** with the commands in section 4 and drop the files in
-   `public/video/`.
+The band draws the film small, so a modest bitrate costs nothing you can
+see. Stay well under budget.
 
 ---
 
-## 3. Shot prompts
+## 2. The channel tiles
 
-Copy a prompt as written, then adjust. Each is written for the still;
-the motion line is for the image-to-video step.
+The Attention Field opens on seven tiles: one story cut into the formats
+it ships to. Today they tell the story of Halden, a sample brief that is
+labelled as one on the page, drawn as screen recordings.
 
-### Shot A — The studio at dusk (recommended)
+**The rule here is the same: real footage only.** In order of
+preference:
 
-> Cinematic wide shot inside a warm creative studio at dusk, a small team
-> of three gathered around a large wooden table covered in printed brand
-> layouts and color swatches, one person leaning in pointing at a print,
-> another laughing softly, soft deep crimson light spilling from a tall
-> window on the right, oxblood shadows, practical lamps glowing warm,
-> shallow depth of field, 35mm film look, soft halation, fine film grain,
-> people grouped near the center of the frame so they read in a tight
-> vertical crop, natural candid moment, no text, no logos
+1. **A real client's real campaign**, published with permission. The
+   tiles then show that client's story, and the "sample brief" note
+   comes off.
+2. **Footage Plurel shoots itself for the sample**, for the "scene"
+   tiles below (a real home, a real installer, a real street), with the
+   sample label kept in plain view.
 
-**Motion:** slow push-in toward the table, people moving naturally,
-gentle shifts of light. **Negative:** text, logos, readable screens,
-looking at camera, fast motion, harsh flash, cold blue light.
+Never fill a tile with generated video, and never present the sample as
+a client.
 
-### Shot B — Hands on the work
+| Key | Format | Aspect | Loop (s) | Clip replaces |
+| --- | --- | --- | --- | --- |
+| `answer` | AI answer | 4:5 | 11.3 | the whole tile (a screen recording) |
+| `search` | Search result | 16:9 | 13.7 | the whole tile (a screen recording) |
+| `reel` | Reel | 9:16 | 10 | the picture, under the drawn app UI |
+| `film` | Brand film | 16:9 | 12.4 | the picture, under the drawn UI |
+| `press` | Press feature | 4:5 | 14.9 | the whole tile (a screen recording) |
+| `creator` | Creator post | 4:5 | 12.9 | the picture, under the drawn UI |
+| `ooh` | Billboard | 3:1 | 16 | the whole tile (a photo or film of the real site) |
 
-> Close-up of hands arranging printed brand cards and typography proofs on
-> a matte table, a pencil, a ruler, red paper samples, a coffee cup at the
-> edge, warm crimson key light from the right, deep oxblood shadows,
-> macro detail, shallow depth of field, cinematic, 50mm, film grain,
-> subject centered with soft dark edges, no text legible, no logos
+"Screen" tiles take a real screen recording of the real thing (the
+search result, the assistant's answer, the published article) or real
+footage of the billboard where it stands. "Scene" tiles take shot
+footage; the drawn product chrome stays on top. Match each clip to its
+loop length so the tiles never restart together.
 
-**Motion:** static camera, hands slide one card into place and adjust
-another, slow and deliberate.
-
-### Shot C — Window-light portrait
-
-> Medium shot of a strategist in profile standing by a tall studio window
-> at golden hour, looking at a wall of pinned printed work, a slight
-> thoughtful smile, deep red sunset light washing across the scene,
-> oxblood shadows, soft haze in the air, cinematic 35mm, shallow depth of
-> field, fine grain, subject just right of center and still inside a
-> vertical center crop, candid, no text, no logos
-
-**Motion:** slow lateral dolly from left to right, subject turns their
-head slightly toward the wall.
-
-### Shot D — The red room (abstract, no people)
-
-> Slow-moving warm light crossing a textured red plaster wall in an empty
-> studio, soft shadows of leaves and window frames drifting across, dust
-> particles floating in a beam of crimson light, deep oxblood corners,
-> cinematic, anamorphic, fine film grain, minimal, calm, no text
-
-**Motion:** static camera, light and shadows drift slowly across the wall.
-Use this as a calmer alternative, or for the mobile cut.
+Drop `public/video/channels/<key>.mp4` (and an optional `<key>.jpg`
+poster). `src/lib/clips.ts` picks them up at build time; a tile with a
+clip plays it muted and looped and fetches it only when the tile plays
+(`preload="none"`). A tile without one keeps its drawing.
 
 ---
 
-## 4. Export commands
+## 3. Export commands
 
-Run these on the chosen master (`master.mov` or `master.mp4`). They need
-[ffmpeg](https://ffmpeg.org).
+They need [ffmpeg](https://ffmpeg.org). Run them on the graded master
+(`master.mov` or `master.mp4`).
 
 **Close a visible loop seam with a 1-second crossfade.** Set `D` to the
 clip length in seconds; the result is 1 second shorter and loops cleanly:
@@ -178,51 +205,62 @@ ffmpeg -i loop.mp4 -an -vf "crop=ih*4/5:ih,scale=1080:-2,fps=24" \
 
 If the subject sits right of center, shift the crop: `crop=ih*4/5:ih:iw*0.4:0`.
 
-**Poster frame (recommended):** shown before the film loads and to
-visitors who prefer reduced motion:
+**Poster frame (recommended):** the still shown before the film plays,
+and to visitors who prefer reduced motion or save data:
 
 ```bash
 ffmpeg -ss 0 -i public/video/plurel-hero.mp4 -frames:v 1 -q:v 3 \
   public/video/plurel-hero-poster.jpg
 ```
 
+**A channel tile** (here the 9:16 reel; change the crop and the trim to
+the tile's aspect and loop length from the table above):
+
+```bash
+ffmpeg -i reel-master.mp4 -an -t 10 -vf "crop=ih*9/16:ih,scale=720:-2,fps=24" \
+  -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -movflags +faststart \
+  public/video/channels/reel.mp4
+ffmpeg -ss 1.2 -i public/video/channels/reel.mp4 -frames:v 1 -q:v 3 \
+  public/video/channels/reel.jpg
+```
+
+Use the tile's start time from `CHANNELS` in `src/lib/channels.ts` for
+its poster (`-ss`), so the still shows the same moment as the drawing.
+
 ---
 
-## 5. Dropping it in
+## 4. Dropping it in
 
 | File | Needed | Used for |
 | --- | --- | --- |
 | `public/video/plurel-hero.mp4` | yes | every browser |
 | `public/video/plurel-hero.webm` | no | browsers that prefer WebM |
 | `public/video/plurel-hero-mobile.mp4` | no | screens up to 767px wide |
-| `public/video/plurel-hero-poster.jpg` | recommended | first paint, reduced motion |
+| `public/video/plurel-hero-poster.jpg` | recommended | first paint, reduced motion, data saver |
+| `public/video/channels/<key>.mp4` | no | the channel tile `<key>` |
+| `public/video/channels/<key>.jpg` | recommended with a clip | that tile's still frame |
 
-`src/components/hero.tsx` checks for these files at build time. Add them,
-rebuild, and the film replaces the stand-in scene. No code change needed.
+Add the files and rebuild. No code change is needed: the film replaces
+the stand-in behind both glass bands, and each clip replaces its tile's
+drawing.
 
-**Tuning the room.** Behind the wall the film is blurred (`.hero-film` in
-`globals.css`) and graded with a red multiply layer at 60% opacity
-(`bg-brand opacity-60 mix-blend-multiply` in `hero.tsx`). If the room
-reads too busy, raise the blur; if it reads too flat, lower the opacity.
-Neither setting touches the wall's frames.
-
-**Focal points.** Each film frame crops around a focal point (`focus` on
-`Media` in `hero-wall.tsx`, 0 to 1 on each axis). Nudge them if the
-subject drifts out of a crop.
-
-**Behavior built in:** one video decode feeds every frame. The film
-fades in once it can play, pauses when the hero scrolls out of view,
-does not autoplay for visitors with reduced-motion or data-saver
-settings, and the hero's pause control stops the film and the wall's
-drift together.
+**Tuning.** The glass sets its own cast over whatever is behind it
+(`CAST`, `SLATE` and `SKY` in the shader in `src/lib/glass.ts`). If the
+red reads too strong or too flat through the flutes, regrade the footage
+first; touch the shader only if every clip has the same problem.
 
 ---
 
-## 6. Checklist before shipping
+## 5. Checklist before shipping
 
+- [ ] Every frame was shot on a camera; nothing generated or stock
+- [ ] Everyone in frame is on the team or has signed a release
+- [ ] Client work appears only with written permission
+- [ ] No readable screens, text or logos behind the glass
 - [ ] Loop point is invisible on three consecutive plays
-- [ ] The subject still reads in the 9:16 reel crop and the 1:1 feed crop
-- [ ] No text, logos, readable screens, or real people's likeness
 - [ ] Desktop file under 4 MB, mobile under 2 MB
 - [ ] Poster frame exported and matches the first frame
-- [ ] Checked on the site: the room behind (blurred, red) and the frames (sharp, true color)
+- [ ] Checked on the site, in the hero and at the closing glass, with
+      motion on and with reduced motion
+- [ ] Tiles: each clip matches its aspect and loop length, and the
+      "sample brief" note stays while the story is still Halden's

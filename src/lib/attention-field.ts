@@ -62,7 +62,7 @@ export const AF_STAGES = [
   {
     tab: "Noise",
     title: "Attention is everywhere.",
-    line: "Search, feeds, AI answers, creators, press, the room you’re not in.",
+    line: "Search, feeds, creators, press, and now AI answers that pick for your buyer.",
   },
   {
     tab: "Story",
@@ -77,7 +77,7 @@ export const AF_STAGES = [
   {
     tab: "System",
     title: "Run it as one system.",
-    line: "One narrative, one engine, one set of numbers.",
+    line: "Every lane fed from the same brief, by\u00a0one\u00a0team.",
   },
   {
     tab: "Demand",

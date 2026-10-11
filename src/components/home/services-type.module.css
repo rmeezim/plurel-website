@@ -1,5 +1,5 @@
 /*
-  (02) Services, Fig. 02: one typographic system (services-type.tsx;
+  Services: the typographic figure (services-type.tsx;
   engine in lib/services-type.ts; markup in services-chapter.tsx).
 
   Static by default: the finished contents list in flow, the chain live.
@@ -37,7 +37,7 @@
   position: relative;
 }
 
-/* ---------- the figure head: Fig. 02, the narrator, the chain ---------- */
+/* ---------- the figure head: the narrator and the chain ---------- */
 
 .head {
   align-items: end;

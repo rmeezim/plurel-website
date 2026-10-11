@@ -1,23 +1,18 @@
 import { Reveal } from "@/components/reveal";
-import {
-  Accent,
-  ChapterHead,
-  CONTAINER,
-  GRID,
-  Meta,
-  TextLink,
-} from "@/components/system";
+import { ChapterHead, CONTAINER, GRID, Meta, TextLink } from "@/components/system";
 import { PHASES } from "@/lib/home";
 
 const pad = (n: number) => String(n).padStart(2, "0");
-const DELIVERABLES = PHASES.reduce((total, phase) => total + phase.outputs.length, 0);
 
 /*
-  The operating model as a schematic time chart in a red room.
+  Method: the four phases as a time chart in a red room. Phase 01 is the
+  Diagnostic, named here so the closing can pay it off. Mono only where
+  it carries data: the four phase numbers (their order is real) and the
+  time axis.
 
   Desktop: each phase is one column (span 3) whose rows line up across
-  all four through subgrid: bar, name, description, lane head,
-  deliverables. Mobile and tablet: the chart turns vertical. A thin left
+  all four through subgrid: bar, name, description, deliverables. Mobile
+  and tablet: the chart turns vertical. A thin left
   rail brackets phases 01-03 as quarter one and points down past 04 as
   always on, and each phase keeps a quarter-width bar shifted a quarter
   further along, so the staircase still reads.
@@ -59,7 +54,7 @@ const RAIL = [
 ];
 const RAIL_LABEL: Record<number, string> = { 0: "Quarter one", 3: "Always on" };
 
-/** (03) Method: the four-phase operating model drawn as a time chart */
+/** Method: the four phases drawn as a time chart */
 export function MethodChapter() {
   return (
     <section
@@ -68,26 +63,15 @@ export function MethodChapter() {
       className="bg-brand text-paper"
     >
       <div className={`${CONTAINER} py-24 lg:py-36`}>
-        {/* ChapterHead's red tone sets its 11px meta in blush (3.6:1, below
-            AA); hold it at paper until the primitive does. */}
-        <div className="[&_span]:text-paper">
-          <ChapterHead
-            index="03"
-            label="Method"
-            meta="Four phases · One operating model"
-            tone="red"
-          />
-        </div>
+        <ChapterHead label="Method" tone="red" />
 
-        <div className={`${GRID} mt-14 gap-y-8 lg:mt-[72px] lg:items-end`}>
+        <div className={`${GRID} mt-8 gap-y-8 lg:mt-10 lg:items-end`}>
           <Reveal className="col-span-4 sm:col-span-6 lg:col-span-8">
             <h2
               id="method-heading"
               className="type-display text-[clamp(2.5rem,4.7vw,3.75rem)] leading-none"
             >
-              One operating model, from first{" "}
-              <Accent className="text-blush">diagnosis</Accent> to compounding
-              growth.
+              One operating model, from first diagnosis to compounding growth.
             </h2>
           </Reveal>
           <Reveal
@@ -95,8 +79,8 @@ export function MethodChapter() {
             className="col-span-4 sm:col-span-4 lg:col-span-3 lg:col-start-10 lg:pb-1"
           >
             <p className="max-w-[40ch] text-[16px] leading-[1.55]">
-              Every engagement, from a focused sprint to a full transformation,
-              runs the same four phases.
+              Most engagements run all four as one monthly partnership. A focused
+              sprint, like a rebrand or a new site, takes four to eight weeks.
             </p>
             <TextLink href="/methodology" tone="red" className="mt-4">
               The full method
@@ -104,22 +88,10 @@ export function MethodChapter() {
           </Reveal>
         </div>
 
-        <figure className="mt-16 lg:mt-20">
-          <figcaption
-            className={`${GRID} items-baseline gap-y-1.5 border-b border-paper pb-3.5`}
-          >
-            <Meta className="col-span-1 lg:col-span-3">Fig. 03</Meta>
-            <span className="col-span-3 text-[15px] font-medium lg:col-span-5">
-              The operating model over time
-            </span>
-            <Meta className="col-span-3 col-start-2 sm:col-span-2 sm:col-start-auto sm:text-right lg:col-span-4">
-              Schematic · not to scale
-            </Meta>
-          </figcaption>
-
+        <figure aria-label="The four phases over time" className="mt-16 lg:mt-24">
           {/* Time axis, drawn once: a bracket for quarter one (01-03) and an
               open arrow for always on (04). Below lg the rail takes over. */}
-          <div aria-hidden className="mt-[26px] hidden lg:block">
+          <div aria-hidden className="hidden lg:block">
             <div className={GRID}>
               <div className="relative col-span-9 pb-3">
                 <Meta className="block">Quarter one</Meta>
@@ -135,11 +107,10 @@ export function MethodChapter() {
 
           <ol className={`${GRID} mt-10 lg:mt-4`}>
             {PHASES.map((phase, i) => {
-              const count = phase.outputs.length;
               return (
                 <li
                   key={phase.name}
-                  className={`relative col-span-4 pl-6 sm:col-span-6 sm:pl-8 lg:col-span-3 lg:row-span-5 lg:grid lg:grid-rows-subgrid lg:pb-0 lg:pl-0 ${
+                  className={`relative col-span-4 pl-6 sm:col-span-6 sm:pl-8 lg:col-span-3 lg:row-span-4 lg:grid lg:grid-rows-subgrid lg:pb-0 lg:pl-0 ${
                     i < PHASES.length - 1 ? "pb-14 sm:pb-16" : ""
                   }`}
                 >
@@ -154,7 +125,7 @@ export function MethodChapter() {
 
                   <Reveal
                     delay={i * 0.08}
-                    className="lg:row-span-5 lg:grid lg:grid-rows-subgrid"
+                    className="lg:row-span-4 lg:grid lg:grid-rows-subgrid"
                   >
                     {RAIL_LABEL[i] && (
                       <Meta as="p" className="mb-4 lg:sr-only">
@@ -188,34 +159,16 @@ export function MethodChapter() {
                       {phase.description}
                     </p>
 
-                    {/* Row 4: lane head. On desktop the first phase's runs
-                        across all four columns and counts every deliverable. */}
-                    <p
-                      className={`mt-8 flex items-baseline justify-between gap-4 border-b border-paper/45 pb-2.5 lg:mt-9 ${
-                        i === 0 ? "lg:w-[calc(400%+6rem)]" : "lg:invisible"
-                      }`}
+                    {/* Row 4: the deliverables */}
+                    <ul
+                      aria-label={`${phase.name} deliverables`}
+                      className="mt-8 border-t border-paper/45 sm:grid sm:grid-cols-2 sm:gap-x-6 lg:mt-9 lg:block"
                     >
-                      <Meta>Deliverables</Meta>
-                      {i === 0 ? (
-                        <Meta>
-                          <span className="lg:hidden">{pad(count)}</span>
-                          <span className="hidden lg:inline">{pad(DELIVERABLES)}</span>
-                        </Meta>
-                      ) : (
-                        <Meta>{pad(count)}</Meta>
-                      )}
-                    </p>
-
-                    {/* Row 5: the indexed deliverables */}
-                    <ul className="sm:grid sm:grid-cols-2 sm:gap-x-6 lg:block">
-                      {phase.outputs.map((output, j) => (
+                      {phase.outputs.map((output) => (
                         <li
                           key={output}
-                          className="grid grid-cols-[30px_1fr] items-baseline border-b border-paper/30 py-[9px] text-[14px] leading-[1.35]"
+                          className="border-b border-paper/30 py-[9px] text-[14px] leading-[1.35]"
                         >
-                          <Meta>
-                            {phase.number}.{j + 1}
-                          </Meta>
                           {output}
                         </li>
                       ))}
@@ -226,21 +179,23 @@ export function MethodChapter() {
             })}
           </ol>
 
-          {/* The AI layer: one continuous band under all four phases */}
-          <Reveal delay={0.1} className="mt-14 lg:mt-9">
-            <p className="flex items-baseline justify-between gap-4 border-b border-paper/45 pb-2.5">
-              <Meta>AI layer · runs under every phase</Meta>
-              <Meta>{pad(PHASES.length)}</Meta>
+          {/* Where AI helps: one continuous band under all four phases,
+              each line under its own phase */}
+          <Reveal delay={0.1} className="mt-14 lg:mt-12">
+            <p
+              id="method-ai"
+              className="border-b border-paper/45 pb-3 text-[15px] font-medium leading-[1.35]"
+            >
+              Where AI helps, and where a person decides
             </p>
-            <ul className={`${GRID} bg-graphite px-5 sm:px-6 lg:px-0`}>
-              {PHASES.map((phase, i) => (
+            <ul aria-labelledby="method-ai" className={`${GRID} bg-graphite px-5 sm:px-6 lg:px-0`}>
+              {PHASES.map((phase) => (
                 <li
                   key={phase.ai}
-                  className="col-span-4 flex items-center gap-3 border-t border-fog/20 py-4 first:border-t-0 sm:col-span-6 lg:col-span-3 lg:gap-2.5 lg:border-t-0 lg:py-[18px] lg:pl-4"
+                  className="col-span-4 flex items-baseline gap-3 border-t border-fog/20 py-4 first:border-t-0 sm:col-span-6 lg:col-span-3 lg:gap-2.5 lg:border-t-0 lg:py-5 lg:pl-4 lg:pr-3"
                 >
-                  <Meta className="w-7 shrink-0 text-fog lg:hidden">{pad(i + 1)}</Meta>
-                  <span aria-hidden className="size-[7px] shrink-0 bg-signal" />
-                  <span className="text-[14px] leading-[1.35]">{phase.ai}</span>
+                  <span aria-hidden className="size-[7px] shrink-0 -translate-y-px bg-signal" />
+                  <span className="text-[14px] leading-[1.45]">{phase.ai}</span>
                 </li>
               ))}
             </ul>

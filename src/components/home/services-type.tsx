@@ -2,14 +2,14 @@
 
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { ArrowRight } from "@/components/icons";
-import { CONTAINER, GRID, Meta } from "@/components/system";
+import { CONTAINER, GRID } from "@/components/system";
 import { mountServicesType, STAGES, type StageKey } from "@/lib/services-type";
 import s from "./services-type.module.css";
 
 /*
-  Fig. 02, the figure of (02) Services: the eight names, first set the
-  way eight suppliers would set them, lined up on the rows' grid, then set
-  as one system, stage by stage along the chain (engine in
+  The figure of Services: the eight names, first set the way eight
+  suppliers would set them, lined up on the rows' grid, then set in one
+  face, stage by stage along the chain (engine in
   lib/services-type.ts). The contents list itself is the figure: it comes
   in as children, server-rendered by ServicesChapter, and stays the real,
   accessible text. This component adds the figure head (the narrator and
@@ -23,7 +23,7 @@ import s from "./services-type.module.css";
 
   Static (no JS, reduced motion, forced colours, a screen too short for
   the finished frame) it is simply the list, unpinned, and the narrator
-  says it outright: "Not eight voices. One system."
+  answers its own "still a menu" outright: "Not a menu. A chain."
 */
 
 export function ServicesType({
@@ -72,11 +72,10 @@ export function ServicesType({
                 data-type-cap=""
                 className={`${s.cap} col-span-4 sm:col-span-6 lg:col-span-3`}
               >
-                <Meta className="mb-2.5 hidden text-signal lg:block">Fig. 02</Meta>
                 <span className="type-display block text-[20px] leading-[1.12] text-paper lg:text-[clamp(1.25rem,1.5vw,1.375rem)]">
                   <span className={s.capStatic}>
-                    <span className="lg:block">Not eight voices.</span>{" "}
-                    <span className="lg:block">One system.</span>
+                    <span className="lg:block">Not a menu.</span>{" "}
+                    <span className="lg:block">A chain.</span>
                   </span>
                   <span aria-hidden className={s.capMotion}>
                     <span className={s.ca}>Eight disciplines, eight voices.</span>

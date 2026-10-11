@@ -1,5 +1,5 @@
 /*
-  (02) Services, Fig. 02: one typographic system. The engine behind
+  Services: the typographic figure. The engine behind
   components/home/services-type.tsx (markup in services-chapter.tsx, pin
   and clone rules in services-type.module.css).
 

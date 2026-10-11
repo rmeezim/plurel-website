@@ -3,13 +3,16 @@ import { CLIENTS } from "@/lib/home";
 import { PauseOffscreen } from "@/components/home/pause-offscreen";
 
 /*
-  Proof the moment the film ends: who already works this way, as a slow
+  Real clients only: CLIENTS is empty until there are names we may
+  publish, and until then this renders nothing (it is also off the
+  homepage; real logos return as a counted list inside Proof). A slow
   marquee. The rail holds the list twice, so translating by -50% lands on
   the copy and loops without a seam; the copy is hidden from assistive
   tech. Hover pauses it; with reduced motion it simply sits still, and the
   edges fade so names never cut off hard.
 */
 export function ClientsStrip() {
+  if (CLIENTS.length === 0) return null;
   const names = [...CLIENTS, ...CLIENTS];
   return (
     <section aria-label="Selected clients" className="border-b border-ink/10 bg-paper">

@@ -3,9 +3,11 @@ import path from "node:path";
 import { asset } from "@/lib/site";
 
 /*
-  The Higgsfield film (see docs/hero-video.md), picked up from public/video
-  at build time. Until the files exist this returns null and the glass
-  shows its stand-in film, so the page is finished either way.
+  The film behind the glass (hero and closing), picked up from
+  public/video at build time. It is real, shot footage of real work, never
+  AI-generated: the brief and shot list are in docs/hero-video.md. Until
+  the files exist this returns null and the glass shows its code-drawn
+  stand-in, so the page is finished either way.
 */
 
 export type FilmSource = { src: string; type: string; media?: string };

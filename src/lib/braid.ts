@@ -1,6 +1,6 @@
 /*
-  Fig. 01, the manifesto braid: ten suppliers, each reporting its own
-  number, become one system. The centrepiece of the paper manifesto
+  The manifesto braid: ten suppliers, each reporting its own number,
+  become one strand and one number. The centrepiece of the paper manifesto
   chapter. A framework-free 2D canvas engine; the React wrapper is
   components/home/braid-strip.tsx, which sets the figure's words in HTML
   (the lead above, the end statement beside or under the braid's end) and
@@ -21,7 +21,7 @@
     p = 1    the suppliers' own numbers fade out; the lanes funnel into
              one junction and leave it as one braided strand in brand red
              (three plies; two on phones) that ends at the HTML statement
-             "One system. One number." The braid forms back from that
+             "One team. One number." The braid forms back from that
              statement, so no strand ever pinches in and opens out again
   The junction is no logo: the ink strands simply meet, bind for a short
   straight run and become one. The red is laid on each strand only where,
@@ -586,7 +586,7 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
         Wd[k] = lerp(wA * (1 + fray), wB, e);
       }
     } else {
-      // Lanes to one system: converge from the left, braid, end at one point.
+      // Lanes to one strand: converge from the left, braid, end at one point.
       // The tail leads (the braid forms back from the end statement), so at
       // every moment each strand only closes on the centre line from left to
       // right: a funnel, never a pinch that opens out again. The plait's
@@ -966,7 +966,7 @@ export function mountBraid(canvas: HTMLCanvasElement, opts: BraidOptions): () =>
       window.devicePixelRatio,
       cs.fontFamily,
       cs.color,
-      ctx.measureText("ONE SYSTEM").width,
+      ctx.measureText("ONE NUMBER").width,
       endEl ? `${endEl.offsetWidth}x${endEl.offsetHeight}` : "",
     ].join("|");
     if (k === key) return;
