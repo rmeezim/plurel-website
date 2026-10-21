@@ -12,15 +12,16 @@
   no color of their own.
 
   The terrain is periodic: the field wraps around like a torus, so a tile
-  repeats edge to edge with no seam and covers a chapter of any height at
-  one fixed scale (1 SVG px = 1 CSS px). It is drawn at that scale and
-  never stretched, so its hairlines stay hairlines.
+  meets its neighbor with no seam. Each file stamps one tile 5 x 4 across a
+  single sheet (8000 x 6400 px), which the page shows once at one fixed
+  scale (1 SVG px = 1 CSS px) with no CSS repeat: never stretched, so its
+  hairlines stay hairlines, and painted as plain vector in every engine.
 
   Usage:  node scripts/art/contours.mjs            (every seed)
           node scripts/art/contours.mjs 3 4        (just these)
   Deterministic: a seed always draws the same field. If the tile, the
-  interval or a summit moves, update TILE, INTERVAL and SUMMIT in
-  src/components/art.tsx from the printed summary.
+  sheet, the interval or a summit moves, update TILE, SHEET, INTERVAL and
+  SUMMIT in src/components/art.tsx from the printed summary.
 */
 
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -37,6 +38,7 @@ const INTERVAL = 4; // contour interval, in the sheet's units
 const LEVELS = 16; // contours per field: 12 to 18 reads as surveyed, not wavy
 const INDEX_EVERY = 5; // every fifth contour is an index contour
 const UNITS = 4; // path coordinates in quarter pixels, written as integers
+const SHEET = { cols: 5, rows: 4 }; // tiles per file: covers any chapter up to wide screens
 
 /** The ground */
 const WARP = 0.13; // how far the landforms flow, in tiles
@@ -596,11 +598,25 @@ function survey(seed) {
       (n % INDEX_EVERY === 0 ? index : regular).push(...tileCopies(line, 3));
     }
   }
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${TILE.w}" height="${TILE.h}" viewBox="0 0 ${TILE.w * UNITS} ${TILE.h * UNITS}" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">` +
+  // One tile, stamped across the sheet: the sheet is drawn once with no CSS
+  // repeat, so every engine paints it as clipped vector instead of
+  // rasterizing a whole tile per paint for a repeating pattern
+  const tile =
+    `<symbol id="f" viewBox="0 0 ${TILE.w * UNITS} ${TILE.h * UNITS}" overflow="hidden">` +
+    `<g fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round">` +
     `<path stroke-width="${UNITS}" stroke-opacity=".62" d="${regular.join("")}"/>` +
     `<path stroke-width="${UNITS * 1.7}" d="${index.join("")}"/>` +
-    `</svg>\n`;
+    `</g></symbol>`;
+  let stamps = "";
+  for (let j = 0; j < SHEET.rows; j++) {
+    for (let i = 0; i < SHEET.cols; i++) {
+      const at = `${i ? ` x="${i * TILE.w}"` : ""}${j ? ` y="${j * TILE.h}"` : ""}`;
+      stamps += `<use href="#f"${at} width="${TILE.w}" height="${TILE.h}"/>`;
+    }
+  }
+  const W = TILE.w * SHEET.cols;
+  const H = TILE.h * SHEET.rows;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${tile}${stamps}</svg>\n`;
   return { svg, summit };
 }
 

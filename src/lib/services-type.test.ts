@@ -5,31 +5,34 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
-  compose,
-  decompose,
+  bandWindow,
+  closeAt,
   DESK,
   drainTimes,
   END,
   FACE_STEPS,
   faceAt,
+  FEEDS_BACK,
   flightAt,
+  flightX,
   HOUSE,
   lockWindow,
+  loopPath,
   PHONE,
-  PLATE,
-  plateMatrix,
+  riseAt,
   rowTimes,
   SERVICE_STAGE,
   setOrder,
   sizeAt,
-  stackGeometry,
   STAGES,
+  SYSTEM,
   T,
   textSize,
+  textWindow,
   TONE,
   toneAt,
   toOklab,
-  type Mat,
+  type LoopPart,
   type StageKey,
 } from "./services-type";
 
@@ -42,16 +45,6 @@ const SLUGS = [
   "pr-reputation",
   "creative-direction",
   "martech-consulting",
-];
-const NAMES = [
-  "Website Design",
-  "Brand Identity",
-  "AI Search & SEO",
-  "Content Marketing",
-  "Paid Ads",
-  "PR & Reputation",
-  "Creative Direction",
-  "Martech & Consulting",
 ];
 const stages = SLUGS.map((s) => SERVICE_STAGE[s] as StageKey);
 const order = setOrder(stages);
@@ -144,9 +137,10 @@ test("the quiet voices keep their floors", () => {
 });
 
 test("the first two beats keep the timing they were drawn for", () => {
-  // the pin grew by 40svh on desktop (110 -> 150) for the stacking: the
-  // timeline is in units of the old pin, so every beat before it is untouched
-  assert.equal(END, 150 / 110);
+  // the timeline is in units of the first beats' pin (110svh desktop, 96svh
+  // phones); the pin runs on to END for the bands and the loop, never longer
+  // than 150svh / 110svh
+  assert.ok(END <= 150 / 110 + 1e-12);
   assert.deepEqual(T.rule, { at: 0.155, step: 0.016, len: 0.14 });
   assert.deepEqual(T.gy, { at: 0.165, step: 0.007, len: 0.13 });
   assert.deepEqual(T.gx, { at: 0.29, step: 0.007, len: 0.11 });
@@ -155,7 +149,7 @@ test("the first two beats keep the timing they were drawn for", () => {
   assert.deepEqual([...T.cap], [0.35, 0.53]);
 });
 
-test("names are set in chain order, stage by stage, then drain layer by layer", () => {
+test("names are set in chain order, then drain into the bands, foundation first", () => {
   assert.deepEqual(order, [[1, 6], [0, 3], [2, 4, 5], [7]]);
   const times = rowTimes(order);
   for (let s = 1; s < order.length; s++) {
@@ -167,93 +161,145 @@ test("names are set in chain order, stage by stage, then drain layer by layer", 
   const lastSet = Math.max(...times.map((t) => t.face + T.face.len));
   const drains = drainTimes(order);
   assert.ok(Math.min(...drains.map((d) => d.leave)) > lastSet + 0.03, "the set menu holds a moment");
-  // foundation first, each layer locking after the one below it, its names
-  // landing together as it locks
   for (let s = 0; s < order.length; s++) {
+    // a layer's names leave together and land as its band locks
     const rows = order[s].map((i) => drains[i]);
     assert.ok(rows.every((d) => d.layer === s && d.land === lockWindow(s)[1] && d.leave < d.land));
-    if (s > 0) assert.ok(lockWindow(s)[1] > lockWindow(s - 1)[1]);
+    // its band rises after its names have left, and its text rises in as it locks
+    const [b0, b1] = bandWindow(s);
+    const [t0, t1] = textWindow(s);
+    assert.ok(b0 > lockWindow(s)[0] && b1 === lockWindow(s)[1] && t0 >= b0 && t1 === b1);
+    assert.equal(riseAt(b0, s), 0);
+    assert.equal(riseAt(b1, s), 1);
+    // foundation first: each band starts rising after the one below it
+    if (s > 0) assert.ok(bandWindow(s)[0] > bandWindow(s - 1)[0] && lockWindow(s)[1] > lockWindow(s - 1)[1]);
   }
-  // all of it, and the list's rise, before the figure takes the pointer, and
-  // the pin rests a while after
-  assert.ok(Math.max(...drains.map((d) => d.land)) <= T.list.at + T.list.len);
-  assert.ok(T.list.at + 3 * T.list.step + T.list.len <= T.settled);
-  assert.ok(T.chainOut.at + T.chainOut.len <= T.settled);
-  assert.ok(END - T.settled >= 0.08, "a rest at the end of the pin");
+  // then the head hands over, the loop is drawn, the figure settles, and the pin rests a while
+  const lastLock = lockWindow(order.length - 1)[1];
+  assert.ok(T.loop.at >= lastLock && T.title >= lastLock && T.line.at >= lastLock);
+  assert.ok(T.loop.at + T.loop.len <= T.settled);
+  assert.ok(T.line.at + T.line.len <= T.settled && T.chainOut.at + T.chainOut.len <= T.settled);
+  assert.ok(END - T.settled >= 0.05, "a rest at the end of the pin");
 });
 
-test("a matrix decomposes into the plate's turn and foreshortening", () => {
-  const m = plateMatrix();
-  const d = decompose(m);
-  assert.ok(Math.abs(d.s - 1) < 1e-9);
-  assert.ok(Math.abs(d.phi - (PLATE.phi * Math.PI) / 180) < 1e-9);
-  assert.ok(Math.abs(d.k - PLATE.k) < 1e-9);
-  const c = compose(1.7, -0.4, 0.6, 12, -3);
-  const e = decompose(c);
-  const back = compose(e.s, e.phi, e.k, c[4], c[5]);
-  c.forEach((v, i) => assert.ok(Math.abs(v - back[i]) < 1e-9));
+/*
+  The choreography on a pinned screen: rows of pitch P from the menu's top,
+  four equal bands of height B stacked from the floor (A below the menu's
+  top). While a layer drains, the rows below its names close ranks and its
+  band rises from the top of the one below; at no point may a rising band
+  cover a row still on the menu.
+*/
+function menuClear(P: number, B: number, A: number, desk: boolean) {
+  const drains = drainTimes(order);
+  let worst = Infinity;
+  for (let p = T.drain.at; p <= END; p += 0.0005) {
+    // the top of the risen stack
+    let top = A;
+    for (let s = 0; s < STAGES.length; s++) {
+      const e = riseAt(p, s);
+      if (e > 0) top = Math.min(top, A - s * B - e * B);
+    }
+    // the lowest row still on the menu (its layer has not left yet)
+    let bottom = -Infinity;
+    for (let i = 0; i < 8; i++) {
+      if (p >= drains[i].leave) continue;
+      let up = 0;
+      for (let j = 0; j < i; j++) if (drains[j].layer < drains[i].layer) up += closeAt(p, drains[j].leave, desk) * P;
+      bottom = Math.max(bottom, (i + 1) * P - up);
+    }
+    if (bottom > -Infinity) worst = Math.min(worst, top - bottom);
+  }
+  return worst;
+}
+
+test("a rising band never covers a row still on the menu", () => {
+  // 1440x900 and 1366x768 (desktop, names fly); 390x844 and 768x1024 (they fold)
+  assert.ok(menuClear(78, 175.5, 702, true) >= 0, "1440x900");
+  assert.ok(menuClear(59.6, 140.6, 562.5, true) >= 0, "1366x768");
+  assert.ok(menuClear(62, 162, 648, false) >= 0, "390x844");
+  assert.ok(menuClear(75, 205, 820, false) >= 0, "768x1024");
 });
 
-test("a flight starts flat on its row and lands exactly on its plate", () => {
-  const to: Mat = [0.42, -0.12, 0.24, 0.21, 980, 610];
-  const start = flightAt(0, 392, 270, to);
-  [1, 0, 0, 1, 392, 270].forEach((v, i) => assert.ok(Math.abs(start[i] - v) < 1e-12, `start ${i}: ${start[i]}`));
-  assert.deepEqual([...flightAt(1, 392, 270, to)], [...to]);
+test("a flight starts flat on its row and lands exactly in its band", () => {
+  const start = flightAt(0, 392, 270, 980, 610, 0.4);
+  assert.deepEqual(start, { x: 392, y: 270, s: 1 });
+  assert.deepEqual(flightAt(1, 392, 270, 980, 610, 0.4), { x: 980, y: 610, s: 0.4 });
   // just before landing it is already all but there
-  const near = flightAt(0.999, 392, 270, to);
-  near.forEach((v, i) => assert.ok(Math.abs(v - to[i]) < 0.02 * Math.max(1, Math.abs(to[i])), `component ${i}`));
+  const near = flightAt(0.999, 392, 270, 980, 610, 0.4);
+  assert.ok(Math.abs(near.x - 980) < 1 && Math.abs(near.y - 610) < 2 && Math.abs(near.s - 0.4) < 0.01);
   // out of the menu first: the corner has gone most of the way right
-  // before it has come halfway down
-  const mid = flightAt(0.5, 0, 0, [1, 0, 0, 1, 100, 100]);
-  assert.ok(mid[4] > 80 && mid[5] < 30, `mid-flight at ${mid[4].toFixed(1)}, ${mid[5].toFixed(1)}`);
+  // before it has come halfway down, and it comes down to the link's size
+  const mid = flightAt(0.5, 0, 0, 100, 100, 0.4);
+  assert.ok(mid.x > 80 && mid.y < 30, `mid-flight at ${mid.x.toFixed(1)}, ${mid.y.toFixed(1)}`);
+  assert.ok(mid.s < 1 && mid.s > 0.4);
+  for (let t = 0; t < 1; t += 0.05) assert.ok(flightX(t + 0.05) >= flightX(t));
 });
 
-test("the stack: four plates, foundation at the bottom, names on the strip nobody covers", () => {
-  const geo = stackGeometry(
-    STAGES.map((s) => ({ key: s.key, names: stages.flatMap((k, i) => (k === s.key ? [{ i, text: NAMES[i] }] : [])) })),
-  );
-  assert.equal(geo.plates.length, 4);
+test("the loop runs up the spine, foundation first, then back down the return", () => {
+  // the parts each band draws, as the markup has them (lengths in px)
+  const parts: LoopPart[] = [];
+  STAGES.forEach((L, s) => {
+    if (s > 0) parts.push({ s, kind: "in", len: 120 });
+    parts.push({ s, kind: "node", len: 7 });
+    if (s < STAGES.length - 1) {
+      parts.push({ s, kind: "out", len: 50 });
+      parts.push({ s, kind: "arrow", len: 8 });
+    }
+    parts.push({ s, kind: "ret", len: s === 0 ? 50 : s === STAGES.length - 1 ? 120 : 170 });
+    if (FEEDS_BACK.includes(L.key)) parts.push({ s, kind: "tap", len: 20, at: s === 0 ? 50 : 50 });
+  });
+  parts.push({ s: STAGES.length - 1, kind: "stub", len: 20 });
+  parts.push({ s: 1, kind: "note", len: 0 });
+  const { spans, total } = loopPath(parts);
+  const at = (s: number, kind: LoopPart["kind"]) => spans.find((x) => x.s === s && x.kind === kind)!;
+  // the spine: each band's way in, its node, its way out, in order, foundation first
+  let d = -1;
+  for (let s = 0; s < STAGES.length; s++) {
+    if (s > 0) {
+      assert.ok(at(s, "in").d0 >= d, `${STAGES[s].name} in`);
+      d = at(s, "in").d1;
+    }
+    assert.ok(at(s, "node").d0 >= d - 1e-9, `${STAGES[s].name} node`);
+    if (s < STAGES.length - 1) {
+      d = at(s, "out").d1;
+      // the arrowhead pops as the spine crosses into the band above
+      assert.ok(at(s, "arrow").d0 < d && at(s, "arrow").d1 > d);
+    }
+  }
+  // then the Ledger's stub, and the return from the top band down to the foundation
+  const top = STAGES.length - 1;
+  assert.ok(at(top, "stub").d0 >= d);
+  let r = at(top, "stub").d1;
+  for (let s = top; s >= 0; s--) {
+    assert.ok(Math.abs(at(s, "ret").d0 - r) < 1e-9, `${STAGES[s].name} return`);
+    r = at(s, "ret").d1;
+  }
+  // the taps draw as the return passes their nodes, inside their band's return
+  for (const k of FEEDS_BACK) {
+    const s = STAGES.findIndex((x) => x.key === k);
+    assert.ok(at(s, "tap").d0 >= at(s, "ret").d0 && at(s, "tap").d0 <= at(s, "ret").d1, k);
+  }
+  // and the note last
+  const note = spans.find((x) => x.kind === "note")!;
+  assert.ok(note.d0 >= Math.max(...spans.filter((x) => x.kind !== "note").map((x) => x.d1)) - 1e-9);
+  assert.equal(total, note.d1);
+});
+
+test("the System's copy: each layer builds one named thing and feeds the next", () => {
   assert.deepEqual(
-    geo.plates.map((p) => p.key),
     STAGES.map((s) => s.key),
+    ["narrative", "create", "distribute", "measure"],
   );
-  // the foundation is drawn first and sits lowest; each plate the same gap above the last
-  for (let i = 1; i < 4; i++) {
-    const dy = geo.plates[i - 1].face[0][1] - geo.plates[i].face[0][1];
-    assert.ok(Math.abs(dy - PLATE.gap) < 0.02, `gap ${i}: ${dy}`);
-  }
-  // everything inside the viewBox, the lift included
-  for (const p of geo.plates) {
-    for (const [x, y] of [...p.face, ...p.sideL, ...p.sideR, ...p.lip]) {
-      assert.ok(x >= 0 && x <= geo.w && y - PLATE.lift >= 0 && y <= geo.h, `${p.key} ${x},${y}`);
-    }
-  }
-  // every service on its layer's plate, once
-  const all = geo.plates.flatMap((p) => p.names.map((n) => n.i)).sort();
-  assert.deepEqual(all, [0, 1, 2, 3, 4, 5, 6, 7]);
-  // each name's baseline lies on its plate, in the front strip the plate
-  // above never covers (depth gap cos(phi) / k from the front edge), with
-  // room for the capitals above it
-  const [a, b, c, d] = plateMatrix();
-  const det = a * d - b * c;
-  const strip = (PLATE.gap * Math.cos((PLATE.phi * Math.PI) / 180)) / PLATE.k;
-  for (const p of geo.plates) {
-    const [ox, oy] = p.face[0];
-    for (const n of p.names) {
-      const x = n.m[4] - ox;
-      const y = n.m[5] - oy;
-      const u = (d * x - c * y) / det;
-      const v = (-b * x + a * y) / det;
-      assert.ok(u >= PLATE.pad - 0.5 && u <= PLATE.W, `${n.text}: u ${u}`);
-      assert.ok(v <= PLATE.D && v - 0.75 * 28 >= PLATE.D - strip, `${n.text}: v ${v}`);
-    }
-  }
-});
-
-test("the layer lines are plain: one line each, no dashes", () => {
-  for (const s of STAGES) {
-    assert.ok(s.line.length <= 80, s.name);
-    assert.ok(!/[–—]/.test(s.line), s.name);
-    assert.ok(!/inquir|pipeline/i.test(s.line), s.name);
+  STAGES.forEach((L, s) => {
+    assert.ok(/^The [A-Z]/.test(L.builds), L.name);
+    if (s < STAGES.length - 1) assert.equal(L.feeds, `Feeds ${STAGES[s + 1].name}`);
+  });
+  const top = STAGES[STAGES.length - 1];
+  for (const k of FEEDS_BACK) assert.ok(top.feeds.includes(STAGES.find((x) => x.key === k)!.name), k);
+  assert.equal(SYSTEM.note, "Read monthly. Reset quarterly.");
+  // plain words: no dashes, no agency vocabulary, no B2B-only nouns
+  for (const t of [SYSTEM.title, SYSTEM.line, ...STAGES.flatMap((s) => [s.builds, s.line, s.feeds])]) {
+    assert.ok(!/[–—]/.test(t), t);
+    assert.ok(!/qualified demand|inquir|pipeline|\bleads?\b|every channel/i.test(t), t);
   }
 });

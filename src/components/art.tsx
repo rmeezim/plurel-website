@@ -10,9 +10,11 @@ import { asset } from "@/lib/site";
     drawn by scripts/art/contours.mjs: seeded terrain, eroded by rain,
     surveyed at a fixed interval with every fifth contour an index line).
     The SVG is a mask over a token-colored layer, so the files carry no
-    color, and it repeats edge to edge at 1:1 (1 SVG px = 1 CSS px): the
-    terrain tiles seamlessly, keeps one scale from a phone to a wide screen
-    and its hairlines stay hairlines.
+    color. Its terrain tiles seamlessly and each file stamps one tile 5 x 4
+    across a single sheet, shown once at 1:1 (1 SVG px = 1 CSS px) with no
+    CSS repeat: one scale from a phone to a wide screen, hairlines that stay
+    hairlines, and plain vector painting in every engine (a repeating SVG
+    mask would be rasterized a whole tile at a time).
   - kind="mark": the Plurel mark, huge and cropped by the chapter's right
     edge, engraved rather than printed: each cell's outline with fine
     vertical lines cut into it, the nine flutes of the hero's glass. Never
@@ -37,7 +39,9 @@ export type ArtKind = "contours" | "mark";
 export type ArtTone = "paper" | "dark" | "red";
 
 /** The survey's own numbers, shared with scripts/art/contours.mjs */
-const TILE = 1600; // px, the tile is drawn and shown at 1:1
+const TILE = 1600; // px, each tile is drawn and shown at 1:1
+const SHEET = { cols: 5, rows: 4 }; // tiles stamped across each file
+const ANCHOR = { col: 2, row: 1 }; // the stamp whose summit sits at `focus`
 const INTERVAL = 4; // contour interval, in the sheet's units
 
 /** The fields in public/art, by seed: where each summit sits in its tile, px */
@@ -158,21 +162,22 @@ function Readout({ seed, tone }: { seed: number; tone: ArtTone }) {
   );
 }
 
-/** The field as a mask, its summit placed at `focus` and tiled from there */
+/** The field as a mask: the anchor stamp's summit placed at `focus` */
 function contourMask(seed: number, tone: ArtTone, focus: readonly [number, number]): CSSProperties {
-  const [sx, sy] = SUMMIT[seed];
+  const x = SUMMIT[seed][0] + ANCHOR.col * TILE;
+  const y = SUMMIT[seed][1] + ANCHOR.row * TILE;
   const url = `url(${asset(`/art/contours-${seed}.svg`)})`;
   // the layer is taller than the chapter by the drift, top and bottom
-  const at = `calc(${focus[0] * 100}cqw - ${sx}px) calc(${focus[1] * 100}cqh + var(--art-drift) - ${sy}px)`;
-  const size = `${TILE}px ${TILE}px`;
+  const at = `calc(${focus[0] * 100}cqw - ${x}px) calc(${focus[1] * 100}cqh + var(--art-drift) - ${y}px)`;
+  const size = `${SHEET.cols * TILE}px ${SHEET.rows * TILE}px`;
   return {
     opacity: STRENGTH.contours[tone],
     maskImage: url,
     WebkitMaskImage: url,
     maskSize: size,
     WebkitMaskSize: size,
-    maskRepeat: "repeat",
-    WebkitMaskRepeat: "repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskRepeat: "no-repeat",
     maskPosition: at,
     WebkitMaskPosition: at,
   };

@@ -41,13 +41,14 @@ import {
   below the fold arms after hydration and plays once, when it comes an
   eighth of the way up the screen (or the page can scroll no further).
 
-  Reading. Words are spans with plain spaces between them, never a space
-  on its own between two strings (React then puts text markers around it
-  and Chrome's accessibility tree drops it), so a head reads as one
-  sentence. Letters split into boxes would read one by one ("T h e"), so
-  "chars" hides its letters from assistive tech and names the head with
-  its words instead: aria-label on a heading, a visually hidden copy on a
-  p or span (which may not take a label).
+  Reading. Chrome's accessibility tree drops the spaces between word (or
+  letter) boxes from the text it exposes: a head's computed name keeps
+  them, but its text runs together ("Buyersdecide...") and letters read
+  one by one ("T h e"). So every variant carries its words once as plain
+  text, visually hidden (sr-only, not selectable, so a copy takes the
+  visible words), and hides the animated boxes from assistive tech. The
+  boxes keep plain spaces between them, so they still set, wrap, select
+  and copy as one sentence.
 */
 
 export type RevealSegment =
@@ -263,7 +264,6 @@ export function TypeReveal({
   ]);
 
   const plain = parsed.map((segs) => segs.map((seg) => seg.text).join(" ")).join(" ");
-  const heading = as === "h1" || as === "h2" || as === "h3";
 
   return (
     <Tag
@@ -272,16 +272,9 @@ export function TypeReveal({
       className={`type-reveal ${className}`}
       data-variant={variant}
       data-state={onLoad ? "load" : arrival}
-      aria-label={chars && heading ? plain : undefined}
     >
-      {chars ? (
-        <>
-          {!heading && <span className="sr-only select-none">{plain}</span>}
-          <span aria-hidden="true">{body}</span>
-        </>
-      ) : (
-        body
-      )}
+      <span className="sr-only select-none">{plain}</span>
+      <span aria-hidden="true">{body}</span>
     </Tag>
   );
 }

@@ -402,6 +402,17 @@ export function textWindow(s: number): [number, number] {
   return [at + T.band.text * T.drain.len, lock];
 }
 
+/** How far a leaving row's slot has closed (the rows below it close ranks), at p */
+export function closeAt(p: number, leave: number, desk: boolean) {
+  return snap(seg(p, leave + (desk ? T.close.lag : T.close.foldLag) * T.drain.len, T.close.len * T.drain.len));
+}
+
+/** How far a layer's band has risen into place, at p (0 to 1) */
+export function riseAt(p: number, s: number) {
+  const [a, b] = bandWindow(s);
+  return io(seg(p, a, b - a));
+}
+
 /** A stage's chain word lights again for its layer's turn, until the next layer's starts */
 export function relightWindow(s: number, n = STAGES.length): [number, number] {
   const [at, lock] = lockWindow(s);
@@ -571,7 +582,6 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
   const drains = drainTimes(order);
   const windows = STAGES.map((_, s) => stageWindow(s, order));
   const relights = STAGES.map((_, s) => relightWindow(s));
-  const rises = STAGES.map((_, s) => bandWindow(s));
   const textIn = STAGES.map((_, s) => textWindow(s));
   // the row that leaves last (the menu's foot goes with it)
   const lastRow = drains.reduce((m, d, i) => (d.leave > drains[m].leave ? i : m), 0);
@@ -601,8 +611,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
   const shapes: Shape[] = rows.map(() => ({ laid: false, tq: 0, small: false }));
   let pending = false; // a clone is a step behind its row: render again
   // a row's slot closes once its name has cleared the menu (flown out, or folded away)
-  const closedAt = (j: number, at: number) =>
-    snap(seg(at, drains[j].leave + (desk ? T.close.lag : T.close.foldLag) * T.drain.len, T.close.len * T.drain.len));
+  const closedAt = (j: number, at: number) => closeAt(at, drains[j].leave, desk);
   const pulled = rows.map(() => 0); // how far each row's hairline has been pulled after its name
   // the loop: each drawn part's place on the path (px), measured at rest
   let loop: { el: HTMLElement; kind: LoopPart["kind"]; d0: number; d1: number }[] = [];
@@ -967,7 +976,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
       const s = bandStage[j];
       const fl = fills[j];
       if (s < 0) return;
-      const e = io(seg(p, rises[s][0], rises[s][1] - rises[s][0]));
+      const e = riseAt(p, s);
       if (fl) put(fl, "transform", e >= 1 ? "" : `scaleY(${e.toFixed(4)})`);
       const c = io(seg(p, textIn[s][0], textIn[s][1] - textIn[s][0]));
       for (const el of texts[j]) {
@@ -998,7 +1007,6 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
     // the System's line takes the chain's place
     const tli = io(seg(p, T.line.at, T.line.len));
     put(line!, "opacity", tli >= 1 ? "" : tli.toFixed(3));
-    put(line!, "visibility", tli <= 0 ? "hidden" : "");
     // a stage's word lights while its names are set, and again while its
     // layer locks into place
     words.forEach((w, j) => {

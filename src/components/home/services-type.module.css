@@ -191,14 +191,16 @@
 /* The System's line: in flow beside the title when static; pinned, it
    takes the chain's place once the chain has gone, laid over the chain's
    cell from its foot (so it never moves the head) */
+/* (one row each, spelled out: an absolutely placed grid item with an
+   auto end line would reach the head's padding edge) */
 .chain,
 .line {
-  grid-row-start: 2;
+  grid-row: 2 / 3;
 }
 @media (min-width: 64rem) {
   .chain,
   .line {
-    grid-row-start: 1;
+    grid-row: 1 / 2;
   }
 }
 .line {
@@ -270,15 +272,15 @@
   position: relative;
   overflow: clip;
   --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 6%);
-  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 10%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 12%);
 }
 .band[data-band="distribute"] {
   --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 11%);
-  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 15%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 17%);
 }
 .band[data-band="measure"] {
   --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 16%);
-  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 20%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 22%);
 }
 /* the foundation: Plurel red; it lifts toward signal, and its type stays
    paper (blush and fog are too quiet for small type on red) */
@@ -664,6 +666,7 @@
   color: var(--color-paper);
 }
 .legText {
+  max-width: 34rem;
   margin: 8px 0 0;
   font-size: 16px;
   line-height: 1.5;
@@ -757,18 +760,31 @@
     display: grid;
     visibility: hidden;
   }
+  /* the chain keeps its room, unseen; the finished frame shows meanwhile */
   :global(html[data-js]) .root:not([data-type-motion]) .chain {
     display: flex;
+    visibility: hidden;
   }
   :global(html[data-js]) .root:not([data-type-motion]) .line {
     position: absolute;
-    bottom: 0;
-    visibility: hidden;
+    bottom: -2px;
   }
   :global(html[data-js]) .root:not([data-type-motion]) .system {
     position: absolute;
     inset: 0 0 auto;
-    visibility: hidden;
+    height: 100%;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .bands {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .band {
+    flex: 1 1 0;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .bandIn {
+    height: 100%;
+    align-content: start;
   }
 }
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 360px) and (max-width: 63.99rem) and (min-height: 650px) {
@@ -808,9 +824,10 @@
 .root[data-type-motion="on"] .chain {
   display: flex;
 }
+/* its last baseline on the title's (17px at 1.45 over 22px at 1.12) */
 .root[data-type-motion="on"] .line {
   position: absolute;
-  bottom: 0;
+  bottom: -2px;
 }
 .root[data-type-motion="on"] .system {
   position: absolute;
@@ -914,9 +931,10 @@
 .clone[data-set] {
   visibility: hidden;
 }
-/* the band's link names wait for their clones to land */
+/* the band's link names wait for their clones to land (unseen, but
+   still the links' names for assistive tech) */
 .root[data-type-motion="on"] [data-wait] {
-  visibility: hidden;
+  opacity: 0;
 }
 /* A clone travelling on transform: scale has its own layer while pinned;
    once laid out at its true size (data-laid) it paints with the rows, so
