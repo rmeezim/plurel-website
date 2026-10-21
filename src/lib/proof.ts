@@ -3,8 +3,7 @@
 
   There are no client cases to show yet, so the chapter shows the work
   itself: an excerpt of a Plurel Distribution Diagnostic, run on Halden,
-  the sample brand of the attention section's week and its channel tiles
-  (lib/channels.ts). Halden is invented and is labelled as a sample
+  a sample company (quiet heat pumps for homeowners and housebuilders). Halden is invented and is labelled as a sample
   wherever it appears. Nothing here is a client, a person, a quote or a
   result.
 

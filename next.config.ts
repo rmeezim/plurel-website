@@ -14,6 +14,7 @@ const nextConfig: NextConfig = isGithubPages
       images: { unoptimized: true },
       basePath: `/${repo}`,
     }
-  : {};
+  : // a separate build folder per local dev server (NEXT_DIST_DIR), so several can run at once
+    { distDir: process.env.NEXT_DIST_DIR || ".next" };
 
 export default nextConfig;

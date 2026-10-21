@@ -6,11 +6,12 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Plurel — project standards
 
-Plurel is Northeon's distribution engineering company: marketing and
-distribution, rebuilt as one system. Services: Website Design, Brand
-Identity, AI Search & SEO, Content Marketing, Paid Ads, PR & Reputation,
-Creative Direction, and Martech & Consulting. Its sister division Kelwin
-(RevOps and go-to-market) turns that demand into revenue.
+Plurel is a distribution engineering firm: marketing and distribution,
+rebuilt as one system. Services: Website Design, Brand Identity, AI Search &
+SEO, Content Marketing, Paid Ads, PR & Reputation, Creative Direction, and
+Martech & Consulting. On the site Plurel stands alone: never mention
+Northeon, Kelwin, a sister division or a parent group (the owner will bring
+the divisions together later and say so).
 
 ## Stack
 
@@ -26,11 +27,12 @@ Creative Direction, and Martech & Consulting. Its sister division Kelwin
 Read `docs/design-system.md` before building any page. In short: red is
 the environment (flat red chapters, a red-graded film behind cool fluted glass),
 graphite is the dark tone, the footer is paper, surfaces are flat color
-with no gradients or drawn grid lines, structure
+with no gradients or drawn grid lines (a chapter may carry one faint art
+field: the contour map or the mark watermark, `art.tsx`), structure
 is Swiss (a strict 12-column grid that is felt, not drawn; one quiet
 label per chapter at most, no chapter numbers or rulers; mono only for
-data), and the layout follows the Northeon family
-shared with the sister divisions. Primitives live in `src/components/system.tsx`; the
+data), and the look is authoritative, with a defense-grade precision and a
+little creativity. Primitives live in `src/components/system.tsx`; the
 homepage (`src/components/home/`) is the reference build. The hero film
 brief (real footage, not AI-generated) is in `docs/hero-video.md`.
 
@@ -62,9 +64,15 @@ Plurel sells integration, not a menu of services: one narrative, one
 creative engine, one set of numbers and one accountable team across every
 relevant channel (never "every channel"). The category it names is
 distribution engineering. The thesis: "Your marketing shouldn't be ten
-companies." The best fit is growth-stage companies, B2B and B2C, whose
-marketing has fragmented across suppliers; the outcome is qualified demand
-(never "inquiries" or "pipeline" alone, so it reads for both). Engagements
+companies." Plurel works for every kind of growing company: consumer
+brands, physical products, B2B technology and consumer apps, and the copy
+reads for all of them (prefer customers, buyers and the people a company
+sells to; never default to B2B-only words such as pipeline, leads, clients
+or sales team, nor to B2C-only ones). The outcome is one number, agreed on
+day one in the Diagnostic: the one the business runs on (orders, installs,
+demos, stockists, sell-through). Never headline "qualified demand" (it reads
+as agency vocabulary), and never "inquiries" or "pipeline" alone. No cited
+statistics on the homepage. Engagements
 start with the Diagnostic (the Plurel Distribution Diagnostic: six parts
 scored and a prioritized read within a business day; the action is
 "Request a diagnostic") and run as an integrated monthly partnership.
@@ -79,28 +87,25 @@ argument onto the homepage chapters.
 - Reusable UI lives in `src/components/`. Keep server components by default;
   add `"use client"` only when interactivity is required (e.g. the header menu).
 - Keep animations light and tasteful, all gated behind
-  `prefers-reduced-motion` in `globals.css`. The hero load sequence is the
-  one orchestrated load moment; services' typographic system, ending on
-  its layered stack (`home/services-type.tsx`), is the one pinned,
-  scroll-scrubbed chapter. Everything else rides native scroll: the
-  attention section's week (`home/attention-field.tsx`) keeps a sticky
-  narrator beside its tiles, and the manifesto's supplier reports
-  (`home/supplier-reports.tsx`) are dealt onto the table once. The fluted
-  glass (`glass-band.tsx`) is the one WebGL surface and the services
-  plates are CSS 3D on real DOM; elsewhere use `Reveal`. No heavy 3D.
+  `prefers-reduced-motion` in `globals.css`. Headings arrive through one
+  vocabulary (`type-reveal.tsx`): the hero's on load (the one orchestrated
+  load moment), every other heading once as it enters. Services'
+  typographic system, ending on the Plurel System's layers
+  (`home/services-type.tsx`), is the one pinned, scroll-scrubbed chapter.
+  Scroll-linked without pinning: the statement's lit words, the
+  accountability strips and the faint art's drift. The fluted glass
+  (`glass-band.tsx`) is the one WebGL surface; blocks use `Reveal`. No heavy 3D.
 - Keep chrome sparse: no sprinkle of tiny mono labels, no tracked
   uppercase micro-type for navigation or labels (sentence case, 13px and
   up), no placeholder boxes, and the Plurel mark is a signature, never a
-  prop that splits, opens or assembles. Show real-looking content (the
-  week's channel tiles, the supplier reports) rather than abstract
-  graphics standing in for an idea, and let fewer, larger words carry
-  each chapter.
-- The film behind the glass and the week's channel tiles loop muted with
-  no control (the owner's call); they stop off screen, behind the open
-  mobile menu and in hidden tabs, and reduced motion or data saver get a
-  still frame. Real tile footage goes in
-  `public/video/channels/<key>.mp4`. Any other auto-moving media needs a
-  pause control.
+  prop that splits, opens or assembles (a faint, static watermark of it is
+  fine). No props or invented scenes standing in for an idea (sample
+  buyers, mock screens, mock reports): speak from a point of view, show
+  the system itself, and let fewer, larger words carry each chapter.
+- The film behind the glass loops muted with no control (the owner's
+  call); it stops off screen and in hidden tabs, and reduced motion or data
+  saver get a still frame. Any other auto-moving media needs a pause
+  control.
 - Never invent proof: no client, person, quote, logo or result is shown as
   real unless it is; samples are labelled as samples in plain view.
 - Design for mobile first; the layout must hold up from 360px to wide desktop.

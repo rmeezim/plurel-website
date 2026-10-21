@@ -1,4 +1,4 @@
-# Plurel: hero film and channel footage (shot list)
+# Plurel: the hero film (shot list)
 
 **The rule: real, shot footage of real work. Nothing generated.** No
 text-to-video, no image-to-video, no generated stills animated into a
@@ -7,18 +7,13 @@ people, and a generated film is the first thing a buyer learns to spot.
 Every frame on the site is shot on a camera, of the team or of work it
 actually did (with the client's permission).
 
-Until that footage exists, the site runs its stand-ins: a code-drawn red
-film behind the glass, and drawn screen recordings in the channel tiles
-of the attention section's sample week. Both are finished on their own,
-so nothing waits on the shoot, and a stand-in is always better than a
-generated clip.
+Until that footage exists, the site runs its stand-in: a code-drawn red
+film behind the glass. It is finished on its own, so nothing waits on the
+shoot, and a stand-in is always better than a generated clip.
 
-There are two places footage goes:
-
-1. **The film behind the glass** (`public/video/plurel-hero.*`), used by
-   the fluted glass band in the hero and again at the closing chapter.
-2. **The channel tiles** in the attention section's week
-   (`public/video/channels/<key>.mp4`), one clip per format.
+Footage goes in one place: **the film behind the glass**
+(`public/video/plurel-hero.*`), used by the fluted glass band in the hero
+and again at the closing chapter.
 
 ---
 
@@ -117,56 +112,7 @@ see. Stay well under budget.
 
 ---
 
-## 2. The channel tiles
-
-The attention section tells one buyer's week in eight tiles: seven
-places she meets the same story, then the booking it ends in. Today they
-tell the story of Halden, a sample brand that is labelled as one on the
-page (and Maya, its sample buyer), drawn as screen recordings.
-
-**The rule here is the same: real footage only.** In order of
-preference:
-
-1. **A real client's real campaign**, published with permission. The
-   tiles then show that client's story, and the "sample brief" note
-   comes off.
-2. **Footage Plurel shoots itself for the sample**, for the "scene"
-   tiles below (a real home, a real installer, a real street), with the
-   sample label kept in plain view.
-
-Never fill a tile with generated video, and never present the sample as
-a client.
-
-| Key | Format | Aspect | Loop (s) | Clip replaces |
-| --- | --- | --- | --- | --- |
-| `search` | Search result | 16:9 | 13.7 | the whole tile (a screen recording) |
-| `reel` | Reel | 9:16 | 10 | the picture, under the drawn app UI |
-| `answer` | AI answer | 4:5 | 11.3 | the whole tile (a screen recording) |
-| `ooh` | Billboard | 3:1 | 16 | the whole tile (a photo or film of the real site) |
-| `press` | Press feature | 4:5 | 14.9 | the whole tile (a screen recording) |
-| `creator` | Creator post | 4:5 | 12.9 | the picture, under the drawn UI |
-| `film` | Brand film | 16:9 | 12.4 | the picture, under the drawn UI |
-| `book` | Booking email | 4:5 | 13.1 | the whole tile (a screen recording) |
-
-The table runs in the order of the week. The aspects are each tile's
-nominal shape (`CHANNELS` in `src/lib/channels.ts`); the week sets some
-of them at their own size (`WEEK` in `src/lib/attention-field.ts`), so
-check both before you crop.
-
-"Screen" tiles take a real screen recording of the real thing (the
-search result, the assistant's answer, the published article) or real
-footage of the billboard where it stands. "Scene" tiles take shot
-footage; the drawn product chrome stays on top. Match each clip to its
-loop length so the tiles never restart together.
-
-Drop `public/video/channels/<key>.mp4` (and an optional `<key>.jpg`
-poster). `src/lib/clips.ts` picks them up at build time; a tile with a
-clip plays it muted and looped and fetches it only when the tile plays
-(`preload="none"`). A tile without one keeps its drawing.
-
----
-
-## 3. Export commands
+## 2. Export commands
 
 They need [ffmpeg](https://ffmpeg.org). Run them on the graded master
 (`master.mov` or `master.mp4`).
@@ -221,23 +167,10 @@ ffmpeg -ss 0 -i public/video/plurel-hero.mp4 -frames:v 1 -q:v 3 \
   public/video/plurel-hero-poster.jpg
 ```
 
-**A channel tile** (here the 9:16 reel; change the crop and the trim to
-the tile's aspect and loop length from the table above):
-
-```bash
-ffmpeg -i reel-master.mp4 -an -t 10 -vf "crop=ih*9/16:ih,scale=720:-2,fps=24" \
-  -c:v libx264 -preset slow -crf 27 -pix_fmt yuv420p -movflags +faststart \
-  public/video/channels/reel.mp4
-ffmpeg -ss 1.2 -i public/video/channels/reel.mp4 -frames:v 1 -q:v 3 \
-  public/video/channels/reel.jpg
-```
-
-Use the tile's start time from `CHANNELS` in `src/lib/channels.ts` for
-its poster (`-ss`), so the still shows the same moment as the drawing.
 
 ---
 
-## 4. Dropping it in
+## 3. Dropping it in
 
 | File | Needed | Used for |
 | --- | --- | --- |
@@ -245,12 +178,9 @@ its poster (`-ss`), so the still shows the same moment as the drawing.
 | `public/video/plurel-hero.webm` | no | browsers that prefer WebM |
 | `public/video/plurel-hero-mobile.mp4` | no | screens up to 767px wide |
 | `public/video/plurel-hero-poster.jpg` | recommended | first paint, reduced motion, data saver |
-| `public/video/channels/<key>.mp4` | no | the channel tile `<key>` |
-| `public/video/channels/<key>.jpg` | recommended with a clip | that tile's still frame |
 
 Add the files and rebuild. No code change is needed: the film replaces
-the stand-in behind both glass bands, and each clip replaces its tile's
-drawing.
+the stand-in behind both glass bands.
 
 **Tuning.** The glass sets its own cast over whatever is behind it
 (`CAST`, `SLATE` and `SKY` in the shader in `src/lib/glass.ts`). If the
@@ -259,7 +189,7 @@ first; touch the shader only if every clip has the same problem.
 
 ---
 
-## 5. Checklist before shipping
+## 4. Checklist before shipping
 
 - [ ] Every frame was shot on a camera; nothing generated or stock
 - [ ] Everyone in frame is on the team or has signed a release
@@ -270,5 +200,3 @@ first; touch the shader only if every clip has the same problem.
 - [ ] Poster frame exported and matches the first frame
 - [ ] Checked on the site, in the hero and at the closing glass, with
       motion on and with reduced motion
-- [ ] Tiles: each clip matches its aspect and loop length, and the
-      "sample brief" note stays while the story is still Halden's

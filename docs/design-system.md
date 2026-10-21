@@ -1,9 +1,11 @@
 # Plurel — design system: Cinematic Red x Swiss Systems
 
-Plurel is Northeon's brand, demand and distribution company. The site
-reads like a proprietary consulting or technology firm, not an agency:
-the Northeon family layout (square-marker kickers, sharp blocks for
-actions, diagonal arrows) with three things of its own:
+Plurel is a distribution engineering firm. The site reads like a
+proprietary systems partner (the way Legora reads to law firms), never an
+agency: authoritative, with a defense-grade precision and a little
+creativity. Its layout (square-marker kickers, sharp blocks for actions,
+diagonal arrows) carries three things of its own. On the site Plurel stands
+alone: no Northeon, Kelwin or group.
 
 - **Cinematic Red, set in graphite.** Red is the environment, not an
   accent: whole chapters are flat red, and the hero's film is graded red
@@ -16,13 +18,12 @@ actions, diagonal arrows) with three things of its own:
   tags, the four Method phases).
 - **Frontier type.** One wide grotesk (Mona Sans) for everything, with a
   mono for the instrumentation. No serif and no italics in the site's own
-  voice; only the drawn documents (the week's channel tiles, the
-  supplier reports) and services' first beat borrow other voices, on
-  purpose.
+  voice; only services' first beat borrows other voices, on purpose.
 
 **Flat, not lit.** Every surface is one flat color. No gradients, no
 glows, no vignettes, no grain, no drawn column lines. The color, the type
-and the alignment do the work.
+and the alignment do the work. The one exception is the faint art (see
+below): at most one field per chapter, felt more than seen.
 
 This document is the contract for every page. The homepage
 (`src/app/page.tsx`, `src/components/home/`) is the reference build.
@@ -71,15 +72,16 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| paper | `bg-paper` | ink | Reading chapters: the attention section's week, FAQ, journal, footer; the sample Diagnostic and the manifesto's one-number sheet |
-| red | `bg-brand` | paper | The manifesto (Why Plurel), Method, closing |
-| dark | `bg-graphite` | paper, fog | Hero, services, proof, the method's AI layer |
+| paper | `bg-paper` | ink | Reading chapters: Why now, Accountability, FAQ, journal, footer; the sample Diagnostic sheet |
+| red | `bg-brand` | paper | Method, Who it's for, closing |
+| dark | `bg-graphite` | paper, fog | Hero and What Plurel is, Why Plurel (services and the Plurel System), proof, the method's AI layer |
 
 All three are flat fills. Alternate tones so every chapter change is a
-clear cut (the homepage runs graphite hero, paper week, red manifesto,
-graphite services, red method, graphite proof, paper FAQ and journal, red
-closing), no two red chapters touch, and every page keeps at least one
-red room.
+clear cut (the homepage runs graphite hero and statement, paper Why now,
+graphite Why Plurel, red Method, paper Accountability, red Who it's for,
+graphite proof, paper FAQ and journal, red closing), no two red chapters
+touch, and every page keeps at least one red room. The statement is the
+hero's second beat, so it shares the hero's graphite.
 
 ## Type
 
@@ -228,11 +230,11 @@ crossing) is drawn in the shader.
 Graphite, statement left, one line of copy and the primary action right,
 then the glass:
 
-- **Kicker:** "Distribution, engineered · A Northeon company".
+- **Kicker:** "Distribution, engineered".
 - **Statement:** "Made to be / seen. *Everywhere.*", the accent in fog.
   Copy: "Great work no longer sells itself. Distribution does. Plurel
-  engineers yours as one system, so the right clients find you and growth
-  compounds." Action: "Request a diagnostic".
+  engineers yours as one system, so the right customers find you and
+  growth compounds." Action: "Request a diagnostic".
 - **Glass:** the `rise` band, set well below the actions, uncaptioned,
   resting a little over half its height on first load.
 
@@ -382,21 +384,23 @@ Rules:
 
 ## Imagery and proof
 
-- Footage is shot, not generated: the hero film and the channel tiles take
-  real footage of real work when it exists (see `docs/hero-video.md`);
-  until then the drawn stand-ins stay. No AI-generated video or stills.
+- Footage is shot, not generated: the hero film takes real footage of
+  real work when it exists (see `docs/hero-video.md`); until then the
+  drawn stand-in stays. No AI-generated video or stills of people, work or
+  products.
 - Proof is never invented. No client, person, quote, logo or result is
   shown as real unless it is. Samples are labelled as samples in plain
-  view (the week's Maya and Halden; the supplier reports and their
-  figures; the Proof chapter's sample Diagnostic; the sample engagements
-  on /work).
+  view (the Proof chapter's sample Diagnostic for Halden; the sample
+  engagements on /work). The accountability strip's supplier metrics are
+  generic examples of what suppliers report, not claims.
+- No props or invented scenes stand in for an idea (no sample buyers,
+  mock screens or mock reports), and no cited statistics on the homepage.
 - The Proof chapter (`home/proof-chapter.tsx`, data in `lib/proof.ts`) shows
-  what Plurel delivers first: an excerpt of a Diagnostic, run on the
-  Halden sample brief (six parts scored, where you win, where you leak,
-  what to fix first, what runs first, what counts as qualified demand).
-  Real cases join it when they can be published: each opens with what
-  the Diagnostic found and reports one qualified-demand number with its
-  client, cause and period.
+  what Plurel delivers first: an excerpt of a Diagnostic, run on Halden, a
+  sample company (six parts scored, where you win, where you leak, what
+  to fix first, what runs first, what we would measure). Real cases join
+  it when they can be published: each opens with what the Diagnostic
+  found and reports the one number with its client, cause and period.
 - People (`home/people-chapter.tsx`, `lib/people.ts`) renders only once
   real people are listed: faces, first names, one line each.
 - Photography direction for stills matches the film: people at work,
@@ -420,7 +424,8 @@ Rules:
   the bar. Desktop menus open a Swiss panel (a card under the pill);
   mobile opens a full-screen red index.
 - Footer (`site-footer.tsx`): paper, brand-red lockup, Swiss link
-  columns, the Northeon line (Plurel beside its sister, Kelwin), live
+  columns, one identity line ("Plurel is a distribution engineering firm:
+  one team for every relevant channel, answerable for one number."), live
   studio clock (New York). The closing chapter's `arc` glass sits right above it.
 
 ## Positioning in the homepage
@@ -431,19 +436,23 @@ one step of that argument, and says it once:
 | Chapter | Job |
 | --- | --- |
 | Hero | The promise: made to be seen, everywhere; great work no longer sells itself, distribution does |
-| Attention section | Distribute: attention is everywhere; one buyer's week, seven places, the same story, then she books (and a B2B buyer's week holds the same story) |
-| Manifesto (Why Plurel) | Measure: ten suppliers, ten reports, ten numbers, nobody owns the outcome; one team, one number: qualified demand |
-| Services | Structure: eight kinds of work as one system in four layers (Narrative, Create, Distribute, Measure), foundation first; the budget follows the bottleneck |
-| Method | How it starts: the Diagnostic, then the four phases as one monthly partnership |
+| What Plurel is | Identity: a distribution engineering firm, the system it builds and runs, and the facts a buyer checks first |
+| Why now | The shift: buyers decide before they arrive, in places the company doesn't control |
+| Why Plurel | The thesis, shown: ten suppliers' voices become one system, the Plurel System's four layers and its loop, each layer with its instrument and services |
+| Method | How it runs: the Diagnostic, then the four phases as one monthly partnership |
+| Accountability | What we answer for: ten suppliers report ten numbers, we answer for one, agreed on day one |
+| Who it's for | Fit: consumer brands, physical products, B2B technology and consumer apps, the same system with a different first build and a different number |
 | Proof | What a Diagnostic finds (a labelled sample until real cases can be published) |
 | People | Who does the work (shown once real people are listed) |
 | FAQ | The real objections, biggest first: is this a full-service agency? every channel? what about our current agencies? cost |
 | Journal | What we're learning (later: the teardown series) |
 | Closing | The Diagnostic as the door in ("Request your diagnostic"), with an email as the second way in |
 
-Write "every relevant channel", never "every channel", and "qualified
-demand", never "inquiries" or "pipeline" alone. Say "one system" once (the
-Services narrator); elsewhere use the concrete noun: team, brief, number,
-report. Keep AI search, martech and measurement inside the method rather
+Write "every relevant channel", never "every channel". The outcome is
+"one number, agreed on day one" (orders, installs, demos, stockists);
+never headline "qualified demand", and never "inquiries" or "pipeline"
+alone. Copy reads for consumer brands, physical products, B2B technology
+and consumer apps alike. Use the concrete noun where you can: team,
+brief, number, report. Keep AI search, martech and measurement inside the method rather
 than as slogans, and keep the voice plain: no triplet lists, no "Not X.
 Y.", no consultancy words.
