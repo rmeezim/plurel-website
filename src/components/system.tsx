@@ -1,20 +1,22 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, ArrowUpRight } from "@/components/icons";
+import { Arrive } from "@/components/type-reveal";
 
 /*
   Plurel system primitives: Cinematic Red x Swiss Systems.
 
   - CONTAINER and GRID are the Swiss frame. Every chapter lays its content
     on GRID. The grid is never drawn: it shows only through alignment.
-  - Kicker is the Northeon family label (square marker, tracked caps). A
-    chapter carries one at most (ChapterHead), or none when its headline
-    names it.
+  - Kicker is the chapter label: a square marker and a sentence-case
+    label. A chapter carries one at most (ChapterHead), or none when its
+    headline names it. Below the fold it arrives with its headline: the
+    square scales in, then the label slides in (type-reveal.tsx).
   - Meta is Plurel's own Swiss metadata voice (mono, small caps), kept for
     data: dates, units, tags, counts with a real order. Never a caption
     that only announces what follows.
-  - Tones: "paper" (light chapters), "red" (brand chapters, hero),
-    "dark" (oxblood and ink chapters).
+  - Tones: "paper" (light chapters), "red" (brand chapters), "dark"
+    (graphite chapters).
 */
 
 export const CONTAINER = "mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12";
@@ -35,7 +37,11 @@ const KICKER_TONE: Record<Tone, { text: string; mark: string }> = {
   dark: { text: "text-paper", mark: "bg-signal" },
 };
 
-/** Family label: square marker + tracked caps */
+/**
+ * Chapter label: square marker + sentence-case label. Server markup; its
+ * arrival (square, then label) is CSS armed by <Arrive>, and it renders
+ * finished without JS, under reduced motion and when on screen at load.
+ */
 export function Kicker({
   children,
   tone = "paper",
@@ -47,12 +53,13 @@ export function Kicker({
 }) {
   const t = KICKER_TONE[tone];
   return (
-    <p
+    <Arrive
+      as="p"
       className={`flex items-center gap-2.5 text-[14px] font-medium leading-none tracking-[-0.005em] sm:text-[15px] ${t.text} ${className}`}
     >
-      <span aria-hidden className={`size-[7px] shrink-0 ${t.mark}`} />
-      {children}
-    </p>
+      <span aria-hidden className={`kicker-mark size-[7px] shrink-0 ${t.mark}`} />
+      <span className="kicker-label">{children}</span>
+    </Arrive>
   );
 }
 

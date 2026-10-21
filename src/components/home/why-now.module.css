@@ -1,0 +1,42 @@
+/*
+  Why now: the six moments. Each row's hairline draws in from the left and
+  its data tag fades up as the row's line rises (keyed off the line's
+  TypeReveal state, so the three move as one). The default is finished:
+  without JS, with reduced motion, or for a row already on screen at load,
+  the rule is drawn and the tag is shown.
+*/
+.rule,
+.total {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: color-mix(in oklab, var(--color-ink) 15%, transparent);
+  transform-origin: left center;
+}
+
+/* The closing line's rule: the total under the sum, in brand red */
+.total {
+  height: 2px;
+  background: var(--color-brand);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .row:has(> :global(.type-reveal)[data-state="armed"]) .rule,
+  .row:has(> :global(.type-reveal)[data-state="armed"]) .total {
+    transform: scaleX(0);
+  }
+  .row:has(> :global(.type-reveal)[data-state="armed"]) .tag {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  .row:has(> :global(.type-reveal)[data-state="in"]) .rule,
+  .row:has(> :global(.type-reveal)[data-state="in"]) .total {
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .row:has(> :global(.type-reveal)[data-state="in"]) .tag {
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s,
+      transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s;
+  }
+}

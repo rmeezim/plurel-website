@@ -31,13 +31,13 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Plurel — Distribution engineering for growth-stage companies",
   description:
-    "Plurel is Northeon's distribution engineering company. One team runs narrative, brand, website, AI search and SEO, content and creators, paid, PR and measurement for growth-stage companies, B2B and B2C, judged on qualified demand.",
+    "Plurel is a distribution engineering firm. One team runs narrative, brand, website, AI search and SEO, content and creators, paid, PR and measurement as one system, for consumer brands, physical products, B2B technology and apps.",
   metadataBase: new URL(SITE_URL),
   alternates: { canonical: "/" },
   openGraph: {
     title: "Plurel — Distribution engineering for growth-stage companies",
     description:
-      "Your marketing shouldn't be ten companies. At Plurel, one team works from the same brief on every relevant channel and answers for qualified demand.",
+      "Your marketing shouldn't be ten companies. At Plurel, one team works from the same brief on every relevant channel and answers for one number, agreed on day one.",
     type: "website",
     siteName: "Plurel",
     url: "/",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Plurel — Distribution engineering for growth-stage companies",
     description:
-      "Your marketing shouldn't be ten companies. Plurel replaces them with one team, judged on qualified demand.",
+      "Your marketing shouldn't be ten companies. Plurel replaces them with one team that answers for one number, agreed on day one.",
     images: ["/og.png"],
   },
 };
@@ -69,10 +69,9 @@ const ORG_JSON_LD = {
       name: "Plurel",
       url: `${SITE_URL}/`,
       description:
-        "Plurel is Northeon's distribution engineering company: narrative, brand identity, website design, AI search visibility (AEO/SEO), content, creators and UGC, paid media, PR and measurement, run by one team for growth-stage companies and judged on qualified demand.",
+        "Plurel is a distribution engineering firm. One team runs narrative, brand identity, website design, AI search visibility (AEO/SEO), content, creators and UGC, paid media, PR and measurement as one system, for consumer brands, physical products, B2B technology and apps, and answers for one number agreed on day one.",
       email: "hello@plurel.com",
       image: `${SITE_URL}/og.png`,
-      parentOrganization: { "@type": "Organization", name: "Northeon" },
       knowsAbout: [
         "Website design",
         "Brand identity",

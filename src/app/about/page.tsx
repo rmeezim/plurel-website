@@ -10,7 +10,7 @@ import { SITE_URL } from "@/lib/site";
 export const metadata: Metadata = {
   title: "About | Plurel",
   description:
-    "Plurel is Northeon's distribution engineering company: a small senior team that answers for how growth-stage companies get chosen, across brand, website, AI search, content and creators, campaigns and the martech underneath.",
+    "Plurel is a distribution engineering firm: a small senior team that answers for how growth-stage companies get chosen, across brand, website, AI search, content and creators, campaigns and the martech underneath.",
   alternates: { canonical: "/about/" },
 };
 
@@ -72,7 +72,7 @@ const STANDARDS = [
     number: "04",
     name: "One number from launch",
     detail:
-      "Qualified demand is measured from day one, with the signals behind it. Reviewed monthly, reset every quarter.",
+      "The number is agreed with you on day one and measured from launch, with the signals behind it. Reviewed monthly, reset every quarter.",
   },
 ];
 
@@ -115,7 +115,7 @@ export default function AboutPage() {
             <div className="max-w-[720px]">
               <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
                 <Spark className="size-3.5 text-brand" aria-hidden />
-                About &middot; a Northeon division
+                About Plurel
               </p>
               <h1
                 id="about-heading"
@@ -132,10 +132,10 @@ export default function AboutPage() {
                 </em>
               </h1>
               <p className="fade-up mt-6 max-w-[58ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-                Plurel is Northeon&rsquo;s distribution engineering company.
-                One senior team answers for how businesses get chosen: brand,
-                website, AI search, content, campaigns and the martech
-                underneath, all working from the same brief.
+                Plurel is a distribution engineering firm. One senior team
+                answers for how businesses get chosen: brand, website, AI
+                search, content, campaigns and the martech underneath, all
+                working from the same brief.
               </p>
             </div>
 
@@ -146,13 +146,6 @@ export default function AboutPage() {
                 className="w-[248px] rounded-xl border border-line bg-paper text-[10px] font-semibold uppercase tracking-[0.16em]"
               >
                 <div className="flex items-center justify-between px-4 py-2.5">
-                  <dt className="text-muted">Division of</dt>
-                  <dd className="flex items-center gap-1.5 text-ink">
-                    <Spark className="size-3 text-brand" aria-hidden />
-                    Northeon
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between border-t border-line px-4 py-2.5">
                   <dt className="text-muted">Method</dt>
                   <dd className="text-ink">MTD&middot;04</dd>
                 </div>
@@ -200,9 +193,9 @@ export default function AboutPage() {
                 with nobody accountable for the whole.
               </p>
               <p>
-                So Northeon built the division it kept wishing existed. A
-                small senior team takes the whole job, from the brand to the
-                reporting, and answers for the qualified demand it brings in.
+                So we built the firm we kept wishing existed. A small senior
+                team takes the whole job, from the brand to the reporting,
+                and answers for one number, agreed with you on day one.
               </p>
               <p>
                 Buying now begins inside AI answers as often as in search
@@ -213,95 +206,9 @@ export default function AboutPage() {
             <Reveal delay={0.18} className="lg:col-span-4">
               <VisualPlate
                 kind="room"
-                label="Plurel · a Northeon division"
+                label="Plurel · The studio"
                 className="aspect-[16/10] w-full lg:aspect-[4/5]"
               />
-            </Reveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------ The Northeon relationship */}
-      <section
-        aria-labelledby="northeon-heading"
-        className="bg-charcoal text-paper"
-      >
-        <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-          <div className="grid grid-cols-1 items-end gap-x-16 gap-y-10 lg:grid-cols-12">
-            <Reveal className="lg:col-span-6">
-              <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/50">
-                <Spark className="size-3.5 text-brand" aria-hidden />
-                The Northeon relationship
-              </p>
-              <h2
-                id="northeon-heading"
-                className="mt-5 max-w-[20ch] font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.08] tracking-[-0.02em]"
-              >
-                A studio&rsquo;s craft, an{" "}
-                <em className="italic text-clay">operator&rsquo;s spine</em>.
-              </h2>
-              <p className="mt-5 max-w-[52ch] text-[14.5px] leading-relaxed text-paper/65">
-                Northeon builds and operates companies with long horizons.
-                Plurel is its distribution engineering company, and its
-                sister division, Kelwin, runs RevOps and go-to-market. For
-                clients that means studio-grade craft with engineering depth
-                behind it, and a parent that isn&rsquo;t going anywhere.
-              </p>
-            </Reveal>
-            <Reveal delay={0.1} className="lg:col-span-6">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-stretch sm:gap-0">
-                <div className="flex flex-col rounded-2xl border border-paper/15 p-5 sm:p-6">
-                  <p className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.18em]">
-                    <span className="text-paper/45">Parent</span>
-                    <span className="size-1.5 rounded-full bg-paper/40" />
-                  </p>
-                  <p className="mt-4 text-[17px] font-medium tracking-[-0.01em] text-paper">
-                    Northeon
-                  </p>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-paper/55">
-                    Builds and operates companies, with capital and long
-                    horizons.
-                  </p>
-                </div>
-                <div aria-hidden className="hidden items-center px-2 sm:flex">
-                  <div className="flex w-20 flex-col items-center gap-1.5">
-                    <span className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-[0.16em] text-paper/40">
-                      Division
-                    </span>
-                    <svg className="h-2 w-full" viewBox="0 0 64 8" fill="none">
-                      <line
-                        x1="0"
-                        y1="4"
-                        x2="58"
-                        y2="4"
-                        stroke="#fbfaf6"
-                        strokeOpacity="0.3"
-                        strokeWidth="1"
-                        strokeDasharray="3 5"
-                      />
-                      <path
-                        d="M58 1 L63 4 L58 7"
-                        stroke="#fbfaf6"
-                        strokeOpacity="0.5"
-                        strokeWidth="1"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex flex-col rounded-2xl border border-paper/15 p-5 sm:p-6">
-                  <p className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.18em]">
-                    <span className="text-paper/45">Division</span>
-                    <Spark className="size-3 text-brand" aria-hidden />
-                  </p>
-                  <p className="mt-4 text-[17px] font-medium tracking-[-0.01em] text-paper">
-                    Plurel
-                  </p>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-paper/55">
-                    Distribution engineering: one team for every relevant
-                    channel.
-                  </p>
-                </div>
-              </div>
             </Reveal>
           </div>
         </div>

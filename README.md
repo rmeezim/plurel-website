@@ -1,9 +1,9 @@
 # Plurel
 
-The marketing website for **Plurel** — Northeon's creative division. Plurel
-turns outdated business presence into premium digital brand experiences:
-website design, AEO/SEO, brand identity, content marketing, paid ads, PR &
-reputation, and creative direction.
+The marketing website for **Plurel**, a distribution engineering firm.
+Plurel builds and runs the system that makes a growing company impossible to
+miss: website design, brand identity, AI search and SEO, content marketing,
+paid ads, PR and reputation, creative direction, and martech, run by one team.
 
 ## Tech stack
 

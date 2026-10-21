@@ -55,7 +55,7 @@ const SAMPLES: Sample[] = [
       Distribute:
         "Search and AI answers first, LinkedIn for the founders’ own voices, paid search kept to the terms that convert.",
       Measure:
-        "One count of qualified demand agreed with sales and handed into the CRM. Kelwin, our sister division, runs the RevOps side when it’s needed.",
+        "One count of qualified demand agreed with sales and handed into the CRM.",
     },
     qualified: "A demo request from a company in the target segment, accepted by sales.",
   },

@@ -9,7 +9,7 @@ import { VisualPlate } from "@/components/visual-plate";
 export const metadata: Metadata = {
   title: "Careers | Plurel",
   description:
-    "Careers at Plurel, Northeon's distribution engineering company: a small senior team doing brand, web, AI search, content and campaign work. See the kinds of roles we hire for and how to introduce yourself.",
+    "Careers at Plurel, a distribution engineering firm: a small senior team doing brand, web, AI search, content and campaign work. See the kinds of roles we hire for and how to introduce yourself.",
   alternates: { canonical: "/careers/" },
 };
 
@@ -127,10 +127,10 @@ export default function CareersPage() {
                 </em>
               </h1>
               <p className="fade-up mt-6 max-w-[56ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-                We&rsquo;re a small senior team inside Northeon, doing brand,
-                web, AI search, content and campaign work that ships in
-                public. If you want your work in the world rather than in a
-                deck, you&rsquo;ll like it here.
+                We&rsquo;re a small senior team doing brand, web, AI search,
+                content and campaign work that ships in public. If you want
+                your work in the world rather than in a deck, you&rsquo;ll
+                like it here.
               </p>
             </div>
 

@@ -117,18 +117,6 @@ export default function ContactPage() {
                   ))}
                 </ol>
               </div>
-
-              {/* Northeon note */}
-              <div className="rounded-2xl bg-charcoal p-6 text-paper">
-                <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/50">
-                  <Spark className="size-3 text-brand" aria-hidden />
-                  A Northeon division
-                </p>
-                <p className="mt-3 text-[14px] leading-relaxed text-paper/75">
-                  Plurel draws on Northeon&rsquo;s delivery network for extra
-                  hands. Your work is still run by one Plurel team.
-                </p>
-              </div>
             </aside>
           </div>
         </div>

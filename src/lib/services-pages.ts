@@ -5,7 +5,7 @@
  * we cannot attribute correctly is dropped, never softened or guessed. Names and taglines mirror SERVICE_LIST in
  * nav.ts. Creators and UGC sit inside Content Marketing (the programs)
  * and Paid Ads (the amplification); the hand-off to sales is named on
- * Martech, where Kelwin takes it on.
+ * Martech.
  */
 
 export type ServiceStat = { value: string; label: string; source: string };
@@ -520,7 +520,7 @@ export const SERVICE_PAGES: ServicePage[] = [
     tagline: "The wiring nobody sees until it breaks.",
     plain: [
       "Martech is the wiring under your marketing: CRM, automation, analytics and the connections between them. Consulting is us designing that wiring around how your business actually sells.",
-      "We wire it so no lead leaks, every follow-up fires, and marketing and sales count qualified demand the same way. Where demand reaches sales, Kelwin, Plurel's sister division for RevOps and go-to-market, can carry it through to revenue.",
+      "We wire it so no lead leaks, every follow-up fires, and marketing and sales count qualified demand the same way.",
     ],
     why: [
       {

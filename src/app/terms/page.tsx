@@ -12,19 +12,19 @@ const SECTIONS = [
   {
     heading: "Agreement",
     body: [
-      "These terms govern your use of this website, operated by Plurel, a Northeon division. By using the site you accept them. Client engagements are governed by their own written agreements — these terms cover the website itself.",
+      "These terms govern your use of this website, operated by Plurel. By using the site you accept them. Client engagements are governed by their own written agreements — these terms cover the website itself.",
     ],
   },
   {
     heading: "Use of the site",
     body: [
-      "You may browse, link to, and share this site freely. You may not misuse it: no attempting to breach security, scrape at abusive volume, misrepresent affiliation with Plurel or Northeon, or use the site in any unlawful way.",
+      "You may browse, link to, and share this site freely. You may not misuse it: no attempting to breach security, scrape at abusive volume, misrepresent affiliation with Plurel, or use the site in any unlawful way.",
     ],
   },
   {
     heading: "Our content",
     body: [
-      "The Plurel name, marks, methodology names (including MTD·04, SYS·09, and SIG·06), site design, and content are owned by Plurel and Northeon. You're welcome to quote reasonably with attribution; wholesale reproduction or use of our marks requires written permission.",
+      "The Plurel name, marks, methodology names (including MTD·04, SYS·09, and SIG·06), site design, and content are owned by Plurel. You're welcome to quote reasonably with attribution; wholesale reproduction or use of our marks requires written permission.",
     ],
   },
   {
@@ -42,7 +42,7 @@ const SECTIONS = [
   {
     heading: "Limitation of liability",
     body: [
-      "To the fullest extent permitted by law, Plurel and Northeon aren't liable for indirect, incidental, or consequential damages arising from use of this website. Nothing in these terms limits liability that can't lawfully be limited.",
+      "To the fullest extent permitted by law, Plurel isn't liable for indirect, incidental, or consequential damages arising from use of this website. Nothing in these terms limits liability that can't lawfully be limited.",
     ],
   },
   {

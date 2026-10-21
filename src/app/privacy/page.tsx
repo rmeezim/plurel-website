@@ -12,7 +12,7 @@ const SECTIONS = [
   {
     heading: "What this covers",
     body: [
-      "This policy explains what information Plurel (a Northeon division) collects through this website, how we use it, and the choices you have. We keep it short on purpose — and we hold ourselves to what it says.",
+      "This policy explains what information Plurel collects through this website, how we use it, and the choices you have. We keep it short on purpose — and we hold ourselves to what it says.",
     ],
   },
   {
@@ -38,7 +38,7 @@ const SECTIONS = [
   {
     heading: "Who we share it with",
     body: [
-      "Service providers who help us run the website and our operations — hosting, analytics, email, and scheduling tools — bound to use your information only on our behalf. We may also share information if the law requires it, or as part of a corporate transaction involving Northeon.",
+      "Service providers who help us run the website and our operations — hosting, analytics, email, and scheduling tools — bound to use your information only on our behalf. We may also share information if the law requires it, or as part of a corporate transaction involving Plurel.",
     ],
   },
   {

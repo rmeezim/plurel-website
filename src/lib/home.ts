@@ -40,9 +40,9 @@ export const PHASES = [
     name: "Deploy",
     tagline: "Launch where your buyers already are",
     description:
-      "Go live on the channels the Diagnostic picked, and wire the data underneath from day one: analytics, attribution, and the hand-off into your CRM and sales team.",
+      "Go live on the channels the Diagnostic picked, and wire the data underneath from day one: analytics, attribution, and the hand-off into your store, CRM or sales team.",
     outputs: ["Site build & QA", "Channel launch plan", "Tracking & attribution", "Launch PR"],
-    ai: "Routing and follow-up are automated into your CRM, and a person checks them before launch.",
+    ai: "Routing and follow-up are automated into your store or CRM, and a person checks them before launch.",
   },
   {
     number: "4",
@@ -64,11 +64,11 @@ export const PHASES = [
 export const FAQS = [
   {
     q: "How is this different from a full-service agency?",
-    a: "We sell the integration, not the menu. A full-service agency puts many services under one roof, and each still reports its own number. We run your marketing from one story, with one team and one report, across every relevant channel, and we answer for qualified demand.",
+    a: "We sell the integration, not the menu. A full-service agency puts many services under one roof, and each still reports its own number. We run your marketing from one story, with one team and one report, across every relevant channel, and we answer for one number, agreed with you on day one.",
   },
   {
     q: "Do we need every channel?",
-    a: "No, only the relevant ones, and the Diagnostic decides which. For one company that is search and a founder’s voice; for another, LinkedIn, events and research. Consumer brands often need creators and UGC, which we run inside Content Marketing and Paid Ads. Whatever the mix, it all works from the same brief.",
+    a: "No, only the relevant ones, and the Diagnostic decides which. A software company may need AI answers and a founder’s voice; a consumer brand, creators and paid social; a product on shelves, reviews and marketplace pages; an app, its store listing and referral loops. We run creators and UGC inside Content Marketing and Paid Ads. Whatever the mix, it all works from the same brief.",
   },
   {
     q: "We already have an in-house team or agency. Where do you fit?",
@@ -80,11 +80,11 @@ export const FAQS = [
   },
   {
     q: "Do you work with companies like ours?",
-    a: "Our best fit is growth-stage companies, B2B and B2C, whose marketing has outgrown one person and split across suppliers. The industry matters less than the symptom: everything works, and nothing works together.",
+    a: "Our best fit is growth-stage companies whose marketing has outgrown one person and split across suppliers. We work with consumer brands, physical products, B2B technology and apps. The industry matters less than the symptom: everything works, and nothing works together.",
   },
   {
     q: "Who actually does the work?",
-    a: "A senior Plurel team covering strategy, narrative, design, film, web and distribution, backed by Northeon’s delivery network. The people who run your Diagnostic are the people who run the work. When demand reaches your sales team, Kelwin, our sister division for RevOps and go-to-market, can carry it through to revenue.",
+    a: "A senior Plurel team covering strategy, narrative, design, film, web and distribution. The people who run your Diagnostic are the people who run the work.",
   },
   {
     q: "What exactly is the Diagnostic, and why is it free?",

@@ -227,11 +227,10 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
       </ul>
 
       <div className="relative col-span-4 bg-graphite flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3">
-        <span className="relative text-[13px] text-fog">Northeon</span>
+        <span className="relative text-[13px] text-fog">Plurel</span>
         <p className="relative text-[15px] leading-relaxed text-paper/85">
-          Plurel is Northeon&apos;s distribution engineering company: one
-          team for every relevant channel. Its sister, Kelwin, turns that
-          demand into revenue.
+          A distribution engineering firm: one team, one brief and one
+          number, for every relevant channel.
         </p>
       </div>
     </div>

@@ -9,7 +9,7 @@ import { AUDIT_HREF, COMPANY, CONTACT_EMAIL, SERVICES } from "@/lib/nav";
 /*
   Footer: the quiet firm index every page ends on. The closing chapter
   above does the inviting, so there is no headline and no second CTA here:
-  the lockup and the Northeon line frame the identity column, and the legal
+  the lockup and the identity line frame the identity column, and the legal
   bar registers to the same column edges as the index above it, under one
   plain hairline. No numbers, no mono: it is a list of links.
 
@@ -39,15 +39,13 @@ export function SiteFooter() {
       <div className={`${CONTAINER} pb-6 pt-[72px] lg:pb-7 lg:pt-24`}>
         <Reveal>
           <div className={`${GRID} items-stretch gap-y-12 lg:gap-y-0`}>
-            {/* Identity: lockup on top, the Northeon line pinned to the
+            {/* Identity: lockup on top, the identity line pinned to the
                 bottom of the index, so the two frame it */}
             <div className="col-span-4 flex flex-col justify-between gap-6 sm:col-span-6 lg:col-span-4">
               <Logo className="block h-auto w-[148px] text-brand" title="Plurel" />
               <p className="max-w-[320px] text-[14px] leading-[22px] text-muted lg:mb-1">
-                Plurel is Northeon&rsquo;s distribution engineering company:
-                one team for every relevant channel, judged on qualified
-                demand. Its sister division, Kelwin, turns that demand into
-                revenue.
+                Plurel is a distribution engineering firm: one team for every
+                relevant channel, answerable for one number.
               </p>
             </div>
 

@@ -95,7 +95,6 @@ The entity page — what AI assistants will cite when asked "what is
 Plurel". Keep it factual and quotable.
 
 - Story: why Plurel exists (extends the founder note)
-- The Northeon relationship — division structure, plainly stated
 - Operating beliefs (manifesto, expanded to ~5 principles)
 - Standards: what every engagement includes
 - Founder/leadership block, team as it grows

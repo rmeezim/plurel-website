@@ -1,0 +1,92 @@
+/*
+  Accountability: two strips of display type.
+
+  Moving (JS and motion allowed): each strip is one line, three copies of
+  its list long (the outer two aria-hidden), and slides across the full
+  width as the reader scrolls (translateX only, set by accountability.tsx).
+  What suppliers report drifts left, what we answer for drifts right, and
+  each sits exactly on the grid, its first figure under its label, as it
+  crosses the middle of the screen. Each strip's clip runs edge to edge,
+  so the page itself never overflows.
+
+  Still (no JS, reduced motion): one copy of each list, wrapped inside the
+  container at a smaller size, every figure in view.
+*/
+
+/* Full-bleed clip: a moving strip runs past both edges of the screen */
+.clip {
+  overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
+  /* room for descenders inside the clip */
+  padding-block: 0.06em;
+}
+
+.strip {
+  font-size: clamp(2rem, 1.2rem + 3.4vw, 5.25rem);
+  line-height: 1;
+  font-variant-numeric: lining-nums proportional-nums;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  row-gap: 0.14em;
+}
+
+.copy {
+  display: none;
+}
+
+.item {
+  white-space: nowrap;
+}
+
+/* Separators after each figure: hollow and quiet for what suppliers
+   report, solid brand red for what we answer for */
+.item::after {
+  content: "";
+  display: inline-block;
+  width: 0.15em;
+  height: 0.15em;
+  margin-inline: 0.38em;
+  vertical-align: 0.27em;
+}
+.list > .item:last-child::after {
+  display: none;
+}
+.report .item::after {
+  box-shadow: inset 0 0 0 max(1.5px, 0.018em) currentColor;
+  opacity: 0.55;
+}
+.answer .item::after {
+  background: var(--color-brand);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :global(html[data-js]) .strip {
+    display: flex;
+    width: max-content;
+    font-size: clamp(2.75rem, 1rem + 5.6vw, 8.5rem);
+  }
+  :global(html[data-js]) .list {
+    flex-wrap: nowrap;
+  }
+  :global(html[data-js]) .copy {
+    display: flex;
+  }
+  /* one continuous line: a separator between the copies too */
+  :global(html[data-js]) .list > .item:last-child::after {
+    display: inline-block;
+  }
+  .live {
+    will-change: transform;
+  }
+}
+
+@media (forced-colors: active) {
+  .answer .item::after {
+    background: CanvasText;
+  }
+}

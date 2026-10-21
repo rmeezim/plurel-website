@@ -208,7 +208,7 @@ const PHASES: Phase[] = [
         code: "S·05",
         name: "Stack wiring",
         detail:
-          "CRM, automation flows and dashboards live, qualified demand and its supporting signals reporting from day one, and qualified leads handed to sales. Where it helps, Kelwin, our sister division for RevOps and go-to-market, takes them on from there.",
+          "CRM, automation flows and dashboards live, qualified demand and its supporting signals reporting from day one, and qualified leads handed to sales.",
       },
     ],
     artifacts: [
