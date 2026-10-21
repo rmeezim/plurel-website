@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { MethodHud } from "@/components/method-hud";
 import { Reveal } from "@/components/reveal";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "The Plurel Method | Methodology",
   description:
     "The Plurel Method (MTD·04) runs every engagement in four phases: Diagnose, Design, Deploy and Compound. It starts with the Diagnostic, six parts of your distribution scored, and settles into a monthly partnership judged on qualified demand.",
-  alternates: { canonical: "/methodology/" },
-};
+  path: "/methodology/",
+});
 
 /*
  * The page performs the method. It opens in the dark — where every client
@@ -339,9 +339,9 @@ const FAQ_JSON_LD = {
 
 function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
   const rule = dark ? "border-paper/12" : "border-line";
-  const kicker = dark ? "text-paper/45" : "text-muted";
+  const kicker = dark ? "text-paper/55" : "text-ink/65";
   const body = dark ? "text-paper/80" : "text-ink/85";
-  const soft = dark ? "text-paper/55" : "text-muted";
+  const soft = dark ? "text-paper/55" : "text-ink/65";
   return (
     <section
       data-act={`Phase ${phase.number} · ${phase.name}`}
@@ -368,11 +368,11 @@ function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
             className={`flex flex-wrap items-baseline gap-x-6 gap-y-1 text-[10px] font-semibold uppercase tracking-[0.22em] ${kicker}`}
           >
             <span>
-              Phase {phase.number} <span className="px-1 opacity-40">/</span>{" "}
+              Phase {phase.number} <span className="px-1">/</span>{" "}
               04
             </span>
             <span>{phase.window}</span>
-            <span className="text-rust">Gate: {phase.gateName}</span>
+            <span className={dark ? "text-clay" : "text-ember"}>Gate: {phase.gateName}</span>
           </p>
           <h2
             id={`phase-${phase.number}`}
@@ -384,7 +384,7 @@ function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
           </h2>
           <p
             className={`mt-4 font-sans text-[clamp(1.4rem,2.8vw,2.1rem)] font-normal italic leading-snug tracking-[-0.01em] ${
-              dark ? "text-clay" : "text-rust"
+              dark ? "text-clay" : "text-ember"
             }`}
           >
             {phase.intent}
@@ -413,7 +413,7 @@ function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
               {phase.experience}
             </p>
             <div className="mt-8 border-l-2 border-rust pl-5">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-rust">
+              <p className={`text-[10px] font-semibold uppercase tracking-[0.2em] ${dark ? "text-clay" : "text-ember"}`}>
                 The gate: {phase.gateName}
               </p>
               <p className={`mt-2.5 text-[14px] leading-relaxed ${body}`}>
@@ -437,7 +437,7 @@ function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
                 >
                   <span
                     className={`pt-[0.2em] text-[11px] font-semibold tabular-nums tracking-[0.08em] ${
-                      dark ? "text-clay" : "text-rust"
+                      dark ? "text-clay" : "text-ember"
                     }`}
                   >
                     {ws.code}
@@ -490,7 +490,7 @@ function PhaseAct({ phase, dark }: { phase: Phase; dark: boolean }) {
             />
             <p
               className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
-                dark ? "text-clay" : "text-brand"
+                dark ? "text-clay" : "text-ember"
               }`}
             >
               {phase.handoff}
@@ -518,7 +518,7 @@ export default function MethodologyPage() {
       >
         <div className="relative mx-auto flex min-h-[86vh] w-full max-w-[1440px] flex-col justify-between px-5 pb-10 pt-14 sm:px-8 lg:px-12 lg:pt-20">
           {/* Manual meta line */}
-          <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-paper/45">
+          <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-paper/55">
             <span className="flex items-center gap-2">
               <Spark className="size-3 text-brand" aria-hidden />
               Plurel &middot; the method
@@ -594,7 +594,7 @@ export default function MethodologyPage() {
               the number we answer for, and five supporting signals tell us
               why it moved. Every quarter they feed the next diagnosis.
             </p>
-            <p className="mt-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-paper/40">
+            <p className="mt-6 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-paper/55">
               <span aria-hidden className="text-brand">
                 &#8634;
               </span>
@@ -613,7 +613,7 @@ export default function MethodologyPage() {
           <Reveal className="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
             <h2
               id="laws-heading"
-              className="text-[10px] font-semibold uppercase tracking-[0.22em] text-paper/45"
+              className="text-[10px] font-semibold uppercase tracking-[0.22em] text-paper/55"
             >
               The operating laws &middot; L&middot;01&ndash;06
             </h2>
@@ -667,7 +667,7 @@ export default function MethodologyPage() {
       <section aria-label="The system goes live" className="bg-canvas text-ink">
         <div className="mx-auto w-full max-w-[1440px] px-5 pb-6 pt-2 text-center sm:px-8 lg:px-12">
           <Reveal>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/65">
               WK 05: the work goes live
             </p>
             <p className="mx-auto mt-5 max-w-[22ch] font-sans text-[clamp(1.9rem,4.6vw,3.5rem)] font-normal italic leading-[1.1] tracking-[-0.02em] text-ink">
@@ -691,11 +691,11 @@ export default function MethodologyPage() {
             <Reveal className="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
               <h2
                 id="rhythm-heading"
-                className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
+                className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/65"
               >
                 The rhythm it runs on &middot; RTM&middot;04
               </h2>
-              <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
+              <p className="max-w-[40ch] text-[13px] leading-relaxed text-ink/65">
                 Four rituals carry every engagement. The cadence is the
                 contract.
               </p>
@@ -707,7 +707,7 @@ export default function MethodologyPage() {
                     <div key={ritual.cadence} className="bg-paper p-6 sm:p-7">
                       <p className="flex items-center justify-between text-[9.5px] font-semibold uppercase tracking-[0.18em]">
                         <span className="text-brand">{ritual.cadence}</span>
-                        <span className="tabular-nums text-muted/70">
+                        <span className="tabular-nums text-muted">
                           R&middot;0{i + 1}
                         </span>
                       </p>
@@ -744,11 +744,11 @@ export default function MethodologyPage() {
             <Reveal className="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
               <h2
                 id="instruments-heading"
-                className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
+                className="text-[10px] font-semibold uppercase tracking-[0.22em] text-ink/65"
               >
                 The instruments it runs with
               </h2>
-              <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
+              <p className="max-w-[40ch] text-[13px] leading-relaxed text-ink/65">
                 Published here in full, before you ever talk to us.
               </p>
             </Reveal>
@@ -784,7 +784,7 @@ export default function MethodologyPage() {
                         className="hidden items-center px-2 lg:flex"
                       >
                         <div className="flex w-20 flex-col items-center gap-1.5">
-                          <span className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-[0.16em] text-muted">
+                          <span className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-[0.16em] text-ink/65">
                             {i === 1 ? "Builds" : "Steered by"}
                           </span>
                           <svg
@@ -841,7 +841,7 @@ export default function MethodologyPage() {
                   </div>
                 ))}
               </div>
-              <p className="mt-5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
+              <p className="mt-5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink/65">
                 <span aria-hidden className="text-brand">
                   &#8634;
                 </span>
@@ -859,7 +859,7 @@ export default function MethodologyPage() {
           <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
             <div className="grid grid-cols-1 gap-x-16 gap-y-10 lg:grid-cols-12">
               <Reveal className="lg:col-span-4">
-                <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+                <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink/65">
                   <Spark className="size-3.5 text-brand" aria-hidden />
                   Before the first gate
                 </p>
@@ -869,7 +869,7 @@ export default function MethodologyPage() {
                 >
                   The questions clients ask first.
                 </h2>
-                <p className="mt-6 max-w-[36ch] text-[14px] leading-relaxed text-muted">
+                <p className="mt-6 max-w-[36ch] text-[14px] leading-relaxed text-ink/65">
                   Anything else, ask us when you request your diagnostic.
                   You&rsquo;ll get a straight answer either way.
                 </p>
@@ -913,7 +913,7 @@ export default function MethodologyPage() {
         />
         <div className="relative mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <Reveal>
-            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/70">
+            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper">
               <Spark className="size-3.5" aria-hidden />
               WK 00 starts whenever you do
             </p>
@@ -921,10 +921,10 @@ export default function MethodologyPage() {
               id="method-cta-heading"
               className="mt-6 max-w-[22ch] font-sans text-[clamp(2rem,4.8vw,4rem)] font-normal leading-[1.05] tracking-[-0.02em]"
             >
-              Your diagnosis is the{" "}
+              {"Your diagnosis is the "}
               <em className="italic">first deliverable</em>.
             </h2>
-            <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
+            <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper sm:text-base">
               Every engagement starts with the Diagnostic: the six parts of
               your distribution scored, and the first fix named, within a
               business day. It&rsquo;s free, and yours to keep whatever you decide.

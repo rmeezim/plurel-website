@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
 import { Cascade } from "@/components/cascade";
 import { Spark } from "@/components/icons";
 import { ContactForm } from "@/components/contact-form";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Contact | Plurel",
   description:
     "Request a diagnostic. Tell us where your distribution stands today and a strategist will send back a scored read within a business day.",
-};
+  path: "/contact/",
+});
 
 const NEXT_STEPS = [
   {

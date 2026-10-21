@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StatementSection } from "@/components/statement-section";
+import { pageMetadata } from "@/lib/metadata";
 import { SERVICE_PAGES } from "@/lib/services-pages";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Services | Plurel",
   description:
     "Eight kinds of work, run by one Plurel team from the same brief: website design, brand identity, AI search and SEO, content and creator programs, paid ads, PR and reputation, creative direction, and the martech underneath.",
-  alternates: { canonical: "/services/" },
-};
+  path: "/services/",
+});
 
 const MODELS = [
   {

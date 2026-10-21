@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import { Cascade } from "@/components/cascade";
 import { Spark } from "@/components/icons";
 import { BlogIndex } from "@/components/blog-index";
+import { pageMetadata } from "@/lib/metadata";
 import { POSTS } from "@/lib/posts";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Journal | Plurel",
   description:
     "Plurel's journal: short essays on AI search, brand, martech and reputation, with checks you can run on your own business.",
-};
+  path: "/blog/",
+});
 
 export default function BlogPage() {
   return (

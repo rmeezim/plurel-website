@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StatementSection } from "@/components/statement-section";
 import { VisualPlate } from "@/components/visual-plate";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "The Studio | Plurel",
   description:
     "How the Plurel studio works: a small senior team on one brief across brand, design and build, editorial and AI search, and growth and martech, with something shipped every week.",
-  alternates: { canonical: "/studio/" },
-};
+  path: "/studio/",
+});
 
 const DISCIPLINES = [
   {
@@ -247,7 +247,7 @@ export default function StudioPage() {
         />
         <div className="relative mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <Reveal>
-            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/70">
+            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper">
               <Spark className="size-3.5" aria-hidden />
               Commission the studio
             </p>
@@ -257,7 +257,7 @@ export default function StudioPage() {
             >
               Bring us the <em className="italic">before</em>.
             </h2>
-            <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
+            <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-paper sm:text-base">
               Request a diagnostic. It tells us both where the work should
               start.
             </p>

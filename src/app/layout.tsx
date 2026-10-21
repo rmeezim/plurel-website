@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Serif, JetBrains_Mono, Mona_Sans } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { HOME } from "@/lib/metadata";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -28,35 +29,12 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+/* Defaults only: every page sets its own title, canonical and social card
+   through pageMetadata (lib/metadata.ts), so none inherits the homepage's */
 export const metadata: Metadata = {
-  title: "Plurel — Distribution engineering for growth-stage companies",
-  description:
-    "Plurel is a distribution engineering firm. One team runs narrative, brand, website, AI search and SEO, content and creators, paid, PR and measurement as one system, for consumer brands, physical products, B2B technology and apps.",
+  title: HOME.title,
+  description: HOME.description,
   metadataBase: new URL(SITE_URL),
-  alternates: { canonical: "/" },
-  openGraph: {
-    title: "Plurel — Distribution engineering for growth-stage companies",
-    description:
-      "Your marketing shouldn't be ten companies. At Plurel, one team works from the same brief on every relevant channel and answers for one number, agreed on day one.",
-    type: "website",
-    siteName: "Plurel",
-    url: "/",
-    images: [
-      {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: "Plurel: distribution engineering for growth-stage companies",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Plurel — Distribution engineering for growth-stage companies",
-    description:
-      "Your marketing shouldn't be ten companies. Plurel replaces them with one team that answers for one number, agreed on day one.",
-    images: ["/og.png"],
-  },
 };
 
 /** Organization + WebSite structured data — the AEO company, machine-readable */

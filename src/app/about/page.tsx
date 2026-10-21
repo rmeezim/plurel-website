@@ -1,18 +1,18 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StatementSection } from "@/components/statement-section";
 import { VisualPlate } from "@/components/visual-plate";
+import { pageMetadata } from "@/lib/metadata";
 import { SITE_URL } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "About | Plurel",
   description:
     "Plurel is a distribution engineering firm: a small senior team that answers for how growth-stage companies get chosen, across brand, website, AI search, content and creators, campaigns and the martech underneath.",
-  alternates: { canonical: "/about/" },
-};
+  path: "/about/",
+});
 
 const ABOUT_JSON_LD = {
   "@context": "https://schema.org",
@@ -426,7 +426,7 @@ export default function AboutPage() {
         />
         <div className="relative mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <Reveal>
-            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/70">
+            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper">
               <Spark className="size-3.5" aria-hidden />
               Meet us properly
             </p>
@@ -434,10 +434,10 @@ export default function AboutPage() {
               id="about-cta-heading"
               className="mt-6 max-w-[20ch] font-sans text-[clamp(2rem,4.8vw,4rem)] font-normal leading-[1.05] tracking-[-0.02em]"
             >
-              The Diagnostic tells you{" "}
+              {"The Diagnostic tells you "}
               <em className="italic">more than any about page</em>.
             </h2>
-            <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
+            <p className="mt-5 max-w-[54ch] text-[15px] leading-relaxed text-paper sm:text-base">
               Request a diagnostic and you&rsquo;ll have a scored read of
               your distribution within a business day, whatever you decide
               about us.

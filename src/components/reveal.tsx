@@ -53,6 +53,8 @@ export function Reveal({
   return (
     <div
       ref={ref}
+      // a keyboard user tabbing into a block below the fold sees it at once
+      onFocusCapture={() => setState((s) => (s === "armed" ? "in" : s))}
       className={`${state === "armed" ? "reveal-armed" : ""}${
         state === "in" ? "reveal-in" : ""
       }${sweep ? " reveal-sweep" : ""}${className ? ` ${className}` : ""}`}

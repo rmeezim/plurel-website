@@ -6,6 +6,7 @@ import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StatementSection } from "@/components/statement-section";
 import { VisualPlate } from "@/components/visual-plate";
+import { pageMetadata } from "@/lib/metadata";
 import { SERVICE_PAGES, getServicePage } from "@/lib/services-pages";
 import { SITE_URL } from "@/lib/site";
 
@@ -21,11 +22,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const service = getServicePage(slug);
   if (!service) return {};
-  return {
+  return pageMetadata({
     title: `${service.name} | Plurel`,
     description: `${service.tagline} ${service.plain[0]}`,
-    alternates: { canonical: `/services/${service.slug}/` },
-  };
+    path: `/services/${service.slug}/`,
+  });
 }
 
 export default async function ServicePage({

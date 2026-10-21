@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Terms of Service — Plurel",
   description:
     "The terms that govern use of the Plurel website — plainly stated.",
-  alternates: { canonical: "/terms/" },
-};
+  path: "/terms/",
+});
 
 const SECTIONS = [
   {

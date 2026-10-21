@@ -86,6 +86,10 @@ argument onto the homepage chapters.
 
 - Reusable UI lives in `src/components/`. Keep server components by default;
   add `"use client"` only when interactivity is required (e.g. the header menu).
+- Every page builds its metadata with `pageMetadata` (`src/lib/metadata.ts`):
+  its own title, description, canonical path (with the trailing slash) and
+  social card. Next merges metadata shallowly, so a page that set only a
+  title would inherit the homepage's canonical and card.
 - Keep animations light and tasteful, all gated behind
   `prefers-reduced-motion` in `globals.css`. Headings arrive through one
   vocabulary (`type-reveal.tsx`): the hero's on load (the one orchestrated

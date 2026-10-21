@@ -10,6 +10,9 @@ import { ServicesChapter } from "@/components/home/services-chapter";
 import { StatementChapter } from "@/components/home/statement";
 import { WhoItsForChapter } from "@/components/home/who-its-for";
 import { WhyNowChapter } from "@/components/home/why-now";
+import { HOME, pageMetadata } from "@/lib/metadata";
+
+export const metadata = pageMetadata({ ...HOME, path: "/" });
 
 /*
   Home, as one argument: the promise (the glass over the film), what

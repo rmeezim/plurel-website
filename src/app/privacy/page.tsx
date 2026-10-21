@@ -1,12 +1,12 @@
-import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Privacy Policy — Plurel",
   description:
     "How Plurel collects, uses, and protects the information you share with us — plainly stated.",
-  alternates: { canonical: "/privacy/" },
-};
+  path: "/privacy/",
+});
 
 const SECTIONS = [
   {

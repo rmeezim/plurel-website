@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { StatementSection } from "@/components/statement-section";
 import { VisualPlate } from "@/components/visual-plate";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Careers | Plurel",
   description:
     "Careers at Plurel, a distribution engineering firm: a small senior team doing brand, web, AI search, content and campaign work. See the kinds of roles we hire for and how to introduce yourself.",
-  alternates: { canonical: "/careers/" },
-};
+  path: "/careers/",
+});
 
 const PRINCIPLES = [
   {
@@ -388,7 +388,7 @@ export default function CareersPage() {
               <div className="grid grid-cols-1 gap-px bg-paper/15 lg:grid-cols-3">
                 {PROCESS.map((step) => (
                   <div key={step.number} className="bg-ink p-6 sm:p-7">
-                    <p className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-brand">
+                    <p className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-signal">
                       Step {step.number}
                     </p>
                     <p className="mt-4 text-[16px] font-medium tracking-[-0.01em] text-paper sm:text-[17px]">
@@ -400,7 +400,7 @@ export default function CareersPage() {
                   </div>
                 ))}
               </div>
-              <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-t border-paper/15 px-5 py-3.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-paper/45">
+              <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-t border-paper/15 px-5 py-3.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-paper/55">
                 <span>How we expect to hire</span>
                 <span className="flex items-center gap-2">
                   <Spark className="size-3 text-brand" aria-hidden />A Plurel
@@ -423,7 +423,7 @@ export default function CareersPage() {
         />
         <div className="relative mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
           <Reveal>
-            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper/70">
+            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-paper">
               <Spark className="size-3.5" aria-hidden />
               One email starts it
             </p>
@@ -431,10 +431,10 @@ export default function CareersPage() {
               id="careers-cta-heading"
               className="mt-6 max-w-[20ch] font-sans text-[clamp(2rem,4.8vw,4rem)] font-normal leading-[1.05] tracking-[-0.02em]"
             >
-              Introduce yourself. Show us something{" "}
+              {"Introduce yourself. Show us something "}
               <em className="italic">you shipped</em>.
             </h2>
-            <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-paper/85 sm:text-base">
+            <p className="mt-5 max-w-[52ch] text-[15px] leading-relaxed text-paper sm:text-base">
               A short note, links to real work and what you want to own,
               sent to hello@plurel.com.
             </p>

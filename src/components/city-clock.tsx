@@ -48,8 +48,13 @@ export function CityClock({ visitor = false, className = "" }: { visitor?: boole
       className={`tabular-nums transition-opacity duration-500 ${visitor && !now ? "opacity-0" : ""} ${className}`}
     >
       {`${now?.city ?? (visitor ? "Local" : `${STUDIO_CITY.name} studio`)} `}
-      <span aria-hidden>·</span>{" "}
-      <time suppressHydrationWarning>{now?.time ?? "--:--"}</time>
+      {/* without JS the time never arrives: the city stands alone */}
+      <span aria-hidden className="[html:not([data-js])_&]:hidden">
+        ·
+      </span>{" "}
+      <time suppressHydrationWarning className="[html:not([data-js])_&]:hidden">
+        {now?.time ?? "--:--"}
+      </time>
     </span>
   );
 }

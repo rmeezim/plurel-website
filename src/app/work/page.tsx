@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
 import { Reveal } from "@/components/reveal";
 import { CONTAINER, CtaLink, GRID, Kicker, TextLink } from "@/components/system";
+import { pageMetadata } from "@/lib/metadata";
 import { AUDIT_HREF, CONTACT_EMAIL } from "@/lib/nav";
 import { PROOF_HREF } from "@/lib/proof";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Work — Plurel",
   description:
     "Sample engagements: how the work runs for a B2B software company, a consumer brand and a professional services firm, from the Diagnostic to qualified demand. Illustrative, not client results.",
-  alternates: { canonical: "/work/" },
-};
+  path: "/work/",
+});
 
 /*
   /work, until real cases can be published.

@@ -61,10 +61,7 @@ export function BlogIndex({ posts }: { posts: Post[] }) {
           <span>
             <span className="text-[11px] font-medium uppercase tracking-[0.18em]">
               <span className="text-brand">{featured.category}</span>
-              <span className="text-muted">
-                {" "}
-                &middot; {featured.date} &middot; {featured.readTime}
-              </span>
+              <span className="text-muted">{` · ${featured.date} · ${featured.readTime}`}</span>
             </span>
             <span className="mt-3 block max-w-[24ch] font-serif text-[clamp(1.6rem,3vw,2.4rem)] leading-snug text-ink transition-colors duration-300 group-hover:text-brand">
               {featured.title}
@@ -99,10 +96,7 @@ export function BlogIndex({ posts }: { posts: Post[] }) {
               </span>
               <span className="mt-4 text-[11px] font-medium uppercase tracking-[0.18em]">
                 <span className="text-brand">{post.category}</span>
-                <span className="text-muted">
-                  {" "}
-                  &middot; {post.date} &middot; {post.readTime}
-                </span>
+                <span className="text-muted">{` · ${post.date} · ${post.readTime}`}</span>
               </span>
               <span className="mt-2 block max-w-[26ch] font-serif text-xl leading-snug text-ink transition-colors duration-300 group-hover:text-brand">
                 {post.title}

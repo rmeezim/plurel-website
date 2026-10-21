@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { pageMetadata } from "@/lib/metadata";
 import { AUDIT_HREF } from "@/lib/nav";
 import { Cascade } from "@/components/cascade";
 import { ArrowUpRight, Spark } from "@/components/icons";
@@ -17,10 +18,12 @@ export async function generateMetadata(
   const { slug } = await props.params;
   const post = getPost(slug);
   if (!post) return { title: "Article | Plurel Journal" };
-  return {
+  return pageMetadata({
     title: `${post.title} | Plurel Journal`,
     description: post.excerpt,
-  };
+    path: `/blog/${post.slug}/`,
+    type: "article",
+  });
 }
 
 function ArticleBlock({ block }: { block: PostBlock }) {

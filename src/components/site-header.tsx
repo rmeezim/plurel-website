@@ -109,8 +109,10 @@ function MenuTrigger({
     <button
       type="button"
       aria-expanded={open}
-      aria-controls={`menu-${menuKey}`}
-      onMouseEnter={() => onOpen(menuKey)}
+      // the panel exists only while open
+      aria-controls={open ? `menu-${menuKey}` : undefined}
+      // hover opens for a mouse only: a tap opens on its click
+      onPointerEnter={(e) => e.pointerType === "mouse" && onOpen(menuKey)}
       onClick={(e) => onToggle(menuKey, e.detail === 0)}
       className={`flex items-center gap-2 px-3 py-2 text-[15px] tracking-[-0.005em] transition-opacity xl:px-3.5 ${
         open ? "opacity-100" : "opacity-80 hover:opacity-100"
@@ -249,8 +251,12 @@ export function SiteHeader() {
   const headerRef = useRef<HTMLElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
 
+  // The panel a hovering mouse opened: the click that usually follows the
+  // hover keeps it open rather than toggling it shut
+  const hoverOpened = useRef<MenuKey | null>(null);
   const openMenu = (key: MenuKey) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
+    hoverOpened.current = key;
     setMenu(key);
   };
   const scheduleClose = () => {
@@ -263,6 +269,9 @@ export function SiteHeader() {
   // whole bar, so Tab alone would visit five unrelated stops first)
   const kbMenu = useRef<MenuKey | null>(null);
   const toggleMenu = (key: MenuKey, viaKeyboard = false) => {
+    const hovered = hoverOpened.current === key && menu === key;
+    hoverOpened.current = null;
+    if (hovered && !viaKeyboard) return;
     kbMenu.current = viaKeyboard && menu !== key ? key : null;
     setMenu((current) => (current === key ? null : key));
   };
@@ -287,10 +296,12 @@ export function SiteHeader() {
       const bar = barRef.current;
       if (!bar) return;
       const r = bar.getBoundingClientRect();
-      // Light glass if any third of the bar sits over a light surface, so
-      // its type never ends up thin on paper
-      const y = r.top + r.height / 2;
-      const tones = [0.2, 0.5, 0.8].map((f) => toneAt(r.left + r.width * f, y, headerRef.current));
+      // Light glass if any part of the bar sits over a light surface (a
+      // 3 x 3 sample, edges included, so a chapter boundary passing behind
+      // it counts), so its type never ends up thin on paper
+      const tones = [r.top + 2, r.top + r.height / 2, r.bottom - 2].flatMap((y) =>
+        [0.2, 0.5, 0.8].map((f) => toneAt(r.left + r.width * f, y, headerRef.current)),
+      );
       setBehind(tones.includes("light") ? "light" : "dark");
     };
     const probe = () => {
@@ -362,8 +373,14 @@ export function SiteHeader() {
       }
     };
     document.addEventListener("keydown", onTab);
+    // The index is hidden from lg up: a window widened past it closes it,
+    // so the page never stays inert behind a menu nobody can see
+    const wide = window.matchMedia("(min-width: 64rem)");
+    const onWide = () => wide.matches && setMobileOpen(false);
+    wide.addEventListener("change", onWide);
     return () => {
       document.removeEventListener("keydown", onTab);
+      wide.removeEventListener("change", onWide);
       behind.forEach((el) => el?.removeAttribute("inert"));
       document.body.style.overflow = previous;
     };
@@ -459,7 +476,7 @@ export function SiteHeader() {
                 type="button"
                 onClick={() => setMobileOpen(true)}
                 aria-expanded={mobileOpen}
-                aria-controls="mobile-menu"
+                aria-controls={mobileOpen ? "mobile-menu" : undefined}
                 aria-label="Open menu"
                 className={`inline-flex items-center justify-center border transition-[width,height,border-color] duration-300 motion-reduce:transition-none lg:hidden [html:not([data-js])_&]:hidden ${
                   pill ? "size-9 rounded-[1px]" : "size-10"

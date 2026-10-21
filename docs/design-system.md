@@ -414,14 +414,19 @@ chapter.
   into a floating pill (48px tall, 2px corners, at most 1080px wide) of
   frosted glass with a lit top edge, whose tint follows what sits behind
   it: dark glass with paper type over graphite or red, light glass with
-  ink over paper (sampled under the bar each frame). The clock beside
+  ink over paper (sampled under the bar while scrolling, at nine points
+  edge to edge, so the glass turns light whenever any of it overlaps
+  paper and its type never thins out over a chapter boundary). The clock beside
   the CTA shows the visitor's own time zone, labelled with its city.
   Nav, menus and the CTA are sentence case (15px nav, 14px CTA, 13px
   clock), never tracked capitals.
   Routes with a cinematic hero are listed in `OVERLAY_ROUTES`
   (`src/lib/nav.ts`); other routes get a spacer so content starts below
-  the bar. Desktop menus open a Swiss panel (a card under the pill);
-  mobile opens a full-screen red index.
+  the bar. Desktop menus open a Swiss panel (a card under the pill): on
+  hover for a mouse (the click that follows keeps it open), on the first
+  tap for touch, and on Enter, which moves focus into the panel. Mobile
+  opens a full-screen red index, which closes itself if the window widens
+  past lg.
 - Footer (`site-footer.tsx`): paper, brand-red lockup, Swiss link
   columns, one identity line ("Plurel is a distribution engineering firm:
   one team for every relevant channel, answerable for one number."), live
