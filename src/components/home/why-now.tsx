@@ -28,23 +28,6 @@ const MOMENTS = [
 /** One scale for the moments: 28px on a phone, about 50px on a laptop, 56px wide */
 const LINE = "type-display text-[clamp(1.75rem,1rem+2.4vw,3.5rem)] leading-[1.02]";
 
-/**
- * A line set as TypeReveal that still reads as one sentence. Chrome's
- * accessibility tree drops the spaces between TypeReveal's word boxes
- * (inline-blocks), and a paragraph has no name to fall back on, so
- * assistive tech gets a plain copy and the moving words are hidden from it.
- */
-function Line({ text, className }: { text: string; className: string }) {
-  return (
-    <p className={className}>
-      <span className="sr-only">{text}</span>
-      <span aria-hidden="true" className="block">
-        <TypeReveal as="span" className="block" lines={[text]} />
-      </span>
-    </p>
-  );
-}
-
 export function WhyNowChapter() {
   return (
     <section
@@ -79,7 +62,11 @@ export function WhyNowChapter() {
               className={`${s.row} relative ${GRID} items-baseline gap-y-3 py-6 sm:py-7 lg:py-8`}
             >
               <span aria-hidden className={s.rule} />
-              <Line text={line} className={`${LINE} col-span-4 sm:col-span-4 lg:col-span-9 xl:col-span-10`} />
+              <TypeReveal
+                as="p"
+                className={`${LINE} col-span-4 sm:col-span-4 lg:col-span-9 xl:col-span-10`}
+                lines={[line]}
+              />
               <Meta
                 as="p"
                 className={`${s.tag} order-first col-span-4 justify-self-end text-muted sm:order-none sm:col-span-2 lg:col-span-3 xl:col-span-2`}
@@ -92,7 +79,11 @@ export function WhyNowChapter() {
 
         <div className={`${s.row} relative pt-10 sm:pt-12 lg:pt-14`}>
           <span aria-hidden className={s.total} />
-          <Line text="We engineer the ones your buyers use, as one system." className={`${LINE} max-w-[24ch]`} />
+          <TypeReveal
+            as="p"
+            className={`${LINE} max-w-[24ch]`}
+            lines={["We engineer the ones your buyers use, as one system."]}
+          />
         </div>
       </div>
     </section>

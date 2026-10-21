@@ -4,8 +4,8 @@
   services-chapter.tsx).
 
   Static by default: the finished System in flow, its title and line,
-  then the four bands. The gate at the foot pins the figure (131svh of
-  travel on phones, 150svh from lg; the first two beats keep the 96svh
+  then the four bands. The gate at the foot pins the figure (127svh of
+  travel on phones, 145svh from lg; the first two beats keep the 96svh
   and 110svh they were drawn for, the rest is the bands and the loop). At
   first paint it pins only with JS (html[data-js], set before first
   paint) and TYPE_QUERY, so the track is sized in CSS with no layout
@@ -430,14 +430,14 @@
     grid-row: 1;
   }
   .builds {
-    grid-column: 5 / span 4;
+    grid-column: 5 / span 5;
     grid-row: 1;
     max-width: none;
     /* its title's cap line on the name's (line-heights 0.9 and 1.15) */
     margin-top: calc(0.105 * var(--bn) - 0.23 * var(--bt));
   }
   .svcs {
-    grid-column: 9 / span 4;
+    grid-column: 10 / span 3;
     grid-row: 1;
     max-width: none;
     /* the first link's cap line on the name's (line-height 1.2) */
@@ -704,8 +704,9 @@
 /* The pin. The stage is the full (lvh) screen so graphite reaches the
    floor when a mobile toolbar collapses; the content box is the visible
    (svh) part, clear of the floating header. */
+/* the travel: END (lib/services-type.ts) times the first beats' pin */
 .track {
-  --travel: calc(96svh * 15 / 11);
+  --travel: calc(96svh * 1.32);
 }
 .stageIn {
   --pt: 76px;
@@ -713,7 +714,7 @@
 }
 @media (min-width: 64rem) {
   .track {
-    --travel: 150svh;
+    --travel: calc(110svh * 1.32);
   }
   .stageIn {
     --pt: 84px;
@@ -786,13 +787,50 @@
     height: 100%;
     align-content: start;
   }
+  :global(html[data-js]) .root:not([data-type-motion]) .system {
+    --bpt: clamp(14px, 2.4svh, 30px);
+    --bpb: clamp(14px, 2.4svh, 30px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
+  :global(html[data-js]) .root:not([data-type-motion]) .system {
+    --bn: min(clamp(2.5rem, 1.6rem + 3.4vw, 5.25rem), 8.4svh);
+    --bt: min(clamp(1.25rem, 0.5rem + 1.1vw, 1.5rem), 2.6svh);
+    --bpt: clamp(12px, 2.2svh, 30px);
+    --bpb: clamp(12px, 2.2svh, 30px);
+  }
 }
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 360px) and (max-width: 63.99rem) and (min-height: 650px) {
-  :global(html[data-js]) .root:not([data-type-motion]) :is(.builds, .note, .line) {
+  :global(html[data-js]) .root:not([data-type-motion]) :is(.builds, .line) {
     display: none;
   }
   :global(html[data-js]) .root:not([data-type-motion]) .legend {
     display: block;
+    padding-top: 56px;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .system {
+    --bn: min(clamp(1.75rem, 1rem + 3vw, 2.5rem), 4.4svh);
+    --bs: min(17px, 2.2svh);
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .svcs {
+    margin-top: 10px;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .svc {
+    padding-block: 5px 6px;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .loop {
+    --ny: calc(var(--bpt) + 0.47 * var(--bn));
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 40rem) and (max-width: 63.99rem) and (min-height: 650px) {
+  :global(html[data-js]) .root:not([data-type-motion]) .bname {
+    grid-column: 1 / span 3;
+    grid-row: 1;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .svcs {
+    grid-column: 4 / span 3;
+    grid-row: 1;
+    margin-top: calc(0.105 * var(--bn) - 5px - 0.255 * var(--bs));
   }
 }
 
@@ -870,14 +908,24 @@
     --bpb: clamp(12px, 2.2svh, 30px);
   }
   .root[data-type-motion="on"] .bl {
+    margin-top: 6px;
     font-size: 15px;
     line-height: 1.4;
+  }
+  .root[data-type-motion="on"] .bf {
+    margin-top: 8px;
+  }
+  .root[data-type-motion="on"] .svc {
+    padding-block: clamp(5px, 0.9svh - 1px, 9px) clamp(6px, 0.9svh, 10px);
+  }
+  .root[data-type-motion="on"] .svcs {
+    margin-top: calc(0.105 * var(--bn) - clamp(5px, 0.9svh - 1px, 9px) - 0.255 * var(--bs));
   }
 }
 /* Below lg, pinned: each band is its name and services side by side
    (from sm) or stacked; the node on the name's cap centre */
 @media (max-width: 63.99rem) {
-  .root[data-type-motion="on"] :is(.builds, .note, .line) {
+  .root[data-type-motion="on"] :is(.builds, .line) {
     display: none;
   }
   .root[data-type-motion="on"] .legend {

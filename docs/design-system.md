@@ -110,8 +110,8 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
   (header nav 15px, header CTA 14px, clock 13px, footer column heads
   14px). Tracked uppercase micro-type reads as a template; it stays out
   of the site's own chrome.
-- Times and counts that people read (the week's day and time, the
-  manifesto's 146) use the face's lining, proportional figures: its
+- Figures that people read (the accountability strips, the Diagnostic's
+  scores) use the face's lining, proportional figures: its
   tabular set has a footed 1 and a slashed zero, which read as code.
 - Instrument Serif (`--font-serif`) remains loaded only for interior
   pages that haven't moved over.
@@ -158,28 +158,36 @@ Content on GRID
 ## Motion
 
 Everything sits inside `prefers-reduced-motion: no-preference` in
-`globals.css`, so reduced-motion visitors get the finished page.
+`globals.css`, so reduced-motion visitors get the finished page, and
+without JS every chapter renders finished.
 
-- **Hero load (flagship only):** headline lines rise out of their masks
-  (`line-rise`, 140ms apart), then copy, actions, and the glass fade up
-  (`fade-up`).
-- **Scroll:** `Reveal`, staggering siblings 0.08s. One chapter is pinned
-  and scrubbed: services' typographic system, which ends on its layered
-  stack. Everything else rides native scroll: the week's narrator is
-  sticky and turns its day and time over as each tile reaches the middle
-  of the screen, the manifesto's reports are dealt onto the table once as
-  it scrolls in, and the two glass bands follow scroll as a height
-  profile. Nothing else is driven by scroll position.
-- **Hover:** a pointer pours light into the glass (below); a supplier
-  report straightens, lifts and takes its red-pen question; a services
-  layer lifts its plate, and a plate lights its row; contents rows take a
-  red top rule; arrows nudge diagonally.
-- **Ambient:** the film behind the glass and the week's channel tiles
-  while they show (no controls, by the owner's call: they run only while
-  on screen, and stop in hidden tabs and behind the open mobile menu). The
+- **Headings arrive** through one vocabulary, `TypeReveal`
+  (`components/type-reveal.tsx`, which documents the timings), all rising
+  on a long expo-out, cubic-bezier(0.16, 1, 0.3, 1), none bouncing,
+  blurring or scaling. Hero: the h1's words rise out of their masks from
+  first paint (65ms apart), the light "Everywhere." last; the kicker,
+  copy, action and glass are timed to it in `hero.tsx`. Display (chapter
+  h2s): words in one wave, 32ms apart. Title (h3s and display-set lines):
+  words rise 0.4em with opacity. Chars (names such as "Halden" or the
+  business types): letters one by one. Kicker: the square scales in, then
+  the label slides in. A heading below the fold plays once as it comes up
+  the screen; one already on screen stays still. Each carries its words
+  once as visually hidden plain text and hides the moving boxes from
+  assistive tech, so it reads as one sentence.
+- **Blocks:** `Reveal` (fade-up), staggering siblings 0.08s.
+- **Scroll:** one chapter is pinned and scrubbed: services' typographic
+  system, which ends on the Plurel System. Scroll-linked without pinning:
+  the statement's words light as the reader reaches them, the
+  accountability strips slide in opposite directions, and the faint art
+  drifts a few dozen pixels against the page (a CSS scroll-driven
+  animation). The two glass bands follow scroll as a height profile.
+- **Hover:** a pointer pours light into the glass (below); a system layer
+  lifts in tone and its services brighten; contents rows take a red top
+  rule; arrows nudge diagonally.
+- **Ambient:** only the film behind the glass (no control, by the owner's
+  call: it runs only while on screen and stops in hidden tabs). The
   selected-clients marquee (`clients-strip.tsx`, paused on hover) returns
-  only once real client names exist. Nothing else moves on its own; all
-  of them sit still for reduced motion.
+  only once real client names exist. Nothing else moves on its own.
 
 ## Fluted glass
 
@@ -238,93 +246,31 @@ then the glass:
 - **Glass:** the `rise` band, set well below the actions, uncaptioned,
   resting a little over half its height on first load.
 
-## The attention section: one buyer's week
+## What Plurel is
 
-`home/attention-field.tsx` (server markup), with the sticky narrator in
-`home/attention-week.tsx` (client), the moments in `lib/attention-field.ts`
-(`WEEK`), the layout in `home/attention-field.module.css`, and the
-channel tiles in `home/channel-tiles.tsx` (data in `lib/channels.ts`).
-The section right after the hero (`#distribution`, paper, a clean cut
-from the graphite hero) tells "Attention is everywhere" as a human story
-rather than a diagram: no particles, lanes, funnels or curves.
+`home/statement.tsx`. The hero's second beat, in its graphite room, with
+no label: one statement set large, "Plurel is a distribution engineering
+firm. We build and run the system that makes a growing company
+impossible to miss for the people it sells to, and we answer for the
+growth it brings." Its words light as the reader reaches them
+(scroll-linked, only while on screen; lit from the start under reduced
+motion or without JS; unlit words stay above AA for large text). Under
+it, four facts on a hairline, set like a fact sheet: built for, how it
+runs, answers for, starts with. The mark watermark sits behind the
+statement, cropped at the right. A visually hidden h2 keeps the outline.
 
-- **Opening.** One quiet label ("How distribution works"), the h2
-  "Attention is everywhere." on the shared scale, and a standfirst beside
-  it that introduces the week and says in plain view that it is a
-  sample: Maya owns a terraced house in Leeds and a boiler that sounds
-  like a jet; Halden, the heat pump brand she keeps meeting, is one we
-  made up.
-- **The week.** Eight moments, Monday 9 to Monday 16 March: a search at
-  her desk, a reel at lunch, an AI answer on the sofa, the billboard by
-  the station, the weekend review, a creator she follows with a meter
-  next to hers, the brand film before her show, and the booking email.
-  Each is one large tile (a drawn screen recording, the same story every
-  time) with its day and time and one plain sentence. From lg on a screen
-  at least 560px tall (with JS), a sticky narrator on columns 1 to 4
-  tells whichever moment holds the middle of the screen: a week strip
-  (a letter a day, a square per moment: ink once passed, red for now,
-  faint to come, and "Sample week" beside it), the day and time set at
-  72 to 96px in the display face, turning over like a clock, and the
-  sentence. Everywhere else, and without JS, each moment's own text sits
-  above or beside its tile.
-- **The close.** "Seven times, in seven places, the same story. Then she
-  booked." at headline scale, then "For a developer buying fifty units,
-  the week looks different. The story doesn't." and the outline "See the
-  method" button. It doesn't name the number: the manifesto, next, does.
+## Why now
 
-Tiles are DOM (crisp type) and decoration (aria-hidden; each moment's
-sr-only line says what it shows). Each plays only while on screen (a
-sliver is enough), never behind the open mobile menu or in a hidden tab,
-and holds a designed still frame for reduced motion, data saver and no
-JS. Each is also a slot for real footage: drop
-`public/video/channels/<key>.mp4` (keys: search, reel, answer, ooh,
-press, creator, film, book; optional `<key>.jpg` poster) and
-`lib/clips.ts` picks it up at build time, muted and looped, with
-`preload="none"`. Nothing that contains the sticky narrator may clip
-(`overflow: hidden/clip` breaks it).
-
-## Why Plurel: ten reports on a red table
-
-`home/manifesto-chapter.tsx` (server markup and the one-number sheet),
-the table in `home/supplier-reports.tsx` (client) and
-`home/supplier-reports.module.css`, data in `lib/reports.ts`. The
-manifesto is a red chapter: the thesis, then the evidence on the desk.
-
-- **Thesis.** "Your marketing shouldn't be ten companies. It should be
-  one system." set larger than the shared H2 (it is the site's thesis),
-  with the standfirst beside it.
-- **The table.** The ten reports a company gets in a month, one per
-  supplier, each a small document in the house style its sender would
-  use (an SEO PDF cover, an ads dashboard, a social snapshot, a monthly
-  analytics page, a PR coverage report with clippings, a creator recap,
-  a content tracker spreadsheet, a site health gauge, a brand audit, a
-  video analytics card), each proud of its own September number and
-  none of them about qualified demand. Suppliers are named by role only:
-  no company names, no logos. Placed by hand on fixed artboards per
-  breakpoint (phones show six of the ten), slightly rotated,
-  overlapping, as a still life across the container. The h3 "Every
-  supplier reports its own number. Nobody owns the outcome." sits in
-  the table's quiet top-left corner from lg, with one plain line under
-  it: sample reports for Halden, illustrative figures, pick one up.
-- **Pick one up.** Hover (mouse and pen), focus or a tap straightens a
-  report, lifts it to the top of the pile, and a red pen circles its
-  number and writes Plurel's question beside it ("Clicked. Then what?",
-  "From whom?", "Did any of them call?"...). A tap, click, Enter or
-  Space holds it; Escape, a press elsewhere or focus leaving the pile
-  puts it back. The pile is a list of ten buttons, each named by its
-  supplier, title and number and described by its question.
-- **The resolution.** "One team. One number." beside one clean Plurel
-  sheet, upright and apart from the pile: a single line item, "Qualified
-  demand 146", defined in plain words (the enquiries that can actually
-  become customers; for Halden, booked home surveys and spec requests
-  for a named site) and marked as a sample figure. Then "Find where
-  your suppliers disagree." and "Request a diagnostic".
-
-Motion: a table that starts below the fold is dealt onto the desk once as
-it scrolls in, bottom card first; no pin, no scrub, no canvas. Reduced
-motion gets the same table and notes without movement; without JS, CSS
-alone lifts a report on hover and focus. Paper type on red: body copy in
-paper (5.2:1), blush only at display sizes.
+`home/why-now.tsx`, on paper. The claim, "Buyers decide before they
+arrive.", with its standfirst beside it, then six moments where buyers
+decide, set large on hairlines, each with its data tag in mono on the
+right: the answer an assistant gives, the first three results, a creator
+they already trust, the reviews under the product, the shelf, the store
+page, the app listing, the friend or colleague who has used it. They read
+for consumer and business buyers alike. Each rule draws in with its line.
+It closes under a brand-red rule: "We engineer the ones your buyers use,
+as one system." Contours behind, with the page's one survey readout. No
+statistics, no sources, no sample people.
 
 ## Services: from a menu to a layered system
 
@@ -381,6 +327,56 @@ Rules:
   `#services` lands on the chapter.
 - The pure parts are unit tested:
   `npx -y tsx --test src/lib/services-type.test.ts`.
+
+## Accountability
+
+`home/accountability.tsx`, on paper. "Ten suppliers report ten numbers.
+We answer for one." Then two strips of very large type that slide across
+the full width in opposite directions as the reader scrolls (no pin; each
+lines up on the grid as it crosses the middle of the screen): "What
+suppliers report", ten supplier metrics in muted ink (reach,
+impressions, followers, click-through, views, sessions, mentions,
+articles, organic traffic, PageSpeed: generic examples, not claims), and
+"What we answer for", the numbers businesses run on (orders, installs,
+demos, stockists, bookings, sign-ups, renewals) in full ink with brand-red
+square separators. Under reduced motion or without JS both stand still
+and wrap. Then the commitment (the one number is agreed in the
+Diagnostic, before any work starts) and a three-line spec: agreed, read,
+reset.
+
+## Who it's for
+
+`home/who-its-for.tsx`, on red. "Different buyers. One system." The four
+layers stay the same; what changes is where buyers decide, what Plurel
+builds first and the number it answers for. Four columns that share
+rows, so the labels line up: consumer brands (orders), physical products
+(sell-through), B2B technology (demos with buyers who fit), consumer apps
+(installs that stay). Labels in paper (blush fails AA at small sizes on
+red). Contours behind, another seed.
+
+## Faint art
+
+`components/art.tsx` (`ArtField`), the one exception to flat surfaces: at
+most one field per chapter, felt more than seen, aria-hidden, behind the
+type. Two motifs:
+
+- **Contours:** a surveyed terrain (summits, gullies, saddles; sixteen
+  contours at interval 4, every fifth heavier), generated once by
+  `scripts/art/contours.mjs` into `public/art/contours-<seed>.svg` (six
+  seeds, 28 to 60KB each) and painted through a CSS mask in the tone's
+  token color: ink about 7% on paper, paper about 9% on graphite, ember
+  on red (darker lines only raise the contrast of paper type). `focus`
+  places the summit; `annotate` adds one quiet readout ("Field 03 ·
+  Contour interval 4", the generator's real interval) with registration
+  crosshairs, on Why now only, hidden on phones.
+- **The mark:** the logo's exact cells, outlined and filled with fine
+  vertical lines that echo the hero's nine flutes, huge and cropped at the
+  chapter's edge, as if engraved. Never filled, split, opened or
+  assembled.
+
+Both drift slowly against the page (`drift`, default on) and sit still
+under reduced motion and without JS. Never inside the pinned services
+chapter.
 
 ## Imagery and proof
 

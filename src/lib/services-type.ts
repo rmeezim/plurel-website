@@ -311,19 +311,19 @@ export const textSize = (s: number, house: number) => house + Math.round((s - ho
   the pin runs on to END, so the first two beats keep their exact scroll
   distances.
 
-  0 ...... .155  .165 .... .34  .29 ..... .45 .485 ........... .8  .86 ................... 1.195  1.2 ..... 1.28  1.3 .. END
+  0 ...... .155  .165 .... .34  .29 ..... .45 .485 ........... .8  .86 ................... 1.175  1.175 ... 1.265  1.27 . END
   | poster held | baselines    | column      | menu | set, stage by stage | the bands, layer by layer | the loop  | rest
   The poster holds for the first 15% of the first beats' pin (about
   150px of scroll at 1440x900), whole on the pinned screen, before
   anything moves. Caption: a (eight voices) -> b at .35 (a menu) -> c at
-  .53, as the first names are set (a system) -> d at 1.2, the System's
+  .53, as the first names are set (a system) -> d at 1.175, the System's
   title. The chain fades in at .35 and lights stage by stage as its rows
   are set; then, once every name is set, the menu drains into the bands,
   foundation first, and the chain lights again as each layer locks. The
   chain gives way to the System's line, the loop is drawn, and the
-  figure takes the pointer (1.3).
+  figure takes the pointer (1.27).
 */
-export const END = 15 / 11; // 150svh / 110svh on desktop; 131svh / 96svh on phones
+export const END = 1.32; // 145.2svh / 110svh on desktop; 126.7svh / 96svh on phones
 
 export const T = {
   rule: { at: 0.155, step: 0.016, len: 0.14 }, // the rows' hairlines draw: the grid they land on
@@ -334,7 +334,7 @@ export const T = {
   cap: [0.35, 0.53] as const,
   // one layer at a time: its names leave together, its band rises and
   // they land in it as it locks, len after the layer's turn starts
-  drain: { at: 0.86, step: 0.075, inner: 0, len: 0.11 },
+  drain: { at: 0.86, step: 0.07, inner: 0, len: 0.105 },
   // the rows below close ranks once the names have cleared the menu: 60%
   // into a flight (desktop), or as soon as a name has folded away (below
   // lg, in fold); as fractions of drain.len
@@ -344,11 +344,11 @@ export const T = {
   // the rows have closed ranks above its place, and its name and text
   // rise in as it locks; as fractions of drain.len
   band: { lag: 0.6, text: 0.7 },
-  chainOut: { at: 1.14, len: 0.08 },
-  line: { at: 1.2, len: 0.06 }, // the System's line takes the chain's place
-  title: 1.2, // the narrator hands over to the System's title
-  loop: { at: 1.2, len: 0.08 }, // the loop is drawn: up through the layers, then back down
-  settled: 1.3, // the bands take the pointer from here
+  chainOut: { at: 1.12, len: 0.08 },
+  line: { at: 1.175, len: 0.06 }, // the System's line takes the chain's place
+  title: 1.175, // the narrator hands over to the System's title
+  loop: { at: 1.175, len: 0.09 }, // the loop is drawn: up through the layers, then back down
+  settled: 1.27, // the bands take the pointer from here
 } as const;
 
 export const seg = (p: number, at: number, len: number) => clamp((p - at) / len);
