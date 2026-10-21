@@ -170,12 +170,13 @@
   color: var(--color-muted);
   white-space: nowrap;
 }
+/* days to come stay readable (4.9:1); the ticks carry most of the progress */
 .stripDay b {
   font-weight: 550;
-  color: rgb(17 15 10 / 0.3);
+  color: rgb(17 15 10 / 0.6);
 }
 .stripDay[data-state="past"] b {
-  color: rgb(17 15 10 / 0.62);
+  color: rgb(17 15 10 / 0.8);
 }
 .stripDay[data-state="now"] b {
   color: var(--color-ink);

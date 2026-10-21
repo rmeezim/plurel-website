@@ -66,8 +66,8 @@ export function AttentionField({ clips = {} }: { clips?: ChannelClips }) {
                         <span className={s.whenDay}>
                           <span aria-hidden="true">{m.day}</span>
                           <span className="sr-only">{m.dayName}</span>
-                        </span>{" "}
-                        {m.time}
+                        </span>
+                        {` ${m.time}`}
                       </time>
                     </p>
                     <p className={s.what}>{m.line}</p>

@@ -35,12 +35,12 @@ export function Hero() {
             <p className="fade-up flex items-start gap-2.5 text-[13px] font-medium leading-[1.5]" style={{ animationDelay: "60ms" }}>
               <i aria-hidden className="mt-[6px] block size-[7px] shrink-0 bg-signal" />
               <span>
-                Distribution, engineered{" "}
+                {"Distribution, engineered "}
                 <span className="whitespace-nowrap text-fog">· A Northeon company</span>
               </span>
             </p>
             <h1 id="hero-heading" className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98]">
-              <Line delay={150}>Made to be</Line>
+              <Line delay={150}>Made to be</Line>{" "}
               <Line delay={290}>
                 seen. <Accent className="text-fog">Everywhere.</Accent>
               </Line>

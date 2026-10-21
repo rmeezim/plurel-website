@@ -47,7 +47,8 @@ export function CityClock({ visitor = false, className = "" }: { visitor?: boole
     <span
       className={`tabular-nums transition-opacity duration-500 ${visitor && !now ? "opacity-0" : ""} ${className}`}
     >
-      {now?.city ?? (visitor ? "Local" : `${STUDIO_CITY.name} studio`)} <span aria-hidden>·</span>{" "}
+      {`${now?.city ?? (visitor ? "Local" : `${STUDIO_CITY.name} studio`)} `}
+      <span aria-hidden>·</span>{" "}
       <time suppressHydrationWarning>{now?.time ?? "--:--"}</time>
     </span>
   );

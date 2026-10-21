@@ -839,7 +839,7 @@ function SearchTile() {
               </span>
               <I n="dots" className={s.resMore} />
             </div>
-            <h4 className={`${s.resTitle} ${s.resTop}`}>{top.title}</h4>
+            <p className={`${s.resTitle} ${s.resTop}`}>{top.title}</p>
             <p className={s.resText}>{top.text}</p>
             <div className={s.links}>
               {top.links?.map((l) => (
@@ -860,7 +860,7 @@ function SearchTile() {
                 </span>
                 <I n="dots" className={s.resMore} />
               </div>
-              <h4 className={s.resTitle}>{r.title}</h4>
+              <p className={s.resTitle}>{r.title}</p>
               <p className={s.resText}>{r.text}</p>
             </article>
           ))}
@@ -1293,7 +1293,7 @@ function PressTile() {
       <div className={s.pView}>
         <article className={s.pPage}>
           <p className={s.pKick}>{PRESS.kicker}</p>
-          <h4 className={s.pTitle}>{PRESS.headline}</h4>
+          <p className={s.pTitle}>{PRESS.headline}</p>
           <p className={s.pStand}>{PRESS.standfirst}</p>
           <div className={s.byline}>
             <span className={s.byAv} />
@@ -1644,7 +1644,7 @@ function BookTile() {
               </p>
               <small className={s.bAt}>{BOOKING.at}</small>
             </div>
-            <h4 className={s.bSubject}>{BOOKING.subject}</h4>
+            <p className={s.bSubject}>{BOOKING.subject}</p>
             <div className={s.bMailBody}>
               <p className={s.bBrand}>
                 <HaldenMark />

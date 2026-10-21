@@ -56,7 +56,7 @@ export function ClosingChapter() {
                 </p>
               </div>
               <p className="mt-9 text-[17px] leading-[1.4] tracking-[-0.01em] sm:mt-10">
-                Or write to{" "}
+                {"Or write to "}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
                   className={`relative whitespace-nowrap border-b border-paper/60 pb-1 font-medium transition-colors duration-300 after:absolute after:inset-x-0 after:-inset-y-3 hover:border-paper ${FOCUS}`}

@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ArrowUpRight } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { ChapterHead, CONTAINER, GRID, H2 } from "@/components/system";
@@ -84,9 +84,16 @@ function liftDimensions(text: string): { text: string; dimensions: string[] } {
 /**
  * Typesetting without changing a character: hyphenated compounds never
  * break, and (with keepTail) the last ten-odd characters stay together so
- * no line ends on a lone word.
+ * no line ends on a lone word. `before` leads the text (a space after the
+ * lead sentence).
+ *
+ * Plain words run together as one string with their spaces in it: a
+ * space left as a text node of its own sits between React's text markers,
+ * where Chrome's accessibility tree drops it and the words run together
+ * ("Howisthisdifferent..."). One that falls between two kept spans gets a
+ * span of its own.
  */
-function settle(text: string, keepTail = true): ReactNode {
+function settle(text: string, keepTail = true, before = ""): ReactNode {
   const words = text.split(" ");
   let k = 0;
   if (keepTail) {
@@ -94,17 +101,26 @@ function settle(text: string, keepTail = true): ReactNode {
     while (k < words.length && (k < 2 || words.slice(-k).join(" ").length < 10)) k++;
   }
   const head = words.slice(0, words.length - k);
-  return (
-    <>
-      {head.map((word, i) => (
-        <Fragment key={i}>
-          {word.includes("-") ? <span className="whitespace-nowrap">{word}</span> : word}
-          {i < head.length - 1 || k > 0 ? " " : ""}
-        </Fragment>
-      ))}
-      {k > 0 && <span className="whitespace-nowrap">{words.slice(-k).join(" ")}</span>}
-    </>
-  );
+  const parts: ReactNode[] = [];
+  let run = before;
+  const keep = (key: string, kept: string) => {
+    if (run.trim()) parts.push(run);
+    else if (run) parts.push(<span key={`${key}-gap`}>{run}</span>);
+    run = "";
+    parts.push(
+      <span key={key} className="whitespace-nowrap">
+        {kept}
+      </span>,
+    );
+  };
+  head.forEach((word, i) => {
+    if (word.includes("-")) keep(`w${i}`, word);
+    else run += word;
+    if (i < head.length - 1 || k > 0) run += " ";
+  });
+  if (k > 0) keep("tail", words.slice(-k).join(" "));
+  else if (run) parts.push(run);
+  return <>{parts}</>;
 }
 
 const ANSWER = "max-w-[68ch] text-[15px] leading-[1.55] text-ink/65";
@@ -115,7 +131,7 @@ function Answer({ text }: { text: string }) {
   return (
     <>
       <strong className="font-medium text-ink">{settle(lead, !rest)}</strong>
-      {rest && <> {settle(rest)}</>}
+      {rest && settle(rest, true, " ")}
     </>
   );
 }

@@ -445,9 +445,11 @@ export function SiteHeader() {
                 className={`group hidden items-center gap-2.5 border text-[14px] font-medium tracking-[-0.005em] transition-[height,padding,background-color,border-color,color] duration-300 motion-reduce:transition-none sm:inline-flex ${
                   pill ? "h-8 rounded-[1px] px-3.5" : "h-10 px-4"
                 } ${
+                  // its own colour, not the bar's: inherited, its transition
+                  // would restart on every frame of the bar's and lag behind
                   tone === "light"
-                    ? "border-ink/25 hover:border-brand hover:bg-brand hover:text-paper"
-                    : "border-paper/40 hover:border-paper hover:bg-paper hover:text-ink"
+                    ? "border-ink/25 text-ink hover:border-brand hover:bg-brand hover:text-paper"
+                    : "border-paper/40 text-paper hover:border-paper hover:bg-paper hover:text-ink"
                 }`}
               >
                 Get in touch
@@ -541,7 +543,7 @@ export function SiteHeader() {
                     onClick={closeAll}
                     className="flex items-baseline gap-4 py-3"
                   >
-                    <Meta className="w-8 text-blush">
+                    <Meta className="w-8 text-paper">
                       {String(i + 1).padStart(2, "0")}
                     </Meta>
                     <span className="text-[clamp(2rem,9vw,3rem)] leading-none tracking-[-0.03em]">
