@@ -20,8 +20,8 @@ const FOCUS =
   comes back (the sentence on the right), what it costs and how fast
   (under the button), and that it is yours to keep.
 
-  Motion: the name rises letter by letter, then the two display lines
-  rise softly under it (TypeReveal "chars", then "title").
+  Motion: one pen. The name is plotted at the hero's pace, then the two
+  display lines under it, one after the other (TypeReveal).
 */
 export function ClosingChapter() {
   return (
@@ -29,8 +29,8 @@ export function ClosingChapter() {
       <div className={`${CONTAINER} pt-24 pb-28 sm:pt-28 sm:pb-32 lg:pt-38 lg:pb-40`}>
         <TypeReveal
           id="closing-heading"
-          variant="chars"
-          className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none [--display-tracking:-0.044em]"
+          pace={30}
+          className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none [--display-tracking:-0.044em] [--display-weight:360]"
           lines={["The Diagnostic."]}
         />
 
@@ -40,7 +40,6 @@ export function ClosingChapter() {
             <TypeReveal
               as="p"
               variant="title"
-              delay={160}
               className="type-title max-w-[15em] text-[clamp(1.5rem,2.66vw,2.125rem)] leading-[1.12]"
               lines={["Six parts of your distribution, scored by a strategist."]}
             />
@@ -78,7 +77,6 @@ export function ClosingChapter() {
               <TypeReveal
                 as="p"
                 variant="title"
-                delay={240}
                 className="type-title text-[clamp(1.625rem,2.66vw,2.125rem)] leading-[1.12]"
                 lines={OUTPUT}
                 lineClassName={OUTPUT.map((_, i) => (i === OUTPUT.length - 1 ? "text-blush" : undefined))}
@@ -89,10 +87,10 @@ export function ClosingChapter() {
         </div>
       </div>
       {/* The glass edge: the red room ends in the hero's nine flutes, hung
-          over a paper strip that leads into the footer. They start on a
+          over a graphite strip that leads into the footer. They start on a
           short fringe and drop into an arc as the footer comes up, deepest
           at the center, so the page settles rather than climbs. */}
-      <div className="relative h-[clamp(152px,15vw,208px)] bg-paper">
+      <div className="relative h-[clamp(152px,15vw,208px)] bg-graphite">
         <GlassBand
           film={heroFilm()}
           profile="arc"

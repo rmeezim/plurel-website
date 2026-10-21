@@ -56,7 +56,7 @@ export default function ServicesIndexPage() {
                 />
               </em>
             </h1>
-            <p className="fade-up mt-6 max-w-[60ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
+            <p className="fade-in mt-6 max-w-[60ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
               In plain terms: Plurel builds everything a buyer meets before
               they talk to you. Your brand, your website, how you show up in
               Google and AI answers, your content and creators, your ads and

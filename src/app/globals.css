@@ -51,20 +51,22 @@
   --font-mono: var(--font-jetbrains);
 }
 
-/* Display type: Geist, firm and tight, so a headline sets as one solid
-   shape. Every headline, name and big number. The two largest heads (hero,
-   closing) tighten further with --display-tracking. */
+/* Display type: Geist near its regular weight and tight, so a headline
+   sets as one clean, quiet shape. Every headline, name and big number. The
+   largest type steps lighter with --display-weight (hero and closing 360,
+   the accountability strips 340) and tightens with --display-tracking. */
 @utility type-display {
   font-family: var(--font-geist), system-ui, sans-serif;
-  font-weight: 470;
+  font-weight: var(--display-weight, 390);
   letter-spacing: var(--display-tracking, -0.038em);
   text-wrap: balance;
 }
 /* The display face a step down, for sentences and smaller titles set in
-   it: list lines, sub-lines, questions, service names, figures */
+   it: list lines, sub-lines, questions, service names, figures. A touch
+   firmer than display type, as smaller type needs to be. */
 @utility type-title {
   font-family: var(--font-geist), system-ui, sans-serif;
-  font-weight: 430;
+  font-weight: 400;
   letter-spacing: -0.018em;
   text-wrap: balance;
 }
@@ -109,6 +111,13 @@
     text-wrap: pretty;
   }
 
+  /* The canvas (what an overscroll shows) is graphite, the footer's room;
+     an interior page's body is still paper, and the homepage, one dark
+     room (main[data-room="dark"]), is graphite throughout */
+  html {
+    background-color: var(--color-graphite);
+  }
+
   body {
     background-color: var(--color-paper);
     color: var(--color-ink);
@@ -116,6 +125,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  body:has(main[data-room="dark"]) {
+    background-color: var(--color-graphite);
+    color: var(--color-paper);
   }
 
   ::selection {
@@ -193,19 +207,15 @@
 
 /* Light, tasteful entrance animation — disabled when users prefer reduced motion */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes fade-up {
+  /* A block switching on: opacity alone, never travelling */
+  @keyframes fade-in {
     from {
       opacity: 0;
-      transform: translateY(18px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
     }
   }
 
-  .fade-up {
-    animation: fade-up 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  .fade-in {
+    animation: fade-in 0.6s cubic-bezier(0.33, 1, 0.68, 1) both;
   }
 
   /* Infinite, seamless side-to-side loop for the work showcase. The track
@@ -342,66 +352,45 @@
     animation: scrim-in 0.2s ease both;
   }
 
-  /* Glass detail card entrance */
-  @keyframes glass-in {
-    from {
-      opacity: 0;
-      transform: translateY(6px) scale(0.97);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
+  /* Glass detail card entrance: it switches on */
   .glass-in {
-    animation: glass-in 0.35s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+    animation: fade-in 0.3s cubic-bezier(0.33, 1, 0.68, 1) both;
   }
 
-  /* Scroll-entrance reveal — armed by JS after hydration, below-fold only */
+  /* Scroll-entrance reveal (reveal.tsx): armed by JS after hydration,
+     below the fold only. A block lights: opacity alone, never travelling,
+     once the pen above it is free. */
   .reveal-armed {
     opacity: 0;
-    transform: translateY(24px);
   }
 
   .reveal-in {
     opacity: 1;
-    transform: translateY(0);
-    transition:
-      opacity 0.75s cubic-bezier(0.22, 0.61, 0.36, 1),
-      transform 0.75s cubic-bezier(0.22, 0.61, 0.36, 1);
+    transition: opacity 0.5s cubic-bezier(0.33, 1, 0.68, 1);
     transition-delay: var(--reveal-delay, 0s);
   }
 
-  /* Sweep variant — content arrives diagonally from the lower left, as if
-     dispatched from beneath the section intro */
-  .reveal-armed.reveal-sweep {
-    transform: translate(-24px, 40px);
-  }
-
-  @media (min-width: 64rem) {
-    .reveal-armed.reveal-sweep {
-      transform: translate(-88px, 44px);
-    }
-  }
-
-  /* Word-by-word cascade inside the glass card */
-  @keyframes word-in {
+  /* Interior headlines (cascade.tsx): each word plotted in reading order,
+     the type reveal's sweep (below), with more room at the sides for the
+     serif italics' overhang */
+  @keyframes plot-window-wide {
     from {
-      opacity: 0;
-      transform: translateY(4px);
-      filter: blur(4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
+      transform: translate3d(calc(-100% - 0.3em), 0, 0);
     }
   }
-
+  @keyframes plot-text-wide {
+    from {
+      transform: translate3d(calc(100% + 0.3em), 0, 0);
+    }
+  }
   .word-in {
     display: inline-block;
-    animation: word-in 0.5s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+    clip-path: inset(-0.25em -0.3em -0.3em -0.3em);
+    animation: plot-window-wide var(--d, 0.4s) linear var(--t, 0ms) backwards;
+  }
+  .word-in > span {
+    display: inline-block;
+    animation: plot-text-wide var(--d, 0.4s) linear var(--t, 0ms) backwards;
   }
 
   /* ---------- Cinematic x Swiss load sequence (hero, flagship only) ---------- */
@@ -423,28 +412,31 @@
     animation: mark-cell 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
 
-  /* The hero's headline rises on the type-reveal system (below) */
+  /* The hero's headline is plotted on the type-reveal system (below) */
 }
 
-/* A question's answer settling in as it opens (faq-chapter.tsx; the class
-   that plays it is motion-safe) */
+/* A question's answer lighting as it opens: opacity alone (faq-chapter.tsx;
+   the class that plays it is motion-safe) */
 @keyframes faq-open {
   from {
     opacity: 0;
-    transform: translateY(-4px);
   }
 }
 
 /* ---------- Type reveal (components/type-reveal.tsx) ----------
-   The vocabulary and its timings are written up at the top of
-   type-reveal.tsx. Each word (each letter, for "chars") is a unit (.tr-u)
-   in its own mask (.tr-w): a clip that reaches 0.2em above the line box
-   for accents and 0.25em below it for descenders, so finished type is
-   never cut, even at leading 0.9. Hidden, a unit waits a full line plus
-   0.5em down, clear of its mask. Units are inline-blocks on the baseline,
-   so a head sets exactly as plain text would. Motion needs JS (the
-   inline script's html[data-js]), a screen and motion allowed;
-   everything else gets finished type. */
+   The vocabulary and its paces are written up at the top of
+   type-reveal.tsx. Each word is plotted: its window (.tr-w) slides right
+   over its own text (.tr-u), which slides left by just as much, so the
+   type stands still while the window's leading edge uncovers it, left to
+   right at a steady rate (linear), from --t over --d (both set from the
+   characters before it and in it). Transforms only, so the compositor
+   draws it even while the page is busy. The window's clip reaches 0.25em
+   above the line box, 0.3em below it and 0.15em past each side, so
+   accents, descenders and overhangs are never cut; it starts its own
+   width and those 0.15em back, so nothing shows before the pen arrives.
+   Words are inline-blocks on the baseline, so a head sets exactly as
+   plain text would. Motion needs JS (the inline script's html[data-js]),
+   a screen and motion allowed; everything else gets finished type. */
 .type-reveal .tr-line {
   display: block;
 }
@@ -454,108 +446,87 @@
 }
 
 @media screen and (prefers-reduced-motion: no-preference) {
-  html[data-js] .type-reveal {
-    --tr-from: calc(100% + 0.5em);
-    --tr-dur: 1s;
-    --tr-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  @keyframes plot-window {
+    from {
+      transform: translate3d(calc(-100% - 0.15em), 0, 0);
+    }
   }
-  html[data-js] .type-reveal[data-state="load"] {
-    --tr-dur: 1.1s;
+  @keyframes plot-text {
+    from {
+      transform: translate3d(calc(100% + 0.15em), 0, 0);
+    }
   }
-  html[data-js] .type-reveal[data-variant="chars"] {
-    --tr-dur: 0.95s;
-  }
-  html[data-js] .type-reveal[data-variant="title"] {
-    --tr-from: 0.4em;
-    --tr-dur: 0.8s;
-    --tr-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  /* The light Accent arrives last, and a touch slower */
-  html[data-js] .type-reveal .tr-accent {
-    --tr-dur: 1.4s;
+  /* A state switching on, at once */
+  @keyframes lit {
+    from {
+      opacity: 0;
+    }
   }
 
-  /* The masks, while a head moves (titles travel a fraction of a line
-     and fade instead) */
-  html[data-js]
-    .type-reveal:not([data-variant="title"]):is([data-state="armed"], [data-state="in"], [data-state="load"])
-    .tr-w {
-    clip-path: inset(-0.2em -0.12em -0.25em);
+  html[data-js] .type-reveal:is([data-state="armed"], [data-state="in"], [data-state="load"]) .tr-w {
+    clip-path: inset(-0.25em -0.15em -0.3em -0.15em);
+  }
+  html[data-js] .type-reveal[data-state="armed"] .tr-w {
+    transform: translate3d(calc(-100% - 0.15em), 0, 0);
   }
   html[data-js] .type-reveal[data-state="armed"] .tr-u {
-    transform: translate3d(0, var(--tr-from), 0);
+    transform: translate3d(calc(100% + 0.15em), 0, 0);
   }
-  html[data-js] .type-reveal[data-state="in"] .tr-u {
-    transition: transform var(--tr-dur) var(--tr-ease) var(--t, 0ms);
+  html[data-js] .type-reveal:is([data-state="in"], [data-state="load"]) .tr-w {
+    animation: plot-window var(--d, 0ms) linear var(--t, 0ms) backwards;
   }
-  html[data-js] .type-reveal[data-state="load"] .tr-u {
-    animation: tr-rise var(--tr-dur) var(--tr-ease) var(--t, 0ms) both;
-  }
-  html[data-js] .type-reveal[data-variant="title"][data-state="armed"] .tr-u {
-    opacity: 0;
-  }
-  html[data-js] .type-reveal[data-variant="title"][data-state="in"] .tr-u {
-    transition:
-      transform var(--tr-dur) var(--tr-ease) var(--t, 0ms),
-      opacity 0.6s cubic-bezier(0.33, 1, 0.68, 1) var(--t, 0ms);
-  }
-  html[data-js] .type-reveal[data-variant="title"][data-state="load"] .tr-u {
-    animation-name: tr-rise-fade;
-  }
-  @keyframes tr-rise {
-    from {
-      transform: translate3d(0, var(--tr-from), 0);
-    }
-  }
-  @keyframes tr-rise-fade {
-    from {
-      opacity: 0;
-      transform: translate3d(0, var(--tr-from), 0);
-    }
+  html[data-js] .type-reveal:is([data-state="in"], [data-state="load"]) .tr-u {
+    animation: plot-text var(--d, 0ms) linear var(--t, 0ms) backwards;
   }
 
-  /* Kicker (system.tsx): the square scales in, then the label slides in.
-     <Arrive> arms it below the fold; the hero's runs from first paint,
-     after --kd. */
+  /* Kicker (system.tsx): the square lights, then the label is plotted
+     the same way (.kicker-label the window, .kicker-text its text) over
+     --kdur, from its length. <Arrive> arms it below the fold; the hero's
+     runs from first paint, after --kd. */
+  html[data-js] [data-arrive] > .kicker-label {
+    clip-path: inset(-0.3em -0.15em -0.3em -0.15em);
+  }
+  html[data-js] [data-arrive] .kicker-text {
+    display: inline-block;
+  }
   html[data-js] [data-arrive="armed"] > .kicker-mark {
-    transform: scale(0);
+    opacity: 0;
   }
   html[data-js] [data-arrive="armed"] > .kicker-label {
-    opacity: 0;
-    transform: translate3d(-0.5em, 0, 0);
+    transform: translate3d(calc(-100% - 0.15em), 0, 0);
   }
-  html[data-js] [data-arrive="in"] > .kicker-mark {
-    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  html[data-js] [data-arrive="armed"] .kicker-text {
+    transform: translate3d(calc(100% + 0.15em), 0, 0);
   }
   html[data-js] [data-arrive="in"] > .kicker-label {
-    transition:
-      opacity 0.7s cubic-bezier(0.33, 1, 0.68, 1) 0.11s,
-      transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.11s;
+    animation: plot-window var(--kdur, 240ms) linear 60ms backwards;
+  }
+  html[data-js] [data-arrive="in"] .kicker-text {
+    animation: plot-text var(--kdur, 240ms) linear 60ms backwards;
   }
   html[data-js] [data-arrive="load"] > .kicker-mark {
-    animation: kicker-mark 0.55s cubic-bezier(0.16, 1, 0.3, 1) var(--kd, 0ms) both;
+    animation: lit 1ms linear var(--kd, 0ms) backwards;
   }
   html[data-js] [data-arrive="load"] > .kicker-label {
-    animation: kicker-label 0.9s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--kd, 0ms) + 110ms) both;
+    animation: plot-window var(--kdur, 240ms) linear calc(var(--kd, 0ms) + 60ms) backwards;
   }
-  @keyframes kicker-mark {
-    from {
-      transform: scale(0);
-    }
+  html[data-js] [data-arrive="load"] .kicker-text {
+    animation: plot-text var(--kdur, 240ms) linear calc(var(--kd, 0ms) + 60ms) backwards;
   }
-  @keyframes kicker-label {
-    from {
-      opacity: 0;
-      transform: translate3d(-0.5em, 0, 0);
-    }
+}
+
+/* A block armed to light is never left dark on paper */
+@media print {
+  .reveal-armed {
+    opacity: 1 !important;
   }
 }
 
 /* Forced colors paint a backplate behind every line of text; at solid
    leading each line's plate covers the descenders of the one above, so
    headings take a little leading there. An inline-block paints its plate
-   with its own text, so a type reveal's units would still cover the line
-   above: there they set inline, unmasked and still, as finished type. */
+   with its own text, so a type reveal's words would still cover the line
+   above: there they set inline, unclipped and still, as finished type. */
 @media (forced-colors: active) {
   h1,
   h2,
@@ -564,6 +535,16 @@
   .type-display,
   .type-title {
     line-height: 1.12 !important;
+  }
+  [data-arrive] > .kicker-label,
+  [data-arrive] > .kicker-mark,
+  [data-arrive] .kicker-text,
+  .word-in,
+  .word-in > span {
+    clip-path: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
   }
   .type-reveal .tr-w,
   .type-reveal .tr-u {

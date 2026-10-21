@@ -8,7 +8,7 @@ import { CATEGORIES, POSTS, type Post, type PostBlock, type PostCategory } from 
 /*
   Journal, after the questions: a masthead (nameplate + deck) with a key
   to the five series, a red report plate for the latest note, and the
-  further notes with small paper-tint covers. Mono only for the dates;
+  further notes with small covers a step up from the graphite. Mono only for the dates;
   a note's series is plain sans and there is no reading time.
 
   Every cover glyph is the Plurel mark itself (MARK_CELLS, 2:1:4:1:2 on a
@@ -35,7 +35,7 @@ const GLYPHS: Record<PostCategory, readonly CellState[]> = {
 };
 
 const GLYPH_TONE = {
-  paper: { dim: "bg-ink/10", on: "bg-ink", hot: "bg-brand" },
+  dark: { dim: "bg-paper/12", on: "bg-paper", hot: "bg-signal" },
   red: { dim: "bg-ember", on: "bg-ink", hot: "bg-paper" },
 } as const;
 
@@ -48,7 +48,7 @@ const PLAY_LAYER =
 
 function Glyph({
   category,
-  tone = "paper",
+  tone = "dark",
   play = false,
   className = "",
 }: {
@@ -104,9 +104,9 @@ export function JournalChapter() {
   const pull = pullLine(lead);
 
   return (
-    <section aria-labelledby="journal-heading" className="bg-paper py-24 text-ink lg:py-36">
+    <section aria-labelledby="journal-heading" className="bg-graphite py-24 text-paper lg:py-36">
       <div className={CONTAINER}>
-        <ChapterHead label="Journal" />
+        <ChapterHead label="Journal" tone="dark" />
 
         {/* Masthead: nameplate and deck, with the series key */}
         <div className={`${GRID} mt-8 items-end gap-y-10 lg:mt-10`}>
@@ -116,22 +116,19 @@ export function JournalChapter() {
             lines={["Field notes", "on AI search, brand, and growth."]}
             lineClassName={[
               undefined,
-              "mt-2 text-[clamp(1.25rem,1rem+1.2vw,1.75rem)] leading-[1.12] text-muted lg:mt-3",
+              "mt-2 text-[clamp(1.25rem,1rem+1.2vw,1.75rem)] leading-[1.12] text-fog lg:mt-3",
             ]}
           />
 
-          <Reveal
-            delay={0.1}
-            className="col-span-4 sm:col-span-6 lg:col-span-3 lg:col-start-10 lg:pb-1"
-          >
+          <Reveal className="col-span-4 sm:col-span-6 lg:col-span-3 lg:col-start-10 lg:pb-1">
             <ul
               aria-label="The series"
-              className="border-t border-ink/15 sm:max-w-[22rem]"
+              className="border-t border-paper/15 sm:max-w-[22rem]"
             >
               {CATEGORIES.map((category) => (
                 <li
                   key={category}
-                  className="flex items-center gap-3.5 border-b border-ink/8 py-[7px]"
+                  className="flex items-center gap-3.5 border-b border-paper/8 py-[7px]"
                 >
                   <Glyph category={category} className="size-5" />
                   <span className="text-[14px] font-medium leading-[1.5]">{category}</span>
@@ -177,10 +174,10 @@ export function JournalChapter() {
               </div>
 
               <div className="flex flex-1 flex-col justify-between gap-7 pt-7">
-                <p className="max-w-[34em] text-[clamp(1rem,0.95rem+0.2vw,1.0625rem)] leading-[1.55] text-muted">
+                <p className="max-w-[34em] text-[clamp(1rem,0.95rem+0.2vw,1.0625rem)] leading-[1.55] text-fog">
                   {lead.excerpt}
                 </p>
-                <CtaLink href={`/blog/${lead.slug}`} className="w-full focus-visible:outline-ink! sm:w-[17rem]">
+                <CtaLink href={`/blog/${lead.slug}`} className="w-full focus-visible:outline-paper! sm:w-[17rem]">
                   Read the essay<span className="sr-only">: {lead.title}</span>
                 </CtaLink>
               </div>
@@ -188,27 +185,24 @@ export function JournalChapter() {
           </Reveal>
 
           {/* Further notes, each under a small mark cover */}
-          <Reveal
-            delay={0.1}
-            className="col-span-4 flex flex-col sm:col-span-6 lg:col-span-5 lg:col-start-8"
-          >
+          <Reveal className="col-span-4 flex flex-col sm:col-span-6 lg:col-span-5 lg:col-start-8">
             <h3 className="sr-only">More notes</h3>
-            <ol className="flex-1 border-t border-ink">
+            <ol className="flex-1 border-t border-paper/60">
               {further.map((post) => (
-                <li key={post.slug} className="group/note border-b border-ink/15">
+                <li key={post.slug} className="group/note border-b border-paper/15">
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="grid grid-cols-[88px_minmax(0,1fr)] gap-x-5 py-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand sm:grid-cols-[152px_minmax(0,1fr)] sm:gap-x-6 sm:py-6 lg:grid-cols-[clamp(7.5rem,11.9vw,9.5rem)_minmax(0,1fr)]"
+                    className="grid grid-cols-[88px_minmax(0,1fr)] gap-x-5 py-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal sm:grid-cols-[152px_minmax(0,1fr)] sm:gap-x-6 sm:py-6 lg:grid-cols-[clamp(7.5rem,11.9vw,9.5rem)_minmax(0,1fr)]"
                   >
                     <span
                       aria-hidden
-                      className="relative flex aspect-square self-start items-end justify-end bg-ink/5 p-2 sm:aspect-[152/118] sm:p-3"
+                      className="relative flex aspect-square self-start items-end justify-end bg-paper/5 p-2 sm:aspect-[152/118] sm:p-3"
                     >
                       <Glyph category={post.category} play className="size-10 sm:size-[60px]" />
                     </span>
                     <div className="pt-px">
                       <p className="text-[14px] font-medium">{post.category}</p>
-                      <h4 className="mt-2.5 text-[clamp(1rem,0.85rem+0.5vw,1.1875rem)] font-medium leading-[1.25] tracking-[-0.01em] transition-colors duration-300 group-hover/note:text-brand">
+                      <h4 className="mt-2.5 text-[clamp(1rem,0.85rem+0.5vw,1.1875rem)] font-medium leading-[1.25] tracking-[-0.01em] transition-colors duration-300 group-hover/note:text-signal">
                         {post.title}
                       </h4>
                     </div>
@@ -216,7 +210,7 @@ export function JournalChapter() {
                 </li>
               ))}
             </ol>
-            <CtaLink href="/blog" variant="outline" className="mt-7 w-full">
+            <CtaLink href="/blog" variant="outline-light" className="mt-7 w-full">
               All entries
             </CtaLink>
           </Reveal>

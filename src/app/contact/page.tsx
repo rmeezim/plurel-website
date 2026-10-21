@@ -47,7 +47,7 @@ export default function ContactPage() {
               <Cascade text="here." base={0.08} step={0.045} offset={4} />
             </em>
           </h1>
-          <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
+          <p className="fade-in mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
             Request a diagnostic and a strategist will send you a scored read
             of your distribution within a business day. If you&rsquo;d rather
             talk first, say so in the form.

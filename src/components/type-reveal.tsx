@@ -9,46 +9,52 @@ import {
   type ReactNode,
   type RefObject,
 } from "react";
+import { inReadingOrder, LABEL, labelTime, motionAllowed, plot } from "@/lib/pen";
 
 /*
-  One type-reveal vocabulary for the whole site. Every category rises; none
-  bounces, blurs, scales or overshoots. The rise is a long exponential
-  ease-out, cubic-bezier(0.16, 1, 0.3, 1), so a word clears its mask in a
-  breath and spends the rest of its time settling.
+  One reveal vocabulary for the whole site, taken from instruments rather
+  than slideshows: type is plotted, lines are drawn, and states light.
 
-  Category  Used for                     What moves                          Timing
-  --------  ---------------------------  ----------------------------------  ------------------------------------
-  hero      the h1, from first paint     words, each out of its own mask     1.1s a word, 65ms apart, the next
-            (onLoad)                                                         line 70ms later; the light Accent
-                                                                             waits 120ms more and takes 1.4s
-  display   chapter h2s                  words, each out of its own mask     1.0s a word, 32ms apart, the next
-                                                                             line 80ms later: one wave
-  title     smaller heads: h3s and       words, 0.4em up with opacity,       0.8s (opacity 0.6s), 22ms apart,
-            display-set lines            no mask                             the next line 60ms later
-  chars     names set as display words   letters, out of their word's mask   0.95s a letter, 24ms apart
-  kicker    the chapter label (Kicker)   the square scales in, then the      0.55s; the label from +110ms
-                                         label slides 0.5em in and fades     over 0.9s (opacity 0.7s)
+  - Type is plotted. A head is drawn left to right in reading order by a
+    hard-edged sweep at one steady pace: each word is uncovered at a
+    constant rate, the pen crosses each space in one character's time, a
+    new line waits a short return, and the quieter Accent a short lift.
+    A long line takes longer than a short one; the speed never changes.
+    Nothing rises, fades, blurs, scales or bounces.
+  - One pen (lib/pen.ts). Heads and labels that arrive together are
+    plotted one after another in reading order, never all at once, and a
+    block that lights (Reveal) waits for the head above it.
+  - Lines are drawn at a steady rate too (rules, the route, bars: linear,
+    in each chapter's own CSS), and states light: a node, a marker or a
+    block of copy switches on by opacity alone and never travels.
 
-  Body copy stays on Reveal (fade-up, 0.75s). The hero's kicker, copy,
-  action and glass are timed to its headline in hero.tsx.
+  Pace      Used for                              ms per character
+  --------  ------------------------------------  ------------------------
+  hero      the h1, from first paint (onLoad)     30
+  display   chapter h2s and names set large       18, or `pace`
+  title     smaller heads and display-set lines   11
+  label     the chapter label (Kicker)            12, never under 180 in all
 
-  Rules. Transforms and opacity only; the masks are clip-paths with room
-  for accents above and descenders below, so finished type is never cut,
-  even at the hero's tight leading, and nothing shifts. The motion lives
-  in globals.css ("Type reveal") behind prefers-reduced-motion, screen
-  media and html[data-js]: no JS, reduced motion, print, and anything
-  already on screen when the page hydrates get finished type. A head
-  below the fold arms after hydration and plays once, when it comes an
-  eighth of the way up the screen (or the page can scroll no further).
+  Rules. Transforms only, so the compositor draws it even while the page
+  is busy: each word is a window (.tr-w) sliding right over its own text
+  (.tr-u), which slides left by exactly as much, so the type stands still
+  while the window uncovers it. The window's clip reaches past the line
+  box for accents, descenders and overhangs, so finished type is never
+  cut, and nothing shifts. The motion lives in
+  globals.css ("Type reveal") behind prefers-reduced-motion, screen media
+  and html[data-js]: no JS, reduced motion, print, forced colors and
+  anything already on screen when the page hydrates get finished type. A
+  head below the fold arms after hydration and is plotted once, when it
+  comes an eighth of the way up the screen (or the page can scroll no
+  further) and the pen is free.
 
-  Reading. Chrome's accessibility tree drops the spaces between word (or
-  letter) boxes from the text it exposes: a head's computed name keeps
-  them, but its text runs together ("Buyersdecide...") and letters read
-  one by one ("T h e"). So every variant carries its words once as plain
-  text, visually hidden (sr-only, not selectable, so a copy takes the
-  visible words), and hides the animated boxes from assistive tech. The
-  boxes keep plain spaces between them, so they still set, wrap, select
-  and copy as one sentence.
+  Reading. Chrome's accessibility tree drops the spaces between word boxes
+  from the text it exposes: a head's computed name keeps them, but its
+  text runs together ("Buyersdecide..."). So every head carries its words
+  once as plain text, visually hidden (sr-only, not selectable, so a copy
+  takes the visible words), and hides the drawn words from assistive
+  tech. The words keep plain spaces between them, so they still set,
+  wrap, select and copy as one sentence.
 */
 
 export type RevealSegment =
@@ -56,7 +62,7 @@ export type RevealSegment =
   | {
       text: string;
       className?: string;
-      /** Set in the light Accent (an <em>) and arrive last, a touch slower */
+      /** Set in the quieter Accent (an <em>), after a short lift of the pen */
       accent?: boolean;
     };
 
@@ -69,28 +75,26 @@ export type TypeRevealProps = {
   className?: string;
   /** The line breaks: each line is a block */
   lines: readonly RevealLine[];
-  /** "display" for chapter heads, "title" for smaller heads, "chars" for names */
-  variant?: "display" | "title" | "chars";
-  /** Play from the first paint, in CSS (the hero) instead of on entering the screen */
+  /** "display" for chapter heads and names set large, "title" for smaller heads */
+  variant?: "display" | "title";
+  /** Milliseconds per character, in place of the variant's pace */
+  pace?: number;
+  /** Plot from the first paint, in CSS (the hero) instead of on entering the screen */
   onLoad?: boolean;
-  /** Milliseconds before the first word (or letter) moves */
+  /** Milliseconds before the pen starts */
   delay?: number;
   /** An extra class for each line, by index (e.g. to tone the second line) */
   lineClassName?: readonly (string | undefined)[];
 };
 
-type Variant = NonNullable<TypeRevealProps["variant"]>;
 type Css = CSSProperties & Record<`--${string}`, string | number>;
 
-/** Stagger in ms: between units, and the extra wait before each new line */
-const RHYTHM: Record<Variant | "hero", { step: number; line: number }> = {
-  hero: { step: 65, line: 70 },
-  display: { step: 32, line: 80 },
-  title: { step: 22, line: 60 },
-  chars: { step: 24, line: 60 },
-};
-/** The Accent's extra wait (its longer duration is in globals.css) */
-const ACCENT_WAIT = 120;
+/** Milliseconds per character */
+const PACE = { hero: 30, display: 18, title: 11 } as const;
+/** A new line: the pen returns */
+const RETURN = 60;
+/** Before the Accent: the pen lifts */
+const LIFT = 120;
 
 /* ---------- Arrival: armed below the fold, in once on screen ---------- */
 
@@ -98,14 +102,15 @@ export type Arrival = "idle" | "armed" | "in";
 
 /* One observer for every head and label on the page. A head is let in
    when its top comes 12% above the bottom of the screen, or, on a page
-   that cannot scroll that far, once the reader reaches the end. */
+   that cannot scroll that far, once the reader reaches the end; heads let
+   in together queue for the pen in reading order. */
 const waiting = new Map<Element, () => void>();
 let observer: IntersectionObserver | undefined;
 
 function letIn(el: Element) {
-  const done = waiting.get(el);
+  const go = waiting.get(el);
   forget(el);
-  done?.();
+  go?.();
 }
 
 function forget(el: Element) {
@@ -117,65 +122,82 @@ function forget(el: Element) {
 function atEnd() {
   const doc = document.documentElement;
   if (window.scrollY + window.innerHeight < doc.scrollHeight - 2) return;
-  for (const el of [...waiting.keys()]) {
+  for (const el of [...waiting.keys()].sort(inReadingOrder)) {
     if (el.getBoundingClientRect().top < window.innerHeight) letIn(el);
   }
 }
 
-function watch(el: Element, done: () => void) {
+function watch(el: Element, hold: number, done: () => void) {
+  let cancel = () => {};
   observer ??= new IntersectionObserver(
     (entries) => {
-      for (const entry of entries) if (entry.isIntersecting) letIn(entry.target);
+      const arriving = entries.filter((e) => e.isIntersecting).map((e) => e.target);
+      for (const target of arriving.sort(inReadingOrder)) letIn(target);
     },
     { rootMargin: "0px 0px -12% 0px" },
   );
   if (!waiting.size) window.addEventListener("scroll", atEnd, { passive: true });
-  waiting.set(el, done);
+  waiting.set(el, () => {
+    cancel = plot(el, hold, done);
+  });
   observer.observe(el);
-  return () => forget(el);
-}
-
-/** Motion is allowed on this screen (the same test the CSS makes) */
-function motionAllowed() {
-  return window.matchMedia("screen and (prefers-reduced-motion: no-preference)").matches;
+  return () => {
+    forget(el);
+    cancel();
+  };
 }
 
 /**
  * "armed" when the element starts below the fold (after hydration, motion
- * allowed), then "in" the first time it comes on screen. Anything on
- * screen, or above it, at mount stays "idle": finished and still.
+ * allowed), then "in" the first time it comes on screen and the pen is
+ * free; it then holds the pen for `hold` ms. Anything on screen, or above
+ * it, at mount stays "idle": finished and still.
  */
-export function useArrival(ref: RefObject<HTMLElement | null>, enabled = true): Arrival {
+export function useArrival(
+  ref: RefObject<HTMLElement | null>,
+  enabled = true,
+  hold = 0,
+): Arrival {
   const [state, setState] = useState<Arrival>("idle");
   useEffect(() => {
     const el = ref.current;
     if (!enabled || !el || !motionAllowed()) return;
     if (el.getBoundingClientRect().top < window.innerHeight) return;
     setState("armed");
-    return watch(el, () => setState("in"));
-  }, [enabled, ref]);
+    return watch(el, hold, () => setState("in"));
+  }, [enabled, hold, ref]);
   return state;
 }
 
 /**
  * A wrapper that carries its arrival as data-arrive ("armed", then "in")
  * for CSS to animate, so server markup inside it (the Kicker) can arrive
- * without becoming a client component. Renders plain without JS.
+ * without becoming a client component: its square lights, then its label
+ * is plotted. Renders plain without JS.
  */
 export function Arrive({
   as = "div",
   className,
+  chars = 12,
   children,
 }: {
   as?: "div" | "p" | "span";
   className?: string;
+  /** The label's length, which sets how long it takes to plot */
+  chars?: number;
   children: ReactNode;
 }) {
   const Tag = as as ElementType;
   const ref = useRef<HTMLElement>(null);
-  const state = useArrival(ref);
+  const time = labelTime(chars);
+  const state = useArrival(ref, true, LABEL.beat + time);
   return (
-    <Tag ref={ref} className={className} data-arrive={state === "idle" ? undefined : state}>
+    <Tag
+      ref={ref}
+      className={className}
+      data-arrive={state === "idle" ? undefined : state}
+      style={{ "--kdur": `${time}ms` } as Css}
+    >
       {children}
     </Tag>
   );
@@ -199,8 +221,30 @@ const graphemes = (() => {
       ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
       : undefined;
   return (word: string) =>
-    seg ? Array.from(seg.segment(word), (g) => g.segment) : Array.from(word);
+    seg ? Array.from(seg.segment(word), (g) => g.segment).length : Array.from(word).length;
 })();
+
+type Timed = { text: string; t: number; d: number };
+type TimedSeg = Omit<Seg, "text"> & { words: Timed[] };
+
+/** Where the pen is at each word: one clock across the head, each word starting where the last ended */
+function schedule(lines: Seg[][], pen: number, delay: number) {
+  let clock = delay;
+  const timed = lines.map((segs, li) => {
+    if (li > 0) clock += RETURN;
+    return segs.map((seg, si): TimedSeg => {
+      if (seg.accent) clock += LIFT;
+      const words = seg.text.split(/\s+/).map((text, wi) => {
+        if (si > 0 || wi > 0) clock += pen;
+        const word = { text, t: clock, d: graphemes(text) * pen };
+        clock += word.d;
+        return word;
+      });
+      return { className: seg.className, accent: seg.accent, words };
+    });
+  });
+  return { timed, total: clock };
+}
 
 export function TypeReveal({
   as = "h2",
@@ -208,47 +252,32 @@ export function TypeReveal({
   className = "",
   lines,
   variant = "display",
+  pace,
   onLoad = false,
   delay = 0,
   lineClassName = [],
 }: TypeRevealProps) {
   const Tag = as as ElementType;
   const ref = useRef<HTMLElement>(null);
-  const arrival = useArrival(ref, !onLoad);
 
-  const rhythm = RHYTHM[onLoad && variant === "display" ? "hero" : variant];
-  const chars = variant === "chars";
   const parsed = lines.map(segments);
+  const { timed, total } = schedule(parsed, pace ?? PACE[onLoad ? "hero" : variant], delay);
+  const arrival = useArrival(ref, !onLoad, total);
 
-  // One running index across the head, so the wave carries over lines
-  let unit = 0;
-  const words = (seg: Seg, li: number) => {
-    const list = seg.text.split(/\s+/);
-    return list.map((word, wi) => {
-      const parts = chars ? graphemes(word) : [word];
-      const node = (
-        <span key={wi} className="tr-w">
-          {parts.map((part, pi) => {
-            const t = delay + li * rhythm.line + unit++ * rhythm.step + (seg.accent ? ACCENT_WAIT : 0);
-            return (
-              <span key={pi} className="tr-u" style={{ "--t": `${t}ms` } as Css}>
-                {part}
-              </span>
-            );
-          })}
-        </span>
-      );
-      return wi < list.length - 1 ? [node, " "] : node;
-    });
-  };
-
-  const body = parsed.map((segs, li) => [
+  const body = timed.map((segs, li) => [
     li > 0 ? " " : null,
     <span key={li} className={`tr-line${lineClassName[li] ? ` ${lineClassName[li]}` : ""}`}>
       {segs.map((seg, si) => {
-        const inner = words(seg, li);
+        const inner = seg.words.map((w, wi) => {
+          const node = (
+            <span key={wi} className="tr-w" style={{ "--t": `${w.t}ms`, "--d": `${w.d}ms` } as Css}>
+              <span className="tr-u">{w.text}</span>
+            </span>
+          );
+          return wi < seg.words.length - 1 ? [node, " "] : node;
+        });
         const node = seg.accent ? (
-          <em key={si} className={`type-accent tr-accent not-italic${seg.className ? ` ${seg.className}` : ""}`}>
+          <em key={si} className={`type-accent not-italic${seg.className ? ` ${seg.className}` : ""}`}>
             {inner}
           </em>
         ) : seg.className ? (
@@ -270,7 +299,6 @@ export function TypeReveal({
       ref={ref}
       id={id}
       className={`type-reveal ${className}`}
-      data-variant={variant}
       data-state={onLoad ? "load" : arrival}
     >
       <span className="sr-only select-none">{plain}</span>

@@ -47,7 +47,7 @@ const ORG_JSON_LD = {
       name: "Plurel",
       url: `${SITE_URL}/`,
       description:
-        "Plurel is a distribution engineering firm. One team runs narrative, brand identity, website design, AI search visibility (AEO/SEO), content, creators and UGC, paid media, PR and measurement as one system, for consumer brands, physical products, B2B technology and apps, and answers for one number agreed on day one.",
+        "Plurel is a distribution engineering firm. One team runs narrative, brand identity, website design, AI search visibility (AEO/SEO), content, creators and UGC, paid media, PR and measurement as one system, for consumer brands, physical products, and B2B and consumer technology, and answers for one number agreed on day one.",
       email: "hello@plurel.com",
       image: `${SITE_URL}/og.png`,
       knowsAbout: [

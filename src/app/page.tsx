@@ -21,12 +21,12 @@ export const metadata = pageMetadata({ ...HOME, path: "/" });
   who it is built for, what a Diagnostic finds (a labelled sample until
   real cases can be published; the people, once they can be shown), the
   questions, the journal, and the Diagnostic itself before the footer.
-  Tones: graphite hero and statement, paper, graphite, red, paper, red,
-  graphite, paper, paper, red.
+  Tones: one graphite room, footer included, punctuated by the red
+  Method, Who it's for and closing.
 */
 export default function Home() {
   return (
-    <main>
+    <main data-room="dark">
       <Hero />
       <StatementChapter />
       <WhyNowChapter />

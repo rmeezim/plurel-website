@@ -11,33 +11,35 @@ import { PROOF_ID, SAMPLE_DIAGNOSTIC as D, SAMPLE_TOTAL } from "@/lib/proof";
   There are no client cases yet, so the chapter shows the deliverable
   itself: a sample Diagnostic for Halden, a sample company the intro
   introduces as one, labelled as a sample in its top bar too. It is set
-  as a sheet of paper on the graphite room, laid out like the printed
+  as a sheet a step up from the graphite room, laid out like the printed
   report: section heads hang in the first three columns, the content
   runs on the other nine through subgrid. Mono only for the three month
   heads of the plan; scores are figures in the display face, with "out
-  of 10" said once in the section head. Brand red marks the two weakest
+  of 10" said once in the section head. Signal red marks the two weakest
   scores and the first fix.
 
-  Server component. Motion: the headline on TypeReveal, the sheet's
-  title (the company's name) letter by letter, Reveal for the rest, and
-  the score bars and the plan's month cells drawing in once their block
-  is revealed (gated by prefers-reduced-motion; no-JS and reduced motion
-  get finished type and bars).
+  Server component. Motion: the headline and the sheet's title (the
+  company's name) plotted on TypeReveal, the rest lit by Reveal, and the
+  score bars and the plan's month cells drawn together at one steady
+  rate once their block lights, like an instrument reading out (gated by
+  prefers-reduced-motion; no-JS and reduced motion get finished type and
+  bars).
 */
 
 const WEAK = 3;
 
 /* Hairlines on the sheet */
-const RULE = "border-ink/12";
-const RULE_STRONG = "border-ink/25";
+const RULE = "border-paper/12";
+const RULE_STRONG = "border-paper/25";
 
-/* A bar draws left to right once its block's Reveal comes in. Collapsed
-   only while armed; finished for no-JS, reduced motion and anything
-   already on screen. */
+/* A bar draws left to right, at a steady rate, once its block's Reveal
+   comes in: every bar in a block at once, a beat after the block lights.
+   Collapsed only while armed; finished for no-JS, reduced motion and
+   anything already on screen. */
 const DRAW =
   "origin-left motion-safe:[.reveal-armed_&]:scale-x-0 " +
-  "motion-safe:[.reveal-in_&]:transition-transform motion-safe:[.reveal-in_&]:duration-700 " +
-  "motion-safe:[.reveal-in_&]:ease-[cubic-bezier(0.22,0.61,0.36,1)]";
+  "motion-safe:[.reveal-in_&]:transition-transform motion-safe:[.reveal-in_&]:duration-500 " +
+  "motion-safe:[.reveal-in_&]:ease-linear motion-safe:[.reveal-in_&]:delay-150";
 
 /* A section of the sheet: its head hangs in columns 1-3 from lg, and the
    body runs on the other nine columns through subgrid */
@@ -70,7 +72,7 @@ function SheetSection({
   );
 }
 
-function Score({ score, delay }: { score: number; delay: number }) {
+function Score({ score }: { score: number }) {
   const weak = score <= WEAK;
   return (
     <div
@@ -80,18 +82,15 @@ function Score({ score, delay }: { score: number; delay: number }) {
     >
       <p aria-hidden className="flex w-10 shrink-0 items-baseline">
         <span
-          className={`type-title figures text-[28px] leading-none ${weak ? "text-brand" : ""}`}
+          className={`type-title figures text-[28px] leading-none ${weak ? "text-signal" : ""}`}
         >
           {score}
         </span>
       </p>
-      <span aria-hidden className="relative h-[6px] flex-1 bg-ink/8">
+      <span aria-hidden className="relative h-[6px] flex-1 bg-paper/10">
         <span
-          className={`absolute inset-y-0 left-0 ${weak ? "bg-brand" : "bg-ink"} ${DRAW}`}
-          style={{
-            width: `${score * 10}%`,
-            transitionDelay: `${200 + delay * 90}ms`,
-          }}
+          className={`absolute inset-y-0 left-0 ${weak ? "bg-signal" : "bg-paper"} ${DRAW}`}
+          style={{ width: `${score * 10}%` }}
         />
       </span>
     </div>
@@ -101,7 +100,7 @@ function Score({ score, delay }: { score: number; delay: number }) {
 function Parts() {
   return (
     <ol className="lg:col-span-9 lg:grid lg:grid-cols-subgrid">
-      {D.parts.map((p, i) => (
+      {D.parts.map((p) => (
         <li
           key={p.part}
           className={`grid grid-cols-4 items-baseline gap-x-5 border-t ${RULE} py-5 first:border-t-0 first:pt-0 sm:grid-cols-6 sm:gap-x-6 lg:col-span-9 lg:grid-cols-subgrid lg:gap-x-8 lg:py-6`}
@@ -110,9 +109,9 @@ function Parts() {
             {p.part}
           </h5>
           <div className="col-span-2 sm:col-span-3 lg:col-span-2">
-            <Score score={p.score} delay={i} />
+            <Score score={p.score} />
           </div>
-          <p className="col-span-4 mt-3.5 max-w-[56ch] text-[15px] leading-[1.5] text-ink/75 sm:col-span-6 lg:col-span-4 lg:mt-0">
+          <p className="col-span-4 mt-3.5 max-w-[56ch] text-[15px] leading-[1.5] text-fog sm:col-span-6 lg:col-span-4 lg:mt-0">
             {p.finding}
           </p>
         </li>
@@ -129,9 +128,9 @@ function Read() {
         return (
           <li
             key={r.head}
-            className={`border-t-2 pt-4 lg:col-span-3 ${first ? "border-brand" : "border-ink"}`}
+            className={`border-t-2 pt-4 lg:col-span-3 ${first ? "border-signal" : "border-paper"}`}
           >
-            <h5 className={`text-[15px] font-medium ${first ? "text-brand" : ""}`}>
+            <h5 className={`text-[15px] font-medium ${first ? "text-signal" : ""}`}>
               {r.head}
             </h5>
             <p className="mt-3 max-w-[52ch] text-[17px] leading-[1.45] text-pretty">
@@ -162,13 +161,13 @@ function Plan() {
       >
         <span className="lg:col-span-2" />
         {MONTHS.map((m) => (
-          <Meta key={m} className="text-muted">
+          <Meta key={m} className="text-fog">
             Month {m}
           </Meta>
         ))}
       </div>
       <ol className="lg:col-span-9 lg:grid lg:grid-cols-subgrid">
-        {D.chain.map((s, i) => (
+        {D.chain.map((s) => (
           <li
             key={s.stage}
             className={`grid grid-cols-4 items-baseline gap-x-5 border-t ${RULE} py-5 first:border-t-0 first:pt-0 sm:grid-cols-6 sm:gap-x-6 lg:col-span-9 lg:grid-cols-subgrid lg:gap-x-8 lg:py-5 lg:first:border-t lg:first:pt-5`}
@@ -176,7 +175,7 @@ function Plan() {
             <h5 className="col-span-2 text-[16px] font-medium sm:col-span-3 lg:col-span-2">
               {s.stage}
             </h5>
-            <p className="col-span-2 self-baseline text-right text-[14px] text-muted sm:col-span-3 lg:hidden">
+            <p className="col-span-2 self-baseline text-right text-[14px] text-fog sm:col-span-3 lg:hidden">
               {monthSpan(s.months)}
             </p>
             {/* Three month cells: one per column at lg */}
@@ -187,20 +186,13 @@ function Plan() {
               {MONTHS.map((m) => {
                 const on = s.months.includes(m);
                 return (
-                  <span key={m} className="relative h-[10px] bg-ink/8 lg:mr-px">
-                    {on && (
-                      <span
-                        className={`absolute inset-0 bg-ink ${DRAW}`}
-                        style={{
-                          transitionDelay: `${200 + (i * 3 + m) * 60}ms`,
-                        }}
-                      />
-                    )}
+                  <span key={m} className="relative h-[10px] bg-paper/10 lg:mr-px">
+                    {on && <span className={`absolute inset-0 bg-paper ${DRAW}`} />}
                   </span>
                 );
               })}
             </div>
-            <p className="col-span-4 mt-3.5 max-w-[52ch] text-[15px] leading-[1.5] text-ink/75 sm:col-span-6 lg:col-span-4 lg:mt-0">
+            <p className="col-span-4 mt-3.5 max-w-[52ch] text-[15px] leading-[1.5] text-fog sm:col-span-6 lg:col-span-4 lg:mt-0">
               <span className="sr-only">{monthSpan(s.months)}: </span>
               {s.line}
             </p>
@@ -226,7 +218,7 @@ function Measure() {
           </div>
         ))}
       </dl>
-      <p className="mt-8 max-w-[60ch] text-[15px] leading-[1.5] text-ink/75 lg:col-span-8 lg:mt-10">
+      <p className="mt-8 max-w-[60ch] text-[15px] leading-[1.5] text-fog lg:col-span-8 lg:mt-10">
         {D.measureNote}
       </p>
     </div>
@@ -251,10 +243,7 @@ export function ProofChapter() {
               lines={["What a Diagnostic finds."]}
             />
           </div>
-          <Reveal
-            delay={0.1}
-            className="col-span-4 sm:col-span-4 lg:col-span-3 lg:col-start-10 lg:pb-1"
-          >
+          <Reveal className="col-span-4 sm:col-span-4 lg:col-span-3 lg:col-start-10 lg:pb-1">
             <p className="max-w-[40ch] text-[16px] leading-[1.55] text-fog">
               Before you send us anything, see what comes back. This is an
               excerpt of a Diagnostic run on Halden, a sample company that
@@ -265,15 +254,15 @@ export function ProofChapter() {
 
         <article
           aria-labelledby="proof-doc-title"
-          className="mt-14 bg-paper px-5 pt-5 pb-10 text-ink sm:px-8 sm:pt-6 sm:pb-12 lg:mt-20 lg:px-12 lg:pt-7 lg:pb-16"
+          className="mt-14 bg-paper/[0.04] px-5 pt-5 pb-10 sm:px-8 sm:pt-6 sm:pb-12 lg:mt-20 lg:px-12 lg:pt-7 lg:pb-16"
         >
           <Reveal>
             {/* Top bar: the sample label, in plain view */}
             <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2.5">
-              <Kicker tone="paper">
+              <Kicker tone="dark">
                 {D.label}
               </Kicker>
-              <p className="text-[14px] font-medium text-brand">{D.note}</p>
+              <p className="text-[14px] font-medium text-signal">{D.note}</p>
             </div>
 
             {/* Title block */}
@@ -281,16 +270,14 @@ export function ProofChapter() {
               className={`${GRID} mt-12 gap-y-10 sm:mt-16 lg:mt-20 lg:items-end`}
             >
               <div className="col-span-4 sm:col-span-6 lg:col-span-8">
-                <p className="text-[15px] text-muted">{D.product}</p>
+                <p className="text-[15px] text-fog">{D.product}</p>
                 <TypeReveal
                   as="h3"
                   id="proof-doc-title"
-                  variant="chars"
-                  delay={120}
                   className="type-display mt-3 text-[clamp(3.25rem,7vw,6rem)] leading-[0.9]"
                   lines={[D.client]}
                 />
-                <p className="mt-5 text-[17px] leading-snug text-ink/75">
+                <p className="mt-5 text-[17px] leading-snug text-fog">
                   {D.about}
                 </p>
               </div>
@@ -300,19 +287,19 @@ export function ProofChapter() {
                     key={f.term}
                     className={`grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 border-t ${RULE} py-2.5`}
                   >
-                    <dt className="text-muted">{f.term}</dt>
+                    <dt className="text-fog">{f.term}</dt>
                     <dd>{f.value}</dd>
                   </div>
                 ))}
                 <div
                   className={`grid grid-cols-[6.5rem_minmax(0,1fr)] items-baseline gap-x-4 border-y ${RULE} py-2.5`}
                 >
-                  <dt className="text-muted">Overall</dt>
+                  <dt className="text-fog">Overall</dt>
                   <dd className="flex items-baseline gap-2">
                     <span className="type-title figures text-[22px] leading-none">
                       {SAMPLE_TOTAL}
                     </span>
-                    <span className="text-[14px] text-muted">out of 60</span>
+                    <span className="text-[14px] text-fog">out of 60</span>
                   </dd>
                 </div>
               </dl>

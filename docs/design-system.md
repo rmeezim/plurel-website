@@ -9,8 +9,10 @@ alone: no Northeon, Kelwin or group.
 
 - **Cinematic Red, set in graphite.** Red is the environment, not an
   accent: whole chapters are flat red, and the hero's film is graded red
-  behind fluted glass. Graphite is the dark tone (hero, work, the AI
-  layer), and the footer is paper.
+  behind fluted glass. Graphite is the room the homepage lives in,
+  footer included, and the red chapters punctuate it. Paper is kept for
+  interior pages until they move over: on the homepage a light chapter
+  read as a template.
 - **Swiss Systems.** Structure is strict but never drawn. A 12-column grid
   sets every edge and the logo's own 3x3 grid is the source of it. The
   structure is felt, not labelled: no chapter numbers, running heads,
@@ -44,20 +46,21 @@ they are rebuilt on this one.
   section splits it, opens it into cards or assembles it as a hub.
 - The mark is exact geometry on a 10-unit square: 2-unit corners and
   edges, a 4-unit center, 1-unit gutters. It paints in `currentColor`.
-- `animated` staggers the nine cells in (flagship moments only).
-- Header: 22 to 24px tall. Footer: brand red on paper.
+- `animated` staggers the nine cells in; nothing uses it (the mark never
+  assembles).
+- Header: 22 to 24px tall. Footer: brand red on graphite.
 
 ## Color
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| `brand` | `#bf3a36` | Plurel red: red chapters, primary actions, markers on paper |
+| `brand` | `#bf3a36` | Plurel red: red chapters, primary actions, red fills; markers on paper |
 | `ember` | `#8e2824` | Deep red: hover on red, the floor of red gradients |
 | `graphite` | `#141517` | The dark tone: hero, work chapter, the AI layer band |
 | `fog` | `#b9bcc2` | Secondary text and the toned accent on graphite |
 | `oxblood` | `#2a0d0b` | Legacy dark tone; interior pages only until they move over |
 | `blush` | `#f2c9bf` | Rose: secondary text and the dimmed headline line on red and dark |
-| `signal` | `#e8564e` | Bright red: markers, rules, and indexes on dark |
+| `signal` | `#e8564e` | Bright red: markers, rules, indexes and small red type on dark (5.1:1 on graphite) |
 | `paper` | `#fbfaf6` | Light chapters; text on red and dark |
 | `ink` | `#110f0a` | Type on paper |
 | `charcoal` | `#20201e` | Dark panels |
@@ -73,16 +76,20 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| paper | `bg-paper` | ink | Reading chapters: Why now, Accountability, FAQ, journal, footer; the sample Diagnostic sheet |
+| dark | `bg-graphite` | paper, fog | The homepage's room: hero and What Plurel is, Why now, Why Plurel (services and the Plurel System), Accountability, proof, questions, journal, footer |
 | red | `bg-brand` | paper | Method, Who it's for, closing |
-| dark | `bg-graphite` | paper, fog | Hero and What Plurel is, Why Plurel (services and the Plurel System), proof, the method's AI layer |
+| paper | `bg-paper` | ink | Interior pages until they move over; never a homepage chapter |
 
-All three are flat fills. Alternate tones so every chapter change is a
-clear cut (the homepage runs graphite hero and statement, paper Why now,
-graphite Why Plurel, red Method, paper Accountability, red Who it's for,
-graphite proof, paper FAQ and journal, red closing), no two red chapters
-touch, and every page keeps at least one red room. The statement is the
-hero's second beat, so it shares the hero's graphite.
+All three are flat fills. The homepage is dark, punctuated by red:
+graphite hero, statement, Why now and Why Plurel, red Method, graphite
+Accountability, red Who it's for, graphite proof, questions and journal,
+red closing, graphite footer. Graphite chapters that meet part by their
+kicker and their room alone, never a rule or a tint; no two red chapters
+touch, and every page keeps at least one red room. On graphite, small red
+type and markers are `signal` (5.1:1), secondary text `fog`, hairlines
+paper at 15 to 25%; brand red stays for fills and actions. A panel on
+graphite (the sample Diagnostic's sheet) is a step up, `bg-paper/[0.04]`,
+still one flat color.
 
 ## Type
 
@@ -90,26 +97,28 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 
 | Role | Face | Recipe |
 | --- | --- | --- |
-| Display (headlines, names, big numbers) | Geist 470 | `type-display` plus a size; `leading-[0.98]` to `leading-none` |
-| Title (sentences and smaller titles in the display face) | Geist 430 | `type-title` plus a size: sub-lines, questions, station and service names, figures |
+| Display (headlines, names, big numbers) | Geist 390; 360 for the hero and closing, 340 for the strips | `type-display` plus a size; `leading-[0.98]` to `leading-none` |
+| Title (sentences and smaller titles in the display face) | Geist 400 | `type-title` plus a size: sub-lines, questions, station and service names, figures |
 | Accent | Geist, the headline's weight | `<Accent>`: the same face and weight, set back by tone (`text-fog`, `text-muted`, `text-brand`, `text-blush`) |
 | Body | Geist 400 | 15 to 20px, `leading-[1.5]` to `[1.6]`, 34 to 68ch |
 | Kicker | Geist 500, sentence case | `<Kicker>`: square marker, 14px (15px from sm), untracked |
 | Meta | JetBrains Mono caps | `<Meta>`: indexes, figure captions, counts, clocks |
 
 - The voice is a modern San Francisco technology company's: precise,
-  compact and tight, never wide, light or airy. Geist (Vercel's open
-  face, on Google Fonts) gives that neutrality; set a touch lighter than
-  its default display weight so it reads assured rather than loud. The
-  first cut, Mona Sans stretched to 110%, read friendly: round, open
-  letters.
-- `type-display` (in `globals.css`) sets Geist at 470 and `-0.038em`
-  tracking with balanced wrapping, so a headline sets as one solid shape.
-  The two largest heads (the hero and the closing) tighten to `-0.044em`
-  through `--display-tracking`. Firm, never bold.
-- `type-title` is the same face a step down (430, `-0.018em`) for
-  sentences and smaller titles set in it, so a page of display lines
-  keeps a hierarchy instead of reading as a wall of weight. The services
+  compact and tight, quiet rather than loud, never wide or airy. Geist
+  (Vercel's open face, on Google Fonts) gives that neutrality, set near
+  its regular weight. Light type on a dark room reads heavier than it
+  measures, so the weights sit lower than they would on paper. The first
+  cut, Mona Sans stretched to 110%, read friendly: round, open letters.
+- `type-display` (in `globals.css`) sets Geist at 390 and `-0.038em`
+  tracking with balanced wrapping, so a headline sets as one clean shape.
+  The largest type steps lighter through `--display-weight`: the hero and
+  the closing 360 (tightened to `-0.044em` through `--display-tracking`),
+  the accountability strips 340. Never bold.
+- `type-title` is the same face a step down in size and a touch firmer
+  (400, `-0.018em`), as smaller type needs to be, for sentences and
+  smaller titles set in it, so a page of display lines keeps a hierarchy
+  instead of reading as a wall of weight. The services
   chapter's house face (`HOUSE` in `lib/services-type.ts`) is this one,
   since the names land on the band links. Its eight voices are Mona Sans,
   loaded in that chapter only for its width axis; each changes into Geist
@@ -118,7 +127,7 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 - `<Accent>` ends a headline only in the hero ("Everywhere.") and the
   closing, set back by tone alone, never by a lighter weight: a thin
   phrase reads editorial. Every other headline is one tone. Never italic.
-- The statement (What Plurel is) is reading type at display size: 410,
+- The statement (What Plurel is) is reading type at display size: 380,
   `-0.034em`.
 - `figures` sets lining, proportional numerals for stats.
 - Meta (mono, 11px caps) is for data only: dates, read times, units,
@@ -180,22 +189,44 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
 `globals.css`, so reduced-motion visitors get the finished page, and
 without JS every chapter renders finished.
 
-- **Headings arrive** through one vocabulary, `TypeReveal`
-  (`components/type-reveal.tsx`, which documents the timings), all rising
-  on a long expo-out, cubic-bezier(0.16, 1, 0.3, 1), none bouncing,
-  blurring or scaling. Hero: the h1's words rise out of their masks from
-  first paint (65ms apart), the light "Everywhere." last; the kicker,
-  copy, action and glass are timed to it in `hero.tsx`. Display (chapter
-  h2s): words in one wave, 32ms apart. Title (h3s and display-set lines):
-  words rise 0.4em with opacity. Chars (names such as "Halden" or the
-  business types): letters one by one. Kicker: the square scales in, then
-  the label slides in. A heading below the fold plays once as it comes up
-  the screen; one already on screen stays still. Each carries its words
-  once as visually hidden plain text and hides the moving boxes from
-  assistive tech, so it reads as one sentence. Under forced colors the
-  heads set as plain, finished type (the backplate behind each line would
-  otherwise cover the descenders of the line above).
-- **Blocks:** `Reveal` (fade-up), staggering siblings 0.08s.
+The vocabulary is taken from instruments, not slideshows: **type is
+plotted, lines are drawn, states light.** Nothing rises, slides, blurs,
+scales or bounces into place; that stagger-and-fade-up is what made the
+page read as a template.
+
+- **Type is plotted** (`TypeReveal`, `components/type-reveal.tsx`, which
+  documents the paces). A head is drawn left to right in reading order by
+  a hard-edged sweep at one steady pace: each word is uncovered at a
+  constant rate, the pen crosses each space in one character's time, a
+  new line waits a short return and the hero's "Everywhere." a short
+  lift. A long line takes longer than a short one; the speed never
+  changes. Paces, in ms a character: the hero and the closing's name 30,
+  chapter heads and names set large 18, smaller heads 11. A kicker's
+  square lights, then its label is plotted (12ms a character, never under
+  180ms in all). Transforms only (each word a window sliding over its own
+  text, which slides back by as much), so the compositor draws it even
+  while the page is busy hydrating. A head below the fold is plotted once
+  as it comes up the screen; one already on screen stays still. Each
+  carries its words once as visually hidden plain text, so it reads as
+  one sentence. Under forced colors heads set as plain, finished type
+  (the backplate behind each line would otherwise cover the descenders of
+  the line above).
+- **One pen per chapter** (`lib/pen.ts`). What arrives together is drawn
+  one after another in reading order, never all at once: a kicker, then
+  its head, then the copy beside it. A head holds its chapter's pen while
+  it plots, a drawn figure while it draws (Why now's route), and a block
+  that only lights waits without holding it. The pen waits only for
+  strokes still on screen, and never longer than 2.4s, so a quick scroll
+  never stacks up delays; chapters never wait on each other.
+- **Lines are drawn** at a steady rate (linear): Why now's route and its
+  closing rule, the Method staircase (one bar after another, from lg),
+  the sample Diagnostic's bars (all at once, like an instrument reading
+  out).
+- **States light:** `Reveal` blocks, nodes and markers switch on by
+  opacity alone and never travel; Why now's stations light the moment the
+  route reaches them, and the hero's copy, action and glass light in turn
+  after its head (timed in `hero.tsx`). Interior headlines (`Cascade`)
+  are plotted at the hero's pace.
 - **Scroll:** one chapter is pinned and scrubbed: services' typographic
   system, which ends on the Plurel System. Scroll-linked without pinning:
   the statement's words light as the reader reaches them, the
@@ -282,7 +313,7 @@ statement, cropped at the right. A visually hidden h2 keeps the outline.
 
 ## Why now
 
-`home/why-now.tsx`, on paper. The claim, "Buyers decide before they
+`home/why-now.tsx`, on graphite. The claim, "Buyers decide before they
 arrive.", with a two-sentence standfirst beside it. Then the argument is
 drawn, not told: a route of six small stations on one hairline (AI
 answers, search, creators, reviews, stores, word of mouth; each a name in
@@ -290,17 +321,19 @@ answers, search, creators, reviews, stores, word of mouth; each a name in
 made". The line ends at a red node: "You, your site or store", noted in
 red as "Where most marketing starts". From lg the route runs across a
 seven-column grid; below it, a rail down the left whose stretches run
-node to node. The line draws, the stations land in order. It closes
-under a brand-red rule, in the title face: "We engineer the ones your
-buyers use, as one system." Contours behind, with the page's one survey
+node to node. The line is drawn at one steady rate and each station
+lights the moment it arrives, like a signal travelling the route. It
+closes under a signal-red rule, drawn first, in the title face: "We
+engineer the ones your buyers use, as one system." Contours behind, with
+the page's one survey
 readout. No statistics, no sources, no sample people, and only one
 display-size line in the chapter: the six used to be set large, which
 made it read as a wall.
 
 ## Why Plurel: from a menu to the Plurel System
 
-The services chapter carries the thesis, on graphite, between the paper
-Why now and the red Method. Markup in `home/services-chapter.tsx`, the
+The services chapter carries the thesis, on graphite, between Why now
+and the red Method. Markup in `home/services-chapter.tsx`, the
 motion in `home/services-type.tsx` (client) with the engine in
 `lib/services-type.ts` and the pin and clone rules in
 `home/services-type.module.css`. Its head: the kicker "Why Plurel", the
@@ -356,16 +389,17 @@ Rules:
 
 ## Accountability
 
-`home/accountability.tsx`, on paper. "Ten suppliers report ten numbers.
+`home/accountability.tsx`, on graphite. "Ten suppliers report ten numbers.
 We answer for one." Then two strips of very large type that slide across
 the full width in opposite directions as the reader scrolls (no pin; each
 lines up on the grid as it crosses the middle of the screen): "What
-suppliers report", ten supplier metrics in muted ink (reach,
+suppliers report", ten supplier metrics, dimmed (reach,
 impressions, followers, click-through, views, sessions, mentions,
 articles, organic traffic, PageSpeed: generic examples, not claims), and
 "What we answer for", the numbers businesses run on (orders, installs,
-demos, stockists, bookings, sign-ups, renewals) in full ink with brand-red
-square separators. Under reduced motion or without JS both stand still
+demos, stockists, bookings, sign-ups, renewals) in full paper with
+signal-red square separators. The strips are the largest type on the page
+and the lightest (340). Under reduced motion or without JS both stand still
 and wrap. Then the commitment (the one number is agreed in the
 Diagnostic, before any work starts) and a three-line spec: agreed, read,
 reset.
@@ -378,9 +412,12 @@ Plurel answers for. One table, read across, a few words a cell: the
 business (display face), where its buyers decide, and the number:
 consumer brands (feeds, creators and reviews; orders), physical products
 (shelves, marketplaces and reviews; sell-through), B2B technology (AI
-answers, search and peers; demos with buyers who fit), consumer apps (app
-stores, feeds and friends; installs that stay). From lg the two column
-heads sit once over the table; below it each row carries small labels.
+answers, search and peers; demos with buyers who fit), consumer
+technology (stores, creators and AI answers; users who stay). The kinds
+of business stay high-level: consumer technology covers apps, AI products
+and devices alike. From lg the two column heads sit once over the table;
+below it each row carries small labels. The table lights as one object,
+then the pen writes the four names down it.
 Labels in paper (blush fails AA at small sizes on red). Contours behind,
 another seed.
 
@@ -394,11 +431,11 @@ what the machine does, then what a person decides.
 
 ## Questions
 
-`home/faq-chapter.tsx`, on paper. "Straight answers.", then the questions
+`home/faq-chapter.tsx`, on graphite. "Straight answers.", then the questions
 as a quiet list, one line each, whose answers open on demand (native
 `<details>`: no JS needed, keyboard and assistive tech included, and
 search engines read every answer, as they do the FAQPage data). The first
-sentence of an answer is the takeaway, in ink.
+sentence of an answer is the takeaway, in full paper.
 
 ## Faint art
 
@@ -470,7 +507,7 @@ chapter.
   tap for touch, and on Enter, which moves focus into the panel. Mobile
   opens a full-screen red index, which closes itself if the window widens
   past lg.
-- Footer (`site-footer.tsx`): paper, brand-red lockup, Swiss link
+- Footer (`site-footer.tsx`): graphite, brand-red lockup, Swiss link
   columns, one identity line ("Plurel is a distribution engineering firm:
   one team for every relevant channel, answerable for one number."), live
   studio clock (New York). The closing chapter's `arc` glass sits right above it.
@@ -488,7 +525,7 @@ one step of that argument, and says it once:
 | Why Plurel | The thesis, shown: ten suppliers' voices become one system, the Plurel System's four layers and its loop, each layer with its instrument and services |
 | Method | How it runs: the Diagnostic, then the four phases as one monthly partnership |
 | Accountability | What we answer for: ten suppliers report ten numbers, we answer for one, agreed on day one |
-| Who it's for | Fit: consumer brands, physical products, B2B technology and consumer apps, the same system with a different number |
+| Who it's for | Fit: consumer brands, physical products, B2B technology and consumer technology, the same system with a different number |
 | Proof | What a Diagnostic finds (a labelled sample until real cases can be published) |
 | People | Who does the work (shown once real people are listed) |
 | FAQ | The real objections, biggest first: is this a full-service agency? every channel? what about our current agencies? cost |
@@ -499,7 +536,7 @@ Write "every relevant channel", never "every channel". The outcome is
 "one number, agreed on day one" (orders, installs, demos, stockists);
 never headline "qualified demand", and never "inquiries" or "pipeline"
 alone. Copy reads for consumer brands, physical products, B2B technology
-and consumer apps alike. Use the concrete noun where you can: team,
+and consumer technology alike. Use the concrete noun where you can: team,
 brief, number, report. Keep AI search, martech and measurement inside the method rather
 than as slogans, and keep the voice plain: no triplet lists, no "Not X.
 Y.", no consultancy words.

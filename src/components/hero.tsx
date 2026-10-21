@@ -3,6 +3,7 @@ import { GlassBand } from "@/components/glass-band";
 import { CONTAINER, CtaLink, GRID } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { heroFilm } from "@/lib/film";
+import { labelTime } from "@/lib/pen";
 import { AUDIT_HREF } from "@/lib/nav";
 
 /*
@@ -13,12 +14,16 @@ import { AUDIT_HREF } from "@/lib/nav";
   from here.
 
   The one orchestrated load, from first paint, in CSS (the vocabulary is
-  in type-reveal.tsx). In ms: the kicker's square at 80 and its label at
-  190; the headline's words at 220, 285 and 350, then 485, with the fog-toned
-  "Everywhere." last at 670 over 1.4s; the copy at 860 and the action at
-  960 (fade-up, 1s); the glass at 1080, rising slowly over 1.6s once the
-  type has landed. No JS or reduced motion: finished and still.
+  in type-reveal.tsx): one pen, so nothing arrives at once. In ms: the
+  kicker's square lights at 120 and its label is plotted from 180; the
+  headline is plotted from 440 at the hero's pace, a line at a time, the
+  pen lifting once before the fog-toned "Everywhere." (about 1.1s in
+  all); the copy and the action light at 980 and 1080; the glass comes up
+  last, from 1200 over 1.4s, by which time the film is drawing. No travel
+  anywhere. No JS or reduced motion: finished and still.
 */
+
+const KICKER = "Distribution, engineered";
 
 const at = (delay: number, duration?: number): CSSProperties => ({
   animationDelay: `${delay}ms`,
@@ -37,26 +42,28 @@ export function Hero() {
             <p
               data-arrive="load"
               className="flex items-start gap-2.5 text-[13px] font-medium leading-[1.5]"
-              style={{ "--kd": "80ms" } as CSSProperties}
+              style={{ "--kd": "120ms", "--kdur": `${labelTime(KICKER.length)}ms` } as CSSProperties}
             >
               <i aria-hidden className="kicker-mark mt-[6px] block size-[7px] shrink-0 bg-signal" />
-              <span className="kicker-label">Distribution, engineered</span>
+              <span className="kicker-label">
+                <span className="kicker-text">{KICKER}</span>
+              </span>
             </p>
             <TypeReveal
               as="h1"
               id="hero-heading"
               onLoad
-              delay={220}
-              className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98] [--display-tracking:-0.044em]"
+              delay={440}
+              className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98] [--display-tracking:-0.044em] [--display-weight:360]"
               lines={["Made to be", ["seen.", { text: "Everywhere.", accent: true, className: "text-fog" }]]}
             />
           </div>
           <div className="col-span-4 flex flex-col items-start gap-6 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pb-2">
-            <p className="fade-up max-w-[36ch] text-[17px] leading-[1.5] text-fog lg:text-[18px]" style={at(860, 1000)}>
+            <p className="fade-in max-w-[36ch] text-[17px] leading-[1.5] text-fog lg:text-[18px]" style={at(980)}>
               Great work no longer sells itself. Distribution does. Plurel engineers
               yours as one system, so the right customers find you and growth compounds.
             </p>
-            <div className="fade-up flex w-full sm:w-auto" style={at(960, 1000)}>
+            <div className="fade-in flex w-full sm:w-auto" style={at(1080)}>
               <CtaLink href={AUDIT_HREF} className="w-full sm:w-auto">
                 Request a diagnostic
               </CtaLink>
@@ -67,7 +74,7 @@ export function Hero() {
 
       {/* Glass over the film: full bleed, well clear of the statement. It
           comes up last and slowly, by which time the film is drawing. */}
-      <div className="fade-up mt-20 sm:mt-24 lg:mt-28" style={at(1080, 1600)}>
+      <div className="fade-in mt-20 sm:mt-24 lg:mt-28" style={at(1200, 1400)}>
         <GlassBand
           film={film}
           profile="rise"

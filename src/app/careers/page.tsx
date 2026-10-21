@@ -126,7 +126,7 @@ export default function CareersPage() {
                   />
                 </em>
               </h1>
-              <p className="fade-up mt-6 max-w-[56ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
+              <p className="fade-in mt-6 max-w-[56ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
                 We&rsquo;re a small senior team doing brand, web, AI search,
                 content and campaign work that ships in public. If you want
                 your work in the world rather than in a deck, you&rsquo;ll

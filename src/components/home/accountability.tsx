@@ -7,11 +7,11 @@ import { TypeReveal } from "@/components/type-reveal";
 import s from "./accountability.module.css";
 
 /*
-  Accountability, on paper: ten suppliers report ten numbers, we answer
-  for one. Between the headline and the terms, two strips of display type
+  Accountability, on graphite: ten suppliers report ten numbers, we
+  answer for one. Between the headline and the terms, two strips of display type
   cross the full width as the reader scrolls through them (no pin): the
-  figures suppliers report, in muted ink, drift left; the numbers a
-  business runs on, in full ink, each marked with a brand-red square,
+  figures suppliers report, dimmed, drift left; the numbers a business
+  runs on, in full paper, each marked with a signal-red square,
   drift right, a little slower. Each strip lands exactly on the grid, its
   first figure under its label, as it crosses the middle of the screen.
   The supplier figures are generic examples, not anyone's results: ten
@@ -62,7 +62,8 @@ function Strip({
   tone: Tone;
   className?: string;
 }) {
-  const ink = tone === "report" ? "text-muted" : "text-ink";
+  const ink = tone === "report" ? "text-paper/40" : "text-paper";
+  const labelTone = tone === "report" ? "text-fog" : "text-paper";
   const list = (copy: boolean) => (
     <ul
       aria-hidden={copy || undefined}
@@ -82,7 +83,7 @@ function Strip({
       <div className={CONTAINER}>
         <p
           id={id}
-          className={`border-t border-ink/15 pt-5 text-[14px] font-medium leading-none sm:text-[15px] ${ink}`}
+          className={`border-t border-paper/15 pt-5 text-[14px] font-medium leading-none sm:text-[15px] ${labelTone}`}
         >
           {label}
         </p>
@@ -197,9 +198,9 @@ export function AccountabilityChapter() {
   }, []);
 
   return (
-    <section aria-labelledby="accountability-heading" className="bg-paper text-ink">
+    <section aria-labelledby="accountability-heading" className="bg-graphite text-paper">
       <div className={`${CONTAINER} pt-24 lg:pt-36`}>
-        <Kicker>Accountability</Kicker>
+        <Kicker tone="dark">Accountability</Kicker>
         <TypeReveal
           as="h2"
           id="accountability-heading"
@@ -229,14 +230,14 @@ export function AccountabilityChapter() {
               it, and it is the result we report.
             </p>
           </Reveal>
-          <Reveal delay={0.08} className="col-span-4 sm:col-span-6 lg:col-span-5 lg:col-start-8">
+          <Reveal className="col-span-4 sm:col-span-6 lg:col-span-5 lg:col-start-8">
             <dl>
               {TERMS.map(([k, v]) => (
                 <div
                   key={k}
-                  className="grid grid-cols-[6.5rem_1fr] gap-4 border-t border-ink/15 py-4 first:border-t-0 first:pt-1"
+                  className="grid grid-cols-[6.5rem_1fr] gap-4 border-t border-paper/15 py-4 first:border-t-0 first:pt-1"
                 >
-                  <dt className="text-[14px] leading-[1.6] text-muted">{k}</dt>
+                  <dt className="text-[14px] leading-[1.6] text-fog">{k}</dt>
                   <dd className="text-[16px] leading-[1.5]">{v}</dd>
                 </div>
               ))}

@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const HOME = {
   title: "Plurel — Distribution engineering for growth-stage companies",
   description:
-    "Plurel is a distribution engineering firm. One team runs narrative, brand, website, AI search and SEO, content and creators, paid, PR and measurement as one system, for consumer brands, physical products, B2B technology and apps.",
+    "Plurel is a distribution engineering firm. One team runs narrative, brand, website, AI search and SEO, content and creators, paid, PR and measurement as one system, for consumer brands, physical products, and B2B and consumer technology.",
   social:
     "Your marketing shouldn't be ten companies. At Plurel, one team works from the same brief on every relevant channel and answers for one number, agreed on day one.",
 };

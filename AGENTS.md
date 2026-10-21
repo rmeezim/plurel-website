@@ -18,12 +18,14 @@ the divisions together later and say so).
 - Next.js 16 (App Router) + React 19 + TypeScript
 - Tailwind CSS v4 (CSS-first config in `src/app/globals.css` via `@theme`)
 - Fonts via `next/font/google`: Geist (`--font-sans`, everything:
-  `type-display` sets headlines firm and tight at 470, `type-title` the
-  display face a step down for sentences and smaller titles, `<Accent>`
-  sets a phrase back by tone, never by a lighter weight), JetBrains Mono
-  (`--font-mono`, Swiss metadata). The voice is a modern San Francisco
-  technology company's: precise, never wide, light or airy. Mona Sans
-  loads only in the services chapter, for its supplier voices' widths.
+  `type-display` sets headlines tight and near regular weight at 390, the
+  largest type lighter through `--display-weight` (hero and closing 360,
+  the accountability strips 340), `type-title` the display face a step
+  down for sentences and smaller titles (400), `<Accent>` sets a phrase
+  back by tone, never by a lighter weight), JetBrains Mono (`--font-mono`,
+  Swiss metadata). The voice is a modern San Francisco technology
+  company's: precise and quiet, never wide, bold or airy. Mona Sans loads
+  only in the services chapter, for its supplier voices' widths.
   Instrument Serif (`--font-serif`) is kept only for interior pages not
   yet moved over.
 
@@ -31,7 +33,9 @@ the divisions together later and say so).
 
 Read `docs/design-system.md` before building any page. In short: red is
 the environment (flat red chapters, a red-graded film behind cool fluted glass),
-graphite is the dark tone, the footer is paper, surfaces are flat color
+graphite is the room the homepage lives in, footer included (paper is for
+interior pages until they move over; on the homepage a light chapter read
+as a template), surfaces are flat color
 with no gradients or drawn grid lines (a chapter may carry one faint art
 field: the contour map or the mark watermark, `art.tsx`), structure
 is Swiss (a strict 12-column grid that is felt, not drawn; one quiet
@@ -70,7 +74,8 @@ creative engine, one set of numbers and one accountable team across every
 relevant channel (never "every channel"). The category it names is
 distribution engineering. The thesis: "Your marketing shouldn't be ten
 companies." Plurel works for every kind of growing company: consumer
-brands, physical products, B2B technology and consumer apps, and the copy
+brands, physical products, B2B technology and consumer technology (name
+the kinds of business at that high level), and the copy
 reads for all of them (prefer customers, buyers and the people a company
 sells to; never default to B2B-only words such as pipeline, leads, clients
 or sales team, nor to B2C-only ones). The outcome is one number, agreed on
@@ -96,14 +101,19 @@ argument onto the homepage chapters.
   social card. Next merges metadata shallowly, so a page that set only a
   title would inherit the homepage's canonical and card.
 - Keep animations light and tasteful, all gated behind
-  `prefers-reduced-motion` in `globals.css`. Headings arrive through one
-  vocabulary (`type-reveal.tsx`): the hero's on load (the one orchestrated
-  load moment), every other heading once as it enters. Services'
+  `prefers-reduced-motion` in `globals.css`. Motion comes from instruments,
+  not slideshows: type is plotted (a steady left-to-right sweep,
+  `type-reveal.tsx`), lines are drawn at a steady rate, and states light
+  by opacity alone. Nothing rises, slides, blurs or bounces into place,
+  and what arrives together in a chapter is drawn one after another by
+  its pen (`lib/pen.ts`). The hero's head is plotted on load (the one
+  orchestrated load moment), every other head once as it enters. Services'
   typographic system, ending on the Plurel System's layers
   (`home/services-type.tsx`), is the one pinned, scroll-scrubbed chapter.
   Scroll-linked without pinning: the statement's lit words, the
   accountability strips and the faint art's drift. The fluted glass
-  (`glass-band.tsx`) is the one WebGL surface; blocks use `Reveal`. No heavy 3D.
+  (`glass-band.tsx`) is the one WebGL surface; blocks light through
+  `Reveal`. No heavy 3D.
 - Keep chrome sparse: no sprinkle of tiny mono labels, no tracked
   uppercase micro-type for navigation or labels (sentence case, 13px and
   up), no placeholder boxes, and the Plurel mark is a signature, never a

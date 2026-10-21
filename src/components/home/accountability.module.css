@@ -23,6 +23,8 @@
 }
 
 .strip {
+  /* the largest type on the page, so the lightest display weight */
+  --display-weight: 340;
   font-size: clamp(2rem, 1.2rem + 3.4vw, 5.25rem);
   line-height: 1;
   font-variant-numeric: lining-nums proportional-nums;
@@ -45,8 +47,8 @@
 }
 
 /* Each figure carries its marker, the way a kicker carries its square:
-   hollow and quiet for what suppliers report, solid brand red for what we
-   answer for. Wrapped or moving, every line starts on one. */
+   hollow and quiet for what suppliers report, solid signal red for what
+   we answer for. Wrapped or moving, every line starts on one. */
 .item::before {
   content: "";
   display: inline-block;
@@ -61,7 +63,7 @@
   opacity: 0.55;
 }
 .answer .item::before {
-  background: var(--color-brand);
+  background: var(--color-signal);
 }
 
 @media (prefers-reduced-motion: no-preference) {

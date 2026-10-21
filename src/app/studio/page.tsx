@@ -62,7 +62,7 @@ export default function StudioPage() {
                   />
                 </em>
               </h1>
-              <p className="fade-up mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
+              <p className="fade-in mt-6 max-w-[54ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
                 A small senior team working from one brief, with something
                 shipped every week.
               </p>

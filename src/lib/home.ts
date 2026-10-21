@@ -74,7 +74,7 @@ export const FAQS = [
   },
   {
     q: "Do you work with companies like ours?",
-    a: "Our best fit is growth-stage companies whose marketing has outgrown one person and split across suppliers. We work with consumer brands, physical products, B2B technology and apps. The industry matters less than the symptom: everything works, and nothing works together.",
+    a: "Our best fit is growth-stage companies whose marketing has outgrown one person and split across suppliers. We work with consumer brands and physical products, and with B2B and consumer technology. The industry matters less than the symptom: everything works, and nothing works together.",
   },
   {
     q: "Who actually does the work?",

@@ -76,10 +76,10 @@ export default async function ServicePage({
               <p className="mt-4 font-sans text-[clamp(1.25rem,2.4vw,1.8rem)] font-normal italic leading-snug tracking-[-0.01em] text-rust">
                 {service.tagline}
               </p>
-              <p className="fade-up mt-6 max-w-[58ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
+              <p className="fade-in mt-6 max-w-[58ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
                 {service.plain[0]}
               </p>
-              <p className="fade-up mt-4 max-w-[58ch] text-[15px] leading-relaxed text-ink/70 [animation-delay:350ms]">
+              <p className="fade-in mt-4 max-w-[58ch] text-[15px] leading-relaxed text-ink/70 [animation-delay:350ms]">
                 {service.plain[1]}
               </p>
             </div>

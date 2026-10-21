@@ -133,7 +133,7 @@ export const TONE: Record<Tone, Rgb> = {
 };
 
 /** The house style (`type-title` in Geist, the face of the band links the names land on): where every supplier ends */
-export const HOUSE = { mono: false, house: true, wght: 430, wdth: 100, tr: -0.018, rgb: TONE.paper, cs: "none", sk: 0 } as const;
+export const HOUSE = { mono: false, house: true, wght: 400, wdth: 100, tr: -0.018, rgb: TONE.paper, cs: "none", sk: 0 } as const;
 
 /**
   One supplier's way of setting a name. x is a fraction of the list's

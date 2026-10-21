@@ -543,7 +543,7 @@ export default function MethodologyPage() {
                 />
               </em>
             </h1>
-            <p className="fade-up mt-8 max-w-[56ch] text-[15px] leading-relaxed text-paper/65 sm:text-base [animation-delay:250ms]">
+            <p className="fade-in mt-8 max-w-[56ch] text-[15px] leading-relaxed text-paper/65 sm:text-base [animation-delay:250ms]">
               The Plurel Method runs every engagement in four phases, from
               the first Diagnostic to a monthly partnership judged on
               qualified demand. Diagnosed like an audit, designed like a

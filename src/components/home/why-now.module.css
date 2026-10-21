@@ -5,16 +5,21 @@
   across a seven-column grid (six stations, then you): one hairline from
   the first node to the red one, and a bracket over the six.
 
-  Motion rides the figure's Reveal: armed, the line is undrawn, the nodes
-  unset and the copy down; in, the line draws, the nodes land in order
-  and their copy follows. The default is finished: without JS, with
-  reduced motion, or for a route already on screen at load.
+  Motion rides the figure's Reveal, as a signal travelling the route: the
+  line is drawn at one steady rate (linear) from the first node to you,
+  and each station lights, node, name and note together, the moment the
+  line reaches it; you light last, and then where most marketing starts.
+  One clock for both layouts: the line takes 0.96s for six stretches, so
+  station i lights at 0.25s + i x 0.16s, and below lg each stretch of the
+  rail is drawn in its own 0.16s. Nothing moves but the line. The default
+  is finished: without JS, with reduced motion, or for a route already on
+  screen at load.
 */
 
 .route {
   --rail: 28px; /* below lg: the copy's indent from the rail */
   --node: 7px;
-  --mark: color-mix(in oklab, var(--color-ink) 22%, transparent);
+  --mark: color-mix(in oklab, var(--color-paper) 26%, transparent);
   margin: 0;
 }
 
@@ -26,12 +31,12 @@
   font-size: 14px;
   font-weight: 500;
   line-height: 1.35;
-  color: color-mix(in oklab, var(--color-ink) 72%, transparent);
+  color: var(--color-fog);
 }
 .starts {
   margin-top: 8px;
   max-width: 16ch;
-  color: var(--color-brand);
+  color: var(--color-signal);
 }
 
 .track {
@@ -64,14 +69,14 @@
   top: 8.5px;
   width: var(--node);
   height: var(--node);
-  background: var(--color-ink);
+  background: var(--color-paper);
 }
 .nodeYou {
   left: calc(var(--rail) * -1 - 1px);
   top: 13px;
   width: 9px;
   height: 9px;
-  background: var(--color-brand);
+  background: var(--color-signal);
 }
 
 /* below lg, each station's stretch of the rail: from its node down to the
@@ -109,7 +114,7 @@
   max-width: 30ch;
   font-size: 15px;
   line-height: 1.45;
-  color: color-mix(in oklab, var(--color-ink) 62%, transparent);
+  color: var(--color-fog);
 }
 
 .you {
@@ -211,44 +216,33 @@
   :global(.reveal-armed) .station::before {
     transform: scaleY(0);
   }
-  :global(.reveal-armed) .node,
-  :global(.reveal-armed) .nodeYou {
-    transform: scale(0);
-  }
-  :global(.reveal-armed) .name,
-  :global(.reveal-armed) .note,
-  :global(.reveal-armed) .starts {
+  :global(.reveal-armed) :is(.node, .nodeYou, .name, .note, .starts) {
     opacity: 0;
-    transform: translateY(8px);
   }
 
   :global(.reveal-in) .line {
-    transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+    transition: transform 0.96s linear 0.25s;
   }
   :global(.reveal-in) .station::before {
-    transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) calc(var(--i) * 110ms + 0.3s);
+    transition: transform 0.16s linear calc(var(--i) * 0.16s + 0.25s);
   }
-  :global(.reveal-in) .node,
-  :global(.reveal-in) .nodeYou {
-    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 150ms + 0.25s);
+  :global(.reveal-in) :is(.node, .nodeYou, .name, .note) {
+    transition: opacity 0.12s linear calc(var(--i) * 0.16s + 0.25s);
   }
-  :global(.reveal-in) .name,
-  :global(.reveal-in) .note,
   :global(.reveal-in) .starts {
-    transition:
-      opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) calc(var(--i, 0) * 150ms + 0.35s),
-      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 150ms + 0.35s);
+    transition: opacity 0.12s linear calc(var(--i) * 0.16s + 0.45s);
   }
 }
 
-/* The closing line's rule: the total under the sum, in brand red. It draws
-   in from the left as its line rises (keyed off the line's TypeReveal). */
+/* The closing line's rule: the total under the sum, in signal red. It is
+   drawn first, at the route's steady rate, and the line is plotted once
+   it is done (keyed off the line's TypeReveal, which waits for it). */
 .total {
   position: absolute;
   inset-inline: 0;
   top: 0;
   height: 2px;
-  background: var(--color-brand);
+  background: var(--color-signal);
   transform-origin: left center;
 }
 
@@ -257,6 +251,6 @@
     transform: scaleX(0);
   }
   .row:has(:global(.type-reveal)[data-state="in"]) .total {
-    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.45s linear;
   }
 }

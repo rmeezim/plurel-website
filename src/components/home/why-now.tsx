@@ -6,15 +6,16 @@ import { TypeReveal } from "@/components/type-reveal";
 import s from "./why-now.module.css";
 
 /*
-  Why now, on paper: buyers decide before they arrive. The head follows
+  Why now, on graphite: buyers decide before they arrive. The head follows
   the chapter anatomy (kicker, a two-line headline, the standfirst beside
   it). Then the argument drawn rather than told: a route of six small
   stations on one hairline, under a bracket that names them as where the
   choice gets made, ending at the red node where the buyer finally reaches
   you, noted in red as where most marketing starts. On desktop the route runs
   across the page on a seven-column grid; below lg it turns into a rail
-  down the left. The line draws, the stations land in order, and one
-  quieter line answers it under a brand-red rule. Behind it all, a faint
+  down the left. The line is drawn at one steady rate and each station
+  lights the moment it arrives, then one quieter line answers it: its
+  rule is drawn first, then the line is plotted. Behind it all, a faint
   survey of the terrain buyers decide on.
 */
 
@@ -33,13 +34,13 @@ export function WhyNowChapter() {
   return (
     <section
       aria-labelledby="why-now-heading"
-      className="relative isolate overflow-hidden bg-paper text-ink"
+      className="relative isolate overflow-hidden bg-graphite text-paper"
     >
-      <ArtField kind="contours" seed={3} tone="paper" annotate />
+      <ArtField kind="contours" seed={3} tone="dark" annotate />
       <div className={`${CONTAINER} py-24 lg:py-36`}>
         <div className={`${GRID} gap-y-8`}>
           <div className="col-span-4 sm:col-span-6 lg:col-span-7">
-            <Kicker>Why now</Kicker>
+            <Kicker tone="dark">Why now</Kicker>
             <TypeReveal
               as="h2"
               id="why-now-heading"
@@ -48,14 +49,16 @@ export function WhyNowChapter() {
             />
           </div>
           <Reveal className="col-span-4 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pt-12">
-            <p className="text-[18px] leading-[1.5] text-ink/75 lg:text-[19px]">
+            <p className="text-[18px] leading-[1.5] text-fog lg:text-[19px]">
               They ask an assistant, watch a creator, read the reviews. By the time they reach
               you, the choice is mostly made.
             </p>
           </Reveal>
         </div>
 
-        <Reveal className="mt-16 sm:mt-20 lg:mt-28">
+        {/* holds the pen while the route draws: 0.25s, six stations 0.16s
+            apart, then where most marketing starts (why-now.module.css) */}
+        <Reveal hold={1450} className="mt-16 sm:mt-20 lg:mt-28">
           <figure aria-labelledby="why-now-route" className={s.route}>
             <p id="why-now-route" className={s.made}>
               Where the choice gets made
@@ -86,6 +89,7 @@ export function WhyNowChapter() {
           <TypeReveal
             as="p"
             variant="title"
+            delay={480}
             className="type-title max-w-[24ch] text-[clamp(1.5rem,1rem+1.5vw,2.375rem)] leading-[1.1]"
             lines={["We engineer the ones your buyers use, as one system."]}
           />

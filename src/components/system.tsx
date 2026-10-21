@@ -10,8 +10,8 @@ import { Arrive } from "@/components/type-reveal";
     on GRID. The grid is never drawn: it shows only through alignment.
   - Kicker is the chapter label: a square marker and a sentence-case
     label. A chapter carries one at most (ChapterHead), or none when its
-    headline names it. Below the fold it arrives with its headline: the
-    square scales in, then the label slides in (type-reveal.tsx).
+    headline names it. Below the fold it arrives just before its
+    headline: the square lights, then the label is plotted (type-reveal.tsx).
   - Meta is Plurel's own Swiss metadata voice (mono, small caps), kept for
     data: dates, units, tags, counts with a real order. Never a caption
     that only announces what follows.
@@ -39,26 +39,33 @@ const KICKER_TONE: Record<Tone, { text: string; mark: string }> = {
 
 /**
  * Chapter label: square marker + sentence-case label. Server markup; its
- * arrival (square, then label) is CSS armed by <Arrive>, and it renders
- * finished without JS, under reduced motion and when on screen at load.
+ * arrival (the square lights, the label is plotted) is CSS armed by
+ * <Arrive>, and it renders finished without JS, under reduced motion and
+ * when on screen at load. `chars`, the label's length, sets how long it
+ * takes to plot; a plain-text label gives its own.
  */
 export function Kicker({
   children,
   tone = "paper",
+  chars,
   className = "",
 }: {
   children: ReactNode;
   tone?: Tone;
+  chars?: number;
   className?: string;
 }) {
   const t = KICKER_TONE[tone];
   return (
     <Arrive
       as="p"
+      chars={chars ?? (typeof children === "string" ? children.length : undefined)}
       className={`flex items-center gap-2.5 text-[14px] font-medium leading-none tracking-[-0.005em] sm:text-[15px] ${t.text} ${className}`}
     >
       <span aria-hidden className={`kicker-mark size-[7px] shrink-0 ${t.mark}`} />
-      <span className="kicker-label">{children}</span>
+      <span className="kicker-label">
+        <span className="kicker-text">{children}</span>
+      </span>
     </Arrive>
   );
 }
@@ -184,7 +191,7 @@ export function ChapterHead({
   meta?: string;
 }) {
   return (
-    <Kicker tone={tone} className={className}>
+    <Kicker tone={tone} chars={label.length} className={className}>
       <span id={id}>{label}</span>
     </Kicker>
   );

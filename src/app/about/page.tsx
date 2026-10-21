@@ -131,7 +131,7 @@ export default function AboutPage() {
                   />
                 </em>
               </h1>
-              <p className="fade-up mt-6 max-w-[58ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
+              <p className="fade-in mt-6 max-w-[58ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
                 Plurel is a distribution engineering firm. One senior team
                 answers for how businesses get chosen: brand, website, AI
                 search, content, campaigns and the martech underneath, all

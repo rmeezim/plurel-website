@@ -32,18 +32,21 @@ const BAR = [
 const ARROW_TIP =
   "[clip-path:polygon(0_0,calc(100%_-_10px)_0,100%_50%,calc(100%_-_10px)_100%,0_100%)]";
 
-/* The bars draw left to right once, 120ms apart, keyed off each phase's
-   Reveal: collapsed while it is armed, transitioning only once it is in.
-   No-JS, reduced-motion and already-on-screen visitors get finished bars. */
+/* The staircase is drawn by one pen: each bar left to right at a steady
+   rate, keyed off its phase's Reveal (collapsed while armed, drawing once
+   in). From lg, where the four phases light together, each bar starts
+   where the one before it ends; below lg each phase draws its own as it
+   arrives. No-JS, reduced-motion and already-on-screen visitors get
+   finished bars. */
 const BAR_DRAW =
   "origin-left scale-x-100 motion-safe:[.reveal-armed_&]:scale-x-0 " +
-  "motion-safe:[.reveal-in_&]:transition-transform motion-safe:[.reveal-in_&]:duration-700 " +
-  "motion-safe:[.reveal-in_&]:ease-[cubic-bezier(0.22,0.61,0.36,1)] motion-safe:[.reveal-in_&]:delay-200";
+  "motion-safe:[.reveal-in_&]:transition-transform motion-safe:[.reveal-in_&]:duration-[450ms] " +
+  "motion-safe:[.reveal-in_&]:ease-linear motion-safe:[.reveal-in_&]:delay-100";
 const BAR_DELAY = [
-  "lg:motion-safe:[.reveal-in_&]:delay-150",
-  "lg:motion-safe:[.reveal-in_&]:delay-[270ms]",
-  "lg:motion-safe:[.reveal-in_&]:delay-[390ms]",
-  "lg:motion-safe:[.reveal-in_&]:delay-[510ms]",
+  "lg:motion-safe:[.reveal-in_&]:delay-100",
+  "lg:motion-safe:[.reveal-in_&]:delay-[550ms]",
+  "lg:motion-safe:[.reveal-in_&]:delay-[1000ms]",
+  "lg:motion-safe:[.reveal-in_&]:delay-[1450ms]",
 ];
 
 /* Mobile rail: a bracket from 01 to the end of 03 (ticks point at the
@@ -73,10 +76,7 @@ export function MethodChapter() {
             className={`${H2} col-span-4 sm:col-span-6 lg:col-span-8`}
             lines={["One operating model, from first diagnosis to compounding growth."]}
           />
-          <Reveal
-            delay={0.1}
-            className="col-span-4 sm:col-span-4 lg:col-span-3 lg:col-start-10 lg:pb-1"
-          >
+          <Reveal className="col-span-4 sm:col-span-4 lg:col-span-3 lg:col-start-10 lg:pb-1">
             <p className="max-w-[40ch] text-[16px] leading-[1.55]">
               Most engagements run all four as one monthly partnership. A focused
               sprint, like a rebrand or a new site, takes four to eight weeks.
@@ -122,10 +122,7 @@ export function MethodChapter() {
                     )}
                   </span>
 
-                  <Reveal
-                    delay={i * 0.08}
-                    className="lg:row-span-3 lg:grid lg:grid-rows-subgrid"
-                  >
+                  <Reveal className="lg:row-span-3 lg:grid lg:grid-rows-subgrid">
                     {RAIL_LABEL[i] && (
                       <p className="mb-4 text-[14px] font-medium lg:sr-only">
                         {RAIL_LABEL[i]}
@@ -148,7 +145,6 @@ export function MethodChapter() {
                       <TypeReveal
                         as="h3"
                         variant="title"
-                        delay={i * 80}
                         className="type-display mt-3 text-[2rem] leading-none lg:text-[clamp(2rem,3.1vw,2.5rem)]"
                         lines={[phase.name]}
                       />
@@ -180,7 +176,7 @@ export function MethodChapter() {
           {/* Where AI helps: one quiet row under all four phases, each line
               under its own phase, in one shape: what the machine does, then
               what a person decides */}
-          <Reveal delay={0.1} className="mt-16 lg:mt-14">
+          <Reveal className="mt-16 lg:mt-14">
             <p id="method-ai" className="text-[15px] font-medium leading-[1.35]">
               Where AI helps, and where a person decides
             </p>

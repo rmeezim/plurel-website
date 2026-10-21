@@ -74,7 +74,7 @@ export function ContactForm() {
           <Cascade text="Your request is drafted." base={0.1} step={0.06} />
         </h3>
         <p
-          className="word-in mt-3 max-w-[48ch] text-[15px] leading-relaxed text-ink/75"
+          className="fade-in mt-3 max-w-[48ch] text-[15px] leading-relaxed text-ink/75"
           style={{ animationDelay: "450ms" }}
         >
           We&rsquo;ve opened your email app with everything filled in. Hit
@@ -92,7 +92,7 @@ export function ContactForm() {
           <button
             type="button"
             onClick={() => setSent(false)}
-            className="word-in text-[11px] font-medium uppercase tracking-[0.18em] text-muted transition-colors hover:text-brand"
+            className="fade-in text-[11px] font-medium uppercase tracking-[0.18em] text-muted transition-colors hover:text-brand"
             style={{ animationDelay: "620ms" }}
           >
             &larr; Back to the form

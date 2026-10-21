@@ -17,19 +17,20 @@ const FAQ_JSON_LD = {
   })),
 };
 
-/** Hairlines between questions */
-const RULE = "border-ink/15";
+/** Hairlines between questions, and the list's own top and bottom rules */
+const RULE = "border-paper/15";
+const RULE_STRONG = "border-paper/60";
 
 /*
   Questions: a quiet list. Each question is one line that opens; its
   answer waits until asked. Native <details>, so a question opens without
   JS, from the keyboard and for assistive tech, and search engines read
   every answer (as does the FAQPage data above). The first sentence of an
-  answer is the takeaway, set in ink. The Diagnostic's answer lifts its
+  answer is the takeaway, set in full paper. The Diagnostic's answer lifts its
   parenthetical list of the six parts out and sets it as a list.
 */
 
-/** First sentence (the takeaway, set in ink) and the rest of the answer */
+/** First sentence (the takeaway, in full paper) and the rest of the answer */
 function splitLead(text: string): [string, string] {
   const match = text.match(/^(.+?[.?!])\s+([\s\S]+)$/);
   return match ? [match[1], match[2]] : [text, ""];
@@ -88,13 +89,13 @@ function settle(text: string, keepTail = true, before = ""): ReactNode {
   return <>{parts}</>;
 }
 
-const ANSWER = "max-w-[64ch] text-[16px] leading-[1.6] text-ink/65";
+const ANSWER = "max-w-[64ch] text-[16px] leading-[1.6] text-paper/65";
 
 function Answer({ text }: { text: string }) {
   const [lead, rest] = splitLead(text);
   return (
     <>
-      <strong className="font-medium text-ink">{settle(lead, !rest)}</strong>
+      <strong className="font-medium text-paper">{settle(lead, !rest)}</strong>
       {rest && settle(rest, true, " ")}
     </>
   );
@@ -103,7 +104,7 @@ function Answer({ text }: { text: string }) {
 /** Questions: a list of questions, each opening onto its answer */
 export function FaqChapter() {
   return (
-    <section id="faq" aria-labelledby="faq-heading" className="bg-paper text-ink">
+    <section id="faq" aria-labelledby="faq-heading" className="bg-graphite text-paper">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -111,7 +112,7 @@ export function FaqChapter() {
         }}
       />
       <div className={`${CONTAINER} py-24 lg:py-36`}>
-        <ChapterHead label="Questions" />
+        <ChapterHead label="Questions" tone="dark" />
 
         <header className={`${GRID} mt-8 gap-y-6 lg:mt-10 lg:items-end`}>
           <TypeReveal
@@ -120,37 +121,37 @@ export function FaqChapter() {
             lines={["Straight answers."]}
           />
           <div className="col-span-4 lg:col-span-4 lg:col-start-9 lg:pb-1.5 xl:col-span-3 xl:col-start-10">
-            <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/70">
+            <p className="max-w-[40ch] text-[15px] leading-[1.55] text-fog">
               Something we didn&apos;t cover? Write to us and a strategist will
               reply within a business day.
             </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="group relative mt-3 inline-flex items-center gap-2 border-b border-brand pb-1 text-[16px] font-medium text-ink transition-colors duration-300 after:absolute after:inset-x-0 after:-inset-y-2 hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+              className="group relative mt-3 inline-flex items-center gap-2 border-b border-signal pb-1 text-[16px] font-medium text-paper transition-colors duration-300 after:absolute after:inset-x-0 after:-inset-y-2 hover:text-signal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal"
             >
               {CONTACT_EMAIL}
               <ArrowUpRight
                 aria-hidden
-                className="size-3.5 text-brand transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"
+                className="size-3.5 text-signal transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"
               />
             </a>
           </div>
         </header>
 
-        <Reveal className="mt-12 border-b border-ink lg:mt-16">
+        <Reveal className={`mt-12 border-b ${RULE_STRONG} lg:mt-16`}>
           {FAQS.map((item, i) => {
             const lifted = liftDimensions(item.a);
             return (
               <details
                 key={item.q}
-                className={`group border-t ${i === 0 ? "border-ink" : RULE}`}
+                className={`group border-t ${i === 0 ? RULE_STRONG : RULE}`}
               >
-                <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 py-5 transition-colors duration-300 hover:text-brand group-open:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand lg:py-6 [&::-webkit-details-marker]:hidden">
+                <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 py-5 transition-colors duration-300 hover:text-signal group-open:text-signal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal lg:py-6 [&::-webkit-details-marker]:hidden">
                   <h3 className="type-title max-w-[60ch] text-[20px] leading-[1.2] lg:text-[24px]">
                     {settle(item.q)}
                   </h3>
                   {/* plus, and minus once open */}
-                  <span aria-hidden className="relative size-3.5 shrink-0 text-brand">
+                  <span aria-hidden className="relative size-3.5 shrink-0 text-signal">
                     <span className="absolute inset-x-0 top-[6px] h-[2px] bg-current" />
                     <span className="absolute inset-y-0 left-[6px] w-[2px] bg-current transition-transform duration-300 group-open:scale-y-0 motion-reduce:transition-none" />
                   </span>
@@ -168,9 +169,9 @@ export function FaqChapter() {
                         {lifted.dimensions.map((dimension) => (
                           <li
                             key={dimension}
-                            className={`flex items-baseline gap-2.5 border-t ${RULE} py-2 text-[14px] leading-[1.35] text-ink`}
+                            className={`flex items-baseline gap-2.5 border-t ${RULE} py-2 text-[14px] leading-[1.35] text-paper`}
                           >
-                            <span aria-hidden className="size-[5px] shrink-0 -translate-y-0.5 bg-brand" />
+                            <span aria-hidden className="size-[5px] shrink-0 -translate-y-0.5 bg-signal" />
                             {dimension}
                           </li>
                         ))}

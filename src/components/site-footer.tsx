@@ -13,7 +13,7 @@ import { AUDIT_HREF, COMPANY, CONTACT_EMAIL, SERVICES } from "@/lib/nav";
   bar registers to the same column edges as the index above it, under one
   plain hairline. No numbers, no mono: it is a list of links.
 
-  Paper room, ink type, muted labels, brand red only as markers and the
+  Graphite room, paper type, fog labels, red only as markers and the
   lockup's signature. The top 72/96px stays empty for the glass band that
   hangs over the footer's top edge.
 */
@@ -24,18 +24,18 @@ const ROW = "min-h-10 lg:pointer-fine:min-h-[30px]";
 const LIST = "mt-3 lg:pointer-fine:mt-[18px]";
 
 const FOCUS =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-signal";
 
-const LINK = `inline-flex items-center ${ROW} text-[15px] leading-[1.25] text-ink transition-colors hover:text-brand ${FOCUS}`;
+const LINK = `inline-flex items-center ${ROW} text-[15px] leading-[1.25] text-paper transition-colors hover:text-signal ${FOCUS}`;
 
 const LABEL =
-  "flex gap-2.5 text-[14px] font-medium leading-5 tracking-[-0.005em] text-muted";
+  "flex gap-2.5 text-[14px] font-medium leading-5 tracking-[-0.005em] text-fog";
 
-const BAR_LINK = `inline-flex min-h-10 items-center transition-colors hover:text-ink ${FOCUS}`;
+const BAR_LINK = `inline-flex min-h-10 items-center transition-colors hover:text-paper ${FOCUS}`;
 
 export function SiteFooter() {
   return (
-    <footer className="bg-paper text-ink">
+    <footer className="bg-graphite text-paper">
       <div className={`${CONTAINER} pb-6 pt-[72px] lg:pb-7 lg:pt-24`}>
         <Reveal>
           <div className={`${GRID} items-stretch gap-y-12 lg:gap-y-0`}>
@@ -43,7 +43,7 @@ export function SiteFooter() {
                 bottom of the index, so the two frame it */}
             <div className="col-span-4 flex flex-col justify-between gap-6 sm:col-span-6 lg:col-span-4">
               <Logo className="block h-auto w-[148px] text-brand" title="Plurel" />
-              <p className="max-w-[320px] text-[14px] leading-[22px] text-muted lg:mb-1">
+              <p className="max-w-[320px] text-[14px] leading-[22px] text-fog lg:mb-1">
                 Plurel is a distribution engineering firm: one team for every
                 relevant channel, answerable for one number.
               </p>
@@ -91,7 +91,7 @@ export function SiteFooter() {
                 <li className="flex">
                   <a
                     href={`mailto:${CONTACT_EMAIL}`}
-                    className={`${LINK} underline decoration-brand decoration-1 underline-offset-[6px]`}
+                    className={`${LINK} underline decoration-signal decoration-1 underline-offset-[6px]`}
                   >
                     {CONTACT_EMAIL}
                   </a>
@@ -102,14 +102,14 @@ export function SiteFooter() {
                     <ArrowUpRight
                       aria-hidden
                       strokeWidth={2.4}
-                      className="size-3 shrink-0 text-brand motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"
+                      className="size-3 shrink-0 text-signal motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"
                     />
                   </Link>
                 </li>
                 <li>
                   <p className={`flex items-center gap-2 ${ROW} text-[15px] leading-[1.25]`}>
-                    <span aria-hidden className="block size-1.5 shrink-0 rounded-full bg-brand" />
-                    <CityClock className="[&>span]:mx-0.5 [&>span]:text-muted" />
+                    <span aria-hidden className="block size-1.5 shrink-0 rounded-full bg-signal" />
+                    <CityClock className="[&>span]:mx-0.5 [&>span]:text-fog" />
                   </p>
                 </li>
               </ul>
@@ -120,7 +120,7 @@ export function SiteFooter() {
         {/* Legal bar under one plain hairline. Phones: copyright and Back
             to top, then Privacy and Terms. Desktop: registered to the
             columns at 1, 5, 8 and 10. */}
-        <div className={`${GRID} mt-14 border-t border-ink/15 pt-1 text-[14px] text-muted lg:mt-20`}>
+        <div className={`${GRID} mt-14 border-t border-paper/15 pt-1 text-[14px] text-fog lg:mt-20`}>
           <p className="order-1 col-span-2 flex min-h-10 items-center sm:order-none lg:col-span-4">
             &copy; 2026 Plurel
           </p>
