@@ -16,9 +16,10 @@ alone: no Northeon, Kelwin or group.
   structure is felt, not labelled: no chapter numbers, running heads,
   rulers or figure captions; mono is kept for data (dates, units, scores,
   tags, the four Method phases).
-- **Frontier type.** One wide grotesk (Mona Sans) for everything, with a
+- **Frontier type.** One precise grotesk (Geist) for everything, with a
   mono for the instrumentation. No serif and no italics in the site's own
-  voice; only services' first beat borrows other voices, on purpose.
+  voice; only services' first beat borrows other voices (Mona Sans's
+  widths), on purpose.
 
 **Flat, not lit.** Every surface is one flat color. No gradients, no
 glows, no vignettes, no grain, no drawn column lines. The color, the type
@@ -89,30 +90,36 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 
 | Role | Face | Recipe |
 | --- | --- | --- |
-| Display (headlines, names, big numbers) | Mona Sans, normal width, 510 | `type-display` plus a size; `leading-[0.98]` to `leading-none` |
-| Title (sentences and smaller titles in the display face) | Mona Sans, normal width, 460 | `type-title` plus a size: list lines, sub-lines, questions, service names, figures |
-| Accent | Mona Sans, the headline's weight | `<Accent>`: the same face and weight, set back by tone (`text-fog`, `text-muted`, `text-brand`, `text-blush`) |
-| Body | Mona Sans 400 | 15 to 20px, `leading-[1.5]` to `[1.55]`, 34 to 68ch |
-| Kicker | Mona Sans 500, sentence case | `<Kicker>`: square marker, 14px (15px from sm), untracked |
+| Display (headlines, names, big numbers) | Geist 470 | `type-display` plus a size; `leading-[0.98]` to `leading-none` |
+| Title (sentences and smaller titles in the display face) | Geist 430 | `type-title` plus a size: sub-lines, questions, station and service names, figures |
+| Accent | Geist, the headline's weight | `<Accent>`: the same face and weight, set back by tone (`text-fog`, `text-muted`, `text-brand`, `text-blush`) |
+| Body | Geist 400 | 15 to 20px, `leading-[1.5]` to `[1.6]`, 34 to 68ch |
+| Kicker | Geist 500, sentence case | `<Kicker>`: square marker, 14px (15px from sm), untracked |
 | Meta | JetBrains Mono caps | `<Meta>`: indexes, figure captions, counts, clocks |
 
-- The voice is a modern technology company's: compact, firm and tight,
-  never wide, light or airy. Width is what made the first cut read
-  friendly (round, open letters), so display type stays at normal width.
-- `type-display` (in `globals.css`) sets the face at normal width, weight
-  510 and `-0.032em` tracking with balanced wrapping, so a headline sets
-  as one solid shape. The two largest heads (the hero and the closing)
-  tighten to `-0.038em` through `--display-tracking`. Firm, never bold.
-- `type-title` is the same face a step down (460, `-0.018em`) for
+- The voice is a modern San Francisco technology company's: precise,
+  compact and tight, never wide, light or airy. Geist (Vercel's open
+  face, on Google Fonts) gives that neutrality; set a touch lighter than
+  its default display weight so it reads assured rather than loud. The
+  first cut, Mona Sans stretched to 110%, read friendly: round, open
+  letters.
+- `type-display` (in `globals.css`) sets Geist at 470 and `-0.038em`
+  tracking with balanced wrapping, so a headline sets as one solid shape.
+  The two largest heads (the hero and the closing) tighten to `-0.044em`
+  through `--display-tracking`. Firm, never bold.
+- `type-title` is the same face a step down (430, `-0.018em`) for
   sentences and smaller titles set in it, so a page of display lines
   keeps a hierarchy instead of reading as a wall of weight. The services
   chapter's house face (`HOUSE` in `lib/services-type.ts`) is this one,
-  since the names land on the band links.
+  since the names land on the band links. Its eight voices are Mona Sans,
+  loaded in that chapter only for its width axis; each changes into Geist
+  late in its set (`HOUSE_FLIP`), within 4% of normal width, where the
+  change hides in the motion.
 - `<Accent>` ends a headline only in the hero ("Everywhere.") and the
   closing, set back by tone alone, never by a lighter weight: a thin
   phrase reads editorial. Every other headline is one tone. Never italic.
-- The statement (What Plurel is) is reading type at display size: 440,
-  `-0.03em`.
+- The statement (What Plurel is) is reading type at display size: 410,
+  `-0.034em`.
 - `figures` sets lining, proportional numerals for stats.
 - Meta (mono, 11px caps) is for data only: dates, read times, units,
   scores, tags, the Method phase numbers. About fifteen on the whole
@@ -276,15 +283,19 @@ statement, cropped at the right. A visually hidden h2 keeps the outline.
 ## Why now
 
 `home/why-now.tsx`, on paper. The claim, "Buyers decide before they
-arrive.", with its standfirst beside it, then six moments where buyers
-decide, set large on hairlines, each with its data tag in mono on the
-right: the answer an assistant gives, the first three results, a creator
-they already trust, the reviews under the product, the shelf, the store
-page, the app listing, the friend or colleague who has used it. They read
-for consumer and business buyers alike. Each rule draws in with its line.
-It closes under a brand-red rule: "We engineer the ones your buyers use,
-as one system." Contours behind, with the page's one survey readout. No
-statistics, no sources, no sample people.
+arrive.", with a two-sentence standfirst beside it. Then the argument is
+drawn, not told: a route of six small stations on one hairline (AI
+answers, search, creators, reviews, stores, word of mouth; each a name in
+`type-title` and one short line), under a bracket, "Where the choice gets
+made". The line ends at a red node: "You, your site or store", noted in
+red as "Where most marketing starts". From lg the route runs across a
+seven-column grid; below it, a rail down the left whose stretches run
+node to node. The line draws, the stations land in order. It closes
+under a brand-red rule, in the title face: "We engineer the ones your
+buyers use, as one system." Contours behind, with the page's one survey
+readout. No statistics, no sources, no sample people, and only one
+display-size line in the chapter: the six used to be set large, which
+made it read as a wall.
 
 ## Why Plurel: from a menu to the Plurel System
 
@@ -362,12 +373,32 @@ reset.
 ## Who it's for
 
 `home/who-its-for.tsx`, on red. "Different buyers. One system." The four
-layers stay the same; what changes is where buyers decide, what Plurel
-builds first and the number it answers for. Four columns that share
-rows, so the labels line up: consumer brands (orders), physical products
-(sell-through), B2B technology (demos with buyers who fit), consumer apps
-(installs that stay). Labels in paper (blush fails AA at small sizes on
-red). Contours behind, another seed.
+layers stay the same; what changes is where buyers decide and the number
+Plurel answers for. One table, read across, a few words a cell: the
+business (display face), where its buyers decide, and the number:
+consumer brands (feeds, creators and reviews; orders), physical products
+(shelves, marketplaces and reviews; sell-through), B2B technology (AI
+answers, search and peers; demos with buyers who fit), consumer apps (app
+stores, feeds and friends; installs that stay). From lg the two column
+heads sit once over the table; below it each row carries small labels.
+Labels in paper (blush fails AA at small sizes on red). Contours behind,
+another seed.
+
+## Method
+
+`home/method-chapter.tsx`, on red. The four phases as a time chart, in
+few words: each phase is a name, a tagline and what it delivers; the full
+method, in prose, lives on /methodology. Under the chart, "Where AI
+helps, and where a person decides" is one line per phase in one shape:
+what the machine does, then what a person decides.
+
+## Questions
+
+`home/faq-chapter.tsx`, on paper. "Straight answers.", then the questions
+as a quiet list, one line each, whose answers open on demand (native
+`<details>`: no JS needed, keyboard and assistive tech included, and
+search engines read every answer, as they do the FAQPage data). The first
+sentence of an answer is the takeaway, in ink.
 
 ## Faint art
 
@@ -457,7 +488,7 @@ one step of that argument, and says it once:
 | Why Plurel | The thesis, shown: ten suppliers' voices become one system, the Plurel System's four layers and its loop, each layer with its instrument and services |
 | Method | How it runs: the Diagnostic, then the four phases as one monthly partnership |
 | Accountability | What we answer for: ten suppliers report ten numbers, we answer for one, agreed on day one |
-| Who it's for | Fit: consumer brands, physical products, B2B technology and consumer apps, the same system with a different first build and a different number |
+| Who it's for | Fit: consumer brands, physical products, B2B technology and consumer apps, the same system with a different number |
 | Proof | What a Diagnostic finds (a labelled sample until real cases can be published) |
 | People | Who does the work (shown once real people are listed) |
 | FAQ | The real objections, biggest first: is this a full-service agency? every channel? what about our current agencies? cost |

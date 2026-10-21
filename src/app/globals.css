@@ -41,31 +41,30 @@
 }
 
 @theme inline {
-  /* Mona Sans carries everything, at normal width: display set firm and
-     tight, reading set plain. Emphasis is by tone in the same face, never
-     a second typeface. JetBrains Mono is Swiss metadata only. Instrument
-     Serif stays only for interior pages that have not moved over. */
-  --font-sans: var(--font-mona);
+  /* Geist carries everything: display set firm and tight, titles a step
+     down, reading plain. Emphasis is by tone in the same face, never a
+     second typeface. JetBrains Mono is Swiss metadata only. Mona Sans is
+     the services chapter's supplier voices, loaded there. Instrument Serif
+     stays only for interior pages that have not moved over. */
+  --font-sans: var(--font-geist);
   --font-serif: var(--font-instrument);
   --font-mono: var(--font-jetbrains);
 }
 
-/* Display type: Mona Sans at normal width, firm and tight, so a headline
-   sets as one solid shape. Every headline, name and big number. The two
-   largest heads (hero, closing) tighten further with --display-tracking. */
+/* Display type: Geist, firm and tight, so a headline sets as one solid
+   shape. Every headline, name and big number. The two largest heads (hero,
+   closing) tighten further with --display-tracking. */
 @utility type-display {
-  font-family: var(--font-mona), system-ui, sans-serif;
-  font-stretch: 100%;
-  font-weight: 510;
-  letter-spacing: var(--display-tracking, -0.032em);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 470;
+  letter-spacing: var(--display-tracking, -0.038em);
   text-wrap: balance;
 }
 /* The display face a step down, for sentences and smaller titles set in
    it: list lines, sub-lines, questions, service names, figures */
 @utility type-title {
-  font-family: var(--font-mona), system-ui, sans-serif;
-  font-stretch: 100%;
-  font-weight: 460;
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-weight: 430;
   letter-spacing: -0.018em;
   text-wrap: balance;
 }
@@ -425,6 +424,15 @@
   }
 
   /* The hero's headline rises on the type-reveal system (below) */
+}
+
+/* A question's answer settling in as it opens (faq-chapter.tsx; the class
+   that plays it is motion-safe) */
+@keyframes faq-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
 }
 
 /* ---------- Type reveal (components/type-reveal.tsx) ----------

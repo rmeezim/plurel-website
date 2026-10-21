@@ -132,8 +132,8 @@ export const TONE: Record<Tone, Rgb> = {
   brand: [191, 58, 54],
 };
 
-/** The house style (`type-title`, the face of the band links the names land on): where every supplier ends */
-export const HOUSE = { mono: false, wght: 460, wdth: 100, tr: -0.018, rgb: TONE.paper, cs: "none", sk: 0 } as const;
+/** The house style (`type-title` in Geist, the face of the band links the names land on): where every supplier ends */
+export const HOUSE = { mono: false, house: true, wght: 430, wdth: 100, tr: -0.018, rgb: TONE.paper, cs: "none", sk: 0 } as const;
 
 /**
   One supplier's way of setting a name. x is a fraction of the list's
@@ -195,6 +195,12 @@ export const REF = { desk: { w: 1344, h: 680 }, phone: { w: 350, h: 480 } } as c
 
 /** Mono suppliers change family a little before the case flips: the "set" moment */
 const FAMILY_FLIP = 0.42;
+/**
+ * Every voice (Mona Sans, for its width axis) changes into the house family
+ * (Geist) late in its set, once its width is within 4% of normal: the
+ * change hides in the motion.
+ */
+export const HOUSE_FLIP = 0.85;
 const CASE_FLIP = 0.5;
 /** Steps a set takes in its face (axes, size, case): see render() */
 export const FACE_STEPS = 20;
@@ -260,6 +266,8 @@ export function toneAt(c: Tone, t: number): Rgb {
 
 export type Face = {
   mono: boolean;
+  /** set in the house family (Geist) rather than a voice's */
+  house: boolean;
   wght: number;
   wdth: number;
   tr: number;
@@ -284,6 +292,7 @@ export function faceAt(sp: Supplier, t: number): Face {
   const wdth = mono ? 100 : Math.round(lerp(sp.mono ? 100 : sp.wdth, HOUSE.wdth, t));
   return {
     mono,
+    house: !mono && t >= HOUSE_FLIP,
     wght: Math.round(lerp(sp.wght, HOUSE.wght, t) / 10) * 10,
     wdth,
     tr: Math.round(lerp(sp.tr, HOUSE.tr, t) * 10000) / 10000,
@@ -504,7 +513,9 @@ export function loopPath(parts: readonly LoopPart[], n = STAGES.length) {
 type Styled = HTMLElement;
 
 const CASE_CSS = { upper: "uppercase", lower: "lowercase", none: "none" } as const;
+/** The voices' face, the house face and the consultants' mono */
 const SANS = "var(--font-mona), system-ui, sans-serif";
+const HOUSE_FAMILY = "var(--font-geist), system-ui, sans-serif";
 const MONO = "var(--font-jetbrains), ui-monospace, monospace";
 
 type Geo = {
@@ -649,7 +660,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
   };
 
   function styleFace(el: HTMLElement, f: Face, size: number) {
-    put(el, "font-family", f.mono ? MONO : SANS);
+    put(el, "font-family", f.mono ? MONO : f.house ? HOUSE_FAMILY : SANS);
     put(el, "font-size", `${size}px`);
     put(el, "font-weight", String(f.wght));
     put(el, "font-stretch", `${f.wdth}%`);
@@ -670,6 +681,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
   }
 
   let bS = 0.86;
+  let bH = 0.86;
   let bM = 0.8;
 
   /* The bands reach from the menu's top to the floor of the stage (the
@@ -715,7 +727,8 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
     const k = phone
       ? clamp(Math.min(cw / ref.w, H / ref.h), 0.8, 1.9)
       : clamp(Math.min(cw / ref.w, H / ref.h), 0.6, 1.12);
-    bS = baselineOf(SANS, `${HOUSE.wdth}%`);
+    bS = baselineOf(SANS, "100%");
+    bH = baselineOf(HOUSE_FAMILY, "100%");
     bM = baselineOf(MONO, "100%");
     measureTrack();
     // the rules span the rows; on desktop they draw back clear of the
@@ -761,10 +774,11 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
         fs = parseFloat(tcs.fontSize) || Ns[i];
         col = parseRgb(tcs.color);
         if (desk) {
-          // the link's text box: a line-height 1 box laid on its baseline
+          // the link's text box (the house family): a line-height 1 box
+          // laid on its baseline
           const b = tn.getBoundingClientRect();
-          const base = b.top + (b.height - fs) / 2 + bS * fs;
-          to = { x: b.left - sr.left, y: base - bS * fs - sr.top };
+          const base = b.top + (b.height - fs) / 2 + bH * fs;
+          to = { x: b.left - sr.left, y: base - bH * fs - sr.top };
         }
       }
       return {
@@ -943,8 +957,9 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
         const bx = sp.ax === "l" ? minX : sp.ax === "r" ? maxX : (minX + maxX) / 2;
         const by = sp.ay === "t" ? minY : maxY;
         // the row: flush left on the column, sitting on the row's baseline
-        const b = fq.mono ? bM : bS;
-        const rowY = g.sy + shift[i] + 14 * fold + bS * g.N - b * size;
+        // (the rows are set in the house family)
+        const b = fq.mono ? bM : fq.house ? bH : bS;
+        const rowY = g.sy + shift[i] + 14 * fold + bH * g.N - b * size;
         const ox = lerp(g.X - bx, g.sx, tx);
         const oy = lerp(g.Y - by, rowY, ty);
         put(

@@ -16,6 +16,7 @@ import {
   flightAt,
   flightX,
   HOUSE,
+  HOUSE_FLIP,
   lockWindow,
   loopPath,
   PHONE,
@@ -77,6 +78,17 @@ test("the mono supplier eases from 100 onto the house width after its flip", () 
     const w5 = faceAt(sp, 0.5).wdth;
     assert.ok(lo <= w5 && w5 <= hi, `between 100 and the house width: ${w5}`);
     assert.ok(Math.abs(faceAt(sp, 0.9).wdth - HOUSE.wdth) <= (hi - lo) * 0.15 + 1e-9);
+  }
+});
+
+test("every voice changes into the house family late, near normal width, and ends in it", () => {
+  for (const table of [DESK, PHONE]) {
+    for (const sp of table) {
+      assert.equal(faceAt(sp, 0.5).house, false, `${sp.who} at 0.5`);
+      assert.equal(faceAt(sp, HOUSE_FLIP).house, true, `${sp.who} at the flip`);
+      assert.equal(faceAt(sp, 1).house, true, `${sp.who} at 1`);
+      assert.ok(Math.abs(faceAt(sp, HOUSE_FLIP).wdth - 100) <= 4, `${sp.who}: ${faceAt(sp, HOUSE_FLIP).wdth}`);
+    }
   }
 });
 

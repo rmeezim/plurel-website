@@ -102,7 +102,7 @@ export function StatementChapter() {
           </h2>
           <p
             ref={ref}
-            className="max-w-[22ch] text-[clamp(2.1rem,1rem+3.4vw,4.6rem)] font-[440] leading-[1.04] tracking-[-0.03em] sm:max-w-[24ch] lg:max-w-[25ch]"
+            className="max-w-[22ch] text-[clamp(2.1rem,1rem+3.4vw,4.6rem)] font-[410] leading-[1.04] tracking-[-0.034em] sm:max-w-[24ch] lg:max-w-[25ch]"
           >
             {WORDS.map((w, i) => (
               <span key={i} data-word="" className={s.word}>

@@ -1,3 +1,4 @@
+import { Mona_Sans } from "next/font/google";
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { ServicesType } from "@/components/home/services-type";
@@ -6,6 +7,16 @@ import { TypeReveal } from "@/components/type-reveal";
 import { SERVICES } from "@/lib/nav";
 import { FEEDS_BACK, SERVICE_STAGE, STAGES, stageName, SYSTEM, type StageKey } from "@/lib/services-type";
 import s from "./services-type.module.css";
+
+/* The supplier voices' face, loaded for this chapter only: Mona Sans's width
+   axis gives the eight suppliers their condensed, wide and in-between cuts.
+   The house face they settle into is the site's own, Geist. */
+const mona = Mona_Sans({
+  subsets: ["latin"],
+  axes: ["wdth"],
+  variable: "--font-mona",
+  display: "swap",
+});
 
 /*
   Why Plurel, on graphite: the thesis, then the eight disciplines shown
@@ -140,7 +151,7 @@ export function ServicesChapter() {
     <section
       id="services"
       aria-labelledby="services-heading"
-      className={`${s.root} bg-graphite text-paper`}
+      className={`${mona.variable} ${s.root} bg-graphite text-paper`}
     >
       <div className={`${CONTAINER} pt-24 lg:pt-36`}>
         <div className={`${GRID} items-start gap-y-7 lg:grid-rows-[auto_1fr]`}>

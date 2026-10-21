@@ -10,9 +10,11 @@ const pad = (n: number) => String(n).padStart(2, "0");
   Diagnostic, named here so the closing can pay it off. Mono only for the
   four phase numbers, whose order is real; the time axis is plain sans.
 
+  Few words, so the chart carries it: each phase is a name, a tagline and
+  what it delivers (the full method, in prose, lives on /methodology).
   Desktop: each phase is one column (span 3) whose rows line up across
-  all four through subgrid: bar, name, description, deliverables. Mobile
-  and tablet: the chart turns vertical. A thin left
+  all four through subgrid: bar, name, deliverables. Mobile and tablet:
+  the chart turns vertical. A thin left
   rail brackets phases 01-03 as quarter one and points down past 04 as
   always on, and each phase keeps a quarter-width bar shifted a quarter
   further along, so the staircase still reads.
@@ -107,7 +109,7 @@ export function MethodChapter() {
               return (
                 <li
                   key={phase.name}
-                  className={`relative col-span-4 pl-6 sm:col-span-6 sm:pl-8 lg:col-span-3 lg:row-span-4 lg:grid lg:grid-rows-subgrid lg:pb-0 lg:pl-0 ${
+                  className={`relative col-span-4 pl-6 sm:col-span-6 sm:pl-8 lg:col-span-3 lg:row-span-3 lg:grid lg:grid-rows-subgrid lg:pb-0 lg:pl-0 ${
                     i < PHASES.length - 1 ? "pb-14 sm:pb-16" : ""
                   }`}
                 >
@@ -122,7 +124,7 @@ export function MethodChapter() {
 
                   <Reveal
                     delay={i * 0.08}
-                    className="lg:row-span-4 lg:grid lg:grid-rows-subgrid"
+                    className="lg:row-span-3 lg:grid lg:grid-rows-subgrid"
                   >
                     {RAIL_LABEL[i] && (
                       <p className="mb-4 text-[14px] font-medium lg:sr-only">
@@ -155,12 +157,7 @@ export function MethodChapter() {
                       </p>
                     </div>
 
-                    {/* Row 3: description */}
-                    <p className="mt-4 max-w-[46ch] text-[15px] leading-[1.55] lg:mt-5 lg:max-w-none lg:pr-2 lg:text-[14px]">
-                      {phase.description}
-                    </p>
-
-                    {/* Row 4: the deliverables */}
+                    {/* Row 3: the deliverables */}
                     <ul
                       aria-label={`${phase.name} deliverables`}
                       className="mt-8 border-t border-paper/45 sm:grid sm:grid-cols-2 sm:gap-x-6 lg:mt-9 lg:block"
@@ -180,23 +177,21 @@ export function MethodChapter() {
             })}
           </ol>
 
-          {/* Where AI helps: one continuous band under all four phases,
-              each line under its own phase */}
-          <Reveal delay={0.1} className="mt-14 lg:mt-12">
-            <p
-              id="method-ai"
-              className="border-b border-paper/45 pb-3 text-[15px] font-medium leading-[1.35]"
-            >
+          {/* Where AI helps: one quiet row under all four phases, each line
+              under its own phase, in one shape: what the machine does, then
+              what a person decides */}
+          <Reveal delay={0.1} className="mt-16 lg:mt-14">
+            <p id="method-ai" className="text-[15px] font-medium leading-[1.35]">
               Where AI helps, and where a person decides
             </p>
-            <ul aria-labelledby="method-ai" className={`${GRID} bg-graphite px-5 sm:px-6 lg:px-0`}>
+            <ul aria-labelledby="method-ai" className={`${GRID} mt-4 border-t border-paper/45`}>
               {PHASES.map((phase) => (
                 <li
                   key={phase.ai}
-                  className="col-span-4 flex items-baseline gap-3 border-t border-fog/20 py-4 first:border-t-0 sm:col-span-6 lg:col-span-3 lg:gap-2.5 lg:border-t-0 lg:py-5 lg:pl-4 lg:pr-3"
+                  className="col-span-4 flex items-baseline gap-3 border-b border-paper/25 py-4 sm:col-span-3 lg:col-span-3 lg:border-b-0 lg:py-5 lg:pr-4"
                 >
-                  <span aria-hidden className="size-[7px] shrink-0 -translate-y-px bg-signal" />
-                  <span className="text-[14px] leading-[1.45]">{phase.ai}</span>
+                  <span aria-hidden className="size-[6px] shrink-0 -translate-y-[2px] bg-paper" />
+                  <span className="text-[15px] leading-[1.45]">{phase.ai}</span>
                 </li>
               ))}
             </ul>

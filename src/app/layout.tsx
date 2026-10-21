@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, JetBrains_Mono, Mona_Sans } from "next/font/google";
+import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HOME } from "@/lib/metadata";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-// One family carries everything, at normal width: display set firm and
-// tight, reading set plain. Its width axis gives the services chapter its
-// eight supplier voices.
-const mona = Mona_Sans({
+// Geist carries everything: display set firm and tight, titles a step
+// down, reading plain. Mona Sans loads only in the services chapter, whose
+// eight supplier voices need its width axis.
+const geist = Geist({
   subsets: ["latin"],
-  axes: ["wdth"],
-  variable: "--font-mona",
+  variable: "--font-geist",
   display: "swap",
 });
 
@@ -87,7 +86,7 @@ export default function RootLayout({
       /* Lets the router force an instant jump to top on page navigations
          while keeping smooth scrolling for in-page anchors */
       data-scroll-behavior="smooth"
-      className={`${mona.variable} ${instrument.variable} ${jetbrains.variable} antialiased`}
+      className={`${geist.variable} ${instrument.variable} ${jetbrains.variable} antialiased`}
     >
       <body id="top" className="min-h-screen">
         <a

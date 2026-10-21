@@ -1,42 +1,262 @@
 /*
-  Why now: the six moments. Each row's hairline draws in from the left and
-  its data tag fades up as the row's line rises (keyed off the line's
-  TypeReveal state, so the three move as one). The default is finished:
-  without JS, with reduced motion, or for a row already on screen at load,
-  the rule is drawn and the tag is shown.
+  Why now: the route. Below lg it is a rail down the left: each station
+  draws its own stretch of the rail down to the next node, so the rail
+  always meets the nodes whatever the text wraps to. From lg it runs
+  across a seven-column grid (six stations, then you): one hairline from
+  the first node to the red one, and a bracket over the six.
+
+  Motion rides the figure's Reveal: armed, the line is undrawn, the nodes
+  unset and the copy down; in, the line draws, the nodes land in order
+  and their copy follows. The default is finished: without JS, with
+  reduced motion, or for a route already on screen at load.
 */
-.rule,
+
+.route {
+  --rail: 28px; /* below lg: the copy's indent from the rail */
+  --node: 7px;
+  --mark: color-mix(in oklab, var(--color-ink) 22%, transparent);
+  margin: 0;
+}
+
+/* The label over the six, and the red note under you */
+.made,
+.starts {
+  position: relative;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: color-mix(in oklab, var(--color-ink) 72%, transparent);
+}
+.starts {
+  margin-top: 8px;
+  max-width: 16ch;
+  color: var(--color-brand);
+}
+
+.track {
+  position: relative;
+  margin-top: 22px;
+  padding-left: var(--rail);
+}
+
+.stations {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.station,
+.you {
+  position: relative;
+}
+.station {
+  padding-bottom: 26px;
+}
+
+/* Below lg the node is centred on the first line of the name (a 24px line
+   box: 20px at 1.2), and you on yours: 4px pad, then half of a 27px line
+   box, 17.65px down */
+.node,
+.nodeYou {
+  position: absolute;
+  left: calc(var(--rail) * -1);
+  top: 8.5px;
+  width: var(--node);
+  height: var(--node);
+  background: var(--color-ink);
+}
+.nodeYou {
+  left: calc(var(--rail) * -1 - 1px);
+  top: 13px;
+  width: 9px;
+  height: 9px;
+  background: var(--color-brand);
+}
+
+/* below lg, each station's stretch of the rail: from its node down to the
+   next one's, the last reaching down to you */
+.station::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--rail) * -1 + var(--node) / 2 - 0.5px);
+  top: 12px;
+  height: 100%;
+  width: 1px;
+  background: var(--mark);
+  transform-origin: top center;
+}
+.station:last-child::before {
+  height: calc(100% + 5.65px);
+}
+
+/* the desktop line is drawn once, across */
+.line {
+  display: none;
+}
+
+.name {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+}
+.youName {
+  font-size: 26px;
+  line-height: 1.05;
+}
+.note {
+  margin: 6px 0 0;
+  max-width: 30ch;
+  font-size: 15px;
+  line-height: 1.45;
+  color: color-mix(in oklab, var(--color-ink) 62%, transparent);
+}
+
+.you {
+  padding-top: 4px;
+}
+
+@media (min-width: 64rem) {
+  .route {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    column-gap: 2rem;
+  }
+
+  /* the bracket over the six: ticks down at both ends */
+  .made {
+    grid-column: 1 / span 6;
+    padding-bottom: 14px;
+  }
+  .made::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 7px;
+    border: 1px solid var(--mark);
+    border-bottom: 0;
+  }
+
+  .track {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    margin-top: 26px;
+    padding-left: 0;
+  }
+
+  .stations {
+    grid-column: 1 / span 6;
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+  .station {
+    padding: 30px 0 0;
+  }
+  .station::before {
+    display: none;
+  }
+
+  /* one hairline from the first node to the red one */
+  .line {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: calc((100% - 12rem) / 7);
+    top: 3px;
+    height: 1px;
+    background: var(--mark);
+    transform-origin: left center;
+  }
+
+  .node,
+  .nodeYou {
+    left: 0;
+    top: 0;
+  }
+  .nodeYou {
+    top: -1px;
+  }
+
+  .you {
+    grid-column: 7;
+    padding-top: 30px;
+  }
+
+  .name {
+    font-size: 20px;
+  }
+  .youName {
+    font-size: 30px;
+  }
+  .note {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 80rem) {
+  .name {
+    font-size: 22px;
+  }
+  .youName {
+    font-size: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :global(.reveal-armed) .line {
+    transform: scaleX(0);
+  }
+  :global(.reveal-armed) .station::before {
+    transform: scaleY(0);
+  }
+  :global(.reveal-armed) .node,
+  :global(.reveal-armed) .nodeYou {
+    transform: scale(0);
+  }
+  :global(.reveal-armed) .name,
+  :global(.reveal-armed) .note,
+  :global(.reveal-armed) .starts {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  :global(.reveal-in) .line {
+    transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+  }
+  :global(.reveal-in) .station::before {
+    transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) calc(var(--i) * 110ms + 0.3s);
+  }
+  :global(.reveal-in) .node,
+  :global(.reveal-in) .nodeYou {
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i) * 150ms + 0.25s);
+  }
+  :global(.reveal-in) .name,
+  :global(.reveal-in) .note,
+  :global(.reveal-in) .starts {
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) calc(var(--i, 0) * 150ms + 0.35s),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--i, 0) * 150ms + 0.35s);
+  }
+}
+
+/* The closing line's rule: the total under the sum, in brand red. It draws
+   in from the left as its line rises (keyed off the line's TypeReveal). */
 .total {
   position: absolute;
   inset-inline: 0;
   top: 0;
-  height: 1px;
-  background: color-mix(in oklab, var(--color-ink) 15%, transparent);
+  height: 2px;
+  background: var(--color-brand);
   transform-origin: left center;
 }
 
-/* The closing line's rule: the total under the sum, in brand red */
-.total {
-  height: 2px;
-  background: var(--color-brand);
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  .row:has(:global(.type-reveal)[data-state="armed"]) .rule,
   .row:has(:global(.type-reveal)[data-state="armed"]) .total {
     transform: scaleX(0);
   }
-  .row:has(:global(.type-reveal)[data-state="armed"]) .tag {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  .row:has(:global(.type-reveal)[data-state="in"]) .rule,
   .row:has(:global(.type-reveal)[data-state="in"]) .total {
     transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .row:has(:global(.type-reveal)[data-state="in"]) .tag {
-    transition:
-      opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s,
-      transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s;
   }
 }

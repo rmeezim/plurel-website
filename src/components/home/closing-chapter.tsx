@@ -30,7 +30,7 @@ export function ClosingChapter() {
         <TypeReveal
           id="closing-heading"
           variant="chars"
-          className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none [--display-tracking:-0.038em]"
+          className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none [--display-tracking:-0.044em]"
           lines={["The Diagnostic."]}
         />
 

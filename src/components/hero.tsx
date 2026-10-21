@@ -47,7 +47,7 @@ export function Hero() {
               id="hero-heading"
               onLoad
               delay={220}
-              className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98] [--display-tracking:-0.038em]"
+              className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98] [--display-tracking:-0.044em]"
               lines={["Made to be", ["seen.", { text: "Everywhere.", accent: true, className: "text-fog" }]]}
             />
           </div>

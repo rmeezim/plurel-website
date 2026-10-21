@@ -1,32 +1,33 @@
+import type { CSSProperties } from "react";
 import { ArtField } from "@/components/art";
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, GRID, H2, Kicker, Meta } from "@/components/system";
+import { CONTAINER, GRID, H2, Kicker } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import s from "./why-now.module.css";
 
 /*
   Why now, on paper: buyers decide before they arrive. The head follows
   the chapter anatomy (kicker, a two-line headline, the standfirst beside
-  it). Then the six places the choice gets made, set as a typographic
-  sequence down the page: one large line each on a hairline, its channel
-  as a data tag on the right, for consumer and business buyers alike.
-  Each line rises as it enters while its rule draws in from the left. The
-  sequence ends on a brand-red rule, like the total under a sum, and the
-  line that answers it. Behind it all, a faint survey of the terrain
-  buyers decide on.
+  it). Then the argument drawn rather than told: a route of six small
+  stations on one hairline, under a bracket that names them as where the
+  choice gets made, ending at the red node where the buyer finally reaches
+  you, noted in red as where most marketing starts. On desktop the route runs
+  across the page on a seven-column grid; below lg it turns into a rail
+  down the left. The line draws, the stations land in order, and one
+  quieter line answers it under a brand-red rule. Behind it all, a faint
+  survey of the terrain buyers decide on.
 */
 
-const MOMENTS = [
-  ["The answer an assistant gives.", "AI answers"],
-  ["The first three results.", "Search"],
-  ["A creator they already trust.", "Creators"],
-  ["The reviews under the product.", "Reviews"],
-  ["The shelf, the store page, the app listing.", "Retail and app stores"],
-  ["The friend or colleague who has used it.", "Word of mouth"],
+const STATIONS = [
+  ["AI answers", "What an assistant says"],
+  ["Search", "The first three results"],
+  ["Creators", "Someone they already trust"],
+  ["Reviews", "What other buyers wrote"],
+  ["Stores", "The shelf, the page, the listing"],
+  ["Word of mouth", "A friend who has used it"],
 ] as const;
 
-/** One scale for the moments: 28px on a phone, about 50px on a laptop, 56px wide */
-const LINE = "type-title text-[clamp(1.75rem,1rem+2.4vw,3.5rem)] leading-[1.02]";
+const at = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export function WhyNowChapter() {
   return (
@@ -48,40 +49,44 @@ export function WhyNowChapter() {
           </div>
           <Reveal className="col-span-4 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pt-12">
             <p className="text-[18px] leading-[1.5] text-ink/75 lg:text-[19px]">
-              They ask an assistant, watch a creator, read the reviews, compare the shelf or the
-              shortlist. By the time they reach you, most of the choice is made, and distribution
-              made it.
+              They ask an assistant, watch a creator, read the reviews. By the time they reach
+              you, the choice is mostly made.
             </p>
           </Reveal>
         </div>
 
-        <ul className="mt-20 lg:mt-28">
-          {MOMENTS.map(([line, tag]) => (
-            <li
-              key={tag}
-              className={`${s.row} relative ${GRID} items-baseline gap-y-3 py-6 sm:py-7 lg:py-8`}
-            >
-              <span aria-hidden className={s.rule} />
-              <TypeReveal
-                as="p"
-                className={`${LINE} col-span-4 sm:col-span-4 lg:col-span-9 xl:col-span-10`}
-                lines={[line]}
-              />
-              <Meta
-                as="p"
-                className={`${s.tag} order-first col-span-4 justify-self-end text-muted sm:order-none sm:col-span-2 lg:col-span-3 xl:col-span-2`}
-              >
-                {tag}
-              </Meta>
-            </li>
-          ))}
-        </ul>
+        <Reveal className="mt-16 sm:mt-20 lg:mt-28">
+          <figure aria-labelledby="why-now-route" className={s.route}>
+            <p id="why-now-route" className={s.made}>
+              Where the choice gets made
+            </p>
+            <div className={s.track}>
+              <span aria-hidden className={s.line} />
+              <ol className={s.stations}>
+                {STATIONS.map(([name, line], i) => (
+                  <li key={name} className={s.station} style={at(i)}>
+                    <span aria-hidden className={s.node} />
+                    <p className={`${s.name} type-title`}>{name}</p>
+                    <p className={s.note}>{line}</p>
+                  </li>
+                ))}
+              </ol>
+              <div className={s.you} style={at(STATIONS.length)}>
+                <span aria-hidden className={s.nodeYou} />
+                <p className={`${s.name} ${s.youName} type-display`}>You</p>
+                <p className={s.note}>Your site or store</p>
+                <p className={s.starts}>Where most marketing starts</p>
+              </div>
+            </div>
+          </figure>
+        </Reveal>
 
-        <div className={`${s.row} relative pt-10 sm:pt-12 lg:pt-14`}>
+        <div className={`${s.row} relative mt-20 pt-8 sm:mt-24 sm:pt-10 lg:mt-28`}>
           <span aria-hidden className={s.total} />
           <TypeReveal
             as="p"
-            className={`${LINE} max-w-[24ch]`}
+            variant="title"
+            className="type-title max-w-[24ch] text-[clamp(1.5rem,1rem+1.5vw,2.375rem)] leading-[1.1]"
             lines={["We engineer the ones your buyers use, as one system."]}
           />
         </div>

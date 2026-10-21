@@ -6,7 +6,7 @@ import { TypeReveal } from "@/components/type-reveal";
 import { FAQS } from "@/lib/home";
 import { CONTACT_EMAIL } from "@/lib/nav";
 
-/** FAQPage structured data, built from the same source as the ledger */
+/** FAQPage structured data, built from the same source as the list */
 const FAQ_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -17,53 +17,17 @@ const FAQ_JSON_LD = {
   })),
 };
 
-/** Hairlines between answers */
+/** Hairlines between questions */
 const RULE = "border-ink/15";
 
 /*
-  The ledger's four topics, in FAQS order. Questions are matched by their
-  text in FAQS and keep the FAQS order inside a topic. A question that no
-  topic lists joins CATCH_ALL, so everything in the JSON-LD stays visible
-  on the page. The Diagnostic lifts its parenthetical list of the six
-  parts out of the answer and sets it as a list.
+  Questions: a quiet list. Each question is one line that opens; its
+  answer waits until asked. Native <details>, so a question opens without
+  JS, from the keyboard and for assistive tech, and search engines read
+  every answer (as does the FAQPage data above). The first sentence of an
+  answer is the takeaway, set in ink. The Diagnostic's answer lifts its
+  parenthetical list of the six parts out and sets it as a list.
 */
-const TOPICS = [
-  {
-    title: "The model",
-    questions: [
-      "How is this different from a full-service agency?",
-      "Do we need every channel?",
-      "We already have an in-house team or agency. Where do you fit?",
-    ],
-  },
-  {
-    title: "Cost",
-    questions: ["What does it cost?"],
-  },
-  {
-    title: "Fit & team",
-    questions: ["Do you work with companies like ours?", "Who actually does the work?"],
-  },
-  {
-    title: "The Diagnostic",
-    questions: ["What exactly is the Diagnostic, and why is it free?"],
-    dimensions: true,
-  },
-];
-const CATCH_ALL = 2;
-
-const LEDGER = (() => {
-  const listed = new Set(TOPICS.flatMap((topic) => topic.questions));
-  return TOPICS.map((topic, i) => ({
-    title: topic.title,
-    dimensions: topic.dimensions ?? false,
-    items: FAQS.filter(
-      (item) =>
-        topic.questions.includes(item.q) ||
-        (i === CATCH_ALL && !listed.has(item.q)),
-    ),
-  })).filter((group) => group.items.length > 0);
-})();
 
 /** First sentence (the takeaway, set in ink) and the rest of the answer */
 function splitLead(text: string): [string, string] {
@@ -124,8 +88,7 @@ function settle(text: string, keepTail = true, before = ""): ReactNode {
   return <>{parts}</>;
 }
 
-const ANSWER = "max-w-[68ch] text-[15px] leading-[1.55] text-ink/65";
-const ANSWER_CELL = "mt-3 lg:col-span-5 lg:mt-0 xl:col-span-6";
+const ANSWER = "max-w-[64ch] text-[16px] leading-[1.6] text-ink/65";
 
 function Answer({ text }: { text: string }) {
   const [lead, rest] = splitLead(text);
@@ -137,7 +100,7 @@ function Answer({ text }: { text: string }) {
   );
 }
 
-/** Questions: a grouped ledger of topic, question, answer */
+/** Questions: a list of questions, each opening onto its answer */
 export function FaqChapter() {
   return (
     <section id="faq" aria-labelledby="faq-heading" className="bg-paper text-ink">
@@ -174,67 +137,51 @@ export function FaqChapter() {
           </div>
         </header>
 
-        <div className="mt-12 border-b border-ink lg:mt-16">
-          {LEDGER.map((group, g) => {
+        <Reveal className="mt-12 border-b border-ink lg:mt-16">
+          {FAQS.map((item, i) => {
+            const lifted = liftDimensions(item.a);
             return (
-              <Reveal
-                key={group.title}
-                delay={g * 0.08}
-                className={`${GRID} border-t border-ink lg:items-baseline`}
+              <details
+                key={item.q}
+                className={`group border-t ${i === 0 ? "border-ink" : RULE}`}
               >
-                <div className="col-span-4 pt-5 sm:col-span-6 lg:col-span-2 lg:pt-0 xl:pr-2">
-                  <h3 className="type-title text-[20px] leading-[1.1] text-brand lg:text-[17px] xl:text-[20px]">
-                    {group.title}
+                <summary className="flex cursor-pointer list-none items-baseline justify-between gap-6 py-5 transition-colors duration-300 hover:text-brand group-open:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand lg:py-6 [&::-webkit-details-marker]:hidden">
+                  <h3 className="type-title max-w-[60ch] text-[20px] leading-[1.2] lg:text-[24px]">
+                    {settle(item.q)}
                   </h3>
-                </div>
-
-                <div className="col-span-4 sm:col-span-6 lg:col-span-10">
-                  {group.items.map((item) => {
-                    const lifted = group.dimensions
-                      ? liftDimensions(item.a)
-                      : { text: item.a, dimensions: [] };
-                    return (
-                      <div
-                        key={item.q}
-                        className={`border-t ${RULE} pb-5 pt-4 first:border-t-0 lg:grid lg:grid-cols-10 lg:items-baseline lg:gap-x-8 lg:pb-[18px]`}
+                  {/* plus, and minus once open */}
+                  <span aria-hidden className="relative size-3.5 shrink-0 text-brand">
+                    <span className="absolute inset-x-0 top-[6px] h-[2px] bg-current" />
+                    <span className="absolute inset-y-0 left-[6px] w-[2px] bg-current transition-transform duration-300 group-open:scale-y-0 motion-reduce:transition-none" />
+                  </span>
+                </summary>
+                <div className={`${GRID} pb-7 motion-safe:group-open:animate-[faq-open_0.45s_cubic-bezier(0.22,0.61,0.36,1)] lg:pb-9`}>
+                  <div className="col-span-4 sm:col-span-6 lg:col-span-8">
+                    <p className={ANSWER}>
+                      <Answer text={lifted.text} />
+                    </p>
+                    {lifted.dimensions.length > 0 && (
+                      <ul
+                        aria-label="The six parts"
+                        className="mt-4 grid max-w-[64ch] sm:grid-cols-2 sm:gap-x-8"
                       >
-                        <h4 className="type-title text-[22px] leading-[1.14] lg:col-span-5 lg:pr-2 xl:col-span-4 xl:text-[24px]">
-                          {settle(item.q)}
-                        </h4>
-
-                        {lifted.dimensions.length > 0 ? (
-                          <div className={ANSWER_CELL}>
-                            <p className={ANSWER}>
-                              <Answer text={lifted.text} />
-                            </p>
-                            <ul
-                              aria-label="The six parts"
-                              className="mt-3.5 grid max-w-[68ch] sm:grid-cols-2 sm:gap-x-8"
-                            >
-                              {lifted.dimensions.map((dimension) => (
-                                <li
-                                  key={dimension}
-                                  className={`flex items-baseline gap-2.5 border-t ${RULE} py-2 text-[14px] leading-[1.35] text-ink`}
-                                >
-                                  <span aria-hidden className="size-[5px] shrink-0 -translate-y-0.5 bg-brand" />
-                                  {dimension}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : (
-                          <p className={`${ANSWER} ${ANSWER_CELL}`}>
-                            <Answer text={lifted.text} />
-                          </p>
-                        )}
-                      </div>
-                    );
-                  })}
+                        {lifted.dimensions.map((dimension) => (
+                          <li
+                            key={dimension}
+                            className={`flex items-baseline gap-2.5 border-t ${RULE} py-2 text-[14px] leading-[1.35] text-ink`}
+                          >
+                            <span aria-hidden className="size-[5px] shrink-0 -translate-y-0.5 bg-brand" />
+                            {dimension}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
-              </Reveal>
+              </details>
             );
           })}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

@@ -12,26 +12,24 @@ export const CLIENTS: string[] = [];
 
 /*
   The four phases. Phase 01 is the Diagnostic itself, named so the
-  closing can pay it off. `ai` is the plain line for the rail "Where AI
-  helps, and where a person decides": no tool names until the real stack
-  is confirmed.
+  closing can pay it off. The homepage shows each as a name, a tagline and
+  what it delivers; the full method lives on /methodology. `ai` is one
+  line in a fixed shape for "Where AI helps, and where a person decides":
+  what the machine does, then what a person decides. No tool names until
+  the real stack is confirmed.
 */
 export const PHASES = [
   {
     number: "1",
     name: "Diagnose",
     tagline: "The Diagnostic: find where it breaks",
-    description:
-      "We score six parts: market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement. You get a prioritized read within a business day.",
     outputs: ["Six-part scorecard", "Narrative & positioning read", "Search & AI baseline", "Priority roadmap"],
-    ai: "We ask the AI assistants your buyers use about your category, and record who they name.",
+    ai: "Assistants are asked who they name. A strategist reads why.",
   },
   {
     number: "2",
     name: "Design",
     tagline: "Rebuild the story, then what carries it",
-    description:
-      "Positioning, messaging, identity, website and assets, designed together so every relevant channel tells the same story.",
     outputs: ["Narrative & messaging", "Brand identity", "Website & landing pages", "Asset library"],
     ai: "Machines draft many directions. A creative director keeps one.",
   },
@@ -39,19 +37,15 @@ export const PHASES = [
     number: "3",
     name: "Deploy",
     tagline: "Launch where your buyers already are",
-    description:
-      "Go live on the channels the Diagnostic picked, and wire the data underneath from day one: analytics, attribution, and the hand-off into your store, CRM or sales team.",
     outputs: ["Site build & QA", "Channel launch plan", "Tracking & attribution", "Launch PR"],
-    ai: "Routing and follow-up are automated into your store or CRM, and a person checks them before launch.",
+    ai: "Follow-up runs on its own. A person checks it before launch.",
   },
   {
     number: "4",
     name: "Compound",
     tagline: "Run the work, read the numbers",
-    description:
-      "Content, search, paid and earned run together. Every quarter the numbers rewrite the brief, and the budget moves with them.",
     outputs: ["Content program", "Paid & search", "PR & reputation", "Quarterly reallocation"],
-    ai: "Models flag where budget is leaking. A person decides at the quarterly review.",
+    ai: "Models flag where budget leaks. A person moves it each quarter.",
   },
 ];
 
