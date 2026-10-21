@@ -1,141 +1,114 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { CtaLink } from "@/components/system";
-import { ChannelTiles } from "@/components/home/channel-tiles";
-import { CHANNELS, HALDEN, type ChannelClips } from "@/lib/channels";
-import {
-  AF_GROUPS,
-  AF_INDEX,
-  AF_LANES,
-  AF_STAGES,
-  mountAttentionField,
-} from "@/lib/attention-field";
+import type { CSSProperties } from "react";
+import { ChannelTile } from "@/components/home/channel-tiles";
+import { AttentionWeek } from "@/components/home/attention-week";
+import { Reveal } from "@/components/reveal";
+import { ChapterHead, CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
+import { WEEK } from "@/lib/attention-field";
+import type { ChannelClips } from "@/lib/channels";
 import s from "./attention-field.module.css";
 
 /*
-  The Attention Field: how Plurel distributes, as one canvas of dots
-  (engine in lib/attention-field.ts) and seven recordings of one client's
-  one story (the channel tiles). Directly after the hero, on graphite.
+  The attention section, right under the hero, on paper: "Attention is
+  everywhere", told as one buyer's week. Maya meets the sample brand Halden
+  seven times in seven places (a search, a reel, an AI answer, a
+  billboard, a review, a creator's post, a film before her show), each
+  time with the same story, and then she books a home survey. The close
+  lands it and says it holds for a B2B buyer too; the next chapter names
+  the number that booking counts towards.
 
-  Pinned and scrubbed by the visitor's own scroll when JS is on, motion is
-  allowed and the screen is at least 360 x 560 (AF_PIN_QUERY, mirrored in
-  the CSS modules): five stages, NOISE / STORY / LANES / SYSTEM / DEMAND,
-  each a heading that lifts away as the visual takes the stage. No chrome
-  round it: the one action, the link to the method (an outline button,
-  quiet beside the chart), arrives with the final readout, across the
-  field from it at the container's left edge. In NOISE the mesh answers a
-  fine pointer, and each surface's marker can be picked up and dragged on
-  its own, the mesh parting round it, and eases home when let go (an
-  unannounced easter egg; the engine owns the pointer code). In STORY the
-  dots settle into one even frame, a blade cuts it into pieces, and only
-  then does each piece develop into its tile, which plays (muted footage
-  from public/video/channels where it exists, see lib/clips.ts) and then
-  becomes the head of its lane. The field drifts on its own
-  while pinned, with no pause control, as the hero and footer glass do.
-  Everywhere else it is a calm static chapter: the tiles as one mosaic of
-  still frames, the five stages as a list beside one still frame of the
-  whole system, then the link. Under the mosaic, pinned or not, one quiet
-  line says Halden is a sample brief.
-
-  The five stages are always real headings in the accessibility tree; the
-  canvas, its labels and the tiles are decoration. Sticky breaks if this
-  section or any ancestor gets overflow hidden/clip; the stage clips
-  itself.
+  Everything here is server-rendered and finished without JS: the eight
+  moments in order, each with its day and time, its sentence and its tile
+  (a still frame until it plays). The client parts only add behaviour:
+  each tile plays while it is on screen (ChannelTile), and on a desktop
+  the moments' own text gives way to one sticky narrator beside the tiles
+  (AttentionWeek). Native scroll throughout: nothing pins, nothing is
+  scrubbed. Maya and Halden are made up, and the opening says so in plain
+  view.
 */
 
-// "an AI answer, a search result, ..." for the figure's description
-const FORMATS = CHANNELS.map(({ name }) => {
-  const n = name.startsWith("AI") ? name : name.toLowerCase();
-  return `${/^[aeiou]/i.test(n) ? "an" : "a"} ${n}`;
-});
-
 export function AttentionField({ clips = {} }: { clips?: ChannelClips }) {
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    // The engine follows reduced motion and the pin query live, and keeps
-    // the reader's place when either flips, so it mounts once
-    return mountAttentionField(root);
-  }, []);
-
   return (
-    <section
-      ref={ref}
-      id="distribution"
-      aria-labelledby="distribution-heading"
-      className={`${s.root} bg-graphite text-paper`}
-    >
-      <h2 id="distribution-heading" className="sr-only">
-        How Plurel distributes
-      </h2>
-      <div className={s.track} data-af-track="">
-        <div className={s.stage}>
-          <div className={s.fig} data-af-fig="">
-            <p className="sr-only">
-              The figure: nine lanes of attention.{" "}
-              {AF_GROUPS.map(
-                (g, gi) =>
-                  `${g}: ${AF_LANES.filter((l) => l.group === gi)
-                    .map((l) => l.name)
-                    .join(", ")}. `,
-              )}
-              They run as one funnel into qualified demand, shown as an
-              illustrative {AF_INDEX.toFixed(1)}× index over a 1.0× baseline.
+    <section id="distribution" aria-labelledby="distribution-heading" className="bg-paper text-ink">
+      <div className={`${CONTAINER} pb-28 pt-24 sm:pb-32 sm:pt-28 lg:pb-40 lg:pt-36`}>
+        {/* The opening: the claim, and whose week this is */}
+        <ChapterHead label="How distribution works" />
+        <div className={`${GRID} mt-7 gap-y-8 lg:mt-9`}>
+          <Reveal className="col-span-4 sm:col-span-6 lg:col-span-7">
+            <h2 id="distribution-heading" className={H2}>
+              <span className="sm:block">Attention is</span> <span className="sm:block">everywhere.</span>
+            </h2>
+          </Reveal>
+          <Reveal delay={0.08} className="col-span-4 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pt-1.5">
+            <p className="text-[18px] leading-[1.5] text-ink/80 lg:text-[20px]">
+              Search, feeds, creators, press, and now AI answers that pick for your buyer.
             </p>
-            <canvas className={s.canvas} aria-hidden="true" data-af-canvas="" />
-            <div className={s.labels} aria-hidden="true">
-              {AF_LANES.map((l) => (
-                <span key={l.name} className={`${s.l} ${s.lane}`} data-af-lane="">
-                  <span>{l.name}</span>
-                </span>
-              ))}
-              {AF_GROUPS.map((g) => (
-                <span key={g} className={`${s.l} ${s.grp}`} data-af-group="">
-                  <span>{g}</span>
-                </span>
-              ))}
-              <span className={`${s.l} ${s.throat}`} data-af-throat="">
-                <span>Qualified</span>
-              </span>
-              <span className={`${s.l} ${s.readout}`} data-af-readout="">
-                <span>
-                  <em>Qualified demand</em>
-                  <strong data-af-value="">{`${AF_INDEX.toFixed(1)}×`}</strong>
-                  <small>vs. baseline · Illustrative</small>
-                </span>
-              </span>
-            </div>
-          </div>
+            <p className="mt-5 text-[16px] leading-[1.55] text-muted lg:text-[17px]">
+              Here is a sample week. Maya owns a terraced house in Leeds and a boiler that sounds like
+              a jet. Halden, the heat pump brand she keeps meeting, is one we made up.
+            </p>
+          </Reveal>
+        </div>
 
-          {/* Outside the figure, which is not drawn without JS: the tiles
-              show then, and need their text alternative (and the disclosure
-              that Halden is made up) all the same */}
-          <p className="sr-only">
-            One story, for {HALDEN.name}, a fictional maker of quiet heat
-            pumps, is cut into {FORMATS.slice(0, -1).join(", ")} and{" "}
-            {FORMATS[FORMATS.length - 1]}, each shown as a short recording.
-          </p>
-
-          <ChannelTiles clips={clips} note={`${HALDEN.name} is a sample brief.`} className={s.tiles} />
-
-          <ol className={s.steps}>
-            {AF_STAGES.map((st) => (
-              <li key={st.tab} className={s.step} data-af-step="">
-                <h3 className={`${s.title} type-display`}>{st.title}</h3>
-                <p className={s.line}>{st.line}</p>
-              </li>
-            ))}
+        {/* The week: eight moments, each a tile; the narrator stays beside them on a desktop */}
+        <AttentionWeek>
+          <ol className={s.moments} aria-label="Maya’s week, a sample">
+            {WEEK.map((m) => {
+              const style = {
+                "--ar": m.size.w / m.size.h,
+                "--show": `${m.show}px`,
+                "--phone": m.phone ?? 1,
+              } as CSSProperties;
+              return (
+                <li key={m.key} className={`${GRID} ${s.moment}`}>
+                  <div className={`${s.text} col-span-4 sm:col-span-6 lg:col-span-4`}>
+                    <p className={`${s.when} type-display`}>
+                      <time dateTime={m.iso}>
+                        <span className={s.whenDay}>
+                          <span aria-hidden="true">{m.day}</span>
+                          <span className="sr-only">{m.dayName}</span>
+                        </span>{" "}
+                        {m.time}
+                      </time>
+                    </p>
+                    <p className={s.what}>{m.line}</p>
+                  </div>
+                  <div
+                    className={`${s.media} col-span-4 sm:col-span-6 lg:col-span-7 lg:col-start-6`}
+                    style={style}
+                    data-moment-media=""
+                  >
+                    <p className="sr-only">{m.alt}</p>
+                    <Reveal>
+                      <ChannelTile k={m.key} clip={clips[m.key]} size={m.size} narrow={m.narrow} />
+                    </Reveal>
+                  </div>
+                </li>
+              );
+            })}
           </ol>
+        </AttentionWeek>
 
-          {/* The one action: pinned, it arrives with the final readout */}
-          <div className={s.end} data-af-end="">
-            <CtaLink href="/methodology" size="md" variant="outline-light">
+        {/* The close: what the week adds up to, then the same for a B2B buyer,
+            stepping across from the narrator's column to the tiles' */}
+        <div className={`${GRID} ${s.close} lg:items-baseline`}>
+          <Reveal className="col-span-4 sm:col-span-6 lg:col-span-12 xl:col-span-9">
+            <p className={`${H2} text-ink`}>
+              <span className="lg:block">
+                <span className="block lg:inline">Seven times,</span>{" "}
+                <span className="block lg:inline">in seven places,</span>
+              </span>{" "}
+              <span className="block">the same story.</span>{" "}
+              <span className="block">Then she booked.</span>
+            </p>
+          </Reveal>
+          <Reveal delay={0.06} className="col-span-4 mt-8 sm:col-span-5 lg:col-span-5 lg:col-start-6 lg:mt-14">
+            <p className="max-w-[34ch] text-[18px] leading-[1.5] text-ink/75 lg:text-[20px]">
+              For a developer buying fifty units, the week looks different. The story doesn&rsquo;t.
+            </p>
+            <CtaLink href="/methodology" variant="outline" size="lg" className="mt-8">
               See the method
             </CtaLink>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

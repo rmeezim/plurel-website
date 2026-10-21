@@ -1,16 +1,19 @@
 /*
-  Services: the typographic figure (services-type.tsx;
-  engine in lib/services-type.ts; markup in services-chapter.tsx).
+  Services: the typographic figure and the layered system
+  (services-type.tsx; engine in lib/services-type.ts; markup in
+  services-chapter.tsx).
 
-  Static by default: the finished contents list in flow, the chain live.
-  The gate at the foot pins the figure for a short travel (96svh on
-  phones, 110svh from lg). At first paint it pins only with JS
-  (html[data-js], set before first paint) and TYPE_QUERY, so the track is
-  sized in CSS with no layout shift; keep that media query identical to
-  TYPE_QUERY in lib/services-type.ts. Once the faces are in, the engine
-  checks that the finished frame fits the visible (svh) screen and sets
-  the section's data-type-motion to "on" (pinned, the clones arm) or
-  "off" (static, unpinned); from then on that attribute alone decides.
+  Static by default: the finished system in flow, the layer list beside
+  the stack (below lg, the stack under the list). The gate at the foot
+  pins the figure (131svh of travel on phones, 150svh from lg; the first
+  two beats keep the 96svh and 110svh they were drawn for, the rest is
+  the stacking). At first paint it pins only with JS (html[data-js],
+  set before first paint) and TYPE_QUERY, so the track is sized in CSS
+  with no layout shift; keep that media query identical to TYPE_QUERY in
+  lib/services-type.ts. Once the faces are in, the engine checks that the
+  finished frame fits the visible (svh) screen and sets the section's
+  data-type-motion to "on" (pinned, the clones arm) or "off" (static,
+  unpinned); from then on that attribute alone decides.
 
   Never give .root or any ancestor overflow hidden/clip, or a transform:
   either breaks sticky. The stage clips itself.
@@ -21,6 +24,8 @@
   /* #services lands with graphite to the top of the screen (the chapter
      head has its own clearance for the header) */
   scroll-margin-top: -4.5rem;
+  /* the hero glass's frost (FROST in lib/glass.ts): the plates' edges */
+  --frost: 219 237 255;
 }
 
 .track {
@@ -33,7 +38,8 @@
   }
 }
 .stage,
-.stageIn {
+.stageIn,
+.body {
   position: relative;
 }
 
@@ -90,20 +96,21 @@
     translate 0.32s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s;
 }
 
-/* The chain: four stages, each a toggle that isolates its rows */
-.chain[data-dormant] {
-  pointer-events: none;
+/* The chain: the four stages in order, lit by the engine while their
+   names are set and again while their layers lock. Only the running
+   figure shows it, and it gives way to the list, which is the system's
+   contents and its one control. */
+.chain {
+  display: none;
 }
-.btn {
+.word {
   position: relative;
   margin-block: -10px;
   padding-block: 10px;
   color: var(--color-paper);
-  cursor: pointer;
   transition: color 0.3s;
-  -webkit-tap-highlight-color: transparent;
 }
-.btn::after {
+.word::after {
   content: "";
   position: absolute;
   left: 0;
@@ -115,62 +122,37 @@
   transform-origin: 0 50%;
   transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
-/* Focus is a ring; pressed is a heavier 2px bar: they never look alike */
-.btn:focus-visible {
-  outline: 1px solid var(--color-paper);
-  outline-offset: 3px;
-}
-.btn[aria-pressed="true"]::after,
-.btn[data-lit]::after {
+.word[data-lit]::after {
   transform: scaleX(1);
 }
-.btn[aria-pressed="true"]::after {
-  height: 2px;
-  bottom: 6px;
-}
-/* Without JS the chain is just words (the buttons would do nothing); the
-   plain word has the button's exact box, so nothing shifts when it swaps */
-.plain {
-  margin-block: -10px;
-  padding-block: 10px;
-  color: var(--color-paper);
-}
-:global(html:not([data-js])) .btn {
-  display: none;
-}
-:global(html[data-js]) .plain {
-  display: none;
-}
-@media (hover: hover) {
-  .btn:hover::after {
-    transform: scaleX(1);
-  }
-}
-/* While the names are being set, a stage's word lights with its rows */
-.root[data-type-motion="on"] .btn:not([data-lit], [data-done]) {
+.root[data-type-motion="on"] .word:not([data-lit], [data-done]) {
   color: var(--color-fog);
 }
 
-/* ---------- the list: equal rows, names flush on column 4 ---------- */
+/* ---------- the menu: equal rows, names flush on column 4 ---------- */
 
 /*
-  Name sizes are set so every row keeps to two lines on phones (index,
-  name, stage, arrow; then the line) and one line from lg, measured
-  against the longest pair, "Martech & Consulting" + "Measure" (10.55
-  ems wide in the display cut). Phones: line one fills the measure at
-  9vw - 14px; the line under it is 13px (14px from 414px), one line from
-  375px. lg: the name ends a gap before column 8, where the line starts
-  below xl; xl: before column 9.
+  The rows the names line up on, and leave from: aria-hidden, shown only
+  while the figure runs. Name sizes are set so every row keeps to two
+  lines on phones (index, name, stage, arrow; then the line) and one line
+  from lg, measured against the longest pair, "Martech & Consulting" +
+  "Measure" (10.55 ems wide in the display cut); the index, stage, line
+  and arrow are never shown, but they keep the rows' measure.
 */
-.list {
+.menu {
   --nm: min(calc(9vw - 14px), 3.1svh, 26px);
   --rp: clamp(6px, 1.1svh, 12px);
   grid-auto-rows: 1fr;
+  display: none;
+  pointer-events: none;
+}
+.menu [data-meta] {
+  visibility: hidden;
 }
 /* Below 375px the longest line ("What the world says when you're not in
    the room.") needs two lines at 13px: that row alone grows, balanced */
 @media (max-width: 374.98px) {
-  .list {
+  .menu {
     grid-auto-rows: auto;
   }
 }
@@ -178,137 +160,406 @@
   text-wrap: balance;
 }
 @media (min-width: 40rem) {
-  .list {
+  .menu {
     --nm: min(5.4vw, 4.4svh, 40px);
   }
 }
 @media (min-width: 64rem) {
-  .list {
+  .menu {
     --nm: min(calc(3.1vw - 4.5px), 5.9svh, 52px);
     --rp: clamp(8px, 2.2svh - 6px, 20px);
   }
 }
 @media (min-width: 80rem) {
-  .list {
+  .menu {
     --nm: min(3.5vw, 5.9svh, 52px);
   }
 }
 .name {
   font-size: var(--nm);
 }
-
-.hot {
-  transform: scaleX(0);
-  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
 .cur {
   display: none;
   transform: scaleX(0);
 }
-/* --r: the engine's reveal while a stage lands; --dimk: a held or
-   hovered stage stepping the other rows back. Multiplied, so a stage
-   held while names are still being set dims what is shown evenly. */
-.dim {
-  opacity: calc(var(--r, 1) * var(--dimk, 1));
-  transition:
-    opacity 0.3s,
-    color 0.3s;
-}
-/* The small meta (index, stage, line) never steps back below 4.5:1 on
-   graphite: its dimming is floored at 0.66 (fog 4.8:1), and a stepped-back
-   row's index turns fog (--idx), since signal red cannot dim at all */
-.dim[data-meta]:not(.arr) {
-  opacity: calc(var(--r, 1) * max(var(--dimk, 1), 0.66));
-}
-.idx {
-  color: var(--idx, var(--color-signal));
-}
-.arr {
-  transition:
-    transform 0.3s,
-    color 0.3s,
-    opacity 0.3s;
-}
 
-/* Hover and focus: the red top rule, the arrow, the line lifts */
-.row:has(> a:is(:hover, :focus-visible)) .hot {
+/* ---------- the system: the layer list and the stack ---------- */
+
+.layers {
+  /* the layer's name, the rows' padding */
+  --ln: 22px;
+  --lp: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  interpolate-size: allow-keywords;
+}
+@media (min-width: 40rem) {
+  .layers {
+    --ln: 26px;
+    --lp: 14px;
+  }
+}
+@media (min-width: 64rem) {
+  .layers {
+    --ln: clamp(22px, 3.2svh, 30px);
+    --lp: clamp(10px, 1.6svh, 17px);
+  }
+}
+.lrow {
+  position: relative;
+  border-top: 1px solid rgb(251 250 246 / 0.2);
+  opacity: var(--r, 1);
+  translate: 0 var(--ry, 0px);
+}
+.lrow:last-child {
+  border-bottom: 1px solid rgb(251 250 246 / 0.2);
+}
+/* the lit layer takes a signal rule (its plate's edge on the stack): the
+   one pointed at or focused, else the open one, one at a time */
+.lrow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: 2px;
+  background: var(--color-signal);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.system:not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) .lrow:has(> details[open])::before,
+.lrow:has(.sum:focus-visible, .svc:focus-visible)::before {
   transform: scaleX(1);
 }
-.row:has(> a:is(:hover, :focus-visible)) .arr {
+.sum {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1.25rem;
+  column-gap: 1.5rem;
+  align-items: baseline;
+  padding-block: var(--lp);
+  cursor: pointer;
+  list-style: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.sum::-webkit-details-marker {
+  display: none;
+}
+.sum:focus-visible {
+  outline: 1px solid var(--color-paper);
+  outline-offset: 4px;
+}
+.lname {
+  font-size: var(--ln);
+  line-height: 1;
+}
+.lline {
+  grid-column: 1;
+  margin-top: 0.5rem;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--color-fog);
+}
+/* Phones: a closed layer is its name alone (the line opens with it), so
+   the list and the stack share one screen */
+@media (max-width: 39.99rem) {
+  .layer:not([open]) .lline {
+    display: none;
+  }
+}
+@media (min-width: 40rem) {
+  .lline {
+    font-size: 16px;
+  }
+}
+@media (min-width: 64rem) {
+  .lline {
+    font-size: clamp(16px, 2.2svh, 18px);
+    margin-top: clamp(5px, 0.9svh, 8px);
+  }
+}
+/* A narrow, short laptop: a closed layer is its name alone there too */
+@media (min-width: 64rem) and (max-width: 79.99rem) and (max-height: 799.98px) {
+  .layer:not([open]) .lline {
+    display: none;
+  }
+}
+/* plus, turning to minus as the layer opens */
+.pm {
+  grid-row: 1;
+  grid-column: 2;
+  justify-self: end;
+  align-self: center;
+  position: relative;
+  width: 14px;
+  height: 14px;
+}
+.pm::before,
+.pm::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1.5px;
+  margin-top: -0.75px;
+  background: currentColor;
+}
+.pm::after {
+  transform: rotate(90deg);
+  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.layer[open] .pm::after {
+  transform: rotate(0deg);
+}
+.panel {
+  margin: 0;
+  padding: 0 0 var(--lp);
+  list-style: none;
+}
+.svc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 1.25rem;
+  column-gap: 1.5rem;
+  align-items: baseline;
+  padding-block: clamp(8px, 1.2svh, 11px) clamp(9px, 1.3svh, 12px);
+  border-top: 1px solid rgb(251 250 246 / 0.1);
+  outline: none;
+}
+.sname {
+  font-size: 18px;
+  line-height: 1.15;
+}
+.stag {
+  grid-column: 1;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--color-fog);
+  transition: color 0.3s;
+}
+@media (min-width: 40rem) {
+  .sname {
+    font-size: 20px;
+  }
+  .stag {
+    font-size: 15px;
+  }
+}
+@media (min-width: 64rem) {
+  .sname {
+    font-size: clamp(18px, 2.4svh, 22px);
+  }
+  .stag {
+    font-size: clamp(15px, 1.8svh, 16px);
+  }
+}
+.arr {
+  grid-row: 1;
+  grid-column: 2;
+  justify-self: end;
+  align-self: center;
+  width: 18px;
+  height: 18px;
+  color: rgb(251 250 246 / 0.45);
+  transition:
+    transform 0.3s,
+    color 0.3s;
+}
+.svc:is(:hover, :focus-visible) .arr {
   color: var(--color-signal);
   transform: translate(2px, -2px);
 }
-.row:has(> a:is(:hover, :focus-visible)) .tag {
+.svc:is(:hover, :focus-visible) .stag {
   color: var(--color-paper);
 }
-.row:has(> a:focus-visible) [data-nm] {
+.svc:focus-visible .sname {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.16em;
 }
 
-/* Row -> chain: a discipline lights the stage it belongs to */
-.track:has(.row[data-st="narrative"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="narrative"],
-.track:has(.row[data-st="create"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="create"],
-.track:has(.row[data-st="distribute"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="distribute"],
-.track:has(.row[data-st="measure"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="measure"] {
-  color: var(--color-paper);
+/* The stack: four plates of glass in the hero's material, flat: a cool
+   slate tint, frost 1px edges (lit along the front, faint at the back),
+   a little thickness, paper type; the open layer's plate lifted, its
+   edge in signal. No shadow, no glow. */
+.stackCell {
+  min-width: 0;
+  margin-top: 20px;
 }
-.track:has(.row[data-st="narrative"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="narrative"]::after,
-.track:has(.row[data-st="create"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="create"]::after,
-.track:has(.row[data-st="distribute"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="distribute"]::after,
-.track:has(.row[data-st="measure"] > a:is(:hover, :focus-visible)) .btn[data-stage-btn="measure"]::after {
-  transform: scaleX(1);
+@media (min-width: 40rem) {
+  .stackCell {
+    margin-top: 40px;
+  }
+}
+@media (min-width: 64rem) {
+  .stackCell {
+    margin-top: 0;
+  }
+}
+.stack {
+  display: block;
+  width: 100%;
+  max-width: 26rem;
+  height: auto;
+  overflow: visible;
+}
+/* a tablet's stack sits to the right, under the list's measure */
+@media (min-width: 40rem) {
+  .stack {
+    max-width: 34rem;
+    margin-left: auto;
+  }
+}
+@media (min-width: 64rem) {
+  .stack {
+    max-width: none;
+    margin-left: 0;
+  }
+}
+.stack :is(polygon, polyline) {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1px;
+  stroke-linejoin: round;
+}
+.face {
+  fill: rgb(var(--frost) / 0.055);
+  stroke: rgb(var(--frost) / 0.2);
+}
+.sideL {
+  fill: rgb(var(--frost) / 0.16);
+}
+.sideR {
+  fill: rgb(var(--frost) / 0.08);
+}
+.bezel {
+  fill: none;
+  stroke: rgb(var(--frost) / 0.13);
+}
+.edge {
+  fill: none;
+  stroke: rgb(var(--frost) / 0.6);
+}
+.lip {
+  fill: none;
+  stroke: rgb(var(--frost) / 0.2);
+}
+.hotEdge {
+  fill: none;
+  stroke: var(--color-signal);
+  opacity: 0;
+}
+.pname {
+  font-family: var(--font-mona), system-ui, sans-serif;
+  font-stretch: 110%;
+  font-weight: 430;
+  letter-spacing: -0.018em;
+  font-size: 28px;
+  fill: var(--color-paper);
+  /* even spacing on the turned, foreshortened plane */
+  text-rendering: geometricPrecision;
+}
+@media (min-width: 40rem) {
+  .pname {
+    font-size: 22px;
+  }
+}
+.hit {
+  fill: transparent;
+  cursor: pointer;
 }
 
-/* Chain -> rows: a pressed stage (tap, click or Enter, any width) holds
-   its rows and steps the rest back, clones included; with a fine
-   pointer, hovering a stage does the same while none is pressed.
-   Keyboard focus alone only underlines the stage. Stepped back is 0.5:
-   the names keep 5.1:1 on graphite, and a row pointed at or focused
-   comes all the way back. */
-.track[data-filter="narrative"] :is(.row, .clone):not([data-st="narrative"]),
-.track[data-filter="create"] :is(.row, .clone):not([data-st="create"]),
-.track[data-filter="distribute"] :is(.row, .clone):not([data-st="distribute"]),
-.track[data-filter="measure"] :is(.row, .clone):not([data-st="measure"]) {
-  --dimk: 0.5;
-  --idx: var(--color-fog);
+/*
+  Which plate is lit: the one pointed at or focused (a layer's row, its
+  links, or the plate itself), else the open layer's. One at a time, so
+  the stack always answers the list. Pinned, only once the figure has
+  settled (the engine marks the system data-unsettled until then).
+*/
+.system:not([data-unsettled]):has([data-layer="narrative"] > details[open]):not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) [data-plate="narrative"],
+.system:not([data-unsettled]):has([data-layer="create"] > details[open]):not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) [data-plate="create"],
+.system:not([data-unsettled]):has([data-layer="distribute"] > details[open]):not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) [data-plate="distribute"],
+.system:not([data-unsettled]):has([data-layer="measure"] > details[open]):not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) [data-plate="measure"],
+.system:not([data-unsettled]):has([data-layer="narrative"] :is(.sum:hover, .sum:focus-visible, .svc:focus-visible), [data-plate-hit="narrative"]:hover) [data-plate="narrative"],
+.system:not([data-unsettled]):has([data-layer="create"] :is(.sum:hover, .sum:focus-visible, .svc:focus-visible), [data-plate-hit="create"]:hover) [data-plate="create"],
+.system:not([data-unsettled]):has([data-layer="distribute"] :is(.sum:hover, .sum:focus-visible, .svc:focus-visible), [data-plate-hit="distribute"]:hover) [data-plate="distribute"],
+.system:not([data-unsettled]):has([data-layer="measure"] :is(.sum:hover, .sum:focus-visible, .svc:focus-visible), [data-plate-hit="measure"]:hover) [data-plate="measure"] {
+  --lift: -14px;
+  --hot: 1;
 }
-.track[data-filter][data-filter] .row:has(> a:is(:hover, :focus-visible)) {
-  --dimk: 1;
-  --idx: var(--color-signal);
+.plateIn {
+  transform: translateY(var(--lift, 0px));
 }
-.track[data-filter="narrative"] .row[data-st="narrative"] .hot,
-.track[data-filter="create"] .row[data-st="create"] .hot,
-.track[data-filter="distribute"] .row[data-st="distribute"] .hot,
-.track[data-filter="measure"] .row[data-st="measure"] .hot {
+.plateIn .hotEdge {
+  opacity: var(--hot, 0);
+}
+/* A plate pointed at lights its layer's row */
+.system:has([data-plate-hit="narrative"]:hover) [data-layer="narrative"]::before,
+.system:has([data-plate-hit="create"]:hover) [data-layer="create"]::before,
+.system:has([data-plate-hit="distribute"]:hover) [data-layer="distribute"]::before,
+.system:has([data-plate-hit="measure"]:hover) [data-layer="measure"]::before {
   transform: scaleX(1);
 }
 @media (hover: hover) {
-  .track:not([data-filter]):has(.btn[data-stage-btn="narrative"]:hover) :is(.row, .clone):not([data-st="narrative"]),
-  .track:not([data-filter]):has(.btn[data-stage-btn="create"]:hover) :is(.row, .clone):not([data-st="create"]),
-  .track:not([data-filter]):has(.btn[data-stage-btn="distribute"]:hover) :is(.row, .clone):not([data-st="distribute"]),
-  .track:not([data-filter]):has(.btn[data-stage-btn="measure"]:hover) :is(.row, .clone):not([data-st="measure"]) {
-    --dimk: 0.5;
-  --idx: var(--color-fog);
-  }
-  .track:not([data-filter]):has(.btn[data-stage-btn="narrative"]:hover) .row[data-st="narrative"] .hot,
-  .track:not([data-filter]):has(.btn[data-stage-btn="create"]:hover) .row[data-st="create"] .hot,
-  .track:not([data-filter]):has(.btn[data-stage-btn="distribute"]:hover) .row[data-st="distribute"] .hot,
-  .track:not([data-filter]):has(.btn[data-stage-btn="measure"]:hover) .row[data-st="measure"] .hot {
+  .lrow:has(> details > .sum:hover)::before {
     transform: scaleX(1);
   }
 }
 
-/* Forced colours: hairlines and rules in the system text colour */
+@media (prefers-reduced-motion: no-preference) {
+  .system:not([data-unsettled]) .plateIn {
+    transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .system:not([data-unsettled]) .plateIn .hotEdge {
+    transition: opacity 0.3s;
+  }
+  /* a layer opens and closes on its height, where the browser can */
+  .layer::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition:
+      block-size 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
+      content-visibility 0.4s allow-discrete;
+  }
+  .layer[open]::details-content {
+    block-size: auto;
+  }
+  .layers[data-instant] .layer::details-content {
+    transition: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lrow::before,
+  .pm::after,
+  .arr,
+  .stag {
+    transition: none;
+  }
+}
+
+/* Forced colours: hairlines, plates and names in the system colours */
 @media (forced-colors: active) {
-  .rule,
-  .hot {
+  .lrow::before,
+  .pm::before,
+  .pm::after {
     forced-color-adjust: none;
     background: CanvasText;
   }
-  .btn::after {
-    background: CanvasText;
+  .face,
+  .bezel,
+  .edge,
+  .lip,
+  .hotEdge {
+    stroke: CanvasText;
+  }
+  .face,
+  .sideL,
+  .sideR {
+    fill: Canvas;
+  }
+  .pname {
+    fill: CanvasText;
   }
 }
 
@@ -325,15 +576,15 @@
   line-height: 1;
   transform-origin: 0 0;
   font-kerning: normal;
-  opacity: var(--dimk, 1);
-  transition: opacity 0.3s;
 }
 
 /* The pin. The stage is the full (lvh) screen so graphite reaches the
    floor when a mobile toolbar collapses; the content box is the visible
-   (svh) part, clear of the floating header. */
+   (svh) part, clear of the floating header. An open layer the pinned
+   frame has no room for grows the stage by --extra (set by the engine),
+   and the track with it, so the travel never changes. */
 .track {
-  --travel: 96svh;
+  --travel: calc(96svh * 15 / 11);
 }
 .stageIn {
   --pt: 76px;
@@ -341,7 +592,7 @@
 }
 @media (min-width: 64rem) {
   .track {
-    --travel: 110svh;
+    --travel: 150svh;
   }
   .stageIn {
     --pt: 84px;
@@ -351,8 +602,8 @@
 
 /* Before the engine decides (first paint), TYPE_QUERY alone pins, so the
    track is sized with no layout shift; phones need 650px of height (a
-   360x640 screen keeps the static list) and lg 640px, just under where
-   the finished frame stops fitting. */
+   360x640 screen keeps the static system) and lg 640px. The menu takes
+   its room unseen, and the finished system lies over it. */
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 360px) and (max-width: 63.99rem) and (min-height: 650px), (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
   :global(html[data-js]) .root:not([data-type-motion]) .track {
     height: calc(100vh + var(--travel));
@@ -374,18 +625,44 @@
     padding-top: var(--pt);
     padding-bottom: var(--pb);
   }
+  :global(html[data-js]) .root:not([data-type-motion]) .menu {
+    display: grid;
+    visibility: hidden;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .chain {
+    display: flex;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .system {
+    position: absolute;
+    inset: 0 0 auto;
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 360px) and (max-width: 63.99rem) and (min-height: 650px) {
+  :global(html[data-js]) .root:not([data-type-motion]) .stack {
+    width: min(100%, calc(40svh * var(--ar, 1.09)));
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 40rem) and (max-width: 63.99rem) and (min-height: 650px) {
+  :global(html[data-js]) .root:not([data-type-motion]) .stack {
+    width: min(100%, 34rem, calc(36svh * var(--ar, 1.09)));
+  }
+}
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
+  :global(html[data-js]) .root:not([data-type-motion]) .system {
+    bottom: 0;
+  }
 }
 /* ... then only its verdict does (it re-decides on every change of the
    query, the motion preference or the size, keeping the reader's place) */
 .root[data-type-motion="on"] .track {
-  height: calc(100vh + var(--travel));
-  height: calc(100lvh + var(--travel));
+  height: calc(100vh + var(--travel) + var(--extra, 0px));
+  height: calc(100lvh + var(--travel) + var(--extra, 0px));
 }
 .root[data-type-motion="on"] .stage {
   position: sticky;
   top: 0;
-  height: 100vh;
-  height: 100lvh;
+  height: calc(100vh + var(--extra, 0px));
+  height: calc(100lvh + var(--extra, 0px));
   overflow: clip;
 }
 .root[data-type-motion="on"] .stageIn {
@@ -397,8 +674,58 @@
   padding-top: var(--pt);
   padding-bottom: var(--pb);
 }
+.root[data-type-motion="on"] .menu {
+  display: grid;
+}
+.root[data-type-motion="on"] .chain {
+  display: flex;
+}
+/* Pinned, the system lies over the menu from its top: below lg the list
+   and then the stack, from lg the stack beside the list, as tall as the
+   menu */
+.root[data-type-motion="on"] .system {
+  position: absolute;
+  inset: 0 0 auto;
+}
+@media (min-width: 64rem) {
+  .root[data-type-motion="on"] .system {
+    bottom: 0;
+  }
+  .root[data-type-motion="on"] :is(.systemIn, .systemGrid, .stackCell),
+  :global(html[data-js]) .root:not([data-type-motion]) :is(.systemIn, .systemGrid, .stackCell) {
+    height: 100%;
+  }
+  .root[data-type-motion="on"] .systemGrid,
+  :global(html[data-js]) .root:not([data-type-motion]) .systemGrid {
+    grid-template-rows: 100%;
+  }
+  .root[data-type-motion="on"] .stack {
+    height: 100%;
+  }
+}
+/* Pinned below lg, the stack keeps to the screen: no taller than 40svh
+   on phones and 36svh on tablets, whose list keeps its lines (sized by
+   width, --ar being the stack's own aspect ratio, so it stays on its edge) */
+@media (max-width: 63.99rem) {
+  .root[data-type-motion="on"] .stack {
+    width: min(100%, calc(40svh * var(--ar, 1.09)));
+  }
+}
+@media (min-width: 40rem) and (max-width: 63.99rem) {
+  .root[data-type-motion="on"] .stack {
+    width: min(100%, 34rem, calc(36svh * var(--ar, 1.09)));
+  }
+}
+.root[data-type-motion="on"] .system[data-unsettled] {
+  pointer-events: none;
+}
+/* the plate names wait for their clones to land */
+.root[data-type-motion="on"] [data-wait] {
+  visibility: hidden;
+}
 
-/* Armed: the clones carry the names until each row is set */
+/* Armed: the clones carry the names until each row is set, and from the
+   moment their layer leaves until they land */
 .root[data-type-motion="on"] .fx {
   display: block;
   position: absolute;
@@ -412,18 +739,6 @@
 }
 .root[data-type-motion="on"] .row:not([data-set]) [data-nm] {
   color: transparent;
-}
-.root[data-type-motion="on"] .list[data-unsettled] .row {
-  pointer-events: none;
-}
-/* The engine lifts index, stage, line and arrow into place through --ry:
-   the translate is always there, so the lift never re-lays out a row */
-.root[data-type-motion="on"] [data-meta] {
-  translate: 0 var(--ry, 0px);
-}
-/* While the engine drives the rows, nothing eases behind it */
-.root[data-type-motion="on"] .list[data-unsettled] :is(.dim, .arr, .hot) {
-  transition: none;
 }
 .clone[data-set] {
   visibility: hidden;

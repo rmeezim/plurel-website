@@ -8,15 +8,15 @@ import { PROOF_ID, SAMPLE_DIAGNOSTIC as D, SAMPLE_TOTAL } from "@/lib/proof";
   Proof: what a Diagnostic hands back, shown as an excerpt of one.
 
   There are no client cases yet, so the chapter shows the deliverable
-  itself: a sample Diagnostic for Halden (the Attention Field's sample
-  brief), labelled as a sample in its top bar. It is set as a sheet of
+  itself: a sample Diagnostic for Halden (the sample brand of the
+  attention section's week), labelled as a sample in its top bar. It is set as a sheet of
   paper on the graphite room, laid out like the printed report: section
   heads hang in the first three columns, the content runs on the other
   nine through subgrid. Mono only for the three month heads of the plan;
   scores are figures in the display face, with "out of 10" said once in
   the section head. Brand red marks the two weakest scores and the first
-  fix. The read is the one Halden had before the work in the Attention
-  Field ran, and the intro says so.
+  fix. The read is the one Halden had before the work in the sample week
+  ran, and the intro says so.
 
   Server component; the only motion is Reveal plus the score bars and
   the plan's month cells drawing in once their block is revealed (gated

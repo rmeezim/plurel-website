@@ -15,7 +15,10 @@ actions, diagonal arrows) with three things of its own:
   rulers or figure captions; mono is kept for data (dates, units, scores,
   tags, the four Method phases).
 - **Frontier type.** One wide grotesk (Mona Sans) for everything, with a
-  mono for the instrumentation. No serif, no italics on the homepage.
+  mono for the instrumentation. No serif and no italics in the site's own
+  voice; only the drawn documents (the week's channel tiles, the
+  supplier reports) and services' first beat borrow other voices, on
+  purpose.
 
 **Flat, not lit.** Every surface is one flat color. No gradients, no
 glows, no vignettes, no grain, no drawn column lines. The color, the type
@@ -68,14 +71,15 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| paper | `bg-paper` | ink | Reading chapters: manifesto, FAQ, journal, footer; the sample Diagnostic sheet |
-| red | `bg-brand` | paper | Method, closing |
-| dark | `bg-graphite` | paper, fog | Hero, Attention Field, services, proof, the method's AI layer |
+| paper | `bg-paper` | ink | Reading chapters: the attention section's week, FAQ, journal, footer; the sample Diagnostic and the manifesto's one-number sheet |
+| red | `bg-brand` | paper | The manifesto (Why Plurel), Method, closing |
+| dark | `bg-graphite` | paper, fog | Hero, services, proof, the method's AI layer |
 
 All three are flat fills. Alternate tones so every chapter change is a
-clear cut (the homepage runs paper manifesto, graphite services, red
-method, graphite proof, paper FAQ and journal, red closing), no two red
-chapters touch, and every page keeps at least one red room.
+clear cut (the homepage runs graphite hero, paper week, red manifesto,
+graphite services, red method, graphite proof, paper FAQ and journal, red
+closing), no two red chapters touch, and every page keeps at least one
+red room.
 
 ## Type
 
@@ -86,7 +90,7 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 | Display (h1, h2, h3, big numbers) | Mona Sans, 110% width, 430 | `type-display` plus a size; `leading-[0.98]` to `leading-none` |
 | Accent | Mona Sans 300 | `<Accent>`: same face, lighter, toned by color (`text-fog`, `text-muted`, `text-brand`, `text-blush`) |
 | Body | Mona Sans 400 | 15 to 20px, `leading-[1.5]` to `[1.55]`, 34 to 68ch |
-| Kicker | Mona Sans 500 caps | `<Kicker>`: square marker, 11px, tracked |
+| Kicker | Mona Sans 500, sentence case | `<Kicker>`: square marker, 14px (15px from sm), untracked |
 | Meta | JetBrains Mono caps | `<Meta>`: indexes, figure captions, counts, clocks |
 
 - `type-display` (in `globals.css`) sets the face, `font-stretch: 110%`,
@@ -98,7 +102,15 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 - `figures` sets lining, proportional numerals for stats.
 - Meta (mono, 11px caps) is for data only: dates, read times, units,
   scores, tags, the Method phase numbers. About fifteen on the whole
-  homepage. Never a label that only announces what comes next.
+  homepage, outside the drawn documents. Never a label that only
+  announces what comes next.
+- Navigation, labels and small actions are sentence case at 13px and up
+  (header nav 15px, header CTA 14px, clock 13px, footer column heads
+  14px). Tracked uppercase micro-type reads as a template; it stays out
+  of the site's own chrome.
+- Times and counts that people read (the week's day and time, the
+  manifesto's 146) use the face's lining, proportional figures: its
+  tabular set has a footed 1 and a slashed zero, which read as code.
 - Instrument Serif (`--font-serif`) remains loaded only for interior
   pages that haven't moved over.
 
@@ -149,18 +161,20 @@ Everything sits inside `prefers-reduced-motion: no-preference` in
 - **Hero load (flagship only):** headline lines rise out of their masks
   (`line-rise`, 140ms apart), then copy, actions, and the glass fade up
   (`fade-up`).
-- **Scroll:** `Reveal`, staggering siblings 0.08s. Two chapters are
-  pinned and scrubbed: the Attention Field (under the hero, long) and
-  services' typographic system (brief). The manifesto's braid is scrubbed
-  without pinning, and
-  the two glass bands follow scroll as a height profile; nothing else is
-  driven by scroll position.
-- **Hover:** a pointer pours light into the glass (below) and pushes the
-  Attention Field's dots aside (its markers can be dragged); contents rows
-  take a red top rule; arrows nudge diagonally.
-- **Ambient:** the film behind the glass, the Attention Field's drift and
-  its channel tiles while they show (no controls, by the owner's call:
-  they run only while on screen and stop in hidden tabs). The
+- **Scroll:** `Reveal`, staggering siblings 0.08s. One chapter is pinned
+  and scrubbed: services' typographic system, which ends on its layered
+  stack. Everything else rides native scroll: the week's narrator is
+  sticky and turns its day and time over as each tile reaches the middle
+  of the screen, the manifesto's reports are dealt onto the table once as
+  it scrolls in, and the two glass bands follow scroll as a height
+  profile. Nothing else is driven by scroll position.
+- **Hover:** a pointer pours light into the glass (below); a supplier
+  report straightens, lifts and takes its red-pen question; a services
+  layer lifts its plate, and a plate lights its row; contents rows take a
+  red top rule; arrows nudge diagonally.
+- **Ambient:** the film behind the glass and the week's channel tiles
+  while they show (no controls, by the owner's call: they run only while
+  on screen, and stop in hidden tabs and behind the open mobile menu). The
   selected-clients marquee (`clients-strip.tsx`, paused on hover) returns
   only once real client names exist. Nothing else moves on its own; all
   of them sit still for reduced motion.
@@ -222,97 +236,101 @@ then the glass:
 - **Glass:** the `rise` band, set well below the actions, uncaptioned,
   resting a little over half its height on first load.
 
-## The Attention Field
+## The attention section: one buyer's week
 
-`home/attention-field.tsx` (markup, client) with the canvas engine in
-`lib/attention-field.ts`, the stage layout in
-`home/attention-field.module.css`, and the channel tiles in
-`home/channel-tiles.tsx` (data in `lib/channels.ts`). The section right
-after the hero (`#distribution`, graphite): how Plurel distributes, told
-in thousands of points of attention on one canvas, pinned and scrubbed by
-scroll. No chrome round it: no running head, no stage tabs, no indices.
-The five stage headings carry it, and the one action, "See the method",
-arrives only with the final readout: an outline button at the container's
-left edge on the chart's baseline, diagonally opposite the readout, never
-a red block beside it (focusing it early jumps straight to that stage, so
-keyboards still reach it).
+`home/attention-field.tsx` (server markup), with the sticky narrator in
+`home/attention-week.tsx` (client), the moments in `lib/attention-field.ts`
+(`WEEK`), the layout in `home/attention-field.module.css`, and the
+channel tiles in `home/channel-tiles.tsx` (data in `lib/channels.ts`).
+The section right after the hero (`#distribution`, paper, a clean cut
+from the graphite hero) tells "Attention is everywhere" as a human story
+rather than a diagram: no particles, lanes, funnels or curves.
 
-1. **Noise.** "Attention is everywhere." Fog dots drifting in nine loose
-   pools, one per surface, each with its marker and name. The mesh answers
-   a fine pointer (a soft lens pushes the nearest dots aside and lifts
-   them), and, unannounced, a marker can be picked up and dragged: only
-   the marker moves (its dot and name), the mesh parts around it as it
-   does around the cursor, and on release it eases home. No dots travel
-   with it. Mouse and pen only for the lens; a drag only when it starts on
-   a marker, so page scrolling is never taken.
-2. **Story.** "One story, cut for every surface." The dots settle into one
-   plain grid (no words in it), a red blade cuts it along the mosaic's
-   gutters one cut at a time, the cut grid holds for a beat, and only then
-   do seven live tiles develop into the cells, each a recording of a real
-   surface carrying the same story: an AI answer streaming with
-   citations, a search results page, a reel, a
-   film, a press review, a creator's post, a 48-sheet out of home. Halden
-   (quiet heat pumps, sold to homeowners and developers) is a sample
-   brief, and a quiet line under the mosaic says so. Phones show four:
-   the answer, a footage row (the reel beside the film, or the billboard
-   on short phones) and the search, with text sized to read.
-3. **Lanes.** "Be where it gathers." Each tile shrinks in place and slides
-   to the head of its lane, top lane first, and its lane pours from it:
-   Owned (Search, Social, Video), Earned (AI answers, Press, UGC), Paid
-   (Creators, Paid media, Events).
-4. **System.** "Run it as one system." The lanes bend into one funnel;
-   the dots that pass through turn signal red.
-5. **Demand.** "Qualified demand." The red stream rises to one bright
-   point; the readout is an index (1.0x to 3.2x vs. baseline,
-   illustrative), so it reads for B2B and B2C alike. Never "inquiries" or
-   "pipeline" here.
+- **Opening.** One quiet label ("How distribution works"), the h2
+  "Attention is everywhere." on the shared scale, and a standfirst beside
+  it that introduces the week and says in plain view that it is a
+  sample: Maya owns a terraced house in Leeds and a boiler that sounds
+  like a jet; Halden, the heat pump brand she keeps meeting, is one we
+  made up.
+- **The week.** Eight moments, Monday 9 to Monday 16 March: a search at
+  her desk, a reel at lunch, an AI answer on the sofa, the billboard by
+  the station, the weekend review, a creator she follows with a meter
+  next to hers, the brand film before her show, and the booking email.
+  Each is one large tile (a drawn screen recording, the same story every
+  time) with its day and time and one plain sentence. From lg on a screen
+  at least 560px tall (with JS), a sticky narrator on columns 1 to 4
+  tells whichever moment holds the middle of the screen: a week strip
+  (a letter a day, a square per moment: ink once passed, red for now,
+  faint to come, and "Sample week" beside it), the day and time set at
+  72 to 96px in the display face, turning over like a clock, and the
+  sentence. Everywhere else, and without JS, each moment's own text sits
+  above or beside its tile.
+- **The close.** "Seven times, in seven places, the same story. Then she
+  booked." at headline scale, then "For a developer buying fifty units,
+  the week looks different. The story doesn't." and the outline "See the
+  method" button. It doesn't name the number: the manifesto, next, does.
 
-Tiles are DOM, not canvas (crisp type), placed by the engine with
-transforms; each plays only while it is on screen in the Story stage, and
-holds a designed still frame otherwise. Each is also a slot for real
-footage: drop `public/video/channels/<key>.mp4` (keys: answer, search,
-reel, film, press, creator, ooh; optional `<key>.jpg` poster) and
+Tiles are DOM (crisp type) and decoration (aria-hidden; each moment's
+sr-only line says what it shows). Each plays only while on screen (a
+sliver is enough), never behind the open mobile menu or in a hidden tab,
+and holds a designed still frame for reduced motion, data saver and no
+JS. Each is also a slot for real footage: drop
+`public/video/channels/<key>.mp4` (keys: search, reel, answer, ooh,
+press, creator, film, book; optional `<key>.jpg` poster) and
 `lib/clips.ts` picks it up at build time, muted and looped, with
-`preload="none"`.
+`preload="none"`. Nothing that contains the sticky narrator may clip
+(`overflow: hidden/clip` breaks it).
 
-Rules: pinned only with JS, motion allowed and a viewport at least 360px
-wide and 560px tall; otherwise a designed static version (the tiles as one
-mosaic of still frames, then the five stages as a list beside one still
-frame of the system, then the link). Nothing that contains the sticky
-stage may clip (`overflow: hidden/clip` breaks it). The loop runs only
-while the section is on screen and the tab visible; no pause control (the
-owner's call, as with the glass). When the mode flips (a phone rotates, a
-window gets short, reduced motion toggles), the engine keeps the reader's
-place: inside the field they land at its start, below it they stay on the
-same chapter.
+## Why Plurel: ten reports on a red table
 
-## The manifesto braid
+`home/manifesto-chapter.tsx` (server markup and the one-number sheet),
+the table in `home/supplier-reports.tsx` (client) and
+`home/supplier-reports.module.css`, data in `lib/reports.ts`. The
+manifesto is a red chapter: the thesis, then the evidence on the desk.
 
-The manifesto is one paper chapter: the statement, then its figure
-(`home/braid-strip.tsx`, engine in `lib/braid.ts`), the chapter's
-centrepiece, not an appendix. It has no visible caption (an sr-only one
-names the suppliers; phones say six of ten are drawn); its lead "Every supplier reports its own number. *Nobody owns the
-outcome.*" (an h3) on the content column, and the canvas takes the full
-width below. Scrubbed by scroll as it passes, never pinned: ten tangled
-ink hairline strands, each a supplier with the number it reports (six on
-phones, which the caption says), straighten into lanes, then funnel into
-one strand that turns brand red where it joins and plaits to "One team.
-One number." (HTML, brand red, beside the end), with "Find where your
-suppliers disagree" and a link to request a diagnostic under it. As it forms, the ten
-metrics delete themselves and the names glide to the spine (ten numbers
-become one). No logo hub: the colour change is the junction. It moves only
-with the visitor's scroll and rests otherwise; reduced motion shows the
-finished braid, and without JS a static drawing of the end state names
-the suppliers in the margin. Generous paper closes the chapter before
-(02) cuts to graphite.
+- **Thesis.** "Your marketing shouldn't be ten companies. It should be
+  one system." set larger than the shared H2 (it is the site's thesis),
+  with the standfirst beside it.
+- **The table.** The ten reports a company gets in a month, one per
+  supplier, each a small document in the house style its sender would
+  use (an SEO PDF cover, an ads dashboard, a social snapshot, a monthly
+  analytics page, a PR coverage report with clippings, a creator recap,
+  a content tracker spreadsheet, a site health gauge, a brand audit, a
+  video analytics card), each proud of its own September number and
+  none of them about qualified demand. Suppliers are named by role only:
+  no company names, no logos. Placed by hand on fixed artboards per
+  breakpoint (phones show six of the ten), slightly rotated,
+  overlapping, as a still life across the container. The h3 "Every
+  supplier reports its own number. Nobody owns the outcome." sits in
+  the table's quiet top-left corner from lg, with one plain line under
+  it: sample reports for Halden, illustrative figures, pick one up.
+- **Pick one up.** Hover (mouse and pen), focus or a tap straightens a
+  report, lifts it to the top of the pile, and a red pen circles its
+  number and writes Plurel's question beside it ("Clicked. Then what?",
+  "From whom?", "Did any of them call?"...). A tap, click, Enter or
+  Space holds it; Escape, a press elsewhere or focus leaving the pile
+  puts it back. The pile is a list of ten buttons, each named by its
+  supplier, title and number and described by its question.
+- **The resolution.** "One team. One number." beside one clean Plurel
+  sheet, upright and apart from the pile: a single line item, "Qualified
+  demand 146", defined in plain words (the enquiries that can actually
+  become customers; for Halden, booked home surveys and spec requests
+  for a named site) and marked as a sample figure. Then "Find where
+  your suppliers disagree." and "Request a diagnostic".
 
-## Services: one typographic system
+Motion: a table that starts below the fold is dealt onto the desk once as
+it scrolls in, bottom card first; no pin, no scrub, no canvas. Reduced
+motion gets the same table and notes without movement; without JS, CSS
+alone lifts a report on hover and focus. Paper type on red: body copy in
+paper (5.2:1), blush only at display sizes.
 
-(02) Services sits on graphite, a hard cut from the paper manifesto and
-from the red Method after it. Markup in `home/services-chapter.tsx`, the
+## Services: from a menu to a layered system
+
+Services sits on graphite, a hard cut from the red manifesto before it
+and the red Method after it. Markup in `home/services-chapter.tsx`, the
 motion in `home/services-type.tsx` (client) with the engine in
 `lib/services-type.ts` and the pin and clone rules in
-`home/services-type.module.css`. Fig. 02 is the contents list itself, so
+`home/services-type.module.css`. The figure is the contents list itself, so
 the chapter's artifact makes Plurel's argument (integration, not a menu)
 in the one place that has to show a menu:
 
@@ -324,23 +342,41 @@ in the one place that has to show a menu:
 2. **Still a menu.** "Lined up, it's still a menu." They drop onto the
    rows of the list, still in their own voices.
 3. **One system.** "Set as one, it's a system." Stage by stage along the
-   chain (Narrative, Create, Distribute, Measure, each lit as its rows
-   set), the names take one face, one scale and one rhythm, and the stage
-   tags and lines arrive, until the figure is simply the list.
+   chain (Narrative, Create, Distribute, Measure, each lit as its layer
+   locks), the names take one face, one scale and one rhythm, then drain
+   into the system layer by layer, foundation first: each layer a plate
+   of glass, in the hero glass's material set flat (a cool slate tint,
+   frost 1px edges, paper type, no shadow, no glow), settling onto an
+   isometric stack (CSS 3D on real DOM). Below lg the menu folds away
+   under the stack.
+
+What stays is the system, in the spirit of Legora's layered OS: on the
+left the four layers as a quiet list, each its name and one line
+(Narrative: what you stand for and how it sounds, before anything is
+made; Create: the site every buyer meets, and the content that earns
+attention; Distribute: putting the story where attention gathers;
+Measure: one set of numbers across every layer, counted as qualified
+demand). A layer opens (one at a time; the foundation open by default on
+desktop, all closed below lg) to show its services as links with their
+taglines. On the right, the stack: pointing at or focusing a layer lifts
+its plate and edges it in signal red; pointing at a plate lights its
+row, and a click on it opens the layer. The list is the one control (the
+chain is no longer a toggle).
 
 Rules:
-- The real list is server-rendered and is what assistive tech, no-JS,
+- The layer list (native `<details>`, the eight service links grouped
+  in four layers) is server-rendered and is what assistive tech, no-JS,
   reduced motion, forced colours and screens too short to pin (phones
-  under 650px tall, 640px from lg; 360x640 keeps the list) get. Eight
-  aria-hidden clones carry the motion; each row hands back to the real
-  text, pixel for pixel, the moment its name is set.
-- Pinned briefly (at most 110svh of travel on desktop, 96svh on phones)
-  and moved only by the visitor's scroll; transforms and opacity only,
-  measured after fonts load and on resize, which keeps the reader's place.
-  Colours morph in OKLab, so no red passes through pink.
-- The four chain stages are toggles at every width (`aria-pressed`): one
-  holds its rows and steps the others back (all text stays above 4.5:1), a
-  second press or Escape clears. `#services` lands on the chapter.
+  under 650px tall, 640px from lg, and any screen whose finished frame
+  would not fit) get, with the narrator saying what it shows: "Eight
+  kinds of work, in four layers." Eight aria-hidden clones carry the
+  motion; the plates are aria-hidden too.
+- Pinned for 150svh of travel on desktop and 131svh on phones (the first
+  two beats keep the 110svh and 96svh they were drawn for; the rest is
+  the stacking), moved only by the visitor's scroll; transforms and
+  opacity only, measured after fonts load and on resize, which keeps the
+  reader's place. Colours morph in OKLab, so no red passes through pink.
+  `#services` lands on the chapter.
 - The pure parts are unit tested:
   `npx -y tsx --test src/lib/services-type.test.ts`.
 
@@ -351,8 +387,9 @@ Rules:
   until then the drawn stand-ins stay. No AI-generated video or stills.
 - Proof is never invented. No client, person, quote, logo or result is
   shown as real unless it is. Samples are labelled as samples in plain
-  view (the Attention Field's Halden brief; the Proof chapter's sample
-  Diagnostic; the sample engagements on /work).
+  view (the week's Maya and Halden; the supplier reports and their
+  figures; the Proof chapter's sample Diagnostic; the sample engagements
+  on /work).
 - The Proof chapter (`home/proof-chapter.tsx`, data in `lib/proof.ts`) shows
   what Plurel delivers first: an excerpt of a Diagnostic, run on the
   Halden sample brief (six parts scored, where you win, where you leak,
@@ -376,6 +413,8 @@ Rules:
   it: dark glass with paper type over graphite or red, light glass with
   ink over paper (sampled under the bar each frame). The clock beside
   the CTA shows the visitor's own time zone, labelled with its city.
+  Nav, menus and the CTA are sentence case (15px nav, 14px CTA, 13px
+  clock), never tracked capitals.
   Routes with a cinematic hero are listed in `OVERLAY_ROUTES`
   (`src/lib/nav.ts`); other routes get a spacer so content starts below
   the bar. Desktop menus open a Swiss panel (a card under the pill);
@@ -392,9 +431,9 @@ one step of that argument, and says it once:
 | Chapter | Job |
 | --- | --- |
 | Hero | The promise: made to be seen, everywhere; great work no longer sells itself, distribution does |
-| Attention Field | Distribute: attention is everywhere; one story, cut for every surface, run by one team, ends in qualified demand |
-| Manifesto + braid | Measure: ten suppliers, ten numbers, nobody answers for the outcome; one team, one number |
-| Services | Structure: eight kinds of work as one chain (Narrative, Create, Distribute, Measure); the budget follows the bottleneck |
+| Attention section | Distribute: attention is everywhere; one buyer's week, seven places, the same story, then she books (and a B2B buyer's week holds the same story) |
+| Manifesto (Why Plurel) | Measure: ten suppliers, ten reports, ten numbers, nobody owns the outcome; one team, one number: qualified demand |
+| Services | Structure: eight kinds of work as one system in four layers (Narrative, Create, Distribute, Measure), foundation first; the budget follows the bottleneck |
 | Method | How it starts: the Diagnostic, then the four phases as one monthly partnership |
 | Proof | What a Diagnostic finds (a labelled sample until real cases can be published) |
 | People | Who does the work (shown once real people are listed) |

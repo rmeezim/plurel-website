@@ -8,7 +8,7 @@ import { AUDIT_HREF } from "@/lib/nav";
   Home hero: the statement, then a full-bleed band of glass over the film.
   The glass (GlassBand) hangs well clear of the statement and steps into a
   rising staircase as the visitor scrolls on; a cursor brings warm light
-  into it. The Attention Field (the next section) picks up from here.
+  into it. The attention section (the next, on paper) picks up from here.
 */
 
 /** Staggered line reveal: each line rises out of its own mask */

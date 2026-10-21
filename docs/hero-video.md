@@ -8,15 +8,16 @@ Every frame on the site is shot on a camera, of the team or of work it
 actually did (with the client's permission).
 
 Until that footage exists, the site runs its stand-ins: a code-drawn red
-film behind the glass, and drawn screen recordings in the Attention
-Field's tiles. Both are finished on their own, so nothing waits on the
-shoot, and a stand-in is always better than a generated clip.
+film behind the glass, and drawn screen recordings in the channel tiles
+of the attention section's sample week. Both are finished on their own,
+so nothing waits on the shoot, and a stand-in is always better than a
+generated clip.
 
 There are two places footage goes:
 
 1. **The film behind the glass** (`public/video/plurel-hero.*`), used by
    the fluted glass band in the hero and again at the closing chapter.
-2. **The channel tiles** in the Attention Field
+2. **The channel tiles** in the attention section's week
    (`public/video/channels/<key>.mp4`), one clip per format.
 
 ---
@@ -118,9 +119,10 @@ see. Stay well under budget.
 
 ## 2. The channel tiles
 
-The Attention Field opens on seven tiles: one story cut into the formats
-it ships to. Today they tell the story of Halden, a sample brief that is
-labelled as one on the page, drawn as screen recordings.
+The attention section tells one buyer's week in eight tiles: seven
+places she meets the same story, then the booking it ends in. Today they
+tell the story of Halden, a sample brand that is labelled as one on the
+page (and Maya, its sample buyer), drawn as screen recordings.
 
 **The rule here is the same: real footage only.** In order of
 preference:
@@ -137,13 +139,19 @@ a client.
 
 | Key | Format | Aspect | Loop (s) | Clip replaces |
 | --- | --- | --- | --- | --- |
-| `answer` | AI answer | 4:5 | 11.3 | the whole tile (a screen recording) |
 | `search` | Search result | 16:9 | 13.7 | the whole tile (a screen recording) |
 | `reel` | Reel | 9:16 | 10 | the picture, under the drawn app UI |
-| `film` | Brand film | 16:9 | 12.4 | the picture, under the drawn UI |
+| `answer` | AI answer | 4:5 | 11.3 | the whole tile (a screen recording) |
+| `ooh` | Billboard | 3:1 | 16 | the whole tile (a photo or film of the real site) |
 | `press` | Press feature | 4:5 | 14.9 | the whole tile (a screen recording) |
 | `creator` | Creator post | 4:5 | 12.9 | the picture, under the drawn UI |
-| `ooh` | Billboard | 3:1 | 16 | the whole tile (a photo or film of the real site) |
+| `film` | Brand film | 16:9 | 12.4 | the picture, under the drawn UI |
+| `book` | Booking email | 4:5 | 13.1 | the whole tile (a screen recording) |
+
+The table runs in the order of the week. The aspects are each tile's
+nominal shape (`CHANNELS` in `src/lib/channels.ts`); the week sets some
+of them at their own size (`WEEK` in `src/lib/attention-field.ts`), so
+check both before you crop.
 
 "Screen" tiles take a real screen recording of the real thing (the
 search result, the assistant's answer, the published article) or real

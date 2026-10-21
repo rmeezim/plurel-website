@@ -11,13 +11,14 @@ import { ServicesChapter } from "@/components/home/services-chapter";
 import { channelClips } from "@/lib/clips";
 
 /*
-  Home: the glass over the film, the Attention Field (how attention
-  becomes demand, pinned and scrubbed), then the chapters, alternating
-  paper, graphite and red: the problem told through measurement (the
-  manifesto and its braid), what the team is made of (Services), how it
-  starts (Method, with the Diagnostic), proof (a sample Diagnostic until
-  real cases can be published; the people, once they can be shown), the
-  questions, the journal, and the Diagnostic itself before the footer.
+  Home: the glass over the film, then the chapters, alternating paper,
+  red and graphite: how attention becomes demand (one buyer's sample
+  week, on paper), the problem told through measurement (the manifesto's
+  ten supplier reports, on red), what the team is made of (Services, the
+  one pinned chapter), how it starts (Method, with the Diagnostic), proof
+  (a sample Diagnostic until real cases can be published; the people,
+  once they can be shown), the questions, the journal, and the Diagnostic
+  itself before the footer.
 */
 export default function Home() {
   return (

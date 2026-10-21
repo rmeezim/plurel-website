@@ -48,7 +48,7 @@ export function Kicker({
   const t = KICKER_TONE[tone];
   return (
     <p
-      className={`flex items-center gap-3 text-[11px] font-medium uppercase leading-none tracking-[0.2em] ${t.text} ${className}`}
+      className={`flex items-center gap-2.5 text-[14px] font-medium leading-none tracking-[-0.005em] sm:text-[15px] ${t.text} ${className}`}
     >
       <span aria-hidden className={`size-[7px] shrink-0 ${t.mark}`} />
       {children}

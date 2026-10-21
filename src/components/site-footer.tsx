@@ -29,7 +29,7 @@ const FOCUS =
 const LINK = `inline-flex items-center ${ROW} text-[15px] leading-[1.25] text-ink transition-colors hover:text-brand ${FOCUS}`;
 
 const LABEL =
-  "flex gap-2.5 text-[12px] font-medium uppercase leading-4 tracking-[0.09em] text-muted";
+  "flex gap-2.5 text-[14px] font-medium leading-5 tracking-[-0.005em] text-muted";
 
 const BAR_LINK = `inline-flex min-h-10 items-center transition-colors hover:text-ink ${FOCUS}`;
 

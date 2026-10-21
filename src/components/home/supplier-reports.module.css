@@ -1,0 +1,1260 @@
+/*
+  The manifesto's table (supplier-reports.tsx; data in lib/reports.ts).
+
+  The table is an artboard drawn in design pixels (560 x 830 on phones,
+  960 x 900 on tablets, 1344 x 660 from lg) and scaled to the container
+  (tan(atan2()) turns the ratio of two lengths into the number scale()
+  needs). Every report sits on it by hand: its spot per breakpoint comes
+  in as custom properties (--x0..2, --y0..2, --r0..2, --z0..2).
+
+  Flat paper on red: no shadows. A report's edge is a 1px line, so paper
+  on paper still separates, and depth comes from overlap and rotation.
+
+  Each report keeps its supplier's own colours below, deliberately
+  outside Plurel's palette, so the pile reads as ten companies. Plurel
+  appears only in the red pen.
+*/
+
+.board {
+  --ads: #2456d3;
+  --seo: #17614a;
+  --social: #5a3fd0;
+  --pr: #1d2a48;
+  --site: #0b7f45;
+  --hi: #f4d63e;
+  --grid: #dadce0;
+  --video: #4cc8d8;
+  --an: #0d7680;
+  --pen: var(--color-brand);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 560 / 830;
+}
+
+.art {
+  --aw: 560px;
+  /* 1 design px on screen, inverted: keeps the focus ring a true 2px */
+  --inv: tan(atan2(var(--aw), 100cqw));
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--aw);
+  height: 830px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transform-origin: 0 0;
+  transform: scale(tan(atan2(100cqw, var(--aw))));
+}
+
+@media (min-width: 40rem) {
+  .board {
+    aspect-ratio: 960 / 900;
+  }
+  .art {
+    --aw: 960px;
+    height: 900px;
+  }
+}
+@media (min-width: 64rem) {
+  .board {
+    aspect-ratio: 1344 / 660;
+  }
+  .art {
+    --aw: 1344px;
+    height: 660px;
+  }
+}
+
+/* ---------- a report on the table ---------- */
+
+.slot {
+  --x: var(--x0);
+  --y: var(--y0);
+  --r: var(--r0);
+  --fx: var(--fx0);
+  --fy: var(--fy0);
+  --fr: var(--fr0);
+  --i: var(--i0);
+  --o: var(--o0, 50% 50%);
+  --lift: 1.32;
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  z-index: var(--z0);
+  rotate: var(--r);
+  /* drop back under the pile only once it has settled */
+  transition: z-index 0s 0.3s;
+}
+.slot:not([data-phone]) {
+  display: none;
+}
+/* The report's footprint stays hoverable while the report itself lifts
+   and straightens, so a pointer near its edge never flickers it */
+.slot::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+}
+@media (min-width: 40rem) {
+  .slot {
+    --x: var(--x1);
+    --y: var(--y1);
+    --r: var(--r1);
+    --fx: var(--fx1);
+    --fy: var(--fy1);
+    --fr: var(--fr1);
+    --i: var(--i1);
+    --o: 50% 50%;
+    --lift: 1.12;
+    z-index: var(--z1);
+  }
+  .slot:not([data-phone]) {
+    display: block;
+  }
+}
+@media (min-width: 64rem) {
+  .slot {
+    --x: var(--x2);
+    --y: var(--y2);
+    --r: var(--r2);
+    --fx: var(--fx2);
+    --fy: var(--fy2);
+    --fr: var(--fr2);
+    --i: var(--i2);
+    --lift: 1.07;
+    z-index: var(--z2);
+  }
+}
+
+.deal {
+  display: block;
+}
+
+.lift {
+  all: unset;
+  position: relative;
+  display: block;
+  cursor: pointer;
+  transform-origin: var(--o);
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    rotate 0.3s var(--ease),
+    translate 0.3s var(--ease),
+    scale 0.3s var(--ease);
+}
+.lift:focus-visible {
+  outline: calc(2px * var(--inv)) solid var(--color-paper);
+  outline-offset: calc(5px * var(--inv));
+}
+
+/* Up: straight, on top, a little larger */
+.slot[data-on],
+.board:not([data-live]) .slot:is(:hover, :focus-within) {
+  z-index: 50;
+  transition-delay: 0s;
+}
+.slot[data-on] .lift,
+.board:not([data-live]) .slot:is(:hover, :focus-within) .lift {
+  rotate: calc(-1 * var(--r));
+  translate: 0 -8px;
+  scale: var(--lift);
+}
+
+/* ---------- the red pen ---------- */
+
+/* The loop is stretched to the number it circles, so it is revealed by a
+   sweep around its centre (a hard-edged conic mask, starting where the
+   pen starts) rather than by dashes, which a stretched path can't keep */
+@property --sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.pen {
+  position: relative;
+  display: inline-block;
+}
+.loop {
+  --sweep: 0deg;
+  position: absolute;
+  left: -0.28em;
+  top: -0.15em;
+  width: calc(100% + 0.56em);
+  height: calc(100% + 0.28em);
+  overflow: visible;
+  fill: none;
+  stroke: var(--pen);
+  stroke-width: 1.7px;
+  stroke-linecap: round;
+  pointer-events: none;
+  -webkit-mask-image: conic-gradient(from -80deg, #000 var(--sweep), transparent 0);
+  mask-image: conic-gradient(from -80deg, #000 var(--sweep), transparent 0);
+  transition: --sweep 0.16s ease;
+}
+.loop path {
+  vector-effect: non-scaling-stroke;
+}
+
+.note {
+  position: absolute;
+  z-index: 2;
+  max-width: 13em;
+  color: var(--pen);
+  font-family: var(--font-mona), system-ui, sans-serif;
+  font-size: 14.5px;
+  font-weight: 620;
+  font-stretch: 88%;
+  line-height: 1.05;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+  rotate: -2.5deg;
+  opacity: 0;
+  translate: 0 3px;
+  pointer-events: none;
+  transition:
+    opacity 0.14s ease,
+    translate 0.14s ease;
+}
+
+.slot[data-on] .loop,
+.board:not([data-live]) .slot:is(:hover, :focus-within) .loop {
+  --sweep: 360deg;
+  transition: --sweep 0.48s cubic-bezier(0.45, 0, 0.25, 1) 0.06s;
+}
+.slot[data-on] .note,
+.board:not([data-live]) .slot:is(:hover, :focus-within) .note {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.22s ease 0.16s,
+    translate 0.28s var(--ease) 0.16s;
+}
+
+/* ---------- dealt in, once ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .board[data-deal="armed"] .deal {
+    opacity: 0;
+  }
+  .board[data-deal="in"] .deal {
+    animation: deal 0.56s var(--ease) both;
+    animation-delay: calc(var(--i) * 85ms);
+  }
+}
+@keyframes deal {
+  from {
+    opacity: 0;
+    translate: var(--fx) var(--fy);
+    rotate: var(--fr);
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot,
+  .lift,
+  .note,
+  .loop {
+    transition: none !important;
+  }
+}
+
+/* ---------- the paper ---------- */
+
+.doc {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  width: calc(var(--w) * 1px);
+  height: calc(var(--h) * 1px);
+  border: 1px solid rgb(17 15 10 / 0.13);
+  background: #fff;
+  color: #17181b;
+  font-family: var(--font-mona), system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  font-stretch: 100%;
+  line-height: 1.3;
+  letter-spacing: 0;
+  text-align: left;
+  white-space: normal;
+  /* proportional figures: Mona Sans's tabular zero is slashed, which no
+     agency's PDF would set */
+  font-variant-numeric: proportional-nums;
+}
+.doc b {
+  font-weight: 600;
+}
+.doc i {
+  font-style: normal;
+}
+/* every part of a report is a block unless its own class says otherwise */
+:where(.doc) span {
+  display: block;
+}
+.tri {
+  display: inline-block;
+  width: 0.78em;
+  height: 0.78em;
+  fill: currentColor;
+}
+.check {
+  width: 9px;
+  height: 9px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 1. Ads agency: a dashboard card */
+.ads {
+  padding: 13px 15px 0;
+}
+.adsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.adsTitle {
+  font-size: 11.5px;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+}
+.adsRange {
+  padding: 2px 6px;
+  border: 1px solid #d6dae1;
+  border-radius: 3px;
+  color: #4b5260;
+  font-size: 8.5px;
+  font-weight: 500;
+}
+.adsSub {
+  margin-top: 2px;
+  color: #5d6470;
+  font-size: 8.5px;
+}
+.adsBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 118px;
+  column-gap: 12px;
+  margin-top: 12px;
+}
+.adsHero {
+  padding-top: 7px;
+  border-top: 2px solid var(--ads);
+}
+.adsLabel {
+  color: var(--ads);
+  font-size: 9px;
+  font-weight: 600;
+}
+.adsNumRow {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-top: 4px;
+}
+.adsNum {
+  font-size: 38px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+}
+.adsDelta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #137a3e;
+  font-size: 9px;
+  font-weight: 600;
+}
+.adsKpis {
+  display: grid;
+  align-content: start;
+  row-gap: 6px;
+  padding-top: 9px;
+  border-top: 2px solid #e4e7ec;
+}
+.adsKpi {
+  display: flex;
+  justify-content: space-between;
+  color: #5d6470;
+  font-size: 8.5px;
+}
+.adsKpi b {
+  color: #17181b;
+}
+.adsChart {
+  position: absolute;
+  left: 15px;
+  bottom: 24px;
+  width: 286px;
+  height: 40px;
+}
+.adsChart rect {
+  fill: var(--ads);
+}
+.adsChart line {
+  stroke: #d6dae1;
+}
+.adsAxis {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  bottom: 9px;
+  display: flex;
+  justify-content: space-between;
+  color: #5d6470;
+  font-size: 7.5px;
+}
+.adsNote {
+  left: 15px;
+  top: 119px;
+}
+
+/* 2. SEO agency: the cover of a PDF */
+.seo {
+  padding: 15px 18px;
+  background: #fdfdfa;
+}
+.seoTop {
+  display: flex;
+  justify-content: space-between;
+  color: #4f5a55;
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.seoTitle {
+  margin-top: 40px;
+  color: #0f241c;
+  font-size: 33px;
+  font-weight: 820;
+  font-stretch: 75%;
+  line-height: 0.9;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+.seoMonth {
+  margin-top: 8px;
+  color: #33403a;
+  font-size: 12px;
+}
+.seoLabel {
+  margin-top: 32px;
+  color: var(--seo);
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.seoNumRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+  margin-top: 9px;
+  color: var(--seo);
+}
+.seoNum {
+  font-size: 68px;
+  font-weight: 820;
+  font-stretch: 75%;
+  line-height: 0.84;
+  letter-spacing: -0.01em;
+}
+.seoUp {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+}
+.seoDetail {
+  margin-top: 9px;
+  max-width: 150px;
+  color: #3c4642;
+  font-size: 9px;
+}
+.seoFoot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 32px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--seo);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+.seoNote {
+  left: 126px;
+  top: 171px;
+}
+
+/* 3. Brand studio: an audit, wide and light */
+.brand {
+  padding: 18px;
+  background: #f4f0e7;
+  color: #1d1b17;
+}
+.brandHead {
+  font-size: 10.5px;
+  font-weight: 300;
+  font-stretch: 125%;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+.brandSub {
+  margin-top: 4px;
+  color: #615b50;
+  font-size: 8px;
+  letter-spacing: 0.02em;
+}
+.brandNumRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+  margin-top: 26px;
+}
+.brandNum {
+  font-size: 70px;
+  font-weight: 200;
+  font-stretch: 125%;
+  line-height: 0.84;
+  letter-spacing: -0.045em;
+}
+.brandUp {
+  margin-top: 2px;
+  font-size: 16px;
+  font-weight: 300;
+}
+.brandLabel {
+  margin-top: 8px;
+  font-size: 10px;
+  font-weight: 300;
+}
+.brandSwatches {
+  display: flex;
+  gap: 4px;
+  margin-top: 30px;
+}
+.brandSwatches i {
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgb(29 27 23 / 0.14);
+  background: var(--c);
+}
+.brandList {
+  margin-top: 14px;
+  border-top: 1px solid #d5cdbd;
+}
+.brandRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 17px;
+  border-bottom: 1px solid #d5cdbd;
+  font-size: 8.5px;
+}
+.brandFoot {
+  position: absolute;
+  left: 18px;
+  bottom: 13px;
+  color: #615b50;
+  font-size: 7.5px;
+}
+.brandNote {
+  left: 18px;
+  top: 158px;
+}
+
+/* 4. Social team: a square snapshot */
+.social {
+  padding: 15px 16px;
+}
+.socialTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.socialTitle {
+  font-size: 12px;
+  font-weight: 720;
+  letter-spacing: -0.015em;
+}
+.socialChip {
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: #eee9fd;
+  color: #4a30bd;
+  font-size: 8px;
+  font-weight: 600;
+}
+.socialSub {
+  margin-top: 3px;
+  color: #615d72;
+  font-size: 8.5px;
+}
+.socialLabel {
+  margin-top: 15px;
+  color: #4a30bd;
+  font-size: 9px;
+  font-weight: 600;
+}
+.socialNumRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 7px;
+}
+.socialNumWrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  color: var(--social);
+}
+.socialNum {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+}
+.socialUp {
+  font-size: 16px;
+  font-weight: 800;
+}
+.socialBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 42px;
+}
+.socialBars i {
+  width: 9px;
+  height: calc(var(--v) * 100%);
+  border-radius: 2px 2px 0 0;
+  background: #d9d0fb;
+}
+.socialBars i:last-child {
+  background: var(--social);
+}
+.socialStats {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 13px;
+  display: flex;
+  gap: 12px;
+  padding-top: 9px;
+  border-top: 1px solid #ebe8f2;
+  color: #615d72;
+  font-size: 8px;
+}
+.socialStats b {
+  color: #17181b;
+  font-weight: 700;
+}
+.socialNote {
+  left: 16px;
+  top: 126px;
+}
+
+/* 5. PR firm: a coverage summary with clippings */
+.pr {
+  padding: 18px 20px;
+}
+.prHead {
+  color: var(--pr);
+  font-size: 11px;
+  font-weight: 640;
+  font-stretch: 112%;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+.prSub {
+  margin-top: 3px;
+  color: #565d76;
+  font-size: 8.5px;
+}
+.prRule {
+  height: 2px;
+  margin-top: 11px;
+  background: var(--pr);
+}
+.prNumRow {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 14px;
+  color: var(--pr);
+}
+.prNum {
+  font-size: 50px;
+  font-weight: 520;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+.prUnit {
+  font-size: 13px;
+  font-weight: 560;
+}
+.prReach {
+  margin-top: 6px;
+  color: #424a62;
+  font-size: 9px;
+}
+.prClips {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 16px;
+}
+.clip {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid #e0d9c9;
+  background: #f3efe5;
+}
+.clipHead {
+  fill: #2b2a27;
+}
+.clipPic {
+  fill: #c9c1b0;
+}
+.clipText {
+  fill: #b5ae9f;
+}
+.prMix {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  color: #2f3650;
+  font-size: 8.5px;
+}
+.prFoot {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 13px;
+  display: flex;
+  justify-content: space-between;
+  color: #565d76;
+  font-size: 7.5px;
+}
+.prNote {
+  left: 150px;
+  top: 64px;
+}
+
+/* 6. Web team: a site health card */
+.site {
+  padding: 14px 16px;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+}
+.siteTop {
+  display: flex;
+  justify-content: space-between;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.siteSub {
+  margin-top: 3px;
+  color: #5a5f66;
+  font-size: 8px;
+}
+.siteGauge {
+  display: block;
+  width: 92px;
+  height: 92px;
+  margin-top: 16px;
+  font-size: 30px;
+}
+.siteRing {
+  position: absolute;
+  inset: 0;
+  fill: none;
+}
+.siteTrack {
+  stroke: #e3f2e8;
+  stroke-width: 7;
+}
+.siteArc {
+  stroke: var(--site);
+  stroke-width: 7;
+}
+.siteNum {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--site);
+  font-family: var(--font-mona), system-ui, sans-serif;
+  font-size: 32px;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+.siteLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 11px;
+  font-size: 9px;
+  font-weight: 700;
+}
+.siteUp {
+  color: var(--site);
+  font-size: 8.5px;
+}
+.siteRows {
+  margin-top: 7px;
+  border-top: 1px solid #e3e5e8;
+}
+.siteRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 17px;
+  border-bottom: 1px solid #e3e5e8;
+  font-size: 8.5px;
+}
+.siteRow i {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--site);
+}
+.siteNote {
+  left: 122px;
+  top: 64px;
+  max-width: 5.5em;
+}
+
+/* 7. Creator agency: a recap slide, printed */
+.creator {
+  padding: 13px 18px;
+}
+.crTitle {
+  font-size: 14px;
+  font-weight: 820;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+}
+.crNumRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
+  margin-top: 16px;
+}
+.crNum {
+  isolation: isolate;
+  font-size: 54px;
+  font-weight: 860;
+  font-stretch: 125%;
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+}
+.crHi {
+  position: absolute;
+  z-index: -1;
+  left: -3px;
+  right: -5px;
+  bottom: -3px;
+  height: 52%;
+  background: var(--hi);
+  rotate: -1.2deg;
+}
+.crUp {
+  font-size: 18px;
+  font-weight: 820;
+}
+.crLabel {
+  margin-top: 7px;
+  font-size: 10px;
+  font-weight: 640;
+}
+.crMeta {
+  margin-top: 3px;
+  color: #4f4f4f;
+  font-size: 8.5px;
+}
+.crFoot {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  color: #5c5c5c;
+  font-size: 7.5px;
+}
+.crNote {
+  left: 186px;
+  top: 46px;
+  max-width: 6.5em;
+}
+
+/* 8. Writers: a strip of the content spreadsheet */
+.sheet {
+  color: #202124;
+  font-size: 8px;
+}
+.shBar {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  height: 24px;
+  padding: 7px 11px 0;
+  border-bottom: 1px solid var(--grid);
+}
+.shTitle {
+  font-size: 10px;
+  font-weight: 600;
+}
+.shRole {
+  color: #5f6368;
+  font-size: 8px;
+}
+.shBody {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+}
+.shGrid {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) 54px 34px;
+  grid-auto-rows: 15px;
+  border-left: 1px solid var(--grid);
+}
+.shGrid > span {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0 4px;
+  border-right: 1px solid var(--grid);
+  border-bottom: 1px solid var(--grid);
+  white-space: nowrap;
+}
+.shGrid > span:nth-child(4n) {
+  border-right: 0;
+}
+.shGrid > :is(.shCorner, .shCol, .shRowNum) {
+  justify-content: center;
+  background: #f1f3f4;
+  color: #5f6368;
+  font-size: 7px;
+}
+.shGrid > .shRowNum {
+  padding: 0;
+}
+.shHead {
+  font-weight: 600;
+}
+.shNum {
+  justify-content: flex-end;
+}
+.shChip {
+  padding: 1px 5px;
+  border-radius: 7px;
+  background: #e6f4ea;
+  color: #137333;
+  font-size: 7px;
+  font-weight: 500;
+}
+.shSum {
+  padding: 9px 11px 0;
+}
+.shSumLabel {
+  color: #5f6368;
+  font-size: 8px;
+}
+.shSumRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  margin-top: 3px;
+}
+.shSumNum {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+.shUp {
+  color: #137333;
+  font-size: 13px;
+  font-weight: 700;
+}
+.shSumSub {
+  margin-top: 4px;
+  color: #5f6368;
+  font-size: 7.5px;
+}
+.shTabs {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 20px;
+  display: flex;
+  align-items: stretch;
+  padding-left: 120px;
+  border-top: 1px solid var(--grid);
+  background: #f8f9fa;
+}
+.shTab {
+  display: flex;
+  align-items: center;
+  padding: 0 11px;
+  color: #5f6368;
+  font-size: 8px;
+}
+.shTab[data-on] {
+  background: #fff;
+  color: #137333;
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 #137333;
+}
+.shNote {
+  left: 11px;
+  top: 104px;
+  max-width: 6.2em;
+}
+
+/* 9. Video studio: a dark analytics screen, printed */
+.video {
+  --pen: var(--color-signal);
+  padding: 13px 16px;
+  border-color: #1c1d21;
+  background: #1c1d21;
+  color: #f2f2f3;
+}
+.vdTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.vdTitle {
+  font-size: 11.5px;
+  font-weight: 620;
+}
+.vdRange,
+.vdSub,
+.vdLabel {
+  color: #a8abb3;
+  font-size: 8px;
+}
+.vdSub {
+  margin-top: 2px;
+}
+.vdTabs {
+  display: flex;
+  gap: 14px;
+  margin-top: 10px;
+  border-bottom: 1px solid #34363c;
+  color: #a8abb3;
+  font-size: 8.5px;
+}
+.vdTab {
+  padding-bottom: 5px;
+}
+.vdTab[data-on] {
+  color: #fff;
+  box-shadow: inset 0 -2px 0 #fff;
+}
+.vdLabel {
+  margin-top: 10px;
+}
+.vdNumRow {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-top: 2px;
+}
+.vdNum {
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+}
+.vdUp {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #7ddca0;
+  font-size: 9px;
+  font-weight: 600;
+}
+.vdChart {
+  position: absolute;
+  left: 16px;
+  bottom: 30px;
+  width: 252px;
+  height: 40px;
+}
+.vdArea {
+  fill: rgb(76 200 216 / 0.22);
+}
+.vdLine {
+  fill: none;
+  stroke: var(--video);
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+}
+.vdStats {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 11px;
+  display: flex;
+  gap: 16px;
+  color: #a8abb3;
+  font-size: 8px;
+}
+.vdStats b {
+  color: #f2f2f3;
+}
+.vdNote {
+  left: 168px;
+  top: 74px;
+  max-width: 6.5em;
+}
+
+/* 10. Analytics partner: a page of the monthly report */
+.analytics {
+  padding: 18px;
+}
+.anTitle {
+  font-size: 13px;
+  font-weight: 640;
+  letter-spacing: -0.012em;
+}
+.anSub {
+  margin-top: 3px;
+  color: #5b6166;
+  font-size: 8.5px;
+}
+.anRule {
+  height: 1px;
+  margin-top: 12px;
+  background: #e2e4e7;
+}
+.anLabel {
+  margin-top: 12px;
+  color: var(--an);
+  font-size: 9px;
+  font-weight: 600;
+}
+.anNumRow {
+  margin-top: 3px;
+}
+.anNum {
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+.anUp {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 5px;
+  color: var(--an);
+  font-size: 8.5px;
+  font-weight: 600;
+}
+.anChart {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  margin-top: 12px;
+}
+.anChart svg {
+  flex: none;
+  width: 200px;
+  height: 64px;
+  overflow: visible;
+}
+.anYAxis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 14px;
+  padding: 7px 0 9px;
+  color: #5b6166;
+  font-size: 7px;
+  text-align: right;
+}
+.anGrid {
+  stroke: #eceef0;
+}
+.anPrev {
+  fill: none;
+  stroke: #9aa0a6;
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+.anNow {
+  fill: none;
+  stroke: var(--an);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+.anAxis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3px;
+  padding-left: 18px;
+  color: #5b6166;
+  font-size: 7px;
+}
+.anTable {
+  margin-top: 12px;
+}
+.anRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 15px;
+  border-bottom: 1px solid #eceef0;
+  font-size: 8.5px;
+}
+.anRow:first-child {
+  color: #5b6166;
+  font-size: 7px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.anFoot {
+  position: absolute;
+  right: 18px;
+  bottom: 12px;
+  color: #5b6166;
+  font-size: 7.5px;
+}
+.anNote {
+  left: 112px;
+  top: 92px;
+  max-width: 8em;
+}

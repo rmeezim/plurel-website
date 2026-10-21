@@ -3,69 +3,44 @@
 import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from "react";
 import {
   ANSWER,
+  BOOKING,
   CHANNEL,
   CREATOR,
   FILM,
-  MOSAIC_PHONE,
-  MOSAIC_WIDE,
   OOH,
-  PHONE_SEARCH,
   PRESS,
   REEL,
   SEARCH,
-  mosaicKeys,
-  mosaicLinear,
   type Channel,
   type ChannelClip,
-  type ChannelClips,
   type ChannelKey,
-  type MosaicNode,
 } from "@/lib/channels";
 import s from "./channel-tiles.module.css";
 
 /*
-  The channel tiles: Halden's one story cut into seven formats, each drawn
-  in DOM and SVG as a screen recording that plays (copy in lib/channels.ts).
-  The Attention Field shows them in its STORY stage.
+  The channel tiles: Halden's one story on the eight screens one buyer
+  meets it on in a week, each drawn in DOM and SVG as a screen recording
+  that plays (copy in lib/channels.ts). The attention section
+  (attention-field.tsx) shows them one by one, large, down its week.
 
-  Two layouts, one set of tiles (each tile is about a hundred nodes, so
-  they are never rendered twice)
-  - Static, the default (no JS, reduced motion, short screens): the tiles
-    are composed as one mosaic (MOSAIC_WIDE in lib/channels.ts), every
-    edge shared, by flexbox alone. A row gives each child a share of its
-    width (--p) plus a fixed part (--q gutters), which is exactly the cut
-    mosaicLayout computes; each cell keeps its tile's aspect and scales the
-    tile to its width (a container query). On upright tablets (40 to 64rem)
-    the wrappers step aside and the cells wrap, the full width, into three
-    bands (TALL_CELL: each cell's order, share and aspect). Under 40rem only
-    the phone mosaic's four (MOSAIC_PHONE) stay: the answer, the reel beside
-    the film, the search (reflowed to PHONE_SEARCH's page), stacked at the
-    full width.
-  - Pinned (the field's AF_PIN_QUERY with JS, mirrored in the CSS module):
-    the wrappers step aside (display: contents) and every tile sits at the
-    field's top left with transform-origin 0 0, hidden, for the engine to
-    place (style.transform = translate + scale), show and stack.
+  <ChannelTile k="..."> renders one recording on its own. It is laid out at
+  a nominal size (`size`, CSS px; CHANNELS w x h by default, and `narrow`
+  under 40rem, where a phone needs its text at 11px or more) and scaled to
+  the width of its box, keeping that aspect: the pages reflow to the
+  nominal size (a narrow search drops its window chrome and pointer, a
+  short answer its app bar), the pictures crop (the billboard's street
+  keeps the poster in frame).
 
-  Contract with the field engine
-  - Each tile is `[data-af-tile="<key>"]` at its nominal size (CHANNELS:
-    w x h CSS px, true aspect).
-  - A tile plays only while it has `data-play`. Without it every CSS
-    animation in it is paused and its script stops, so it holds its frame.
-    Before its first play it holds the frame at CHANNELS start, which is
-    never blank. Its picture's ambient loops (grain, light leak, camera
-    moves, flicker) run only with `data-fx` as well, which the field sets
-    on tiles shown near full size, so small tiles cost little.
-  - A tile may be given another size (style.width / style.height, nominal
-    px) when the mosaic flexes its aspect (CHANNELS flex) or a phone
-    reflows it: the pages reflow (a phone's search drops its window
-    chrome, a short answer its app bar), the billboard's street crops.
-  - `[data-af-note]` is the one line under the mosaic saying Halden is a
-    sample; pinned, the field places it.
-  - `data-still` on the wrapper (or on a tile) shows the designed still
-    frame instead: the most telling moment, finished. Reduced motion and
-    no JS get the same still frames on their own.
-  - The tiles are decoration (aria-hidden, nothing focusable); the field's
-    own text describes them.
+  Its contract
+  - The recording plays only while it has `data-play`, which the tile sets
+    itself while at least a sliver of it is on screen (and not behind the
+    open mobile menu), the tab is visible and motion is allowed. Without it every CSS animation in it is paused
+    and its script stops, so it holds its frame. Before its first play it
+    holds the frame at CHANNELS start, which is never blank.
+  - Reduced motion and no JS get the designed still frame: the most
+    telling moment, finished.
+  - The tile is decoration (aria-hidden, nothing focusable); the section's
+    own text says what each one shows.
 
   How a tile keeps time: each has a hidden clock, a compositor-only CSS
   animation one loop long (CHANNELS loop, started at CHANNELS start). Its
@@ -168,6 +143,11 @@ const AT_PRESS = { in: 0.02, s1: 2.4, s2: 5.4, s3: 8.6, out: CHANNEL.press.loop 
 const AT_FILM = { in: 0.02, out: CHANNEL.film.loop - 0.28 };
 const AT_CREATOR = { out: CHANNEL.creator.loop - 0.45 };
 const AT_REEL_OUT = REEL.captionsEnd;
+/**
+ * The booking email: it lands at the top of her inbox, she taps it, it
+ * opens, she reads down to the button and adds the survey to her calendar
+ */
+const AT_BOOK = { arrive: 0.55, tap: 1.7, open: 2, scroll: 5.1, press: 8, toast: 8.3, untoast: 11.4, out: CHANNEL.book.loop - 0.45 };
 
 /* ---------- scripts: the timed beats, read off each tile's clock ---------- */
 
@@ -393,6 +373,29 @@ const SCRIPTS: Partial<Record<ChannelKey, (el: HTMLElement) => Frame>> = {
       meter(v.toFixed(1));
     };
   },
+
+  book(el) {
+    const ph = phaser(el);
+    return (t) => {
+      if (t === null) {
+        ph(null);
+        return;
+      }
+      const B = AT_BOOK;
+      ph(
+        flags(t, [
+          ["in", 0.02],
+          ["arrive", B.arrive],
+          ["tap", B.tap, B.open + 0.25],
+          ["open", B.open],
+          ["scroll", B.scroll],
+          ["press", B.press, B.toast + 0.15],
+          ["toast", B.toast, B.untoast],
+          ["out", B.out],
+        ]),
+      );
+    };
+  },
 };
 
 /* ---------- the runtime: one loop for every playing tile ---------- */
@@ -411,8 +414,8 @@ type Item = {
 };
 
 function mountTiles(root: HTMLElement) {
-  const items: Item[] = [...root.querySelectorAll<HTMLElement>("[data-af-tile]")].map((el) => {
-    const c = CHANNEL[el.dataset.afTile as ChannelKey];
+  const items: Item[] = [...root.querySelectorAll<HTMLElement>("[data-tile]")].map((el) => {
+    const c = CHANNEL[el.dataset.tile as ChannelKey];
     const screen = el.dataset.clip === "screen";
     return {
       el,
@@ -472,7 +475,7 @@ function mountTiles(root: HTMLElement) {
   };
 
   const mo = new MutationObserver(kick);
-  mo.observe(root, { subtree: true, attributes: true, attributeFilter: ["data-play", "data-still"] });
+  mo.observe(root, { subtree: true, attributes: true, attributeFilter: ["data-play"] });
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   reduce.addEventListener("change", kick);
   document.addEventListener("visibilitychange", kick);
@@ -487,162 +490,85 @@ function mountTiles(root: HTMLElement) {
 
 /* ---------- the component ---------- */
 
-export function ChannelTiles({
-  clips = {},
-  still = false,
-  note,
+/** Nominal size of a tile, in CSS px */
+type Size = { w: number; h: number };
+
+/**
+ * One recording on its own, scaled to the width of its box. Its nominal
+ * size is `size` (CHANNELS w x h by default), and `narrow` under 40rem;
+ * the box takes that aspect. It plays while on screen (see the contract
+ * above) and is decoration: describe it in the page's own text.
+ */
+export function ChannelTile({
+  k,
+  clip,
+  size,
+  narrow,
   className = "",
 }: {
-  /** Real footage per tile, from channelClips() in lib/clips.ts (server) */
-  clips?: ChannelClips;
-  /** Show every tile's still frame (the field sets data-still itself when it needs to) */
-  still?: boolean;
-  /** One quiet line under the mosaic */
-  note?: ReactNode;
+  k: ChannelKey;
+  /** Real footage for it, from channelClips() in lib/clips.ts (server) */
+  clip?: ChannelClip;
+  size?: Size;
+  narrow?: Size;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const c = CHANNEL[k];
+  const at = size ?? c;
+  const n = narrow ?? at;
+
   useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    return mountTiles(root);
+    const cell = ref.current;
+    const tile = cell?.querySelector<HTMLElement>("[data-tile]");
+    if (!cell || !tile) return;
+    const stop = mountTiles(cell);
+    if (typeof IntersectionObserver === "undefined") return stop;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // data saver holds the frame too (the runtime already keeps footage off)
+    const save = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+    let seen = false;
+    // the page behind the open mobile menu is inert, and counts as off screen
+    const apply = () =>
+      tile.toggleAttribute("data-play", seen && !cell.closest("[inert]") && !reduce.matches && !save);
+    // a sliver on screen is enough; the hidden tab is the runtime's to handle
+    const io = new IntersectionObserver(
+      ([e]) => {
+        seen = e.isIntersecting;
+        apply();
+      },
+      { rootMargin: "-6% 0px" },
+    );
+    io.observe(cell);
+    const page = cell.closest("#main") ?? cell.closest("main");
+    const menu = new MutationObserver(apply);
+    if (page) menu.observe(page, { attributes: true, attributeFilter: ["inert"] });
+    reduce.addEventListener("change", apply);
+    return () => {
+      io.disconnect();
+      menu.disconnect();
+      reduce.removeEventListener("change", apply);
+      stop();
+    };
   }, []);
 
+  const style: Css = { "--nw": at.w, "--nh": at.h, "--nw-n": n.w, "--nh-n": n.h };
   return (
-    <div
-      ref={ref}
-      className={`${s.root} ${className}`}
-      data-af-tiles=""
-      data-still={still ? "" : undefined}
-      aria-hidden="true"
-    >
-      <Node n={MOSAIC_WIDE} clips={clips} top />
-      {note ? (
-        <p className={s.note} data-af-note="">
-          {note}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-const fix = (v: number) => Number(v.toFixed(6));
-/** The tiles a phone shows */
-const ON_PHONE = new Set(mosaicKeys(MOSAIC_PHONE));
-
-/**
- * Each cell on a phone (static): its place in the flow (--po) and its
- * share of the line (--ps, plus --pq gutters): a whole line for a tile of
- * the column, a row's linear share for the tiles that sit side by side
- */
-const PHONE_CELL: Partial<Record<ChannelKey, Css>> = (() => {
-  const out: Partial<Record<ChannelKey, Css>> = {};
-  let o = 0;
-  const walk = (n: MosaicNode) => {
-    if (typeof n === "string") {
-      out[n] = { "--po": o++, "--ps": 1, "--pq": 0 };
-    } else if ("row" in n) {
-      const sh = shares(n.row);
-      n.row.forEach((k, i) => {
-        if (typeof k === "string") out[k] = { "--po": o++, "--ps": sh[i].p, "--pq": sh[i].q };
-        else walk(k);
-      });
-    } else n.col.forEach(walk);
-  };
-  walk(MOSAIC_PHONE);
-  return out;
-})();
-
-/** A row's shares (--p, --q) for `kids`, from the linear model */
-function shares(kids: readonly MosaicNode[]) {
-  const lins = kids.map((k) => mosaicLinear(k));
-  const sa = lins.reduce((t, k) => t + k.a, 0);
-  const sb = lins.reduce((t, k) => t + k.bg, 0) + kids.length - 1;
-  return lins.map((l) => ({ p: fix(l.a / sa), q: fix(l.bg - (l.a * sb) / sa) }));
-}
-
-/**
- * Each cell on an upright tablet (static): three bands, ordered and flexed
- * so that no cut in a band falls within three gutters of a cut in the band
- * next to it, at any width from 40 to 64rem (as fractions of the width,
- * nominal aspects put several cuts within a percent or two of each other,
- * which reads as a mistake): the reel leads the first band and the article
- * takes its narrowest page. Each cell's place in the flow (--o), its share
- * of its band (--tp, plus --tq gutters), its aspect (--art) and its tile's
- * nominal height at that aspect (--tht).
- */
-const TALL_BANDS: readonly (readonly ChannelKey[])[] = [
-  ["reel", "answer", "creator"],
-  ["search", "press"],
-  ["film", "ooh"],
-];
-const TALL_CELL: Partial<Record<ChannelKey, Css>> = (() => {
-  const ar = (k: ChannelKey) => (k === "press" ? (CHANNEL.press.flex?.[0] ?? CHANNEL.press.aspect) : CHANNEL[k].aspect);
-  const out: Partial<Record<ChannelKey, Css>> = {};
-  let o = 0;
-  for (const keys of TALL_BANDS) {
-    const sum = keys.reduce((t, k) => t + ar(k), 0);
-    for (const k of keys) {
-      const a = ar(k);
-      out[k] = {
-        "--o": o++,
-        "--tp": fix(a / sum),
-        "--tq": fix((-(keys.length - 1) * a) / sum),
-        "--art": fix(a),
-        "--tht": `${fix(CHANNEL[k].w / a)}px`,
-      };
-    }
-  }
-  return out;
-})();
-
-/**
- * One node of the mosaic. A row hands each child its width as a share of
- * the row (--p) plus a number of gutters (--q, often negative), from the
- * same linear model mosaicLayout cuts with, so every child comes out the
- * row's height; a column stacks its children at its width. Each cell also
- * carries its tablet place (TALL_CELL) and whether a phone keeps it.
- */
-function Node({ n, clips, top = false }: { n: MosaicNode; clips: ChannelClips; top?: boolean }) {
-  if (typeof n === "string") {
-    const c = CHANNEL[n];
-    const style: Css = { "--ar": `${c.w} / ${c.h}`, ...TALL_CELL[n], ...PHONE_CELL[n] };
-    if (n === "search") {
-      style["--pw"] = `${PHONE_SEARCH.w}px`;
-      style["--ph"] = `${fix(PHONE_SEARCH.w / PHONE_SEARCH.still)}px`;
-      style["--par"] = PHONE_SEARCH.still;
-    }
-    return (
-      <div className={s.cell} style={style} data-k={n} data-phone={ON_PHONE.has(n) ? "" : undefined}>
-        <Tile c={c} clip={clips[n]} />
-      </div>
-    );
-  }
-  const row = "row" in n;
-  const kids = row ? n.row : n.col;
-  const all = shares(kids);
-  return (
-    <div className={`${row ? s.row : s.col} ${top ? s.top : ""}`}>
-      {kids.map((k, i) => (
-        <div key={i} className={s.slot} style={row ? ({ "--p": all[i].p, "--q": all[i].q } as Css) : undefined}>
-          <Node n={k} clips={clips} />
-        </div>
-      ))}
+    <div ref={ref} className={`${s.cell} ${className}`} style={style} aria-hidden="true">
+      <Tile c={c} clip={clip} />
     </div>
   );
 }
 
 function Tile({ c, clip }: { c: Channel; clip?: ChannelClip }) {
-  // its size as variables, so the static layouts and the field can resize it
+  // its nominal size comes from the cell (--tw, --th), so it can change by breakpoint
   const style: Css = {
-    "--tw": `${c.w}px`,
-    "--th": `${c.h}px`,
     "--loop": `${c.loop}s`,
     "--start": `${-c.start}s`,
   };
   const mode = clip ? c.clip : undefined;
   return (
-    <div className={`${s.tile} ${s[c.key] ?? ""}`} data-af-tile={c.key} data-clip={mode} style={style}>
+    <div className={`${s.tile} ${s[c.key] ?? ""}`} data-tile={c.key} data-clip={mode} style={style}>
       <i className={s.clock} data-clock="" />
       <Body k={c.key} clip={clip} />
       {mode === "screen" && clip ? <Clip clip={clip} className={s.screenClip} /> : null}
@@ -687,6 +613,8 @@ function Body({ k, clip }: { k: ChannelKey; clip?: ChannelClip }) {
       return <CreatorTile clip={clip} />;
     case "ooh":
       return <OohTile />;
+    case "book":
+      return <BookTile />;
   }
 }
 
@@ -725,6 +653,10 @@ const ICON = {
   back: "M15 5l-7 7 7 7",
   reload: "M19 12a7 7 0 1 1-2-4.9 M19 4.5v4h-4",
   dots: `${ring(12, 5.5, 0.6)} ${ring(12, 12, 0.6)} ${ring(12, 18.5, 0.6)}`,
+  archive: "M3.5 5h17v4h-17z M5 9v10.5h14V9 M10 13h4",
+  trash: "M4.5 6.5h15 M9.5 6.5V4h5v2.5 M6.5 6.5l1 13.5h9l1-13.5 M10.3 10v6.5 M13.7 10v6.5",
+  check: "M5 12.5l4.5 4.5L19 7.5",
+  calendar: "M4.5 6h15v14h-15z M4.5 10h15 M8.5 3.5v4 M15.5 3.5v4",
 } as const;
 
 function I({ n, fill = false, className = "" }: { n: keyof typeof ICON; fill?: boolean; className?: string }) {
@@ -1195,7 +1127,10 @@ function FilmTile({ clip }: { clip?: ChannelClip }) {
   return (
     <div className={s.filmApp}>
       <div className={s.filmTop}>
-        <span>{FILM.title}</span>
+        <span className={s.filmTitle}>
+          <span className={s.adChip}>Ad</span>
+          {FILM.title}
+        </span>
         <span className={s.hd}>4K</span>
       </div>
       <div className={s.pic}>
@@ -1636,5 +1571,127 @@ function Walker({ className }: { className: string }) {
         </svg>
       </span>
     </span>
+  );
+}
+
+/* ---------- 8. Booking email ---------- */
+
+function BookTile() {
+  return (
+    <div className={s.app}>
+      {/* her inbox, under the email until she opens it */}
+      <div className={s.bInbox}>
+        <div className={s.bNav}>
+          <span className={s.bLink}>
+            <I n="back" className={s.bBack} />
+            Mailboxes
+          </span>
+          <span className={s.bLink}>Edit</span>
+        </div>
+        <p className={s.bTitle}>{BOOKING.inbox}</p>
+        <div className={s.bList}>
+          <div className={s.bRows}>
+            <div className={`${s.bRow} ${s.bNew}`}>
+              <i className={s.bDot} />
+              <p className={s.bFrom}>
+                <b>{BOOKING.from}</b>
+                <small>{BOOKING.at}</small>
+              </p>
+              <p className={s.bSubj}>{BOOKING.subject}</p>
+              <p className={s.bPrev}>{BOOKING.preview}</p>
+              <i className={`${s.touch} ${s.touchRow}`} />
+            </div>
+            {BOOKING.rows.map((r) => (
+              <div key={r.from} className={s.bRow}>
+                <p className={s.bFrom}>
+                  <b>{r.from}</b>
+                  <small>{r.at}</small>
+                </p>
+                <p className={s.bSubj}>{r.subject}</p>
+                <p className={s.bPrev}>{r.preview}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={s.bFoot}>
+          <small>Updated just now</small>
+          <I n="compose" className={s.bCompose} />
+        </div>
+      </div>
+
+      {/* the email */}
+      <div className={s.bMail}>
+        <div className={s.bNav}>
+          <span className={s.bLink}>
+            <I n="back" className={s.bBack} />
+            {BOOKING.inbox}
+          </span>
+          <span className={s.bTools}>
+            <I n="archive" />
+            <I n="trash" />
+            <I n="more" />
+          </span>
+        </div>
+        <div className={s.bView}>
+          <div className={s.bPage}>
+            <div className={s.bSender}>
+              <span className={s.bAv}>
+                <HaldenMark />
+              </span>
+              <p>
+                <b>{BOOKING.from}</b>
+                <small>To: Maya</small>
+              </p>
+              <small className={s.bAt}>{BOOKING.at}</small>
+            </div>
+            <h4 className={s.bSubject}>{BOOKING.subject}</h4>
+            <div className={s.bMailBody}>
+              <p className={s.bBrand}>
+                <HaldenMark />
+                halden
+              </p>
+              <p className={s.bHello}>{BOOKING.hello}</p>
+              <dl className={s.bDl}>
+                <div>
+                  <dt>When</dt>
+                  <dd>
+                    <b>{BOOKING.date}</b>
+                    {BOOKING.time}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Where</dt>
+                  <dd>{BOOKING.address}</dd>
+                </div>
+                <div>
+                  <dt>Surveyor</dt>
+                  <dd className={s.bWho}>
+                    <span className={s.bPriya}>{BOOKING.surveyor[0]}</span>
+                    <span>
+                      <b>{BOOKING.surveyor}</b>
+                      {BOOKING.role}
+                    </span>
+                  </dd>
+                </div>
+              </dl>
+              <p className={s.bH}>{BOOKING.expectTitle}</p>
+              <p className={s.bP}>{BOOKING.expect}</p>
+              <span className={s.bBtn}>
+                <I n="calendar" />
+                {BOOKING.action}
+                <i className={`${s.touch} ${s.touchBtn}`} />
+              </span>
+              <p className={s.bSmall}>{BOOKING.change}</p>
+              <p className={s.bLegal}>Halden Heat · {BOOKING.email}</p>
+            </div>
+          </div>
+        </div>
+        <p className={s.bToast}>
+          <I n="check" />
+          {BOOKING.toast}
+        </p>
+      </div>
+      <i className={s.bFade} />
+    </div>
   );
 }

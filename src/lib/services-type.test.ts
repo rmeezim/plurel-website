@@ -5,21 +5,31 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
+  compose,
+  decompose,
   DESK,
+  drainTimes,
+  END,
   FACE_STEPS,
   faceAt,
+  flightAt,
   HOUSE,
+  lockWindow,
   PHONE,
+  PLATE,
+  plateMatrix,
   rowTimes,
   SERVICE_STAGE,
   setOrder,
   sizeAt,
+  stackGeometry,
   STAGES,
   T,
   textSize,
   TONE,
   toneAt,
   toOklab,
+  type Mat,
   type StageKey,
 } from "./services-type";
 
@@ -33,6 +43,18 @@ const SLUGS = [
   "creative-direction",
   "martech-consulting",
 ];
+const NAMES = [
+  "Website Design",
+  "Brand Identity",
+  "AI Search & SEO",
+  "Content Marketing",
+  "Paid Ads",
+  "PR & Reputation",
+  "Creative Direction",
+  "Martech & Consulting",
+];
+const stages = SLUGS.map((s) => SERVICE_STAGE[s] as StageKey);
+const order = setOrder(stages);
 
 test("every supplier ends exactly on the house style", () => {
   for (const table of [DESK, PHONE]) {
@@ -121,9 +143,19 @@ test("the quiet voices keep their floors", () => {
   }
 });
 
-test("names are set in chain order, stage by stage", () => {
-  const stages = SLUGS.map((s) => SERVICE_STAGE[s] as StageKey);
-  const order = setOrder(stages);
+test("the first two beats keep the timing they were drawn for", () => {
+  // the pin grew by 40svh on desktop (110 -> 150) for the stacking: the
+  // timeline is in units of the old pin, so every beat before it is untouched
+  assert.equal(END, 150 / 110);
+  assert.deepEqual(T.rule, { at: 0.155, step: 0.016, len: 0.14 });
+  assert.deepEqual(T.gy, { at: 0.165, step: 0.007, len: 0.13 });
+  assert.deepEqual(T.gx, { at: 0.29, step: 0.007, len: 0.11 });
+  assert.deepEqual(T.chain, { at: 0.35, len: 0.1 });
+  assert.deepEqual(T.face, { at: 0.485, step: 0.07, inner: 0.012, len: 0.1 });
+  assert.deepEqual([...T.cap], [0.35, 0.53]);
+});
+
+test("names are set in chain order, stage by stage, then drain layer by layer", () => {
   assert.deepEqual(order, [[1, 6], [0, 3], [2, 4, 5], [7]]);
   const times = rowTimes(order);
   for (let s = 1; s < order.length; s++) {
@@ -131,9 +163,97 @@ test("names are set in chain order, stage by stage", () => {
     const next = Math.min(...order[s].map((i) => times[i].face));
     assert.ok(next > prev, `${STAGES[s].name} starts after ${STAGES[s - 1].name}`);
   }
-  // everything is set and revealed before the rows take the pointer
-  for (const t of times) {
-    assert.ok(t.face + T.face.len <= T.settled);
-    assert.ok(t.meta + T.meta.len <= T.settled);
+  // every name is set before the first layer leaves
+  const lastSet = Math.max(...times.map((t) => t.face + T.face.len));
+  const drains = drainTimes(order);
+  assert.ok(Math.min(...drains.map((d) => d.leave)) > lastSet + 0.03, "the set menu holds a moment");
+  // foundation first, each layer locking after the one below it, its names
+  // landing together as it locks
+  for (let s = 0; s < order.length; s++) {
+    const rows = order[s].map((i) => drains[i]);
+    assert.ok(rows.every((d) => d.layer === s && d.land === lockWindow(s)[1] && d.leave < d.land));
+    if (s > 0) assert.ok(lockWindow(s)[1] > lockWindow(s - 1)[1]);
+  }
+  // all of it, and the list's rise, before the figure takes the pointer, and
+  // the pin rests a while after
+  assert.ok(Math.max(...drains.map((d) => d.land)) <= T.list.at + T.list.len);
+  assert.ok(T.list.at + 3 * T.list.step + T.list.len <= T.settled);
+  assert.ok(T.chainOut.at + T.chainOut.len <= T.settled);
+  assert.ok(END - T.settled >= 0.08, "a rest at the end of the pin");
+});
+
+test("a matrix decomposes into the plate's turn and foreshortening", () => {
+  const m = plateMatrix();
+  const d = decompose(m);
+  assert.ok(Math.abs(d.s - 1) < 1e-9);
+  assert.ok(Math.abs(d.phi - (PLATE.phi * Math.PI) / 180) < 1e-9);
+  assert.ok(Math.abs(d.k - PLATE.k) < 1e-9);
+  const c = compose(1.7, -0.4, 0.6, 12, -3);
+  const e = decompose(c);
+  const back = compose(e.s, e.phi, e.k, c[4], c[5]);
+  c.forEach((v, i) => assert.ok(Math.abs(v - back[i]) < 1e-9));
+});
+
+test("a flight starts flat on its row and lands exactly on its plate", () => {
+  const to: Mat = [0.42, -0.12, 0.24, 0.21, 980, 610];
+  const start = flightAt(0, 392, 270, to);
+  [1, 0, 0, 1, 392, 270].forEach((v, i) => assert.ok(Math.abs(start[i] - v) < 1e-12, `start ${i}: ${start[i]}`));
+  assert.deepEqual([...flightAt(1, 392, 270, to)], [...to]);
+  // just before landing it is already all but there
+  const near = flightAt(0.999, 392, 270, to);
+  near.forEach((v, i) => assert.ok(Math.abs(v - to[i]) < 0.02 * Math.max(1, Math.abs(to[i])), `component ${i}`));
+  // out of the menu first: the corner has gone most of the way right
+  // before it has come halfway down
+  const mid = flightAt(0.5, 0, 0, [1, 0, 0, 1, 100, 100]);
+  assert.ok(mid[4] > 80 && mid[5] < 30, `mid-flight at ${mid[4].toFixed(1)}, ${mid[5].toFixed(1)}`);
+});
+
+test("the stack: four plates, foundation at the bottom, names on the strip nobody covers", () => {
+  const geo = stackGeometry(
+    STAGES.map((s) => ({ key: s.key, names: stages.flatMap((k, i) => (k === s.key ? [{ i, text: NAMES[i] }] : [])) })),
+  );
+  assert.equal(geo.plates.length, 4);
+  assert.deepEqual(
+    geo.plates.map((p) => p.key),
+    STAGES.map((s) => s.key),
+  );
+  // the foundation is drawn first and sits lowest; each plate the same gap above the last
+  for (let i = 1; i < 4; i++) {
+    const dy = geo.plates[i - 1].face[0][1] - geo.plates[i].face[0][1];
+    assert.ok(Math.abs(dy - PLATE.gap) < 0.02, `gap ${i}: ${dy}`);
+  }
+  // everything inside the viewBox, the lift included
+  for (const p of geo.plates) {
+    for (const [x, y] of [...p.face, ...p.sideL, ...p.sideR, ...p.lip]) {
+      assert.ok(x >= 0 && x <= geo.w && y - PLATE.lift >= 0 && y <= geo.h, `${p.key} ${x},${y}`);
+    }
+  }
+  // every service on its layer's plate, once
+  const all = geo.plates.flatMap((p) => p.names.map((n) => n.i)).sort();
+  assert.deepEqual(all, [0, 1, 2, 3, 4, 5, 6, 7]);
+  // each name's baseline lies on its plate, in the front strip the plate
+  // above never covers (depth gap cos(phi) / k from the front edge), with
+  // room for the capitals above it
+  const [a, b, c, d] = plateMatrix();
+  const det = a * d - b * c;
+  const strip = (PLATE.gap * Math.cos((PLATE.phi * Math.PI) / 180)) / PLATE.k;
+  for (const p of geo.plates) {
+    const [ox, oy] = p.face[0];
+    for (const n of p.names) {
+      const x = n.m[4] - ox;
+      const y = n.m[5] - oy;
+      const u = (d * x - c * y) / det;
+      const v = (-b * x + a * y) / det;
+      assert.ok(u >= PLATE.pad - 0.5 && u <= PLATE.W, `${n.text}: u ${u}`);
+      assert.ok(v <= PLATE.D && v - 0.75 * 28 >= PLATE.D - strip, `${n.text}: v ${v}`);
+    }
+  }
+});
+
+test("the layer lines are plain: one line each, no dashes", () => {
+  for (const s of STAGES) {
+    assert.ok(s.line.length <= 80, s.name);
+    assert.ok(!/[–—]/.test(s.line), s.name);
+    assert.ok(!/inquir|pipeline/i.test(s.line), s.name);
   }
 });

@@ -1,426 +1,344 @@
 /*
-  The Attention Field (attention-field.tsx; engine in lib/attention-field.ts).
+  The attention section (attention-field.tsx) and its narrator
+  (attention-week.tsx): one buyer's week, on paper.
 
-  Static by default: the channel tiles as one mosaic of still frames
-  (their layout is in channel-tiles.module.css), then the five stages as a
-  list beside one still frame of the whole system, then the link to the
-  method. The block at the foot
-  pins it (a 615svh track with a sticky stage; the engine's T_LEN follows
-  its length) only with JS (html[data-js],
-  set before first paint) and AF_PIN_QUERY. Keep that media query
-  identical to AF_PIN_QUERY in lib/attention-field.ts.
-
-  Pinned, the stage is the full (lvh) screen so the field reaches the
-  floor when a mobile toolbar collapses, and the texts sit in the visible
-  (svh) part. The engine lays the composition
-  out in that svh box (the .steps height), places the tiles (whose
-  wrappers step aside) and the link with the final readout.
-
-  Never give .root or any ancestor overflow hidden/clip, or a transform:
-  either breaks sticky. The stage clips itself.
+  The default, finished without JS: the eight moments in order, each its
+  day and time (set large in the display face), its sentence and its
+  tile; above the tile on phones and tablets, beside it from 64rem. With
+  JS on a desktop at least 560px tall, the moments' own text steps aside
+  (still read by assistive tech) and the narrator, sticky and vertically
+  centred on columns 1 to 4, tells whichever moment holds the middle of
+  the screen. Nothing that contains the sticky block may clip.
 */
 
-.root {
-  --af-rule: color-mix(in srgb, var(--color-paper) 15%, transparent);
-  --af-fog-62: color-mix(in srgb, var(--color-fog) 70%, transparent);
-  --af-fog-78: color-mix(in srgb, var(--color-fog) 78%, transparent);
-  position: relative;
-  /* the global scroll-padding (the header's 4.5rem) is cancelled here, as
-     the services chapter does: a #distribution link lands with the pinned
-     stage flush at the top, not 72px short with the hero showing above */
-  scroll-margin-top: -4.5rem;
+/* ---------- the week ---------- */
+.week {
+  margin-top: 4.5rem;
 }
-
-.track {
-  position: relative;
+.list {
+  grid-column: 1 / -1;
+  min-width: 0;
 }
-
-/* ---------- static chapter (the default) ---------- */
-.stage {
-  position: relative;
-  margin-inline: auto;
-  max-width: 1440px;
-  padding: 96px 20px;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  row-gap: 40px;
-}
-@media (min-width: 40rem) {
-  .stage {
-    padding-inline: 32px;
-  }
-}
-/* the mosaic opens the chapter */
-.tiles {
-  order: -1;
-}
-@media (min-width: 64rem) {
-  .stage {
-    padding: 144px 48px;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: 32px;
-    row-gap: 56px;
-    align-items: start;
-  }
-  .tiles {
-    grid-column: 1 / -1;
-    grid-row: 1;
-  }
-  .steps {
-    grid-column: 1 / span 4;
-    grid-row: 2;
-  }
-  .fig {
-    grid-column: 5 / -1;
-    grid-row: 2 / span 2;
-  }
-  /* the link closes the list, level with the foot of the frame */
-  .end {
-    grid-column: 1 / span 4;
-    grid-row: 3;
-    align-self: end;
-  }
-}
-
-/* The figure: one still frame, sized by aspect */
-.fig {
-  position: relative;
-  aspect-ratio: 3 / 5;
-}
-@media (min-width: 30rem) {
-  .fig {
-    aspect-ratio: 16 / 10;
-  }
-}
-@media (min-width: 64rem) {
-  /* the still frame rides beside the list as it scrolls, clear of the
-     floating header */
-  .fig {
-    position: sticky;
-    top: 96px;
-    align-self: start;
-    aspect-ratio: 3 / 2;
-  }
-}
-/* Short screens (landscape phones, short laptop windows) never pin: the
-   still frame and the mosaic (about 2.2 : 1) fit the viewport so each can
-   be seen whole, the mosaic centred when the height limits it */
-@media (max-height: 559px) {
-  .fig {
-    aspect-ratio: auto;
-    height: clamp(260px, calc(100svh - 110px), 520px);
-  }
-  .tiles {
-    width: 100%;
-    max-width: calc((100svh - 110px) * 2.2);
-    justify-self: center;
-  }
-}
-.canvas {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-/* Without JS there is no frame to draw */
-:global(html:not([data-js])) .fig {
-  display: none;
-}
-
-/* The five stages */
-.steps {
+.moments {
   margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
+  row-gap: 5.5rem;
 }
-.step {
-  display: grid;
-  align-content: start;
-  gap: 10px;
-  border-top: 1px solid var(--af-rule);
-  padding: 18px 0 24px;
-}
-.title {
-  margin: 0;
-  font-size: 22px;
-  line-height: 1.1;
-  color: var(--color-paper);
-}
-.line {
-  margin: 0;
-  max-width: 42ch;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--color-fog);
-}
-@media (min-width: 40rem) and (max-width: 63.99rem) {
-  .step {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    column-gap: 24px;
-    align-items: baseline;
-  }
-}
-@media (min-width: 64rem) {
-  .title {
-    font-size: 24px;
-  }
-  :global(html:not([data-js])) .steps,
-  :global(html:not([data-js])) .end {
-    grid-column: 1 / -1;
-    grid-row: auto;
-  }
-  :global(html:not([data-js])) .steps {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    column-gap: 32px;
-  }
-  /* no frame without JS: the link follows the row closely */
-  :global(html:not([data-js])) .stage {
-    row-gap: 32px;
-  }
-}
-
-/* The link to the method: in the static chapter it simply closes it */
-.end {
-  display: flex;
-}
-
-/* ---------- canvas labels (positioned by the engine) ---------- */
-.labels {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  /* unhinted, so small names keep their true letter spacing on Linux too */
-  text-rendering: geometricPrecision;
-}
-.l {
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-size: 14px;
-  font-weight: 450;
-  line-height: 1.2;
-  white-space: nowrap;
-  color: color-mix(in srgb, var(--color-paper) 88%, transparent);
-  opacity: 0;
-  visibility: hidden;
-  will-change: transform, opacity;
-}
-/* Each label is a zero-width anchor at its point; the text hangs off it,
-   so right-aligned labels never push the page wider */
-.l {
-  width: 0;
-}
-.l > span {
-  display: block;
-  width: max-content;
-  transform: translateY(-50%);
-}
-.l[data-align="c"] > span {
-  transform: translate(-50%, -50%);
-}
-.l[data-align="r"] > span {
-  transform: translate(-100%, -50%);
-  text-align: right;
-}
-.l[data-align="up"] > span {
-  transform: translateY(-100%);
-}
-.l[data-align="upr"] > span {
-  transform: translate(-100%, -100%);
-  text-align: right;
-}
-.l[data-align="rot"] > span {
-  transform: translate(-50%, -50%) rotate(-90deg);
-}
-.grp {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--af-fog-62);
-}
-.throat {
-  color: var(--color-signal);
-}
-
-/* A surface's marker in the noise: a signal square left of its name (off
-   the text box, so the engine measures the name alone). In NOISE the
-   engine marks it grabbable: the hit area grows past the square, and only
-   there does a touch belong to the marker instead of the page. */
-.lane > span {
+.moment {
   position: relative;
+  align-items: center;
 }
-.lane[data-pool] > span::before {
-  content: "";
-  position: absolute;
-  left: -16px;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  margin-top: -3px;
-  background: var(--color-signal);
-  transition: transform 0.2s ease;
-}
-.lane[data-pool][data-align="r"] > span::before {
-  left: auto;
-  right: -16px;
-}
-.lane[data-grab] > span {
-  pointer-events: auto;
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  transition: color 0.2s ease;
-}
-.lane[data-grab] > span::after {
-  content: "";
-  position: absolute;
-  inset: -14px -12px -14px -28px;
-}
-.lane[data-grab][data-align="r"] > span::after {
-  inset: -14px -28px -14px -12px;
-}
-/* a finger's hit area stays small: only there is a page scroll not the page's */
-@media (pointer: coarse) {
-  .lane[data-grab] > span::after {
-    inset: -10px -8px -10px -26px;
-  }
-  .lane[data-grab][data-align="r"] > span::after {
-    inset: -10px -26px -10px -8px;
-  }
-}
-.lane[data-drag] > span {
-  cursor: grabbing;
-  color: var(--color-paper);
-}
-.lane[data-drag] > span::before {
-  transform: scale(1.6);
-}
-@media (hover: hover) {
-  .lane[data-grab] > span:hover {
-    color: var(--color-paper);
-  }
-  .lane[data-grab] > span:hover::before {
-    transform: scale(1.6);
-  }
-}
-
-/* The final readout: the index, what it is, and that it is illustrative */
-.readout em {
-  display: block;
-  font-style: normal;
-  font-size: 15px;
-  color: var(--color-fog);
-}
-.readout strong {
-  display: block;
-  margin: 6px 0 8px;
-  font-stretch: 110%;
-  font-weight: 430;
-  font-size: clamp(40px, 3.4vw, 56px);
+/* lining, proportional figures: the face's tabular set has a footed 1
+   and a slashed zero, which read as code */
+.when {
+  font-size: 2.5rem;
   line-height: 1;
-  letter-spacing: -0.018em;
   font-variant-numeric: lining-nums proportional-nums;
-  color: var(--color-paper);
+  white-space: nowrap;
 }
-.readout small {
-  display: block;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--af-fog-62);
+.whenDay {
+  color: var(--color-muted);
+}
+.what {
+  margin-top: 0.875rem;
+  max-width: 34ch;
+  font-size: 1.125rem;
+  line-height: 1.45;
+  color: rgb(17 15 10 / 0.8);
+}
+/* the tile's box: its width, its aspect (the tile scales to it) */
+.media {
+  --hmax: min(36rem, 68vh);
+  justify-self: start;
+  width: calc(var(--phone, 1) * 100%);
+  margin-top: 1.5rem;
+}
+@media (min-width: 40rem) {
+  .moments {
+    row-gap: 7.5rem;
+  }
+  .when {
+    font-size: 3rem;
+  }
+  .what {
+    font-size: 1.25rem;
+  }
+  .media {
+    width: min(100%, var(--show), calc(var(--hmax) * var(--ar)));
+    margin-top: 2rem;
+  }
+}
+/* beside its tile (desktop without the narrator) */
+@media (min-width: 64rem) {
+  .moments {
+    row-gap: 9rem;
+  }
+  .text {
+    align-self: center;
+  }
+  .when {
+    font-size: 3.5rem;
+  }
+  .media {
+    margin-top: 0;
+  }
 }
 
-/* ---------- pinned and scrubbed: AF_PIN_QUERY ---------- */
-@media (prefers-reduced-motion: no-preference) and (min-width: 360px) and (min-height: 560px) {
-  :global(html[data-js]) .track {
-    height: 615svh;
+/* ---------- the narrator (desktop, JS) ---------- */
+.rail {
+  display: none;
+}
+@media (min-width: 64rem) and (min-height: 35rem) {
+  :global(html[data-js]) .week {
+    margin-top: 0;
   }
-  :global(html[data-js]) .stage {
-    position: sticky;
-    top: 0;
+  :global(html[data-js]) .rail {
     display: block;
-    height: 100vh;
-    height: 100lvh;
-    max-width: none;
+    grid-column: 1 / span 4;
+    grid-row: 1;
+  }
+  :global(html[data-js]) .list {
+    grid-row: 1;
+  }
+  /* the first tile arrives centred as the narrator takes hold, the last
+     leaves centred as it lets go */
+  :global(html[data-js]) .moments {
+    padding: calc(50vh - 12.5rem) 0 calc(50vh - 16.5rem);
+    padding: calc(50svh - 12.5rem) 0 calc(50svh - 16.5rem);
+    row-gap: clamp(9rem, 25vh, 15rem);
+    row-gap: clamp(9rem, 25svh, 15rem);
+  }
+  :global(html[data-js]) .text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
     padding: 0;
     overflow: hidden;
-    background: var(--color-graphite);
-  }
-  :global(html[data-js]) .fig {
-    position: absolute;
-    inset: 0;
-    align-self: auto; /* the static grid's start would shrink it to nothing */
-    aspect-ratio: auto;
-  }
-
-  /* One heading at a time, centred; the engine lifts each away */
-  /* over the tiles, which the engine stacks from 1 */
-  :global(html[data-js]) .steps {
-    position: absolute;
-    z-index: 10;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100vh;
-    height: 100svh;
-    display: grid;
-    place-items: center;
-    padding: 80px 16px 9svh;
-    pointer-events: none;
-  }
-  :global(html[data-js]) .step {
-    grid-area: 1 / 1;
-    display: block;
-    max-width: min(100%, 1120px);
+    clip-path: inset(50%);
+    white-space: nowrap;
     border: 0;
-    padding: 0;
-    text-align: center;
-    opacity: 0;
-    will-change: transform, opacity;
   }
-  :global(html[data-js]) .step:first-child {
-    opacity: 1;
-  }
-  :global(html[data-js]) .title {
-    font-size: clamp(40px, 5.6vw, 96px);
-    line-height: 1.02;
-  }
-  :global(html[data-js]) .line {
-    margin: clamp(14px, 1.5vw, 22px) auto 0;
-    max-width: 34ch;
-    font-size: clamp(15px, 1.25vw, 19px);
-    line-height: 1.45;
-  }
-  @media (min-width: 700px) {
-    :global(html[data-js]) .line {
-      max-width: none;
-    }
-  }
+}
+.stick {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+}
+.block {
+  width: 100%;
+}
+.narrator {
+  /* room under the floating header: the block centres in what is left */
+  padding-top: 2.5rem;
+}
 
-  /* The link waits, unseen and unclickable, for the final readout; it
-     stays in the tab order (focusing it jumps there) */
-  :global(html[data-js]) .end {
-    position: absolute;
-    z-index: 12;
-    left: 0;
-    top: 0;
-    opacity: 0;
-    pointer-events: none;
-    will-change: transform, opacity;
+/* the week strip, and the note that the week is a sample: beside the
+   strip, or under it where the column is narrow */
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.875rem 1.25rem;
+  max-width: 26rem;
+}
+.days {
+  display: flex;
+  gap: 0.5rem;
+}
+.stripDay {
+  width: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5625rem;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+/* the Monday she books stands a little apart: it is the next week */
+.stripDay:last-child {
+  margin-left: 0.75rem;
+}
+.sample {
+  font-size: 0.875rem;
+  line-height: 1;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+.stripDay b {
+  font-weight: 550;
+  color: rgb(17 15 10 / 0.3);
+}
+.stripDay[data-state="past"] b {
+  color: rgb(17 15 10 / 0.62);
+}
+.stripDay[data-state="now"] b {
+  color: var(--color-ink);
+}
+.ticks {
+  height: 0.4375rem;
+  display: flex;
+  gap: 0.1875rem;
+}
+.ticks i {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  background: rgb(17 15 10 / 0.14);
+}
+.ticks i[data-state="past"] {
+  background: var(--color-ink);
+}
+.ticks i[data-state="now"] {
+  background: var(--color-brand);
+}
+
+/* the day and the time, set large */
+.clock {
+  margin-top: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* by the width, and kept short enough to sit clear of the header on a
+     short window */
+  font-size: min(clamp(4.5rem, 3rem + 2.6vw, 6rem), 11.5vh);
+  font-size: min(clamp(4.5rem, 3rem + 2.6vw, 6rem), 11.5svh);
+  line-height: 1;
+  font-variant-numeric: lining-nums proportional-nums;
+  letter-spacing: -0.02em;
+}
+.clockDay {
+  display: flex;
+  color: var(--color-muted);
+}
+.clockTime {
+  display: flex;
+  margin-top: 0.06em;
+}
+/* the window a string rolls in: the old and the new in one cell, clipped
+   to the line */
+.roll {
+  display: inline-grid;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.roll > span {
+  grid-area: 1 / 1;
+}
+.ch {
+  display: inline-block;
+}
+.keep {
+  visibility: hidden;
+}
+.lines {
+  margin-top: 1.75rem;
+  max-width: 23rem;
+  display: grid;
+  /* the longest sentence, so the block never changes height and jumps */
+  min-height: calc(4 * 1.4em);
+  font-size: clamp(1.25rem, 1rem + 0.45vw, 1.5rem);
+  line-height: 1.4;
+  color: rgb(17 15 10 / 0.85);
+}
+.lines > p {
+  grid-area: 1 / 1;
+  margin: 0;
+}
+
+/* The narrator turns over like a clock: each changed character leaves
+   and the new one arrives a short way up (or down, scrolling back), in
+   its own window, the day first, then the time, then the sentence */
+@media (prefers-reduced-motion: no-preference) {
+  /* each old character is gone before its new one arrives: never two
+     strings on top of each other */
+  .rollOut .ch {
+    animation: 0.14s cubic-bezier(0.5, 0, 0.75, 0) calc(var(--at, 0ms) + var(--k, 0) * 24ms) both;
   }
-  :global(html[data-js]) .end[data-on] {
-    pointer-events: auto;
+  .rollIn .ch {
+    animation: 0.34s cubic-bezier(0.2, 0.8, 0.25, 1) calc(var(--at, 0ms) + 125ms + var(--k, 0) * 24ms) both;
+  }
+  .clockTime {
+    --at: 50ms;
+  }
+  .narrator[data-dir="fwd"] .rollOut .ch {
+    animation-name: out-up;
+  }
+  .narrator[data-dir="fwd"] .rollIn .ch {
+    animation-name: in-up;
+  }
+  .narrator[data-dir="back"] .rollOut .ch {
+    animation-name: out-down;
+  }
+  .narrator[data-dir="back"] .rollIn .ch {
+    animation-name: in-down;
+  }
+  .lineOut {
+    animation: line-out 0.14s ease-in both;
+  }
+  .lineIn {
+    animation: line-in 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) 0.16s both;
+  }
+  .stripDay b {
+    transition: color 0.3s ease;
+  }
+  .ticks i {
+    transition: background-color 0.3s ease;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rollOut,
+  .lineOut {
+    display: none;
+  }
+}
+@keyframes out-up {
+  to {
+    opacity: 0;
+    transform: translateY(-38%);
+  }
+}
+@keyframes in-up {
+  from {
+    opacity: 0;
+    transform: translateY(42%);
+  }
+}
+@keyframes out-down {
+  to {
+    opacity: 0;
+    transform: translateY(38%);
+  }
+}
+@keyframes in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-42%);
+  }
+}
+@keyframes line-out {
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
   }
 }
 
-/* Phones, pinned: names a step smaller */
-@media (prefers-reduced-motion: no-preference) and (min-width: 360px) and (max-width: 699px) and (min-height: 560px) {
-  :global(html[data-js]) .l {
-    font-size: 13px;
-  }
-  :global(html[data-js]) .grp {
-    font-size: 12px;
+/* ---------- the close ---------- */
+.close {
+  margin-top: 7rem;
+}
+@media (min-width: 64rem) {
+  .close {
+    margin-top: 10rem;
   }
 }

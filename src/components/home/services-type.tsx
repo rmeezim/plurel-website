@@ -1,41 +1,69 @@
 "use client";
 
-import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowRight } from "@/components/icons";
+import Link from "next/link";
+import { Fragment, useEffect, useRef, type ReactNode } from "react";
+import { ArrowRight, ArrowUpRight } from "@/components/icons";
 import { CONTAINER, GRID } from "@/components/system";
-import { mountServicesType, STAGES, type StageKey } from "@/lib/services-type";
+import { mountServicesType, STACKED_QUERY, STAGES, type StageKey } from "@/lib/services-type";
 import s from "./services-type.module.css";
 
 /*
   The figure of Services: the eight names, first set the way eight
-  suppliers would set them, lined up on the rows' grid, then set in one
-  face, stage by stage along the chain (engine in
-  lib/services-type.ts). The contents list itself is the figure: it comes
-  in as children, server-rendered by ServicesChapter, and stays the real,
-  accessible text. This component adds the figure head (the narrator and
-  the chain) and the eight aria-hidden clones that carry the motion.
+  suppliers would set them, lined up on the menu's rows, set in one face
+  stage by stage along the chain, then drained into the system: four
+  layers, foundation first, each a plate of glass that settles onto the
+  stack (engine in lib/services-type.ts). This component renders the
+  figure head (the narrator and the chain), the system (the layer list
+  and the stack, passed in server-rendered) and the eight aria-hidden
+  clones that carry the motion; the menu comes in as children.
 
-  The chain's four stages are toggles at every width: a tap, click or
-  Enter holds that stage's rows and steps the rest back (a second press,
-  a tap elsewhere or Escape clears it); with a fine pointer, hovering
-  does the same while nothing is pressed. Hovering a row lights its
-  stage. With motion, the chain takes the pointer once every name is set.
+  The layer list is the real, accessible contents: four disclosures (one
+  open at a time, the foundation first on desktop; below lg all start
+  closed), each with its services as links. It needs no script: the
+  browser opens and closes them. Pointing at or focusing a layer lifts
+  its plate; pointing at a plate lights its row, and a click on it opens
+  the layer (the list is the keyboard's way in).
 
   Static (no JS, reduced motion, forced colours, a screen too short for
-  the finished frame) it is simply the list, unpinned, and the narrator
-  answers its own "still a menu" outright: "Eight kinds of work, set on
-  one chain."
+  the finished frame) it is simply the system, unpinned, and the
+  narrator says what it shows: "Eight kinds of work, in four layers."
 */
+
+export type LayerData = {
+  key: StageKey;
+  name: string;
+  line: string;
+  services: readonly { name: string; tagline: string; href: string }[];
+};
 
 export function ServicesType({
   items,
+  layers,
+  stack,
   children,
 }: {
   items: readonly { name: string; st: StageKey }[];
+  layers: readonly LayerData[];
+  stack: ReactNode;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [filter, setFilter] = useState<StageKey | null>(null);
+  const listRef = useRef<HTMLOListElement>(null);
+
+  // Below lg every layer starts closed: the server opens the foundation,
+  // which is right for desktop and for no script. It closes at once, not
+  // on its height (and before the engine measures the finished frame).
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list || !matchMedia(STACKED_QUERY).matches) return;
+    list.setAttribute("data-instant", "");
+    list.querySelectorAll<HTMLDetailsElement>("details[open]").forEach((d) => {
+      d.open = false;
+    });
+    void list.offsetHeight;
+    const raf = requestAnimationFrame(() => list.removeAttribute("data-instant"));
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   useEffect(() => {
     const section = ref.current?.closest("section");
@@ -45,26 +73,21 @@ export function ServicesType({
     return mountServicesType(section).destroy;
   }, []);
 
-  // A pressed stage clears on a tap anywhere else, or Escape
+  // A plate opens its layer (pointer only: the list is the keyboard's way in)
   useEffect(() => {
-    if (!filter) return;
-    const onDown = (e: PointerEvent) => {
-      const t = e.target;
-      if (!(t instanceof Element) || !t.closest("[data-stage-btn]")) setFilter(null);
+    const el = ref.current;
+    if (!el) return;
+    const onClick = (e: MouseEvent) => {
+      const key = (e.target as Element | null)?.closest?.("[data-plate-hit]")?.getAttribute("data-plate-hit");
+      const d = key ? listRef.current?.querySelector<HTMLDetailsElement>(`[data-layer="${key}"] > details`) : null;
+      if (d) d.open = true;
     };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setFilter(null);
-    };
-    document.addEventListener("pointerdown", onDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("pointerdown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [filter]);
+    el.addEventListener("click", onClick);
+    return () => el.removeEventListener("click", onClick);
+  }, []);
 
   return (
-    <div ref={ref} data-type-track="" data-filter={filter ?? undefined} className={s.track}>
+    <div ref={ref} data-type-track="" className={s.track}>
       <div data-type-stage="" className={s.stage}>
         <div data-type-stage-in="" className={s.stageIn}>
           <div className={CONTAINER}>
@@ -76,7 +99,7 @@ export function ServicesType({
                 <span className="type-display block text-[20px] leading-[1.12] text-paper lg:text-[clamp(1.25rem,1.5vw,1.375rem)]">
                   <span className={s.capStatic}>
                     <span className="lg:block">Eight kinds of work,</span>{" "}
-                    <span className="lg:block">set on one chain.</span>
+                    <span className="lg:block">in four layers.</span>
                   </span>
                   <span aria-hidden className={s.capMotion}>
                     <span className={s.ca}>Eight disciplines, eight voices.</span>
@@ -87,31 +110,67 @@ export function ServicesType({
               </p>
 
               <div
-                role="group"
-                aria-label="The chain the eight run on"
+                aria-hidden
                 data-type-chain=""
                 className={`${s.chain} col-span-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] leading-[1.35] sm:col-span-6 sm:gap-x-3 sm:text-[15px] lg:col-span-9 lg:col-start-4 lg:text-[17px]`}
               >
                 {STAGES.map((st, i) => (
                   <Fragment key={st.key}>
                     {i > 0 && <ArrowRight className="size-3 shrink-0 text-signal sm:size-3.5" />}
-                    <span className={`${s.plain}`}>{st.name}</span>
-                    <button
-                      type="button"
-                      data-stage-btn={st.key}
-                      aria-pressed={filter === st.key}
-                      aria-label={`Show ${st.name} disciplines`}
-                      onClick={() => setFilter((f) => (f === st.key ? null : st.key))}
-                      className={s.btn}
-                    >
+                    <span data-chain-word={st.key} className={s.word}>
                       {st.name}
-                    </button>
+                    </span>
                   </Fragment>
                 ))}
               </div>
             </div>
           </div>
-          {children}
+
+          <div className={s.body}>
+            {children}
+            <div data-type-system="" className={s.system}>
+              <div className={`${CONTAINER} ${s.systemIn}`}>
+                <div className={`${GRID} ${s.systemGrid} items-start`}>
+                  <ol
+                    ref={listRef}
+                    data-type-layers=""
+                    aria-label="Services, in four layers"
+                    className={`${s.layers} col-span-4 sm:col-span-6 lg:col-span-6`}
+                  >
+                    {layers.map((L, i) => (
+                      <li key={L.key} data-layer-row="" data-layer={L.key} className={s.lrow}>
+                        <details name="services-layers" open={i === 0} className={s.layer}>
+                          <summary className={s.sum}>
+                            <span className={`${s.lname} type-display`}>
+                              {L.name}
+                              <span className="sr-only">: </span>
+                            </span>
+                            <span aria-hidden className={s.pm} />
+                            <span className={s.lline}>{L.line}</span>
+                          </summary>
+                          <ul data-panel="" className={s.panel}>
+                            {L.services.map((svc) => (
+                              <li key={svc.href}>
+                                <Link href={svc.href} className={s.svc}>
+                                  <span className={`${s.sname} type-display`}>
+                                    {svc.name}
+                                    <span className="sr-only">: </span>
+                                  </span>
+                                  <ArrowUpRight className={s.arr} />
+                                  <span className={s.stag}>{svc.tagline}</span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
+                      </li>
+                    ))}
+                  </ol>
+                  <div className={`${s.stackCell} col-span-4 sm:col-span-6 lg:col-span-6 lg:col-start-7`}>{stack}</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div aria-hidden className={s.fx}>

@@ -12,156 +12,39 @@
 
   Without data-ph a tile is its designed still frame: that is the base
   style of everything here. Every animation is paused unless the tile has
-  data-play, and removed for reduced motion, without JS, or under
-  data-still (which also stops the clock, so the scripts show the still).
-  A picture's ambient loops (grain, light leak, camera moves, flicker) also
-  wait for data-fx, which the field sets only on tiles shown near full
-  size. The pictures blend normally (no blend modes) and keep their soft
-  light in gradients, not filters, so the compositor's work stays small.
+  data-play, and removed for reduced motion and without JS (which also
+  stops the clock, so the scripts show the still). The pictures blend
+  normally (no blend modes) and keep their soft light in gradients, not
+  filters, so the compositor's work stays small.
 */
 
-/* ---------- the static mosaic (the default) ---------- */
-.root {
-  --gap: 12px;
-  position: relative;
-}
-/* (under 48rem the gap stays 12px: there the two halves' cross cuts would
-   otherwise step by less than three gutters) */
-@media (min-width: 48rem) {
-  .root {
-    --gap: 16px;
-  }
-}
-.row,
-.col {
-  display: flex;
-  gap: var(--gap);
-}
-.row {
-  align-items: flex-start;
-}
-.col {
-  flex-direction: column;
-}
-/* a share of the row plus a number of gutters: every child comes out the
-   row's height, as in lib/channels.ts mosaicLayout */
-.row > .slot {
-  flex: none;
-  width: calc(var(--p) * 100% + var(--q) * var(--gap));
-}
-.col > .slot {
-  flex: none;
-}
+/* ---------- one tile in its box ----------
+   The cell takes the tile's aspect at its nominal size (--nw x --nh, and
+   --nw-n x --nh-n under 40rem, unitless px from channel-tiles.tsx) and
+   scales the tile to its own width (tan(atan2()) turns the ratio of two
+   lengths into the number scale() needs). */
 .cell {
+  --nw-at: var(--nw);
+  --nh-at: var(--nh);
+  --tw: calc(var(--nw-at) * 1px);
+  --th: calc(var(--nh-at) * 1px);
   position: relative;
   overflow: hidden;
   container-type: inline-size;
-  aspect-ratio: var(--ar);
+  aspect-ratio: var(--nw-at) / var(--nh-at);
 }
-/* the tile at its nominal size, scaled to the cell (tan(atan2()) turns
-   the ratio of two lengths into the number scale() needs) */
+@media (max-width: 39.99rem) {
+  .cell {
+    --nw-at: var(--nw-n, var(--nw));
+    --nh-at: var(--nh-n, var(--nh));
+  }
+}
 .cell > .tile {
   position: absolute;
   left: 0;
   top: 0;
   transform-origin: 0 0;
   transform: scale(tan(atan2(100cqw, var(--tw))));
-}
-/* Upright tablets and phones (static): the wrappers step aside and the
-   cells wrap in one flow at the full width. Tablets get the tall mosaic's
-   three bands (channel-tiles.tsx TALL_CELL: order, share of the band,
-   solved aspect and the tile's height at it); a short landscape screen
-   keeps the wide mosaic, which fits its height. Pinned, the field's rules
-   below are more specific, so nothing here moves or hides a tile it shows. */
-@media (max-width: 39.99rem), (max-width: 63.99rem) and (min-height: 560px) {
-  .top {
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-  .top .row,
-  .top .col,
-  .top .slot {
-    display: contents;
-  }
-  .cell {
-    flex: none;
-    order: var(--o);
-    /* a hair under the share, so a band never wraps on rounding */
-    width: calc(var(--tp) * 100% + var(--tq) * var(--gap) - 0.05px);
-    aspect-ratio: var(--art);
-  }
-  .cell > .tile {
-    height: var(--tht);
-  }
-}
-/* Phones (static): the phone mosaic's four in its order (--po): the answer
-   and the search at the full width, sized to read (the search reflows to a
-   narrower page), the reel and the film side by side between them at one
-   height (--ps, --pq: a share of the line plus gutters) */
-@media (max-width: 39.99rem) {
-  .cell {
-    order: var(--po);
-    width: calc(var(--ps) * 100% + var(--pq) * var(--gap) - 0.05px);
-    aspect-ratio: var(--ar);
-  }
-  .cell:not([data-phone]) {
-    display: none;
-  }
-  .cell > .tile {
-    height: var(--th);
-  }
-  .cell[data-k="search"] {
-    aspect-ratio: var(--par);
-  }
-  .cell[data-k="search"] > .tile {
-    width: var(--pw);
-    height: var(--ph);
-    transform: scale(tan(atan2(100cqw, var(--pw))));
-  }
-}
-
-/* The one line under the mosaic: Halden is a sample */
-.note {
-  margin: 14px 0 0;
-  font-size: 13px;
-  line-height: 1.4;
-  font-weight: 400;
-  color: var(--color-fog);
-}
-
-/* ---------- pinned: the field engine places every tile ----------
-   Keep this query identical to AF_PIN_QUERY in lib/attention-field.ts.
-   The wrappers step aside, so each tile is positioned against the field's
-   sticky stage; hidden until the engine shows it. */
-@media (prefers-reduced-motion: no-preference) and (min-width: 360px) and (min-height: 560px) {
-  :global(html[data-js]) .root,
-  :global(html[data-js]) .row,
-  :global(html[data-js]) .col,
-  :global(html[data-js]) .slot,
-  :global(html[data-js]) .cell {
-    display: contents;
-  }
-  :global(html[data-js]) .cell > .tile {
-    width: var(--tw);
-    height: var(--th);
-    transform: none;
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-  }
-  :global(html[data-js]) .note {
-    position: absolute;
-    z-index: 2;
-    left: 0;
-    top: 0;
-    margin: 0;
-    font-size: 14px;
-    white-space: nowrap;
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-    will-change: transform, opacity;
-  }
 }
 
 /* geometricPrecision: the tiles' small type is set without hinting, so a
@@ -188,18 +71,20 @@
   -webkit-font-smoothing: antialiased;
   user-select: none;
 }
-/* The screen's edge */
+/* The screen's edge: a hairline that holds a white page on paper */
 .tile::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 30;
-  border: 1px solid rgb(251 250 246 / 0.12);
+  border: 1px solid rgb(17 15 10 / 0.12);
   pointer-events: none;
 }
 .tile p,
 .tile h4,
 .tile ul,
+.tile dl,
+.tile dd,
 .tile figure,
 .tile blockquote {
   margin: 0;
@@ -231,17 +116,7 @@
 .tile:not([data-play]) *::after {
   animation-play-state: paused !important;
 }
-/* The pictures' ambient loops run only on tiles shown large (data-fx) */
-.tile:not([data-fx]) :is(.grain, .leak, .cam, .push, .bokeh i, .lampGlow, .led, .steam i, .meter) {
-  animation-play-state: paused !important;
-}
 /* The still frame: no clock, no loops */
-.root[data-still] *,
-.root[data-still] *::before,
-.root[data-still] *::after,
-.tile[data-still] *,
-.tile[data-still] *::before,
-.tile[data-still] *::after,
 :global(html:not([data-js])) .tile *,
 :global(html:not([data-js])) .tile *::before,
 :global(html:not([data-js])) .tile *::after {
@@ -714,7 +589,7 @@
 }
 .sStats {
   margin-bottom: 11px;
-  font-size: 10px;
+  font-size: 10.5px;
   color: #70757a;
 }
 .res {
@@ -737,7 +612,7 @@
   color: #202124;
 }
 .resSite small {
-  font-size: 9.5px;
+  font-size: 10.5px;
   color: #4d5156;
 }
 .resMore {
@@ -825,7 +700,7 @@
   transform: translate(420px, 280px);
 }
 /* reflowed narrow (a phone): a phone's results page, so no window chrome
-   and no mouse pointer; the field leads */
+   and no mouse pointer; the search box leads */
 @container (max-width: 400px) {
   .chrome,
   .sPtr {
@@ -1205,7 +1080,7 @@
   filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.35));
 }
 .rail small {
-  font-size: 9.5px;
+  font-size: 10.5px;
   font-weight: 650;
 }
 .liked {
@@ -1275,8 +1150,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10.5px;
+  font-size: 11px;
   color: rgb(255 255 255 / 0.72);
+}
+.filmTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* it plays before her show: the ad marker a streaming player puts on it */
+.adChip {
+  flex: none;
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: #f2c94c;
+  color: #141414;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 .hd {
   padding: 0 3px;
@@ -1290,7 +1184,7 @@
   left: 0;
   right: 0;
   top: 34px;
-  height: 202px;
+  bottom: 34px;
   overflow: hidden;
 }
 .pic::after {
@@ -1466,7 +1360,7 @@
   font-size: 13px;
 }
 .tc {
-  font-size: 10px;
+  font-size: 10.5px;
   font-variant-numeric: tabular-nums;
 }
 .ctrlR {
@@ -1529,7 +1423,7 @@
   border-radius: 2px;
   background: #171411;
   color: #fbf9f5;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
 }
 .pNav {
@@ -1539,7 +1433,7 @@
   justify-content: center;
   gap: 16px;
   border-bottom: 1px solid #e4dfd7;
-  font-size: 9.5px;
+  font-size: 10.5px;
   color: #6d665e;
 }
 .pNav span[data-on] {
@@ -1571,7 +1465,7 @@
 }
 .pKick {
   margin-bottom: 6px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 650;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1604,11 +1498,11 @@
 }
 .byline b {
   display: block;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
 }
 .byline small {
-  font-size: 9px;
+  font-size: 10.5px;
   color: #6d665e;
 }
 .byAv {
@@ -1631,7 +1525,7 @@
 }
 .pFig figcaption {
   margin-top: 5px;
-  font-size: 8.5px;
+  font-size: 10px;
   color: #6d665e;
 }
 .pBody {
@@ -1666,7 +1560,7 @@
 .related > small {
   display: block;
   margin-bottom: 8px;
-  font-size: 8.5px;
+  font-size: 10px;
   font-weight: 650;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -1692,7 +1586,7 @@
   background: linear-gradient(200deg, #e9d6cf, #9a746c 55%, #3a1714);
 }
 .pull small {
-  font-size: 8.5px;
+  font-size: 10px;
   font-weight: 650;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -2010,12 +1904,20 @@
 /* The street keeps its 3 : 1 and covers the tile, so a flexed billboard
    crops rather than stretches */
 .ooh .street {
+  --sw: max(100cqw, 300cqh);
+  --slack: calc((var(--sw) - 100cqw) / 2);
   inset: auto;
   left: 50%;
   top: 50%;
-  width: max(100cqw, 300cqh);
+  width: var(--sw);
   aspect-ratio: 3;
-  transform: translate(-50%, -50%);
+  transform: translate(
+    calc(-50% - clamp(-1 * var(--slack), (var(--fx, 0.5) - 0.5) * var(--sw), var(--slack))),
+    -50%
+  );
+}
+.ooh {
+  --fx: 0.66;
 }
 .lampHalo {
   position: absolute;
@@ -2050,6 +1952,7 @@
 .poster {
   position: absolute;
   overflow: hidden;
+  container-type: size;
 }
 .posterArt {
   position: absolute;
@@ -2072,7 +1975,7 @@
   left: 7%;
   top: 13%;
   width: 56%;
-  font-size: 17px;
+  font-size: 8cqw;
   line-height: 1;
   font-weight: 620;
   font-stretch: 112%;
@@ -2084,20 +1987,20 @@
   bottom: 11%;
   display: flex;
   align-items: center;
-  gap: 3px;
-  font-size: 10px;
+  gap: 1.4cqw;
+  font-size: 4.7cqw;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 .posterMark svg {
-  width: 10px;
-  height: 10px;
+  width: 4.7cqw;
+  height: 4.7cqw;
 }
 .posterNote {
   position: absolute;
   left: 34%;
   bottom: 12%;
-  font-size: 7px;
+  font-size: 3.4cqw;
   font-weight: 500;
   color: #5b554e;
 }
@@ -2183,34 +2086,34 @@
   }
 }
 .walkA {
-  transform: translateX(150px);
+  transform: translateX(calc(var(--sw, 600px) * 0.25));
   animation: walk-r 26s linear infinite -9s;
 }
 .walkB {
-  transform: translateX(470px) scaleX(-1);
+  transform: translateX(calc(var(--sw, 600px) * 0.783)) scaleX(-1);
   animation: walk-l 21s linear infinite -5s;
 }
 .walkC {
   bottom: 14%;
   height: 15%;
   opacity: 0.7;
-  transform: translateX(560px);
+  transform: translateX(calc(var(--sw, 600px) * 0.933));
   animation: walk-r 34s linear infinite -26s;
 }
 @keyframes walk-r {
   from {
-    transform: translateX(-30px);
+    transform: translateX(calc(var(--sw, 600px) * -0.05));
   }
   to {
-    transform: translateX(630px);
+    transform: translateX(calc(var(--sw, 600px) * 1.05));
   }
 }
 @keyframes walk-l {
   from {
-    transform: translateX(630px) scaleX(-1);
+    transform: translateX(calc(var(--sw, 600px) * 1.05)) scaleX(-1);
   }
   to {
-    transform: translateX(-30px) scaleX(-1);
+    transform: translateX(calc(var(--sw, 600px) * -0.05)) scaleX(-1);
   }
 }
 .car {
@@ -2220,16 +2123,16 @@
   width: 17%;
   height: 13%;
   filter: blur(1.6px);
-  transform: translateX(-160px);
+  transform: translateX(calc(var(--sw, 600px) * -0.27));
   animation: car 11s linear infinite 3s;
 }
 @keyframes car {
   0% {
-    transform: translateX(-160px);
+    transform: translateX(calc(var(--sw, 600px) * -0.27));
   }
   13%,
   100% {
-    transform: translateX(660px);
+    transform: translateX(calc(var(--sw, 600px) * 1.1));
   }
 }
 .carBody {
@@ -2254,4 +2157,428 @@
   left: -6%;
   width: 18%;
   background: radial-gradient(closest-side, rgb(255 60 50 / 0.95), rgb(255 60 50 / 0));
+}
+
+/* ===================== 8. Booking email ===================== */
+
+.book {
+  --accent: #0a6cff;
+  --grey: #86868b;
+  --sep: #e8e8ed;
+  --rowh: 72px;
+  background: #fff;
+  color: #111;
+}
+.bInbox,
+.bMail {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+.bMail {
+  z-index: 2;
+}
+.bNav {
+  flex: none;
+  height: 40px;
+  padding: 0 12px 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--accent);
+}
+.bLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+.bBack {
+  font-size: 19px;
+  stroke-width: 2.1;
+}
+.bTitle {
+  flex: none;
+  padding: 0 16px 8px;
+  font-size: 27px;
+  line-height: 1.1;
+  font-weight: 720;
+  letter-spacing: -0.022em;
+}
+.bList {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  border-top: 1px solid var(--sep);
+}
+.bRow {
+  position: relative;
+  height: var(--rowh);
+  padding: 10px 14px 0 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  white-space: nowrap;
+}
+.bRow::after {
+  content: "";
+  position: absolute;
+  left: 26px;
+  right: 0;
+  bottom: 0;
+  border-bottom: 1px solid var(--sep);
+}
+.bDot {
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+/* one line each, set on the p itself: the site's base text-wrap on p
+   would otherwise reset an inherited nowrap */
+.bRow p {
+  white-space: nowrap;
+}
+.bFrom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.bFrom b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-weight: 650;
+}
+.bFrom small {
+  flex: none;
+  font-size: 11.5px;
+  color: var(--grey);
+}
+.bSubj {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12.5px;
+}
+.bPrev {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  color: var(--grey);
+}
+.bFoot {
+  position: relative;
+  flex: none;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-top: 1px solid var(--sep);
+  background: #f9f9fb;
+}
+.bFoot small {
+  font-size: 11px;
+  color: var(--grey);
+}
+.bCompose {
+  position: absolute;
+  right: 14px;
+  top: 11px;
+  font-size: 18px;
+  color: var(--accent);
+}
+.bTools {
+  display: flex;
+  gap: 17px;
+  font-size: 18px;
+}
+.bView {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.bPage {
+  padding: 4px 16px 22px;
+}
+.bSender {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.bSender p {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.bSender b {
+  font-size: 14px;
+  font-weight: 650;
+}
+.bSender small {
+  font-size: 11.5px;
+  color: var(--grey);
+}
+.bAv {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+}
+.bAv svg {
+  width: 19px;
+  height: 19px;
+}
+.bAt {
+  align-self: flex-start;
+  margin-left: auto;
+  padding-top: 2px;
+  font-size: 11.5px;
+  color: var(--grey);
+}
+.bSubject {
+  margin: 15px 0 15px;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 680;
+  letter-spacing: -0.014em;
+}
+.bMailBody {
+  padding-top: 15px;
+  border-top: 1px solid var(--sep);
+}
+.bBrand {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  font-weight: 760;
+  letter-spacing: -0.03em;
+}
+.bBrand svg {
+  width: 15px;
+  height: 15px;
+}
+.bHello {
+  margin: 12px 0 13px;
+  font-size: 20px;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.016em;
+}
+.bDl {
+  padding: 2px 12px;
+  border-radius: 10px;
+  background: #f4f2ee;
+}
+.bDl > div {
+  display: grid;
+  grid-template-columns: 66px 1fr;
+  align-items: baseline;
+  padding: 8px 0;
+  border-bottom: 1px solid #e4e0d9;
+}
+.bDl > div:last-child {
+  align-items: center;
+  border-bottom: 0;
+}
+.bDl dt {
+  font-size: 11.5px;
+  color: #77736d;
+}
+.bDl dd {
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+.bDl dd b {
+  display: block;
+  font-weight: 650;
+}
+.bWho {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bWho > span:last-child {
+  display: flex;
+  flex-direction: column;
+  font-size: 11.5px;
+  color: #77736d;
+}
+.bWho b {
+  font-size: 12.5px;
+  color: #111;
+}
+.bPriya {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #b9704f;
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+.bH {
+  margin: 16px 0 4px;
+  font-size: 14px;
+  font-weight: 650;
+}
+.bP {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #3a3a3c;
+}
+.bBtn {
+  position: relative;
+  margin: 15px 0 10px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: 10px;
+  background: #111;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.bBtn .icon {
+  font-size: 16px;
+}
+.bSmall {
+  font-size: 11.5px;
+  color: var(--grey);
+}
+.bLegal {
+  margin-top: 14px;
+  font-size: 11px;
+  color: #aeaeb2;
+}
+.bToast {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px 9px 11px;
+  border-radius: 20px;
+  background: #1d1d1f;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 560;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 150%);
+}
+.bToast .icon {
+  font-size: 15px;
+  color: #34c759;
+  stroke-width: 2.4;
+}
+.bFade {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+/* where a finger lands, as a phone's screen recording shows it */
+.touch {
+  position: absolute;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  margin: -18px 0 0 -18px;
+  border-radius: 50%;
+  background: rgb(110 110 118 / 0.34);
+  opacity: 0;
+  transform: scale(0.55);
+}
+.touchRow {
+  left: 58%;
+  top: 46%;
+}
+.touchBtn {
+  left: 54%;
+  top: 52%;
+}
+
+/* scripted: the email lands, opens, is read down to its button, and goes
+   into her calendar; each restart dips through white */
+.tile[data-ph] .bFade {
+  opacity: 1;
+}
+.tile[data-ph~="in"] .bFade {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.tile[data-ph~="out"] .bFade {
+  opacity: 1;
+  transition: opacity 0.4s ease;
+}
+.tile[data-ph] .bRows {
+  transform: translateY(calc(-1 * var(--rowh)));
+}
+.tile[data-ph] .bNew {
+  opacity: 0;
+}
+.tile[data-ph~="arrive"] .bRows {
+  transform: none;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.tile[data-ph~="arrive"] .bNew {
+  opacity: 1;
+  transition: opacity 0.35s ease 0.12s;
+}
+.tile[data-ph~="tap"] .bNew {
+  background: #ececf1;
+}
+.tile[data-ph~="tap"] .touchRow,
+.tile[data-ph~="press"] .touchBtn {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.1s ease,
+    transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.tile[data-ph] .bMail {
+  transform: translateX(102%);
+}
+.tile[data-ph~="open"] .bMail {
+  transform: none;
+  transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.tile[data-ph~="open"] .bInbox {
+  transform: translateX(-26%);
+  transition: transform 0.42s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.tile[data-ph~="scroll"] .bPage {
+  transform: translateY(var(--bscroll, -160px));
+  transition: transform 1.9s cubic-bezier(0.45, 0, 0.2, 1);
+}
+.tile[data-ph~="press"] .bBtn {
+  background: #3a3a3c;
+}
+.tile[data-ph~="toast"] .bToast {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition:
+    opacity 0.2s ease,
+    transform 0.45s cubic-bezier(0.2, 0.9, 0.25, 1.12);
 }

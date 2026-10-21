@@ -85,7 +85,7 @@ function NavLink({
     <Link
       href={href}
       onClick={onNavigate}
-      className="px-3 py-2 text-[12px] font-medium uppercase tracking-[0.18em] opacity-80 transition-opacity hover:opacity-100 xl:px-4"
+      className="px-3 py-2 text-[15px] tracking-[-0.005em] opacity-80 transition-opacity hover:opacity-100 xl:px-3.5"
     >
       {children}
     </Link>
@@ -112,7 +112,7 @@ function MenuTrigger({
       aria-controls={`menu-${menuKey}`}
       onMouseEnter={() => onOpen(menuKey)}
       onClick={(e) => onToggle(menuKey, e.detail === 0)}
-      className={`flex items-center gap-2 px-3 py-2 text-[12px] font-medium uppercase tracking-[0.18em] transition-opacity xl:px-4 ${
+      className={`flex items-center gap-2 px-3 py-2 text-[15px] tracking-[-0.005em] transition-opacity xl:px-3.5 ${
         open ? "opacity-100" : "opacity-80 hover:opacity-100"
       }`}
     >
@@ -138,7 +138,7 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
         <Link
           href="/services"
           onClick={onNavigate}
-          className="group mt-6 inline-flex items-center gap-2 border-b border-brand pb-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-ink"
+          className="group mt-6 inline-flex items-center gap-2 border-b border-brand pb-1.5 text-[14px] font-medium tracking-[-0.005em] text-ink"
         >
           All services
           <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -174,7 +174,7 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
         onClick={onNavigate}
         className="group relative col-span-4 bg-brand flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3"
       >
-        <Meta className="relative text-paper">(Free) · ~1 business day</Meta>
+        <span className="relative text-[13px] text-paper/85">Free · back within a business day</span>
         <span className="relative">
           <span className="block text-[26px] leading-[1.05] tracking-[-0.02em]">
             The Diagnostic
@@ -182,7 +182,7 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
           <span className="mt-2 block text-[13px] leading-relaxed text-paper">
             A strategist&apos;s read on where your marketing system breaks.
           </span>
-          <span className="mt-5 inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em]">
+          <span className="mt-5 inline-flex items-center gap-2 text-[14px] font-medium tracking-[-0.005em]">
             Request it
             <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </span>
@@ -227,7 +227,7 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
       </ul>
 
       <div className="relative col-span-4 bg-graphite flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3">
-        <Meta className="relative text-fog">(Northeon)</Meta>
+        <span className="relative text-[13px] text-fog">Northeon</span>
         <p className="relative text-[15px] leading-relaxed text-paper/85">
           Plurel is Northeon&apos;s distribution engineering company: one
           team for every relevant channel. Its sister, Kelwin, turns that
@@ -436,13 +436,13 @@ export function SiteHeader() {
             </nav>
 
             <div className="flex items-center gap-4">
-              <Meta className="hidden opacity-70 xl:block">
+              <span className="hidden text-[13px] opacity-70 xl:block">
                 <CityClock visitor />
-              </Meta>
+              </span>
               <Link
                 href={AUDIT_HREF}
                 onClick={closeAll}
-                className={`group hidden items-center gap-3 border text-[11px] font-medium uppercase tracking-[0.18em] transition-[height,padding,background-color,border-color,color] duration-300 motion-reduce:transition-none sm:inline-flex ${
+                className={`group hidden items-center gap-2.5 border text-[14px] font-medium tracking-[-0.005em] transition-[height,padding,background-color,border-color,color] duration-300 motion-reduce:transition-none sm:inline-flex ${
                   pill ? "h-8 rounded-[1px] px-3.5" : "h-10 px-4"
                 } ${
                   tone === "light"
@@ -557,16 +557,16 @@ export function SiteHeader() {
             <Link
               href={AUDIT_HREF}
               onClick={closeAll}
-              className="flex h-14 items-center justify-between bg-paper px-6 text-[12px] font-medium uppercase tracking-[0.18em] text-ink"
+              className="flex h-14 items-center justify-between bg-paper px-6 text-[16px] font-medium tracking-[-0.005em] text-ink"
             >
               Get in touch
               <ArrowUpRight className="size-4" />
             </Link>
             <div className="flex flex-wrap items-center justify-between gap-3 text-paper">
-              <Meta>
+              <span className="text-[14px]">
                 <CityClock visitor />
-              </Meta>
-              <Meta>{CONTACT_EMAIL}</Meta>
+              </span>
+              <span className="text-[14px]">{CONTACT_EMAIL}</span>
             </div>
           </div>
         </div>

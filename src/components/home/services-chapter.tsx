@@ -1,29 +1,90 @@
-import Link from "next/link";
+import type { CSSProperties } from "react";
 import { ArrowUpRight } from "@/components/icons";
-import { ServicesType } from "@/components/home/services-type";
+import { ServicesType, type LayerData } from "@/components/home/services-type";
 import { ChapterHead, CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
 import { SERVICES } from "@/lib/nav";
-import { SERVICE_STAGE, stageName } from "@/lib/services-type";
+import { SERVICE_STAGE, STAGES, stackGeometry, stageName, type Pt } from "@/lib/services-type";
 import s from "./services-type.module.css";
 
 /*
-  Services, on graphite: what the team is made of. A hard cut from the
-  paper manifesto, whose braid ends on "One team. One number.", and
-  before Method on red.
+  Services, on graphite: what the team is made of, as one system. Between
+  the red manifesto and the red Method.
 
-  The figure (ServicesType) is the contents list itself: the eight names
-  first appear in eight suppliers' voices, line up on the rows ("still a
-  menu"), then are set in one face, stage by stage along the chain. The
-  narrator ends on "Set as one, it's a system." Everything here is the
-  server-rendered, finished chapter; with motion off it is simply the
-  list, with the chain live.
+  The figure (ServicesType) starts as a menu: the eight names first
+  appear in eight suppliers' voices, line up on the menu's rows ("still a
+  menu"), are set in one face stage by stage along the chain, and then
+  drain into the system, layer by layer, foundation first, each layer a
+  plate of glass settling onto the stack. The narrator ends on "Set as
+  one, it's a system." What stays is the system: the layer list (the
+  real contents, eight service links grouped in four layers) beside the
+  stack. With motion off, it is simply that.
 
-  The rows: equal heights, hairlines on the container measure, index in
-  column 1, stage in 2 to 3, the
-  name flush on column 4, the line on 9 to 12 (8 to 12 below xl, where
-  the names step down to leave it one line). Phones and tablets: index,
-  name, stage and arrow, then the line, never wrapping from 360px up.
+  The menu is aria-hidden and shown only while the figure runs. Its rows:
+  equal heights, hairlines on the container measure, the name flush on
+  column 4; the index, stage, line and arrow are never shown but keep
+  each row's measure exactly as the contents list had it, so the names
+  land where they always did.
 */
+
+const fmt = (pts: readonly Pt[]) => pts.map((p) => `${p[0]},${p[1]}`).join(" ");
+
+const st = (slug: string) => SERVICE_STAGE[slug] ?? "create";
+
+const LAYERS: LayerData[] = STAGES.map((stg) => ({
+  key: stg.key,
+  name: stg.name,
+  line: stg.line,
+  services: SERVICES.filter((svc) => st(svc.slug) === stg.key).map((svc) => ({
+    name: svc.name,
+    tagline: svc.tagline,
+    href: svc.href,
+  })),
+}));
+
+const GEO = stackGeometry(
+  STAGES.map((stg) => ({
+    key: stg.key,
+    names: SERVICES.flatMap((svc, i) => (st(svc.slug) === stg.key ? [{ i, text: svc.name }] : [])),
+  })),
+);
+
+/** The stack: four plates, foundation first (each covers the back of the one below) */
+function ServicesStack() {
+  return (
+    <svg
+      aria-hidden
+      focusable="false"
+      data-type-stack=""
+      viewBox={`0 0 ${GEO.w} ${GEO.h}`}
+      preserveAspectRatio="xMinYMin meet"
+      className={s.stack}
+      style={{ "--ar": (GEO.w / GEO.h).toFixed(4) } as CSSProperties}
+    >
+      {GEO.plates.map((p) => (
+        <g key={p.key} data-plate={p.key}>
+          <g className={s.plateIn}>
+            <polygon className={s.sideL} points={fmt(p.sideL)} />
+            <polygon className={s.sideR} points={fmt(p.sideR)} />
+            <polygon className={s.face} points={fmt(p.face)} />
+            <polygon className={s.bezel} points={fmt(p.bezel)} />
+            <polyline className={s.edge} points={fmt(p.edge)} />
+            <polyline className={s.lip} points={fmt(p.lip)} />
+            <polyline data-plate-flash="" className={s.hotEdge} points={fmt(p.edge)} />
+            {p.names.map((nm) => (
+              <text key={nm.i} data-plate-name={nm.i} className={s.pname} transform={`matrix(${nm.m.join(" ")})`}>
+                {nm.text}
+              </text>
+            ))}
+          </g>
+        </g>
+      ))}
+      {GEO.plates.map((p) => (
+        <polygon key={p.key} data-plate-hit={p.key} className={s.hit} points={fmt(p.hit)} />
+      ))}
+    </svg>
+  );
+}
+
 export function ServicesChapter() {
   const last = SERVICES.length - 1;
 
@@ -53,68 +114,62 @@ export function ServicesChapter() {
         </div>
       </div>
 
-      <ServicesType items={SERVICES.map((svc) => ({ name: svc.name, st: SERVICE_STAGE[svc.slug] ?? "create" }))}>
-        <ol data-type-list="" className={`${s.list} ${CONTAINER} m-0 grid list-none`}>
+      <ServicesType
+        items={SERVICES.map((svc) => ({ name: svc.name, st: st(svc.slug) }))}
+        layers={LAYERS}
+        stack={<ServicesStack />}
+      >
+        <ol aria-hidden data-type-list="" className={`${s.menu} ${CONTAINER} m-0 grid list-none`}>
           {SERVICES.map((svc, i) => {
-            const st = SERVICE_STAGE[svc.slug] ?? "create";
+            const stg = st(svc.slug);
             return (
-              <li key={svc.slug} data-row="" data-st={st} className={`${s.row} relative`}>
+              <li key={svc.slug} data-row="" data-st={stg} className={`${s.row} relative`}>
                 <span
-                  aria-hidden
                   data-rule=""
-                  className={`${s.rule} absolute inset-x-0 top-0 h-px origin-left bg-paper/20`}
+                  className="absolute inset-x-0 top-0 h-px origin-left bg-paper/20"
                 />
                 <span
-                  aria-hidden
-                  className={`${s.hot} absolute inset-x-0 -top-px h-0.5 origin-left bg-signal`}
-                />
-                <span
-                  aria-hidden
                   data-cur=""
                   className={`${s.cur} pointer-events-none absolute inset-x-0 -top-px h-0.5 origin-left bg-signal`}
                 />
                 {i === last && (
                   <span
-                    aria-hidden
                     data-rule-end=""
-                    className={`${s.rule} absolute inset-x-0 bottom-0 h-px origin-left bg-paper/20`}
+                    className="absolute inset-x-0 bottom-0 h-px origin-left bg-paper/20"
                   />
                 )}
-                <Link
-                  href={svc.href}
-                  className="grid h-full grid-cols-[1.625rem_auto_minmax(0,1fr)_1.25rem] content-start sm:grid-cols-[2.75rem_auto_minmax(0,1fr)_1.25rem] items-baseline py-[var(--rp)] outline-none lg:grid-cols-12 lg:gap-x-8"
-                >
+                <div className="grid h-full grid-cols-[1.625rem_auto_minmax(0,1fr)_1.25rem] content-start sm:grid-cols-[2.75rem_auto_minmax(0,1fr)_1.25rem] items-baseline py-[var(--rp)] lg:grid-cols-12 lg:gap-x-8">
                   <span
                     data-meta=""
-                    className={`${s.dim} ${s.idx} col-start-1 row-start-1 text-[13px] tabular-nums sm:text-[14px] lg:text-[15px]`}
+                    className="col-start-1 row-start-1 text-[13px] tabular-nums sm:text-[14px] lg:text-[15px]"
                   >
                     {svc.index}
                   </span>
                   <span
                     data-slot=""
-                    className={`${s.dim} ${s.name} type-display relative col-start-2 row-start-1 whitespace-nowrap leading-none lg:col-span-4 lg:col-start-4 xl:col-span-5`}
+                    className={`${s.name} type-display relative col-start-2 row-start-1 whitespace-nowrap leading-none lg:col-span-4 lg:col-start-4 xl:col-span-5`}
                   >
                     <span data-nm="">{svc.name}</span>
                   </span>
                   <span
                     data-meta=""
-                    className={`${s.dim} col-start-3 row-start-1 justify-self-end whitespace-nowrap pl-2.5 pr-2 text-[13px] text-fog sm:text-[15px] lg:col-span-2 lg:col-start-2 lg:justify-self-start lg:p-0`}
+                    className="col-start-3 row-start-1 justify-self-end whitespace-nowrap pl-2.5 pr-2 text-[13px] sm:text-[15px] lg:col-span-2 lg:col-start-2 lg:justify-self-start lg:p-0"
                   >
-                    {stageName(st)}
+                    {stageName(stg)}
                   </span>
                   <span
                     data-meta=""
-                    className={`${s.dim} ${s.tag} col-span-3 col-start-2 row-start-2 mt-1 text-[13px] min-[414px]:text-[14px] leading-[1.3] text-fog sm:text-[15px] lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:mt-0 lg:pr-8 lg:text-[clamp(14px,1.05vw,15px)] lg:leading-[1.4] xl:col-span-4 xl:col-start-9`}
+                    className={`${s.tag} col-span-3 col-start-2 row-start-2 mt-1 text-[13px] min-[414px]:text-[14px] leading-[1.3] sm:text-[15px] lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:mt-0 lg:pr-8 lg:text-[clamp(14px,1.05vw,15px)] lg:leading-[1.4] xl:col-span-4 xl:col-start-9`}
                   >
                     {svc.tagline}
                   </span>
                   <span
                     data-meta=""
-                    className={`${s.dim} ${s.arr} col-start-4 row-start-1 self-center justify-self-end text-paper/45 lg:col-start-12 lg:self-baseline`}
+                    className="col-start-4 row-start-1 self-center justify-self-end lg:col-start-12 lg:self-baseline"
                   >
                     <ArrowUpRight className="block size-[18px] lg:size-5" />
                   </span>
-                </Link>
+                </div>
               </li>
             );
           })}
