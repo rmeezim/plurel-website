@@ -530,3 +530,27 @@
     }
   }
 }
+
+/* Forced colors paint a backplate behind every line of text; at solid
+   leading each line's plate covers the descenders of the one above, so
+   headings take a little leading there. An inline-block paints its plate
+   with its own text, so a type reveal's units would still cover the line
+   above: there they set inline, unmasked and still, as finished type. */
+@media (forced-colors: active) {
+  h1,
+  h2,
+  h3,
+  h4,
+  .type-display {
+    line-height: 1.12 !important;
+  }
+  .type-reveal .tr-w,
+  .type-reveal .tr-u {
+    display: inline;
+    clip-path: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}

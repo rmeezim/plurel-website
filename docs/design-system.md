@@ -173,7 +173,9 @@ without JS every chapter renders finished.
   the label slides in. A heading below the fold plays once as it comes up
   the screen; one already on screen stays still. Each carries its words
   once as visually hidden plain text and hides the moving boxes from
-  assistive tech, so it reads as one sentence.
+  assistive tech, so it reads as one sentence. Under forced colors the
+  heads set as plain, finished type (the backplate behind each line would
+  otherwise cover the descenders of the line above).
 - **Blocks:** `Reveal` (fade-up), staggering siblings 0.08s.
 - **Scroll:** one chapter is pinned and scrubbed: services' typographic
   system, which ends on the Plurel System. Scroll-linked without pinning:
@@ -272,15 +274,17 @@ It closes under a brand-red rule: "We engineer the ones your buyers use,
 as one system." Contours behind, with the page's one survey readout. No
 statistics, no sources, no sample people.
 
-## Services: from a menu to a layered system
+## Why Plurel: from a menu to the Plurel System
 
-Services sits on graphite, a hard cut from the red manifesto before it
-and the red Method after it. Markup in `home/services-chapter.tsx`, the
+The services chapter carries the thesis, on graphite, between the paper
+Why now and the red Method. Markup in `home/services-chapter.tsx`, the
 motion in `home/services-type.tsx` (client) with the engine in
 `lib/services-type.ts` and the pin and clone rules in
-`home/services-type.module.css`. The figure is the contents list itself, so
-the chapter's artifact makes Plurel's argument (integration, not a menu)
-in the one place that has to show a menu:
+`home/services-type.module.css`. Its head: the kicker "Why Plurel", the
+h2 "Your marketing shouldn't be ten companies. / It should be one
+system." (TypeReveal) and the side line. Then the figure, the contents
+list itself, so the chapter's artifact makes the argument (integration,
+not a menu) in the one place that has to show a menu:
 
 1. **Eight voices.** "Eight disciplines, eight voices." The eight names
    arrive set the way eight different suppliers would set them: condensed
@@ -290,41 +294,40 @@ in the one place that has to show a menu:
 2. **Still a menu.** "Lined up, it's still a menu." They drop onto the
    rows of the list, still in their own voices.
 3. **One system.** "Set as one, it's a system." Stage by stage along the
-   chain (Narrative, Create, Distribute, Measure, each lit as its layer
-   locks), the names take one face, one scale and one rhythm, then drain
-   into the system layer by layer, foundation first: each layer a plate
-   of glass, in the hero glass's material set flat (a cool slate tint,
-   frost 1px edges, paper type, no shadow, no glow), settling onto an
-   isometric stack (CSS 3D on real DOM). Below lg the menu folds away
-   under the stack.
+   chain (Narrative, Create, Distribute, Measure), the names take one face,
+   one scale and one rhythm; then each layer's names leave the menu, the
+   rows close ranks, and the layer's band rises from the one below,
+   foundation first. On desktop the names fly into their band's service
+   links; below lg they fold away. The narrator hands over to the title,
+   "The Plurel System".
 
-What stays is the system, in the spirit of Legora's layered OS: on the
-left the four layers as a quiet list, each its name and one line
-(Narrative: what you stand for and how it sounds, before anything is
-made; Create: the site every buyer meets, and the content that earns
-attention; Distribute: putting the story where attention gathers;
-Measure: one set of numbers across every layer, counted as qualified
-demand). A layer opens (one at a time; the foundation open by default on
-desktop, all closed below lg) to show its services as links with their
-taglines. On the right, the stack: pointing at or focusing a layer lifts
-its plate and edges it in signal red; pointing at a plate lights its
-row, and a click on it opens the layer. The list is the one control (the
-chain is no longer a toggle).
+What stays is the Plurel System, drawn the way an architect draws a
+building in section: four full-width flat bands, foundation at the foot,
+Narrative on brand red and the three layers above in graphite tones that
+lift as they rise. Each band carries its name (h4, display face), the
+instrument it builds and its one line (Narrative: The Core Brief; Create:
+The Asset System; Distribute: The Surface Plan; Measure: The Ledger),
+what it feeds (the layer above; the Ledger feeds back into Narrative and
+Distribute every quarter) and its services as links. A hairline loop
+runs through the bands: a signal-red spine up through a node on each
+layer and a dashed return from the Ledger, labelled "Read monthly. Reset
+quarterly." from 1280px. Pointing at or focusing a band lifts it a tone
+(never a shadow) and brightens its services.
 
 Rules:
-- The layer list (native `<details>`, the eight service links grouped
-  in four layers) is server-rendered and is what assistive tech, no-JS,
-  reduced motion, forced colours and screens too short to pin (phones
-  under 650px tall, 640px from lg, and any screen whose finished frame
-  would not fit) get, with the narrator saying what it shows: "Eight
-  kinds of work, in four layers." Eight aria-hidden clones carry the
-  motion; the plates are aria-hidden too.
-- Pinned for 150svh of travel on desktop and 131svh on phones (the first
-  two beats keep the 110svh and 96svh they were drawn for; the rest is
-  the stacking), moved only by the visitor's scroll; transforms and
-  opacity only, measured after fonts load and on resize, which keeps the
-  reader's place. Colours morph in OKLab, so no red passes through pink.
-  `#services` lands on the chapter.
+- The System (the eight service links grouped in four layers) is
+  server-rendered and is what assistive tech, no-JS, reduced motion,
+  forced colors and screens too short to pin get. Eight aria-hidden
+  clones carry the motion.
+- It pins on desktop from 1280x720 and at 768x1024 and 390x844 or larger;
+  1024x768, 375x667 and 360x640 get the static System. Below lg the
+  pinned bands show name and services only, and what each layer builds
+  follows the pin in plain text.
+- Pinned for about 145svh of travel on desktop and 127svh on phones,
+  moved only by the visitor's scroll; transforms and opacity only,
+  measured after fonts load and on resize, which keeps the reader's place.
+  Colors morph in OKLab, so no red passes through pink. `#services` lands
+  on the chapter.
 - The pure parts are unit tested:
   `npx -y tsx --test src/lib/services-type.test.ts`.
 

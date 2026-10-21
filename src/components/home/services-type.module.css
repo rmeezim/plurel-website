@@ -256,7 +256,7 @@
     --pl: 48px;
     --gap: 32px;
     --rg: 24px;
-    --bn: clamp(2.5rem, 1.6rem + 3.4vw, 5.25rem);
+    --bn: clamp(2.5rem, 0.6rem + 4.4vw, 5.25rem);
     --bt: clamp(1.25rem, 0.5rem + 1.1vw, 1.5rem);
     --bs: clamp(1.125rem, 0.55rem + 0.9vw, 1.3125rem);
     --bpt: 40px;
@@ -410,8 +410,8 @@
   opacity: 1;
   transform: translate(2px, -2px);
 }
-/* the loop's note: with the Ledger in words (from lg, read by assistive
-   tech only), and on the drawing as the return line's label (lg) */
+/* the loop's note: with the Ledger in words (from xl, read by assistive
+   tech only), and on the drawing as the return line's label (xl) */
 .bnote {
   margin: 6px 0 0;
   font-size: 14px;
@@ -430,18 +430,29 @@
     grid-row: 1;
   }
   .builds {
-    grid-column: 5 / span 5;
+    grid-column: 5 / span 4;
     grid-row: 1;
     max-width: none;
     /* its title's cap line on the name's (line-heights 0.9 and 1.15) */
     margin-top: calc(0.105 * var(--bn) - 0.23 * var(--bt));
   }
   .svcs {
-    grid-column: 10 / span 3;
+    grid-column: 9 / span 4;
     grid-row: 1;
     max-width: none;
     /* the first link's cap line on the name's (line-height 1.2) */
     margin-top: calc(0.105 * var(--bn) - 9px - 0.255 * var(--bs));
+  }
+}
+/* From xl: the builds column takes five columns (its line keeps to two),
+   the services three, and the note moves onto the drawing (in words it
+   stays with the Ledger, for assistive tech) */
+@media (min-width: 80rem) {
+  .builds {
+    grid-column: 5 / span 5;
+  }
+  .svcs {
+    grid-column: 10 / span 3;
   }
   .bnote {
     position: absolute;
@@ -794,7 +805,7 @@
 }
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
   :global(html[data-js]) .root:not([data-type-motion]) .system {
-    --bn: min(clamp(2.5rem, 1.6rem + 3.4vw, 5.25rem), 8.4svh);
+    --bn: min(clamp(2.5rem, 0.6rem + 4.4vw, 5.25rem), 8.4svh);
     --bt: min(clamp(1.25rem, 0.5rem + 1.1vw, 1.5rem), 2.6svh);
     --bpt: clamp(12px, 2.2svh, 30px);
     --bpb: clamp(12px, 2.2svh, 30px);
@@ -809,7 +820,7 @@
     padding-top: 56px;
   }
   :global(html[data-js]) .root:not([data-type-motion]) .system {
-    --bn: min(clamp(1.75rem, 1rem + 3vw, 2.5rem), 4.4svh);
+    --bn: min(clamp(2rem, 1.1rem + 3.4vw, 2.75rem), 4.8svh);
     --bs: min(17px, 2.2svh);
   }
   :global(html[data-js]) .root:not([data-type-motion]) .svcs {
@@ -902,7 +913,7 @@
 }
 @media (min-width: 64rem) {
   .root[data-type-motion="on"] .system {
-    --bn: min(clamp(2.5rem, 1.6rem + 3.4vw, 5.25rem), 8.4svh);
+    --bn: min(clamp(2.5rem, 0.6rem + 4.4vw, 5.25rem), 8.4svh);
     --bt: min(clamp(1.25rem, 0.5rem + 1.1vw, 1.5rem), 2.6svh);
     --bpt: clamp(12px, 2.2svh, 30px);
     --bpb: clamp(12px, 2.2svh, 30px);
@@ -932,7 +943,7 @@
     display: block;
   }
   .root[data-type-motion="on"] .system {
-    --bn: min(clamp(1.75rem, 1rem + 3vw, 2.5rem), 4.4svh);
+    --bn: min(clamp(2rem, 1.1rem + 3.4vw, 2.75rem), 4.8svh);
     --bs: min(17px, 2.2svh);
   }
   .root[data-type-motion="on"] .svcs {

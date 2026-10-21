@@ -47,6 +47,13 @@ const TYPES = [
   },
 ] as const;
 
+/** Hyphenated compounds never break across lines ("retail-ready", "Sell-through") */
+function keepCompounds(text: string): ReactNode {
+  return text
+    .split(/(\S+-\S+)/)
+    .map((part, i) => (i % 2 ? <span key={i} className="whitespace-nowrap">{part}</span> : part));
+}
+
 function Field({ label, children, number = false }: { label: string; children: ReactNode; number?: boolean }) {
   return (
     <div className="border-t border-paper/25 pb-7 pt-4 sm:pb-8">
@@ -105,10 +112,10 @@ export function WhoItsForChapter() {
                 className="type-display border-t border-paper pb-8 pt-5 text-[clamp(2rem,1.4rem+2.6vw,3rem)] leading-[0.95] lg:text-[clamp(2rem,3.2vw,3rem)]"
               />
               <dl className="sm:row-span-3 sm:grid sm:grid-rows-subgrid">
-                <Field label="Where buyers decide">{t.decide}</Field>
-                <Field label="What we build first">{t.build}</Field>
+                <Field label="Where buyers decide">{keepCompounds(t.decide)}</Field>
+                <Field label="What we build first">{keepCompounds(t.build)}</Field>
                 <Field label="The number" number>
-                  {t.number}
+                  {keepCompounds(t.number)}
                 </Field>
               </dl>
             </article>
