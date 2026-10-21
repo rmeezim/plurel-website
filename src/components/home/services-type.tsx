@@ -1,69 +1,38 @@
 "use client";
 
-import Link from "next/link";
 import { Fragment, useEffect, useRef, type ReactNode } from "react";
-import { ArrowRight, ArrowUpRight } from "@/components/icons";
+import { ArrowRight } from "@/components/icons";
 import { CONTAINER, GRID } from "@/components/system";
-import { mountServicesType, STACKED_QUERY, STAGES, type StageKey } from "@/lib/services-type";
+import { mountServicesType, STAGES, SYSTEM, type StageKey } from "@/lib/services-type";
 import s from "./services-type.module.css";
 
 /*
   The figure of Services: the eight names, first set the way eight
   suppliers would set them, lined up on the menu's rows, set in one face
-  stage by stage along the chain, then drained into the system: four
-  layers, foundation first, each a plate of glass that settles onto the
-  stack (engine in lib/services-type.ts). This component renders the
-  figure head (the narrator and the chain), the system (the layer list
-  and the stack, passed in server-rendered) and the eight aria-hidden
-  clones that carry the motion; the menu comes in as children.
-
-  The layer list is the real, accessible contents: four disclosures (one
-  open at a time, the foundation first on desktop; below lg all start
-  closed), each with its services as links. It needs no script: the
-  browser opens and closes them. Pointing at or focusing a layer lifts
-  its plate; pointing at a plate lights its row, and a click on it opens
-  the layer (the list is the keyboard's way in).
+  stage by stage along the chain, then drained into the Plurel System:
+  four bands, foundation first, each rising from the one below it as its
+  names land in its rows, and the loop drawn along them last (engine in
+  lib/services-type.ts). This component renders the figure head (the
+  narrator, who hands over to the System's title, and the chain, which
+  gives way to the System's line), the body (the menu, passed in as
+  children, and the System's bands, passed in server-rendered) and the
+  eight aria-hidden clones that carry the motion.
 
   Static (no JS, reduced motion, forced colours, a screen too short for
-  the finished frame) it is simply the system, unpinned, and the
-  narrator says what it shows: "Eight kinds of work, in four layers."
+  the finished frame) it is simply the System, unpinned: its title, its
+  line and the four bands.
 */
-
-export type LayerData = {
-  key: StageKey;
-  name: string;
-  line: string;
-  services: readonly { name: string; tagline: string; href: string }[];
-};
 
 export function ServicesType({
   items,
-  layers,
-  stack,
+  system,
   children,
 }: {
   items: readonly { name: string; st: StageKey }[];
-  layers: readonly LayerData[];
-  stack: ReactNode;
+  system: ReactNode;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLOListElement>(null);
-
-  // Below lg every layer starts closed: the server opens the foundation,
-  // which is right for desktop and for no script. It closes at once, not
-  // on its height (and before the engine measures the finished frame).
-  useEffect(() => {
-    const list = listRef.current;
-    if (!list || !matchMedia(STACKED_QUERY).matches) return;
-    list.setAttribute("data-instant", "");
-    list.querySelectorAll<HTMLDetailsElement>("details[open]").forEach((d) => {
-      d.open = false;
-    });
-    void list.offsetHeight;
-    const raf = requestAnimationFrame(() => list.removeAttribute("data-instant"));
-    return () => cancelAnimationFrame(raf);
-  }, []);
 
   useEffect(() => {
     const section = ref.current?.closest("section");
@@ -73,41 +42,25 @@ export function ServicesType({
     return mountServicesType(section).destroy;
   }, []);
 
-  // A plate opens its layer (pointer only: the list is the keyboard's way in)
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const onClick = (e: MouseEvent) => {
-      const key = (e.target as Element | null)?.closest?.("[data-plate-hit]")?.getAttribute("data-plate-hit");
-      const d = key ? listRef.current?.querySelector<HTMLDetailsElement>(`[data-layer="${key}"] > details`) : null;
-      if (d) d.open = true;
-    };
-    el.addEventListener("click", onClick);
-    return () => el.removeEventListener("click", onClick);
-  }, []);
-
   return (
     <div ref={ref} data-type-track="" className={s.track}>
       <div data-type-stage="" className={s.stage}>
         <div data-type-stage-in="" className={s.stageIn}>
           <div className={CONTAINER}>
             <div data-type-head="" className={`${GRID} ${s.head}`}>
-              <p
+              <div
                 data-type-cap=""
-                className={`${s.cap} col-span-4 sm:col-span-6 lg:col-span-3`}
+                className={`${s.cap} type-display col-span-4 text-[20px] leading-[1.12] text-paper sm:col-span-6 lg:col-span-3 lg:text-[clamp(1.25rem,1.5vw,1.375rem)]`}
               >
-                <span className="type-display block text-[20px] leading-[1.12] text-paper lg:text-[clamp(1.25rem,1.5vw,1.375rem)]">
-                  <span className={s.capStatic}>
-                    <span className="lg:block">Eight kinds of work,</span>{" "}
-                    <span className="lg:block">in four layers.</span>
-                  </span>
-                  <span aria-hidden className={s.capMotion}>
-                    <span className={s.ca}>Eight disciplines, eight voices.</span>
-                    <span className={s.cb}>Lined up, it&rsquo;s still a menu.</span>
-                    <span className={s.cc}>Set as one, it&rsquo;s a system.</span>
-                  </span>
-                </span>
-              </p>
+                <h3 id="system-heading" className={s.title}>
+                  {SYSTEM.title}
+                </h3>
+                <p aria-hidden className={s.capMotion}>
+                  <span className={s.ca}>Eight disciplines, eight voices.</span>
+                  <span className={s.cb}>Lined up, it&rsquo;s still a menu.</span>
+                  <span className={s.cc}>Set as one, it&rsquo;s a system.</span>
+                </p>
+              </div>
 
               <div
                 aria-hidden
@@ -123,53 +76,19 @@ export function ServicesType({
                   </Fragment>
                 ))}
               </div>
+
+              <p
+                data-type-line=""
+                className={`${s.line} col-span-4 text-[16px] leading-[1.5] text-fog sm:col-span-6 lg:col-span-8 lg:col-start-4 lg:text-[17px] lg:leading-[1.45] xl:col-span-7 xl:col-start-4`}
+              >
+                {SYSTEM.line}
+              </p>
             </div>
           </div>
 
-          <div className={s.body}>
+          <div data-type-body="" className={s.body}>
             {children}
-            <div data-type-system="" className={s.system}>
-              <div className={`${CONTAINER} ${s.systemIn}`}>
-                <div className={`${GRID} ${s.systemGrid} items-start`}>
-                  <ol
-                    ref={listRef}
-                    data-type-layers=""
-                    aria-label="Services, in four layers"
-                    className={`${s.layers} col-span-4 sm:col-span-6 lg:col-span-6`}
-                  >
-                    {layers.map((L, i) => (
-                      <li key={L.key} data-layer-row="" data-layer={L.key} className={s.lrow}>
-                        <details name="services-layers" open={i === 0} className={s.layer}>
-                          <summary className={s.sum}>
-                            <span className={`${s.lname} type-display`}>
-                              {L.name}
-                              <span className="sr-only">: </span>
-                            </span>
-                            <span aria-hidden className={s.pm} />
-                            <span className={s.lline}>{L.line}</span>
-                          </summary>
-                          <ul data-panel="" className={s.panel}>
-                            {L.services.map((svc) => (
-                              <li key={svc.href}>
-                                <Link href={svc.href} className={s.svc}>
-                                  <span className={`${s.sname} type-display`}>
-                                    {svc.name}
-                                    <span className="sr-only">: </span>
-                                  </span>
-                                  <ArrowUpRight className={s.arr} />
-                                  <span className={s.stag}>{svc.tagline}</span>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </details>
-                      </li>
-                    ))}
-                  </ol>
-                  <div className={`${s.stackCell} col-span-4 sm:col-span-6 lg:col-span-6 lg:col-start-7`}>{stack}</div>
-                </div>
-              </div>
-            </div>
+            {system}
           </div>
         </div>
 

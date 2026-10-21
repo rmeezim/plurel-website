@@ -1,23 +1,25 @@
-import type { CSSProperties } from "react";
+import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
-import { ServicesType, type LayerData } from "@/components/home/services-type";
+import { ServicesType } from "@/components/home/services-type";
 import { ChapterHead, CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
+import { TypeReveal } from "@/components/type-reveal";
 import { SERVICES } from "@/lib/nav";
-import { SERVICE_STAGE, STAGES, stackGeometry, stageName, type Pt } from "@/lib/services-type";
+import { FEEDS_BACK, SERVICE_STAGE, STAGES, stageName, SYSTEM, type StageKey } from "@/lib/services-type";
 import s from "./services-type.module.css";
 
 /*
-  Services, on graphite: what the team is made of, as one system. Between
-  the red manifesto and the red Method.
+  Why Plurel, on graphite: the thesis, then the eight disciplines shown
+  becoming one system. Between the paper "Why now" and the red Method.
 
   The figure (ServicesType) starts as a menu: the eight names first
   appear in eight suppliers' voices, line up on the menu's rows ("still a
   menu"), are set in one face stage by stage along the chain, and then
-  drain into the system, layer by layer, foundation first, each layer a
-  plate of glass settling onto the stack. The narrator ends on "Set as
-  one, it's a system." What stays is the system: the layer list (the
-  real contents, eight service links grouped in four layers) beside the
-  stack. With motion off, it is simply that.
+  drain into the Plurel System, layer by layer, foundation first: each
+  layer a full-bleed band (Narrative on red at the floor, the three above
+  in graphite tones that lift as they rise), its names landing in its
+  rows. Last the loop is drawn along the bands. What stays is the System:
+  four bands, each its name, what it builds, what it feeds and its
+  services as links. With motion off, it is simply that.
 
   The menu is aria-hidden and shown only while the figure runs. Its rows:
   equal heights, hairlines on the container measure, the name flush on
@@ -26,62 +28,108 @@ import s from "./services-type.module.css";
   land where they always did.
 */
 
-const fmt = (pts: readonly Pt[]) => pts.map((p) => `${p[0]},${p[1]}`).join(" ");
+const st = (slug: string): StageKey => SERVICE_STAGE[slug] ?? "create";
 
-const st = (slug: string) => SERVICE_STAGE[slug] ?? "create";
-
-const LAYERS: LayerData[] = STAGES.map((stg) => ({
-  key: stg.key,
-  name: stg.name,
-  line: stg.line,
-  services: SERVICES.filter((svc) => st(svc.slug) === stg.key).map((svc) => ({
-    name: svc.name,
-    tagline: svc.tagline,
-    href: svc.href,
-  })),
+/** The bands, top first as they are drawn: Measure at the top, Narrative at the floor */
+const LAYERS = [...STAGES].reverse().map((L) => ({
+  ...L,
+  s: STAGES.findIndex((x) => x.key === L.key),
+  services: SERVICES.flatMap((svc, i) => (st(svc.slug) === L.key ? [{ i, name: svc.name, href: svc.href }] : [])),
 }));
+const TOP = STAGES.length - 1;
 
-const GEO = stackGeometry(
-  STAGES.map((stg) => ({
-    key: stg.key,
-    names: SERVICES.flatMap((svc, i) => (st(svc.slug) === stg.key ? [{ i, text: svc.name }] : [])),
-  })),
-);
-
-/** The stack: four plates, foundation first (each covers the back of the one below) */
-function ServicesStack() {
+/*
+  The loop, drawn in each band from the same two lines, so they meet
+  across the bands as one drawing: the spine (the signal up, through
+  every layer's node, an arrowhead where it crosses into the layer
+  above) and the return (the Ledger's read, dashed, back down to the
+  foundation, tapping the layers it feeds back into). aria-hidden: the
+  bands' text says the same in words ("Feeds Create").
+*/
+function Loop({ s: i, back, label }: { s: number; back: boolean; label: boolean }) {
   return (
-    <svg
-      aria-hidden
-      focusable="false"
-      data-type-stack=""
-      viewBox={`0 0 ${GEO.w} ${GEO.h}`}
-      preserveAspectRatio="xMinYMin meet"
-      className={s.stack}
-      style={{ "--ar": (GEO.w / GEO.h).toFixed(4) } as CSSProperties}
-    >
-      {GEO.plates.map((p) => (
-        <g key={p.key} data-plate={p.key}>
-          <g className={s.plateIn}>
-            <polygon className={s.sideL} points={fmt(p.sideL)} />
-            <polygon className={s.sideR} points={fmt(p.sideR)} />
-            <polygon className={s.face} points={fmt(p.face)} />
-            <polygon className={s.bezel} points={fmt(p.bezel)} />
-            <polyline className={s.edge} points={fmt(p.edge)} />
-            <polyline className={s.lip} points={fmt(p.lip)} />
-            <polyline data-plate-flash="" className={s.hotEdge} points={fmt(p.edge)} />
-            {p.names.map((nm) => (
-              <text key={nm.i} data-plate-name={nm.i} className={s.pname} transform={`matrix(${nm.m.join(" ")})`}>
-                {nm.text}
-              </text>
-            ))}
-          </g>
-        </g>
-      ))}
-      {GEO.plates.map((p) => (
-        <polygon key={p.key} data-plate-hit={p.key} className={s.hit} points={fmt(p.hit)} />
-      ))}
-    </svg>
+    <span aria-hidden className={s.loop}>
+      {i > 0 && <span data-loop="in" className={s.lIn} />}
+      {i < TOP && <span data-loop="out" className={s.lOut} />}
+      {i < TOP && <span data-loop="arrow" className={s.arrow} />}
+      <span data-loop="ret" className={`${s.ret} ${i === TOP ? s.retTop : i === 0 ? s.retFoot : ""}`}>
+        <span className={s.cover} />
+      </span>
+      {i === TOP && <span data-loop="stub" className={s.stub} />}
+      {back && <span data-loop="tap" className={s.tap} />}
+      <span data-loop="node" className={s.node} />
+      {label && (
+        <span data-loop="note" className={s.label}>
+          {SYSTEM.note.replace(". ", ".\n")}
+        </span>
+      )}
+    </span>
+  );
+}
+
+function SystemBands() {
+  return (
+    <div data-type-system="" className={s.system}>
+      <ol data-type-bands="" aria-labelledby="system-heading" className={s.bands}>
+        {LAYERS.map((L) => (
+          <li key={L.key} data-band={L.key} className={s.band}>
+            <div aria-hidden data-band-fill="" className={s.fill} />
+            <div className={`${CONTAINER} ${GRID} ${s.bandIn}`}>
+              <h4 data-band-in="" className={`${s.bname} type-display`}>
+                {L.name}
+              </h4>
+              <div data-band-in="" className={s.builds}>
+                <p className={`${s.bt} type-display`}>{L.builds}</p>
+                <p className={s.bl}>{L.line}</p>
+                <p className={s.bf}>{L.feeds}</p>
+                {L.s === TOP && <p className={s.bnote}>{SYSTEM.note}</p>}
+              </div>
+              <ul data-band-in="" className={s.svcs}>
+                {L.services.map((svc) => (
+                  <li key={svc.href}>
+                    <Link href={svc.href} className={s.svc}>
+                      <span data-band-name={svc.i} className={`${s.sname} type-display`}>
+                        {svc.name}
+                      </span>
+                      <ArrowUpRight className={s.arr} />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <Loop s={L.s} back={FEEDS_BACK.includes(L.key)} label={L.key === "create"} />
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+/*
+  Below lg, while the figure runs, the pinned frame shows each band's
+  name and services only; what each layer builds and feeds follows the
+  pin here, foundation first, in the order the loop runs. Hidden
+  everywhere else (the bands carry it).
+*/
+function SystemLegend() {
+  return (
+    <div data-type-legend="" className={`${s.legend} ${CONTAINER}`}>
+      <p className={s.legLine}>{SYSTEM.line}</p>
+      <ol className={s.legList}>
+        {STAGES.map((L) => (
+          <li key={L.key} className={s.legItem}>
+            <p className={s.legLayer}>
+              <span aria-hidden data-tone={L.key} className={s.legMark} />
+              {L.name}
+            </p>
+            <p className={`${s.legTitle} type-display`}>{L.builds}</p>
+            <p className={s.legText}>{L.line}</p>
+            <p className={s.legFeeds}>{L.feeds}</p>
+          </li>
+        ))}
+      </ol>
+      <p className={s.legNote}>{SYSTEM.note}</p>
+    </div>
   );
 }
 
@@ -97,28 +145,25 @@ export function ServicesChapter() {
       <div className={`${CONTAINER} pt-24 lg:pt-36`}>
         <div className={`${GRID} items-start gap-y-7 lg:grid-rows-[auto_1fr]`}>
           <ChapterHead
-            label="Services"
+            label="Why Plurel"
             tone="dark"
             className="col-span-4 sm:col-span-6 lg:col-span-3 lg:row-start-1 lg:pt-4"
           />
-          <h2
+          <TypeReveal
+            as="h2"
             id="services-heading"
             className={`${H2} col-span-4 sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-span-2 lg:row-start-1`}
-          >
-            Everything that makes you visible, built as one system.
-          </h2>
+            lines={["Your marketing shouldn’t be ten companies.", "It should be one system."]}
+            variant="display"
+          />
           <p className="col-span-4 max-w-[34ch] text-[17px] leading-[1.5] text-fog sm:col-span-6 lg:col-span-3 lg:col-start-1 lg:row-start-2 lg:max-w-[30ch] lg:text-[16px]">
-            Only the channels that fit your market. The budget follows the
-            bottleneck.
+            Brand, site, search, content, social, paid and press usually sit
+            with different suppliers. We run them as one.
           </p>
         </div>
       </div>
 
-      <ServicesType
-        items={SERVICES.map((svc) => ({ name: svc.name, st: st(svc.slug) }))}
-        layers={LAYERS}
-        stack={<ServicesStack />}
-      >
+      <ServicesType items={SERVICES.map((svc) => ({ name: svc.name, st: st(svc.slug) }))} system={<SystemBands />}>
         <ol aria-hidden data-type-list="" className={`${s.menu} ${CONTAINER} m-0 grid list-none`}>
           {SERVICES.map((svc, i) => {
             const stg = st(svc.slug);
@@ -175,6 +220,8 @@ export function ServicesChapter() {
           })}
         </ol>
       </ServicesType>
+
+      <SystemLegend />
 
       <div className={`${CONTAINER} pb-28 pt-10 lg:pb-40 lg:pt-12`}>
         <div className={GRID}>

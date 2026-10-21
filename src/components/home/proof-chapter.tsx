@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/reveal";
 import { CONTAINER, CtaLink, GRID, H2, Kicker, Meta } from "@/components/system";
+import { TypeReveal } from "@/components/type-reveal";
 import { AUDIT_HREF } from "@/lib/nav";
 import { PROOF_ID, SAMPLE_DIAGNOSTIC as D, SAMPLE_TOTAL } from "@/lib/proof";
 
@@ -8,19 +9,20 @@ import { PROOF_ID, SAMPLE_DIAGNOSTIC as D, SAMPLE_TOTAL } from "@/lib/proof";
   Proof: what a Diagnostic hands back, shown as an excerpt of one.
 
   There are no client cases yet, so the chapter shows the deliverable
-  itself: a sample Diagnostic for Halden (the sample brand of the
-  attention section's week), labelled as a sample in its top bar. It is set as a sheet of
-  paper on the graphite room, laid out like the printed report: section
-  heads hang in the first three columns, the content runs on the other
-  nine through subgrid. Mono only for the three month heads of the plan;
-  scores are figures in the display face, with "out of 10" said once in
-  the section head. Brand red marks the two weakest scores and the first
-  fix. The read is the one Halden had before the work in the sample week
-  ran, and the intro says so.
+  itself: a sample Diagnostic for Halden, a sample company the intro
+  introduces as one, labelled as a sample in its top bar too. It is set
+  as a sheet of paper on the graphite room, laid out like the printed
+  report: section heads hang in the first three columns, the content
+  runs on the other nine through subgrid. Mono only for the three month
+  heads of the plan; scores are figures in the display face, with "out
+  of 10" said once in the section head. Brand red marks the two weakest
+  scores and the first fix.
 
-  Server component; the only motion is Reveal plus the score bars and
-  the plan's month cells drawing in once their block is revealed (gated
-  by prefers-reduced-motion; no-JS and reduced motion get finished bars).
+  Server component. Motion: the headline on TypeReveal, the sheet's
+  title (the company's name) letter by letter, Reveal for the rest, and
+  the score bars and the plan's month cells drawing in once their block
+  is revealed (gated by prefers-reduced-motion; no-JS and reduced motion
+  get finished type and bars).
 */
 
 const WEAK = 3;
@@ -241,23 +243,22 @@ export function ProofChapter() {
     >
       <div className={`${CONTAINER} py-24 lg:py-36`}>
         <div className={`${GRID} gap-y-8 lg:items-end`}>
-          <Reveal className="col-span-4 sm:col-span-6 lg:col-span-8">
+          <div className="col-span-4 sm:col-span-6 lg:col-span-8">
             <Kicker tone="dark">Proof</Kicker>
-            <h2
+            <TypeReveal
               id="proof-heading"
               className={`${H2} mt-8 lg:mt-10`}
-            >
-              What a Diagnostic finds.
-            </h2>
-          </Reveal>
+              lines={["What a Diagnostic finds."]}
+            />
+          </div>
           <Reveal
             delay={0.1}
             className="col-span-4 sm:col-span-4 lg:col-span-3 lg:col-start-10 lg:pb-1"
           >
             <p className="max-w-[40ch] text-[16px] leading-[1.55] text-fog">
               Before you send us anything, see what comes back. This is an
-              excerpt of the read on Halden, the sample brief from the top of
-              the page, as it stood before that work ran.
+              excerpt of a Diagnostic run on Halden, a sample company that
+              sells quiet heat pumps to homeowners and housebuilders.
             </p>
           </Reveal>
         </div>
@@ -281,12 +282,14 @@ export function ProofChapter() {
             >
               <div className="col-span-4 sm:col-span-6 lg:col-span-8">
                 <p className="text-[15px] text-muted">{D.product}</p>
-                <h3
+                <TypeReveal
+                  as="h3"
                   id="proof-doc-title"
+                  variant="chars"
+                  delay={120}
                   className="type-display mt-3 text-[clamp(3.25rem,7vw,6rem)] leading-[0.9]"
-                >
-                  {D.client}
-                </h3>
+                  lines={[D.client]}
+                />
                 <p className="mt-5 text-[17px] leading-snug text-ink/75">
                   {D.about}
                 </p>

@@ -412,21 +412,7 @@
     animation: mark-cell 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   }
 
-  /* Headline lines rise out of their own baseline mask. Wrap each line in
-     `.line-mask` (overflow hidden) and the text in `.line-rise`. */
-  @keyframes line-rise {
-    from {
-      transform: translateY(108%);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-  .line-rise {
-    display: inline-block;
-    animation: line-rise 1.05s cubic-bezier(0.19, 1, 0.22, 1) both;
-  }
-
+  /* The hero's headline rises on the type-reveal system (below) */
 }
 
 /* ---------- Type reveal (components/type-reveal.tsx) ----------

@@ -1,12 +1,13 @@
 /*
   What Plurel is: the statement's words light as the reader reaches them.
-  They are dimmed only with JS and with motion allowed, so no-JS and
-  reduced-motion visitors (and anyone before the script runs on a screen
-  that never moves) read the statement lit. Colour only, one transition.
+  They dim only with JS and with motion allowed, so no-JS and
+  reduced-motion visitors read the statement lit from the start. Dimmed,
+  a word is paper at 36% on graphite, 3.2:1: still AA for type this large
+  (34px and up). Color only, one transition.
 */
 @media (prefers-reduced-motion: no-preference) {
   :global(html[data-js]) .word:not([data-lit]) {
-    color: color-mix(in oklab, var(--color-paper) 24%, transparent);
+    color: color-mix(in oklab, var(--color-paper) 36%, transparent);
   }
   .word {
     transition: color 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);

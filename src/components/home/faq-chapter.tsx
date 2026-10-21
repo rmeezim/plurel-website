@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { ArrowUpRight } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
 import { ChapterHead, CONTAINER, GRID, H2 } from "@/components/system";
+import { TypeReveal } from "@/components/type-reveal";
 import { FAQS } from "@/lib/home";
 import { CONTACT_EMAIL } from "@/lib/nav";
 
@@ -150,12 +151,11 @@ export function FaqChapter() {
         <ChapterHead label="Questions" />
 
         <header className={`${GRID} mt-8 gap-y-6 lg:mt-10 lg:items-end`}>
-          <h2
+          <TypeReveal
             id="faq-heading"
             className={`${H2} col-span-4 sm:col-span-6 lg:col-span-8`}
-          >
-            Straight answers.
-          </h2>
+            lines={["Straight answers."]}
+          />
           <div className="col-span-4 lg:col-span-4 lg:col-start-9 lg:pb-1.5 xl:col-span-3 xl:col-start-10">
             <p className="max-w-[40ch] text-[15px] leading-[1.55] text-ink/70">
               Something we didn&apos;t cover? Write to us and a strategist will

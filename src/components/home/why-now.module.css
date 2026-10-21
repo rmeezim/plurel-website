@@ -22,19 +22,19 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .row:has(> :global(.type-reveal)[data-state="armed"]) .rule,
-  .row:has(> :global(.type-reveal)[data-state="armed"]) .total {
+  .row:has(:global(.type-reveal)[data-state="armed"]) .rule,
+  .row:has(:global(.type-reveal)[data-state="armed"]) .total {
     transform: scaleX(0);
   }
-  .row:has(> :global(.type-reveal)[data-state="armed"]) .tag {
+  .row:has(:global(.type-reveal)[data-state="armed"]) .tag {
     opacity: 0;
     transform: translateY(6px);
   }
-  .row:has(> :global(.type-reveal)[data-state="in"]) .rule,
-  .row:has(> :global(.type-reveal)[data-state="in"]) .total {
+  .row:has(:global(.type-reveal)[data-state="in"]) .rule,
+  .row:has(:global(.type-reveal)[data-state="in"]) .total {
     transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .row:has(> :global(.type-reveal)[data-state="in"]) .tag {
+  .row:has(:global(.type-reveal)[data-state="in"]) .tag {
     transition:
       opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s,
       transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.28s;

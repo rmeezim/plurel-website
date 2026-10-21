@@ -70,7 +70,7 @@ export function WhoItsForChapter() {
       aria-labelledby="who-heading"
       className="relative isolate overflow-hidden bg-brand text-paper"
     >
-      <ArtField kind="contours" seed={7} tone="red" />
+      <ArtField kind="contours" seed={4} tone="red" />
       <div className={`${CONTAINER} py-24 lg:py-36`}>
         <div className={`${GRID} gap-y-8`}>
           <div className="col-span-4 sm:col-span-6 lg:col-span-7">

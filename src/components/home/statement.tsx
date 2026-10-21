@@ -89,27 +89,32 @@ export function StatementChapter() {
   }, []);
 
   return (
-    <section
-      aria-labelledby="statement-heading"
-      className="relative isolate overflow-hidden bg-graphite text-paper"
-    >
-      <ArtField kind="mark" tone="dark" />
-      <div className={`${CONTAINER} pb-24 pt-28 sm:pt-36 lg:pb-32 lg:pt-48`}>
-        <h2 id="statement-heading" className="sr-only">
-          What Plurel is
-        </h2>
-        <p
-          ref={ref}
-          className="max-w-[22ch] text-[clamp(2.1rem,1rem+3.4vw,4.6rem)] font-normal leading-[1.04] tracking-[-0.03em] sm:max-w-[24ch] lg:max-w-[25ch]"
-        >
-          {WORDS.map((w, i) => (
-            <span key={i} data-word="" className={s.word}>
-              {i < WORDS.length - 1 ? `${w} ` : w}
-            </span>
-          ))}
-        </p>
+    <section aria-labelledby="statement-heading" className="bg-graphite text-paper">
+      {/* The statement's room: the mark sits behind it, centered on it and
+          cropped by the right edge; the fact sheet below stays clear. This
+          block, not the section, clips the art, so its drift reads the page
+          scroll. */}
+      <div className="relative isolate overflow-hidden">
+        <ArtField kind="mark" tone="dark" />
+        <div className={`${CONTAINER} pb-24 pt-28 sm:pt-36 lg:pb-36 lg:pt-48`}>
+          <h2 id="statement-heading" className="sr-only">
+            What Plurel is
+          </h2>
+          <p
+            ref={ref}
+            className="max-w-[22ch] text-[clamp(2.1rem,1rem+3.4vw,4.6rem)] font-normal leading-[1.04] tracking-[-0.03em] sm:max-w-[24ch] lg:max-w-[25ch]"
+          >
+            {WORDS.map((w, i) => (
+              <span key={i} data-word="" className={s.word}>
+                {i < WORDS.length - 1 ? `${w} ` : w}
+              </span>
+            ))}
+          </p>
+        </div>
+      </div>
 
-        <dl className={`${GRID} mt-24 gap-y-9 border-t border-paper/15 pt-8 lg:mt-36`}>
+      <div className={`${CONTAINER} pb-24 lg:pb-32`}>
+        <dl className={`${GRID} gap-y-9 border-t border-paper/15 pt-8`}>
           {FACTS.map(([k, v]) => (
             <div key={k} className="col-span-2 sm:col-span-3 lg:col-span-3">
               <dt className="text-[13px] text-fog">{k}</dt>

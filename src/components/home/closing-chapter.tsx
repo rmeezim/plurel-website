@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { GlassBand } from "@/components/glass-band";
-import { Reveal } from "@/components/reveal";
 import { CONTAINER, GRID } from "@/components/system";
+import { TypeReveal } from "@/components/type-reveal";
 import { heroFilm } from "@/lib/film";
 import { AUDIT_HREF, CONTACT_EMAIL } from "@/lib/nav";
 
@@ -19,26 +19,31 @@ const FOCUS =
   the chapter. Each fact lands once: what is scored (the sub-line), what
   comes back (the sentence on the right), what it costs and how fast
   (under the button), and that it is yours to keep.
+
+  Motion: the name rises letter by letter, then the two display lines
+  rise softly under it (TypeReveal "chars", then "title").
 */
 export function ClosingChapter() {
   return (
     <section aria-labelledby="closing-heading" className="relative bg-brand text-paper">
       <div className={`${CONTAINER} pt-24 pb-28 sm:pt-28 sm:pb-32 lg:pt-38 lg:pb-40`}>
-        <Reveal>
-          <h2
-            id="closing-heading"
-            className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none"
-          >
-            The Diagnostic.
-          </h2>
-        </Reveal>
+        <TypeReveal
+          id="closing-heading"
+          variant="chars"
+          className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none"
+          lines={["The Diagnostic."]}
+        />
 
         <div className={`${GRID} mt-10 gap-y-14 sm:mt-14 sm:gap-y-16 lg:mt-18 lg:gap-y-0`}>
           {/* Columns 1 to 6: what it is, then the action on the bottom edge */}
           <div className="col-span-4 flex flex-col sm:col-span-6">
-            <p className="type-display max-w-[15em] text-[clamp(1.5rem,2.66vw,2.125rem)] leading-[1.12]">
-              Six parts of your distribution, scored by a strategist.
-            </p>
+            <TypeReveal
+              as="p"
+              variant="title"
+              delay={160}
+              className="type-display max-w-[15em] text-[clamp(1.5rem,2.66vw,2.125rem)] leading-[1.12]"
+              lines={["Six parts of your distribution, scored by a strategist."]}
+            />
             <div className="mt-auto pt-10 lg:pt-12">
               <div className="grid grid-cols-4 gap-x-5 sm:grid-cols-6 sm:gap-x-6 lg:gap-x-8">
                 <Link
@@ -69,15 +74,16 @@ export function ClosingChapter() {
 
           {/* Columns 8 to 12: what comes back */}
           <div className="col-span-4 sm:col-span-6 lg:col-span-5 lg:col-start-8">
-            <Reveal delay={0.08} className="border-b border-paper/30 pb-6">
-              <p className="type-display text-[clamp(1.625rem,2.66vw,2.125rem)] leading-[1.12]">
-                {OUTPUT.map((line, i) => (
-                  <span key={line} className={`block ${i === OUTPUT.length - 1 ? "text-blush" : ""}`}>
-                    {line}
-                  </span>
-                ))}
-              </p>
-            </Reveal>
+            <div className="border-b border-paper/30 pb-6">
+              <TypeReveal
+                as="p"
+                variant="title"
+                delay={240}
+                className="type-display text-[clamp(1.625rem,2.66vw,2.125rem)] leading-[1.12]"
+                lines={OUTPUT}
+                lineClassName={OUTPUT.map((_, i) => (i === OUTPUT.length - 1 ? "text-blush" : undefined))}
+              />
+            </div>
             <p className="pt-4 text-[16px] leading-[1.45]">Yours to keep, whatever you decide.</p>
           </div>
         </div>

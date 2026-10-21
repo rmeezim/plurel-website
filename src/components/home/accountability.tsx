@@ -11,10 +11,11 @@ import s from "./accountability.module.css";
   for one. Between the headline and the terms, two strips of display type
   cross the full width as the reader scrolls through them (no pin): the
   figures suppliers report, in muted ink, drift left; the numbers a
-  business runs on, in full ink on brand-red squares, drift right, a
-  little slower. Each strip lands exactly on the grid, its first figure
-  under its label, as it crosses the middle of the screen. The supplier
-  figures are generic examples, not anyone's results.
+  business runs on, in full ink, each marked with a brand-red square,
+  drift right, a little slower. Each strip lands exactly on the grid, its
+  first figure under its label, as it crosses the middle of the screen.
+  The supplier figures are generic examples, not anyone's results: ten
+  of them, one for each supplier the headline counts.
 
   Transforms only; the frame work runs only while the strips are on
   screen, and widths are measured on resize and once fonts load. Without

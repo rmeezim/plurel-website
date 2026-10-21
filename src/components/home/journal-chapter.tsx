@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Reveal } from "@/components/reveal";
 import { ChapterHead, CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
+import { TypeReveal } from "@/components/type-reveal";
 import { MARK_CELLS } from "@/lib/mark";
 import { CATEGORIES, POSTS, type Post, type PostBlock, type PostCategory } from "@/lib/posts";
 
@@ -109,14 +110,15 @@ export function JournalChapter() {
 
         {/* Masthead: nameplate and deck, with the series key */}
         <div className={`${GRID} mt-8 items-end gap-y-10 lg:mt-10`}>
-          <Reveal className="col-span-4 sm:col-span-6 lg:col-span-8">
-            <h2 id="journal-heading" className={H2}>
-              <span className="block">Field notes</span>{" "}
-              <span className="mt-2 block text-[clamp(1.25rem,1rem+1.2vw,1.75rem)] leading-[1.12] text-muted lg:mt-3">
-                on AI search, brand, and growth.
-              </span>
-            </h2>
-          </Reveal>
+          <TypeReveal
+            id="journal-heading"
+            className={`${H2} col-span-4 sm:col-span-6 lg:col-span-8`}
+            lines={["Field notes", "on AI search, brand, and growth."]}
+            lineClassName={[
+              undefined,
+              "mt-2 text-[clamp(1.25rem,1rem+1.2vw,1.75rem)] leading-[1.12] text-muted lg:mt-3",
+            ]}
+          />
 
           <Reveal
             delay={0.1}

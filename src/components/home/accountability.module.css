@@ -32,6 +32,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
+  column-gap: 0.44em;
   row-gap: 0.14em;
 }
 
@@ -43,30 +44,30 @@
   white-space: nowrap;
 }
 
-/* Separators after each figure: hollow and quiet for what suppliers
-   report, solid brand red for what we answer for */
-.item::after {
+/* Each figure carries its marker, the way a kicker carries its square:
+   hollow and quiet for what suppliers report, solid brand red for what we
+   answer for. Wrapped or moving, every line starts on one. */
+.item::before {
   content: "";
   display: inline-block;
   width: 0.15em;
   height: 0.15em;
-  margin-inline: 0.38em;
+  margin-right: 0.36em;
   vertical-align: 0.27em;
 }
-.list > .item:last-child::after {
-  display: none;
-}
-.report .item::after {
-  box-shadow: inset 0 0 0 max(1.5px, 0.018em) currentColor;
+.report .item::before {
+  box-sizing: border-box;
+  border: max(1.5px, 0.018em) solid currentColor;
   opacity: 0.55;
 }
-.answer .item::after {
+.answer .item::before {
   background: var(--color-brand);
 }
 
 @media (prefers-reduced-motion: no-preference) {
   :global(html[data-js]) .strip {
     display: flex;
+    column-gap: 0.44em;
     width: max-content;
     font-size: clamp(2.75rem, 1rem + 5.6vw, 8.5rem);
   }
@@ -76,17 +77,13 @@
   :global(html[data-js]) .copy {
     display: flex;
   }
-  /* one continuous line: a separator between the copies too */
-  :global(html[data-js]) .list > .item:last-child::after {
-    display: inline-block;
-  }
   .live {
     will-change: transform;
   }
 }
 
 @media (forced-colors: active) {
-  .answer .item::after {
+  .answer .item::before {
     background: CanvasText;
   }
 }

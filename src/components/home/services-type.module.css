@@ -1,15 +1,15 @@
 /*
-  Services: the typographic figure and the layered system
+  Services: the typographic figure and the Plurel System
   (services-type.tsx; engine in lib/services-type.ts; markup in
   services-chapter.tsx).
 
-  Static by default: the finished system in flow, the layer list beside
-  the stack (below lg, the stack under the list). The gate at the foot
-  pins the figure (131svh of travel on phones, 150svh from lg; the first
-  two beats keep the 96svh and 110svh they were drawn for, the rest is
-  the stacking). At first paint it pins only with JS (html[data-js],
-  set before first paint) and TYPE_QUERY, so the track is sized in CSS
-  with no layout shift; keep that media query identical to TYPE_QUERY in
+  Static by default: the finished System in flow, its title and line,
+  then the four bands. The gate at the foot pins the figure (131svh of
+  travel on phones, 150svh from lg; the first two beats keep the 96svh
+  and 110svh they were drawn for, the rest is the bands and the loop). At
+  first paint it pins only with JS (html[data-js], set before first
+  paint) and TYPE_QUERY, so the track is sized in CSS with no layout
+  shift; keep that media query identical to TYPE_QUERY in
   lib/services-type.ts. Once the faces are in, the engine checks that the
   finished frame fits the visible (svh) screen and sets the section's
   data-type-motion to "on" (pinned, the clones arm) or "off" (static,
@@ -24,8 +24,6 @@
   /* #services lands with graphite to the top of the screen (the chapter
      head has its own clearance for the header) */
   scroll-margin-top: -4.5rem;
-  /* the hero glass's frost (FROST in lib/glass.ts): the plates' edges */
-  --frost: 219 237 255;
 }
 
 .track {
@@ -46,6 +44,7 @@
 /* ---------- the figure head: the narrator and the chain ---------- */
 
 .head {
+  position: relative;
   align-items: end;
   row-gap: 12px;
   padding-bottom: 16px;
@@ -56,15 +55,27 @@
   }
 }
 
-/* The narrator: three states with motion, one plain statement without.
-   A change is a hand-over, never a crossfade: the old line leaves (up,
-   or down when scrolling back) and is gone before the new one arrives
-   from the other side, so the two never print over each other. */
+/* The narrator: three states with motion, then the System's title (the
+   one state without). A change is a hand-over, never a crossfade: the
+   old line leaves (up, or down when scrolling back) and is gone before
+   the new one arrives from the other side, so the two never print over
+   each other. */
+.cap {
+  display: grid;
+}
+.cap > *,
+.capMotion > span {
+  grid-area: 1 / 1;
+}
+.title {
+  font: inherit;
+  margin: 0;
+}
 .capMotion {
   display: none;
 }
-.capMotion > span {
-  grid-area: 1 / 1;
+.capMotion > span,
+.root[data-type-motion="on"] .title {
   opacity: 0;
   translate: 0 0.35em;
   transition:
@@ -72,23 +83,17 @@
     translate 0.14s cubic-bezier(0.55, 0, 1, 0.45);
 }
 .cap[data-cap="b"] .ca,
-.cap[data-cap="c"] :is(.ca, .cb) {
+.cap[data-cap="c"] :is(.ca, .cb),
+.cap[data-cap="d"] :is(.ca, .cb, .cc) {
   translate: 0 -0.35em;
-}
-.root[data-type-motion="on"] .capStatic {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
 }
 .root[data-type-motion="on"] .capMotion {
   display: grid;
 }
 .cap[data-cap="a"] .ca,
 .cap[data-cap="b"] .cb,
-.cap[data-cap="c"] .cc {
+.cap[data-cap="c"] .cc,
+.root[data-type-motion="on"] .cap[data-cap="d"] .title {
   opacity: 1;
   translate: 0 0;
   transition:
@@ -98,8 +103,7 @@
 
 /* The chain: the four stages in order, lit by the engine while their
    names are set and again while their layers lock. Only the running
-   figure shows it, and it gives way to the list, which is the system's
-   contents and its one control. */
+   figure shows it, and it gives way to the System's line. */
 .chain {
   display: none;
 }
@@ -183,384 +187,500 @@
   transform: scaleX(0);
 }
 
-/* ---------- the system: the layer list and the stack ---------- */
 
-.layers {
-  /* the layer's name, the rows' padding */
-  --ln: 22px;
-  --lp: 13px;
+/* The System's line: in flow beside the title when static; pinned, it
+   takes the chain's place once the chain has gone, laid over the chain's
+   cell from its foot (so it never moves the head) */
+.chain,
+.line {
+  grid-row-start: 2;
+}
+@media (min-width: 64rem) {
+  .chain,
+  .line {
+    grid-row-start: 1;
+  }
+}
+.line {
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+
+/* ---------- the System: four bands, the loop drawn along them ---------- */
+
+/*
+  Each band: a flat fill (the colour; it rises into place while the
+  figure runs), its name, what it builds and feeds, and its services as
+  links, on the container's grid. Foundation at the floor in brand red,
+  the three above in graphite tones that lift as they rise (graphite
+  mixed with fog: flat, never a gradient). Pointing at a band, or into
+  it, lifts it one tone and brightens its services.
+*/
+.system {
+  /* the grid, as CONTAINER and GRID set it, for the loop's position */
+  --pl: 20px;
+  --gap: 20px;
+  /* the loop's lane below lg: the rail sits in it, the content after it;
+     the return runs --rg left of the spine */
+  --lane: 28px;
+  --rg: 16px;
+  /* sizes: the layer's name, what it builds, its services */
+  --bn: clamp(2.25rem, 1.5rem + 3.2vw, 2.75rem);
+  --bt: 20px;
+  --bs: 18px;
+  --bpt: 30px;
+  --bpb: 36px;
+  /* the loop: the signal's spine, the read's return */
+  --spine: var(--color-signal);
+  --ret: color-mix(in srgb, var(--color-paper) 46%, transparent);
+  --rule: color-mix(in srgb, var(--color-paper) 14%, transparent);
+  --mute: var(--color-fog);
+  --svc: var(--color-fog);
+}
+@media (min-width: 40rem) {
+  .system {
+    --pl: 32px;
+    --gap: 24px;
+    --lane: 44px;
+    --bn: 3.25rem;
+    --bt: 22px;
+    --bs: 20px;
+    --bpt: 36px;
+    --bpb: 44px;
+  }
+}
+@media (min-width: 64rem) {
+  .system {
+    --pl: 48px;
+    --gap: 32px;
+    --rg: 24px;
+    --bn: clamp(2.5rem, 1.6rem + 3.4vw, 5.25rem);
+    --bt: clamp(1.25rem, 0.5rem + 1.1vw, 1.5rem);
+    --bs: clamp(1.125rem, 0.55rem + 0.9vw, 1.3125rem);
+    --bpt: 40px;
+    --bpb: 48px;
+  }
+}
+.bands {
   margin: 0;
   padding: 0;
   list-style: none;
-  interpolate-size: allow-keywords;
 }
-@media (min-width: 40rem) {
-  .layers {
-    --ln: 26px;
-    --lp: 14px;
-  }
-}
-@media (min-width: 64rem) {
-  .layers {
-    --ln: clamp(22px, 3.2svh, 30px);
-    --lp: clamp(10px, 1.6svh, 17px);
-  }
-}
-.lrow {
+.band {
   position: relative;
-  border-top: 1px solid rgb(251 250 246 / 0.2);
-  opacity: var(--r, 1);
-  translate: 0 var(--ry, 0px);
+  overflow: clip;
+  --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 6%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 10%);
 }
-.lrow:last-child {
-  border-bottom: 1px solid rgb(251 250 246 / 0.2);
+.band[data-band="distribute"] {
+  --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 11%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 15%);
 }
-/* the lit layer takes a signal rule (its plate's edge on the stack): the
-   one pointed at or focused, else the open one, one at a time */
-.lrow::before {
+.band[data-band="measure"] {
+  --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 16%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 20%);
+}
+/* the foundation: Plurel red; it lifts toward signal, and its type stays
+   paper (blush and fog are too quiet for small type on red) */
+.band[data-band="narrative"] {
+  --band: var(--color-brand);
+  --lift: color-mix(in srgb, var(--color-brand), var(--color-signal) 18%);
+  --spine: var(--color-paper);
+  --ret: color-mix(in srgb, var(--color-paper) 70%, transparent);
+  --rule: color-mix(in srgb, var(--color-paper) 30%, transparent);
+  --mute: var(--color-paper);
+  --svc: color-mix(in srgb, var(--color-paper) 92%, var(--color-brand));
+}
+.fill {
+  position: absolute;
+  inset: 0;
+  background-color: var(--tone, var(--band));
+  transform-origin: 50% 100%;
+}
+/* the slab between two bands: a graphite hairline at each band's top */
+.band::after {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-  top: -1px;
-  height: 2px;
-  background: var(--color-signal);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  inset: 0 0 auto;
+  height: 1px;
+  background: var(--color-graphite);
+  pointer-events: none;
 }
-.system:not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) .lrow:has(> details[open])::before,
-.lrow:has(.sum:focus-visible, .svc:focus-visible)::before {
-  transform: scaleX(1);
-}
-.sum {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 1.25rem;
-  column-gap: 1.5rem;
-  align-items: baseline;
-  padding-block: var(--lp);
-  cursor: pointer;
-  list-style: none;
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.sum::-webkit-details-marker {
+.band:first-child::after {
   display: none;
 }
-.sum:focus-visible {
-  outline: 1px solid var(--color-paper);
-  outline-offset: 4px;
-}
-.lname {
-  font-size: var(--ln);
-  line-height: 1;
-}
-.lline {
-  grid-column: 1;
-  margin-top: 0.5rem;
-  font-size: 15px;
-  line-height: 1.45;
-  color: var(--color-fog);
-}
-/* Phones: a closed layer is its name alone (the line opens with it), so
-   the list and the stack share one screen */
-@media (max-width: 39.99rem) {
-  .layer:not([open]) .lline {
-    display: none;
-  }
-}
-@media (min-width: 40rem) {
-  .lline {
-    font-size: 16px;
-  }
+.bandIn {
+  position: relative;
+  row-gap: 0;
+  padding-top: var(--bpt);
+  padding-bottom: var(--bpb);
+  /* below lg the content keeps clear of the loop's lane */
+  padding-left: calc(var(--pl) + var(--lane));
 }
 @media (min-width: 64rem) {
-  .lline {
-    font-size: clamp(16px, 2.2svh, 18px);
-    margin-top: clamp(5px, 0.9svh, 8px);
+  .bandIn {
+    padding-left: var(--pl);
   }
 }
-/* A narrow, short laptop: a closed layer is its name alone there too */
-@media (min-width: 64rem) and (max-width: 79.99rem) and (max-height: 799.98px) {
-  .layer:not([open]) .lline {
-    display: none;
-  }
-}
-/* plus, turning to minus as the layer opens */
-.pm {
-  grid-row: 1;
-  grid-column: 2;
-  justify-self: end;
-  align-self: center;
-  position: relative;
-  width: 14px;
-  height: 14px;
-}
-.pm::before,
-.pm::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: 1.5px;
-  margin-top: -0.75px;
-  background: currentColor;
-}
-.pm::after {
-  transform: rotate(90deg);
-  transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.layer[open] .pm::after {
-  transform: rotate(0deg);
-}
-.panel {
+
+/* the layer's name: huge, one weight */
+.bname {
+  grid-column: 1 / -1;
   margin: 0;
-  padding: 0 0 var(--lp);
-  list-style: none;
+  font-size: var(--bn);
+  line-height: 0.9;
+  color: var(--color-paper);
 }
-.svc {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 1.25rem;
-  column-gap: 1.5rem;
-  align-items: baseline;
-  padding-block: clamp(8px, 1.2svh, 11px) clamp(9px, 1.3svh, 12px);
-  border-top: 1px solid rgb(251 250 246 / 0.1);
-  outline: none;
+/* what it builds: the instrument, its one line, what it feeds */
+.builds {
+  grid-column: 1 / -1;
+  max-width: 34rem;
+  margin-top: 18px;
 }
-.sname {
-  font-size: 18px;
+.bt {
+  margin: 0;
+  font-size: var(--bt);
   line-height: 1.15;
+  color: var(--color-paper);
 }
-.stag {
-  grid-column: 1;
-  margin-top: 4px;
+.bl {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--mute);
+}
+.bf {
+  margin: 10px 0 0;
   font-size: 14px;
-  line-height: 1.4;
-  color: var(--color-fog);
-  transition: color 0.3s;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--color-paper);
 }
 @media (min-width: 40rem) {
-  .sname {
-    font-size: 20px;
+  .bl {
+    font-size: 16px;
   }
-  .stag {
+  .bf {
     font-size: 15px;
   }
 }
-@media (min-width: 64rem) {
-  .sname {
-    font-size: clamp(18px, 2.4svh, 22px);
-  }
-  .stag {
-    font-size: clamp(15px, 1.8svh, 16px);
-  }
+/* the services: real links, a hairline under each */
+.svcs {
+  grid-column: 1 / -1;
+  max-width: 34rem;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.svc {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 9px 10px;
+  border-bottom: 1px solid var(--rule);
+  outline: none;
+}
+.sname {
+  display: block;
+  font-size: var(--bs);
+  line-height: 1.2;
+  color: var(--svc);
+  transition: color 0.3s;
 }
 .arr {
-  grid-row: 1;
-  grid-column: 2;
-  justify-self: end;
+  flex: none;
   align-self: center;
-  width: 18px;
-  height: 18px;
-  color: rgb(251 250 246 / 0.45);
+  width: 16px;
+  height: 16px;
+  color: var(--svc);
+  opacity: 0.7;
   transition:
     transform 0.3s,
-    color 0.3s;
+    color 0.3s,
+    opacity 0.3s;
+}
+.svc:focus-visible {
+  outline: 1px solid var(--color-paper);
+  outline-offset: 3px;
 }
 .svc:is(:hover, :focus-visible) .arr {
-  color: var(--color-signal);
+  opacity: 1;
   transform: translate(2px, -2px);
 }
-.svc:is(:hover, :focus-visible) .stag {
-  color: var(--color-paper);
+/* the loop's note: with the Ledger in words (from lg, read by assistive
+   tech only), and on the drawing as the return line's label (lg) */
+.bnote {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--color-fog);
 }
-.svc:focus-visible .sname {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.16em;
+.loop > .label {
+  display: none;
 }
 
-/* The stack: four plates of glass in the hero's material, flat: a cool
-   slate tint, frost 1px edges (lit along the front, faint at the back),
-   a little thickness, paper type; the open layer's plate lifted, its
-   edge in signal. No shadow, no glow. */
-.stackCell {
-  min-width: 0;
-  margin-top: 20px;
-}
-@media (min-width: 40rem) {
-  .stackCell {
-    margin-top: 40px;
-  }
-}
+/* Desktop: name | what it builds | services, all hanging from the
+   name's cap line; the loop runs in the gutter before the builds column */
 @media (min-width: 64rem) {
-  .stackCell {
-    margin-top: 0;
+  .bname {
+    grid-column: 1 / span 4;
+    grid-row: 1;
   }
-}
-.stack {
-  display: block;
-  width: 100%;
-  max-width: 26rem;
-  height: auto;
-  overflow: visible;
-}
-/* a tablet's stack sits to the right, under the list's measure */
-@media (min-width: 40rem) {
-  .stack {
-    max-width: 34rem;
-    margin-left: auto;
-  }
-}
-@media (min-width: 64rem) {
-  .stack {
+  .builds {
+    grid-column: 5 / span 4;
+    grid-row: 1;
     max-width: none;
-    margin-left: 0;
+    /* its title's cap line on the name's (line-heights 0.9 and 1.15) */
+    margin-top: calc(0.105 * var(--bn) - 0.23 * var(--bt));
+  }
+  .svcs {
+    grid-column: 9 / span 4;
+    grid-row: 1;
+    max-width: none;
+    /* the first link's cap line on the name's (line-height 1.2) */
+    margin-top: calc(0.105 * var(--bn) - 9px - 0.255 * var(--bs));
+  }
+  .bnote {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .loop > .label {
+    display: block;
+    top: 50%;
+    right: 36px;
+    translate: 0 -50%;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: right;
+    white-space: pre;
+    color: var(--color-fog);
   }
 }
-.stack :is(polygon, polyline) {
-  vector-effect: non-scaling-stroke;
-  stroke-width: 1px;
-  stroke-linejoin: round;
+
+/* Pointing at a band, or into it, lifts it a tone and brightens its
+   services (only once the figure has settled, while it runs) */
+.band:is(:hover, :focus-within) {
+  --tone: var(--lift);
+  --svc: var(--color-paper);
 }
-.face {
-  fill: rgb(var(--frost) / 0.055);
-  stroke: rgb(var(--frost) / 0.2);
-}
-.sideL {
-  fill: rgb(var(--frost) / 0.16);
-}
-.sideR {
-  fill: rgb(var(--frost) / 0.08);
-}
-.bezel {
-  fill: none;
-  stroke: rgb(var(--frost) / 0.13);
-}
-.edge {
-  fill: none;
-  stroke: rgb(var(--frost) / 0.6);
-}
-.lip {
-  fill: none;
-  stroke: rgb(var(--frost) / 0.2);
-}
-.hotEdge {
-  fill: none;
-  stroke: var(--color-signal);
-  opacity: 0;
-}
-.pname {
-  font-family: var(--font-mona), system-ui, sans-serif;
-  font-stretch: 110%;
-  font-weight: 430;
-  letter-spacing: -0.018em;
-  font-size: 28px;
-  fill: var(--color-paper);
-  /* even spacing on the turned, foreshortened plane */
-  text-rendering: geometricPrecision;
-}
-@media (min-width: 40rem) {
-  .pname {
-    font-size: 22px;
-  }
-}
-.hit {
-  fill: transparent;
-  cursor: pointer;
+.system[data-unsettled] .band {
+  pointer-events: none;
 }
 
 /*
-  Which plate is lit: the one pointed at or focused (a layer's row, its
-  links, or the plate itself), else the open layer's. One at a time, so
-  the stack always answers the list. Pinned, only once the figure has
-  settled (the engine marks the system data-unsettled until then).
+  The loop: the same two lines drawn in every band, meeting across the
+  bands as one drawing. The spine (solid) carries the signal up through
+  each layer's node, with an arrowhead where it crosses into the layer
+  above; the return (dashed) carries the Ledger's read back down to the
+  foundation, tapping the layers it feeds back into. Hairlines, flat
+  colour, no glow. Its x is the gutter before the builds column (lg) or
+  the lane (below lg); its y, each band's node, is the builds title's cap
+  centre (computed from the type sizes, so no script is needed).
 */
-.system:not([data-unsettled]):has([data-layer="narrative"] > details[open]):not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) [data-plate="narrative"],
-.system:not([data-unsettled]):has([data-layer="create"] > details[open]):not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) [data-plate="create"],
-.system:not([data-unsettled]):has([data-layer="distribute"] > details[open]):not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) [data-plate="distribute"],
-.system:not([data-unsettled]):has([data-layer="measure"] > details[open]):not(:has(.sum:hover, .sum:focus-visible, .svc:focus-visible, .hit:hover)) [data-plate="measure"],
-.system:not([data-unsettled]):has([data-layer="narrative"] :is(.sum:hover, .sum:focus-visible, .svc:focus-visible), [data-plate-hit="narrative"]:hover) [data-plate="narrative"],
-.system:not([data-unsettled]):has([data-layer="create"] :is(.sum:hover, .sum:focus-visible, .svc:focus-visible), [data-plate-hit="create"]:hover) [data-plate="create"],
-.system:not([data-unsettled]):has([data-layer="distribute"] :is(.sum:hover, .sum:focus-visible, .svc:focus-visible), [data-plate-hit="distribute"]:hover) [data-plate="distribute"],
-.system:not([data-unsettled]):has([data-layer="measure"] :is(.sum:hover, .sum:focus-visible, .svc:focus-visible), [data-plate-hit="measure"]:hover) [data-plate="measure"] {
-  --lift: -14px;
-  --hot: 1;
+.loop {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--pl) + var(--lane) - 12px);
+  width: 0;
+  pointer-events: none;
+  /* the node: below lg, under the name, the builds title's cap centre */
+  --ny: calc(var(--bpt) + 0.9 * var(--bn) + 18px + 0.595 * var(--bt));
 }
-.plateIn {
-  transform: translateY(var(--lift, 0px));
-}
-.plateIn .hotEdge {
-  opacity: var(--hot, 0);
-}
-/* A plate pointed at lights its layer's row */
-.system:has([data-plate-hit="narrative"]:hover) [data-layer="narrative"]::before,
-.system:has([data-plate-hit="create"]:hover) [data-layer="create"]::before,
-.system:has([data-plate-hit="distribute"]:hover) [data-layer="distribute"]::before,
-.system:has([data-plate-hit="measure"]:hover) [data-layer="measure"]::before {
-  transform: scaleX(1);
-}
-@media (hover: hover) {
-  .lrow:has(> details > .sum:hover)::before {
-    transform: scaleX(1);
+@media (min-width: 64rem) {
+  .loop {
+    /* the gutter before column 5 */
+    left: calc(var(--pl) + (100% - 2 * var(--pl) - 11 * var(--gap)) / 3 + 4 * var(--gap) - var(--gap) / 2);
+    --ny: calc(var(--bpt) + 0.105 * var(--bn) + 0.365 * var(--bt));
   }
+}
+.loop > * {
+  position: absolute;
+  display: block;
+}
+/* the spine: from the band below up to the node, from the node up to the band above */
+.lIn,
+.lOut {
+  left: -0.5px;
+  width: 1px;
+  background: var(--spine);
+  transform-origin: 50% 100%;
+}
+.lIn {
+  top: var(--ny);
+  bottom: 0;
+}
+.lOut {
+  top: 0;
+  height: var(--ny);
+}
+/* where the spine crosses into the band above */
+.arrow {
+  top: 0;
+  left: -4.5px;
+  width: 9px;
+  height: 8px;
+  background: var(--spine);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+.node {
+  top: calc(var(--ny) - 3.5px);
+  left: -3.5px;
+  width: 7px;
+  height: 7px;
+  background: var(--color-signal);
+}
+.band[data-band="narrative"] .node {
+  background: var(--color-paper);
+}
+/* the return: dashed, --rg left of the spine (24px from lg); from the Ledger's node
+   down, through every band, to the foundation's node. (A dash pattern
+   in one flat colour: hard stops, not a gradient.) A cover in the band's
+   tone draws it in place: it slides down off the line as it is drawn. */
+.ret {
+  top: 0;
+  bottom: 0;
+  left: calc(-0.5px - var(--rg));
+  width: 1px;
+  overflow: clip;
+  background-image: repeating-linear-gradient(to bottom, var(--ret) 0 5px, transparent 5px 9px);
+}
+.retTop {
+  top: var(--ny);
+}
+.retFoot {
+  bottom: auto;
+  height: var(--ny);
+}
+.cover {
+  position: absolute;
+  inset: 0;
+  background-color: var(--tone, var(--band));
+  transform: translateY(101%);
+}
+/* the Ledger's read leaves its node for the return line */
+.stub {
+  top: calc(var(--ny) - 0.5px);
+  left: calc(-1 * var(--rg));
+  width: calc(var(--rg) - 3.5px);
+  height: 1px;
+  background: var(--ret);
+  transform-origin: 100% 50%;
+}
+/* ... and comes back into the layers it feeds */
+.tap {
+  top: calc(var(--ny) - 3.5px);
+  left: calc(-1 * var(--rg));
+  width: calc(var(--rg) - 4px);
+  height: 7px;
+  transform-origin: 0 50%;
+}
+.tap::before,
+.tap::after {
+  content: "";
+  position: absolute;
+  background: var(--ret);
+}
+.tap::before {
+  left: 0;
+  right: 4px;
+  top: 3px;
+  height: 1px;
+}
+.tap::after {
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 7px;
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .system:not([data-unsettled]) .plateIn {
-    transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
-  }
-  .system:not([data-unsettled]) .plateIn .hotEdge {
-    transition: opacity 0.3s;
-  }
-  /* a layer opens and closes on its height, where the browser can */
-  .layer::details-content {
-    block-size: 0;
-    overflow-y: clip;
-    transition:
-      block-size 0.4s cubic-bezier(0.22, 0.61, 0.36, 1),
-      content-visibility 0.4s allow-discrete;
-  }
-  .layer[open]::details-content {
-    block-size: auto;
-  }
-  .layers[data-instant] .layer::details-content {
-    transition: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .lrow::before,
-  .pm::after,
-  .arr,
-  .stag {
-    transition: none;
-  }
-}
-
-/* Forced colours: hairlines, plates and names in the system colours */
+/* Forced colours: the loop and the slabs in the system colours */
 @media (forced-colors: active) {
-  .lrow::before,
-  .pm::before,
-  .pm::after {
+  .lIn,
+  .lOut,
+  .arrow,
+  .node,
+  .stub,
+  .tap::before,
+  .tap::after,
+  .band::after {
     forced-color-adjust: none;
     background: CanvasText;
   }
-  .face,
-  .bezel,
-  .edge,
-  .lip,
-  .hotEdge {
-    stroke: CanvasText;
+  .ret {
+    forced-color-adjust: none;
+    background-image: repeating-linear-gradient(to bottom, CanvasText 0 5px, transparent 5px 9px);
   }
-  .face,
-  .sideL,
-  .sideR {
-    fill: Canvas;
-  }
-  .pname {
-    fill: CanvasText;
-  }
+}
+
+/* ---------- after the pin, below lg: what each layer builds ---------- */
+
+.legend {
+  display: none;
+}
+.legLine {
+  max-width: 40ch;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--color-fog);
+}
+.legList {
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.legItem {
+  padding-block: 20px 22px;
+  border-top: 1px solid color-mix(in srgb, var(--color-paper) 16%, transparent);
+}
+.legLayer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-fog);
+}
+.legMark {
+  width: 7px;
+  height: 7px;
+  background: color-mix(in srgb, var(--color-graphite), var(--color-fog) 30%);
+}
+.legMark[data-tone="narrative"] {
+  background: var(--color-brand);
+}
+.legTitle {
+  margin: 12px 0 0;
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--color-paper);
+}
+.legText {
+  margin: 8px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-fog);
+}
+.legFeeds {
+  margin: 8px 0 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-paper);
+}
+.legNote {
+  margin: 0;
+  padding-top: 20px;
+  border-top: 1px solid color-mix(in srgb, var(--color-paper) 16%, transparent);
+  font-size: 15px;
+  color: var(--color-fog);
 }
 
 /* ---------- the motion layer ---------- */
@@ -580,9 +700,7 @@
 
 /* The pin. The stage is the full (lvh) screen so graphite reaches the
    floor when a mobile toolbar collapses; the content box is the visible
-   (svh) part, clear of the floating header. An open layer the pinned
-   frame has no room for grows the stage by --extra (set by the engine),
-   and the track with it, so the travel never changes. */
+   (svh) part, clear of the floating header. */
 .track {
   --travel: calc(96svh * 15 / 11);
 }
@@ -600,10 +718,20 @@
   }
 }
 
+/*
+  Pinned, the bands lie over the menu: from its top down to the floor of
+  the stage (--below, set by the engine: the room the head and the menu
+  leave under them), filling it in four equal floors. The foundation's
+  padding reaches past the visible (svh) foot to the floor, so its
+  content stays on the visible screen. Desktop keeps the whole band;
+  below lg each band is its name and services, and what it builds and
+  feeds follows the pin (.legend).
+*/
+
 /* Before the engine decides (first paint), TYPE_QUERY alone pins, so the
    track is sized with no layout shift; phones need 650px of height (a
-   360x640 screen keeps the static system) and lg 640px. The menu takes
-   its room unseen, and the finished system lies over it. */
+   360x640 screen keeps the static System) and lg 640px. The menu takes
+   its room unseen, and the bands lie over it, not yet risen. */
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 360px) and (max-width: 63.99rem) and (min-height: 650px), (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
   :global(html[data-js]) .root:not([data-type-motion]) .track {
     height: calc(100vh + var(--travel));
@@ -632,37 +760,37 @@
   :global(html[data-js]) .root:not([data-type-motion]) .chain {
     display: flex;
   }
+  :global(html[data-js]) .root:not([data-type-motion]) .line {
+    position: absolute;
+    bottom: 0;
+    visibility: hidden;
+  }
   :global(html[data-js]) .root:not([data-type-motion]) .system {
     position: absolute;
     inset: 0 0 auto;
+    visibility: hidden;
   }
 }
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 360px) and (max-width: 63.99rem) and (min-height: 650px) {
-  :global(html[data-js]) .root:not([data-type-motion]) .stack {
-    width: min(100%, calc(40svh * var(--ar, 1.09)));
+  :global(html[data-js]) .root:not([data-type-motion]) :is(.builds, .note, .line) {
+    display: none;
+  }
+  :global(html[data-js]) .root:not([data-type-motion]) .legend {
+    display: block;
   }
 }
-@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 40rem) and (max-width: 63.99rem) and (min-height: 650px) {
-  :global(html[data-js]) .root:not([data-type-motion]) .stack {
-    width: min(100%, 34rem, calc(36svh * var(--ar, 1.09)));
-  }
-}
-@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
-  :global(html[data-js]) .root:not([data-type-motion]) .system {
-    bottom: 0;
-  }
-}
+
 /* ... then only its verdict does (it re-decides on every change of the
    query, the motion preference or the size, keeping the reader's place) */
 .root[data-type-motion="on"] .track {
-  height: calc(100vh + var(--travel) + var(--extra, 0px));
-  height: calc(100lvh + var(--travel) + var(--extra, 0px));
+  height: calc(100vh + var(--travel));
+  height: calc(100lvh + var(--travel));
 }
 .root[data-type-motion="on"] .stage {
   position: sticky;
   top: 0;
-  height: calc(100vh + var(--extra, 0px));
-  height: calc(100lvh + var(--extra, 0px));
+  height: 100vh;
+  height: 100lvh;
   overflow: clip;
 }
 .root[data-type-motion="on"] .stageIn {
@@ -680,48 +808,91 @@
 .root[data-type-motion="on"] .chain {
   display: flex;
 }
-/* Pinned, the system lies over the menu from its top: below lg the list
-   and then the stack, from lg the stack beside the list, as tall as the
-   menu */
+.root[data-type-motion="on"] .line {
+  position: absolute;
+  bottom: 0;
+}
 .root[data-type-motion="on"] .system {
   position: absolute;
   inset: 0 0 auto;
+  height: calc(100% + var(--below, 0px));
+}
+.root[data-type-motion="on"] .bands {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.root[data-type-motion="on"] .band {
+  flex: 1 1 0;
+}
+.root[data-type-motion="on"] .band:last-child .bandIn {
+  padding-bottom: calc(var(--bpb) + var(--pb) + 100lvh - 100svh);
+}
+.root[data-type-motion="on"] .bandIn {
+  height: 100%;
+  align-content: start;
+}
+/* the fit check reads the bands at their natural heights */
+.root[data-type-motion="on"] .system[data-measure] .bands {
+  height: auto;
+}
+.root[data-type-motion="on"] .system[data-measure] .band {
+  flex: none;
+}
+/* Pinned, the bands keep to the screen: sizes and paddings follow the
+   visible height as well as the width */
+.root[data-type-motion="on"] .system {
+  --bpt: clamp(14px, 2.4svh, 30px);
+  --bpb: clamp(14px, 2.4svh, 30px);
 }
 @media (min-width: 64rem) {
   .root[data-type-motion="on"] .system {
-    bottom: 0;
+    --bn: min(clamp(2.5rem, 1.6rem + 3.4vw, 5.25rem), 8.4svh);
+    --bt: min(clamp(1.25rem, 0.5rem + 1.1vw, 1.5rem), 2.6svh);
+    --bpt: clamp(12px, 2.2svh, 30px);
+    --bpb: clamp(12px, 2.2svh, 30px);
   }
-  .root[data-type-motion="on"] :is(.systemIn, .systemGrid, .stackCell),
-  :global(html[data-js]) .root:not([data-type-motion]) :is(.systemIn, .systemGrid, .stackCell) {
-    height: 100%;
-  }
-  .root[data-type-motion="on"] .systemGrid,
-  :global(html[data-js]) .root:not([data-type-motion]) .systemGrid {
-    grid-template-rows: 100%;
-  }
-  .root[data-type-motion="on"] .stack {
-    height: 100%;
+  .root[data-type-motion="on"] .bl {
+    font-size: 15px;
+    line-height: 1.4;
   }
 }
-/* Pinned below lg, the stack keeps to the screen: no taller than 40svh
-   on phones and 36svh on tablets, whose list keeps its lines (sized by
-   width, --ar being the stack's own aspect ratio, so it stays on its edge) */
+/* Below lg, pinned: each band is its name and services side by side
+   (from sm) or stacked; the node on the name's cap centre */
 @media (max-width: 63.99rem) {
-  .root[data-type-motion="on"] .stack {
-    width: min(100%, calc(40svh * var(--ar, 1.09)));
+  .root[data-type-motion="on"] :is(.builds, .note, .line) {
+    display: none;
+  }
+  .root[data-type-motion="on"] .legend {
+    display: block;
+  }
+  .root[data-type-motion="on"] .system {
+    --bn: min(clamp(1.75rem, 1rem + 3vw, 2.5rem), 4.4svh);
+    --bs: min(17px, 2.2svh);
+  }
+  .root[data-type-motion="on"] .svcs {
+    margin-top: 10px;
+  }
+  .root[data-type-motion="on"] .svc {
+    padding-block: 5px 6px;
+  }
+  .root[data-type-motion="on"] .loop {
+    --ny: calc(var(--bpt) + 0.47 * var(--bn));
   }
 }
 @media (min-width: 40rem) and (max-width: 63.99rem) {
-  .root[data-type-motion="on"] .stack {
-    width: min(100%, 34rem, calc(36svh * var(--ar, 1.09)));
+  .root[data-type-motion="on"] .bname {
+    grid-column: 1 / span 3;
+    grid-row: 1;
+  }
+  .root[data-type-motion="on"] .svcs {
+    grid-column: 4 / span 3;
+    grid-row: 1;
+    margin-top: calc(0.105 * var(--bn) - 5px - 0.255 * var(--bs));
   }
 }
-.root[data-type-motion="on"] .system[data-unsettled] {
-  pointer-events: none;
-}
-/* the plate names wait for their clones to land */
-.root[data-type-motion="on"] [data-wait] {
-  visibility: hidden;
+.root[data-type-motion="on"] .legend {
+  padding-top: 56px;
 }
 
 /* Armed: the clones carry the names until each row is set, and from the
@@ -743,9 +914,19 @@
 .clone[data-set] {
   visibility: hidden;
 }
+/* the band's link names wait for their clones to land */
+.root[data-type-motion="on"] [data-wait] {
+  visibility: hidden;
+}
 /* A clone travelling on transform: scale has its own layer while pinned;
    once laid out at its true size (data-laid) it paints with the rows, so
    it ends as the very pixels of the row's own text */
 .root[data-type-pinned] .clone:not([data-laid]) {
   will-change: transform;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fill {
+    transition: background-color 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
 }

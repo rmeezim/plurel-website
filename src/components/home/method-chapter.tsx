@@ -1,5 +1,6 @@
 import { Reveal } from "@/components/reveal";
 import { ChapterHead, CONTAINER, GRID, H2, Meta, TextLink } from "@/components/system";
+import { TypeReveal } from "@/components/type-reveal";
 import { PHASES } from "@/lib/home";
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -65,14 +66,11 @@ export function MethodChapter() {
         <ChapterHead label="Method" tone="red" />
 
         <div className={`${GRID} mt-8 gap-y-8 lg:mt-10 lg:items-end`}>
-          <Reveal className="col-span-4 sm:col-span-6 lg:col-span-8">
-            <h2
-              id="method-heading"
-              className={H2}
-            >
-              One operating model, from first diagnosis to compounding growth.
-            </h2>
-          </Reveal>
+          <TypeReveal
+            id="method-heading"
+            className={`${H2} col-span-4 sm:col-span-6 lg:col-span-8`}
+            lines={["One operating model, from first diagnosis to compounding growth."]}
+          />
           <Reveal
             delay={0.1}
             className="col-span-4 sm:col-span-4 lg:col-span-3 lg:col-start-10 lg:pb-1"
@@ -145,9 +143,13 @@ export function MethodChapter() {
                       <div aria-hidden className="flex">
                         <Meta>{pad(i + 1)}</Meta>
                       </div>
-                      <h3 className="type-display mt-3 text-[2rem] leading-none lg:text-[clamp(2rem,3.1vw,2.5rem)]">
-                        {phase.name}
-                      </h3>
+                      <TypeReveal
+                        as="h3"
+                        variant="title"
+                        delay={i * 80}
+                        className="type-display mt-3 text-[2rem] leading-none lg:text-[clamp(2rem,3.1vw,2.5rem)]"
+                        lines={[phase.name]}
+                      />
                       <p className="mt-2.5 text-[15px] font-medium">
                         {phase.tagline}
                       </p>
