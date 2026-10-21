@@ -122,7 +122,7 @@ function SampleArticle({ s }: { s: Sample }) {
         </div>
         <div className="col-span-4 sm:col-span-6 lg:col-span-5 lg:col-start-8">
           <h3 className="text-[15px] font-medium">What would count as qualified demand</h3>
-          <p className="type-display mt-3 max-w-[26ch] text-[clamp(1.375rem,2vw,1.625rem)] leading-[1.15]">
+          <p className="type-title mt-3 max-w-[26ch] text-[clamp(1.375rem,2vw,1.625rem)] leading-[1.15]">
             {s.qualified}
           </p>
         </div>

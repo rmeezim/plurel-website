@@ -151,7 +151,7 @@ export function JournalChapter() {
                 </div>
 
                 <div className="pt-6 sm:pt-8 lg:pt-10">
-                  <h3 className="type-display max-w-[13em] text-[clamp(1.875rem,1.2rem+2.1vw,2.75rem)] leading-[1.02]">
+                  <h3 className="type-title max-w-[13em] text-[clamp(1.875rem,1.2rem+2.1vw,2.75rem)] leading-[1.02]">
                     <Link
                       href={`/blog/${lead.slug}`}
                       className="after:absolute after:inset-0 focus-visible:outline-hidden focus-visible:after:outline-2 focus-visible:after:-outline-offset-8 focus-visible:after:outline-paper"

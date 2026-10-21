@@ -26,7 +26,7 @@ const MOMENTS = [
 ] as const;
 
 /** One scale for the moments: 28px on a phone, about 50px on a laptop, 56px wide */
-const LINE = "type-display text-[clamp(1.75rem,1rem+2.4vw,3.5rem)] leading-[1.02]";
+const LINE = "type-title text-[clamp(1.75rem,1rem+2.4vw,3.5rem)] leading-[1.02]";
 
 export function WhyNowChapter() {
   return (

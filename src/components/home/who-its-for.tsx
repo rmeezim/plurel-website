@@ -61,7 +61,7 @@ function Field({ label, children, number = false }: { label: string; children: R
       <dd
         className={
           number
-            ? "type-display mt-2.5 text-[23px] leading-[1.1] lg:text-[26px]"
+            ? "type-title mt-2.5 text-[23px] leading-[1.1] lg:text-[26px]"
             : "mt-2 max-w-[34ch] text-[16px] leading-[1.45] lg:text-[17px]"
         }
       >

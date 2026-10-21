@@ -83,10 +83,10 @@ export function Meta({
 }
 
 /**
- * The one quieter phrase in a headline: the same face at a lighter weight,
- * toned by the caller (e.g. text-fog on graphite). Emphasis by weight and
- * tone, never by a second typeface. Reserved for the hero and the closing:
- * every other headline is one weight.
+ * The one quieter phrase in a headline: the same face and weight, set back
+ * by tone alone (the caller's color, e.g. text-fog on graphite), never by a
+ * lighter weight or a second typeface. Reserved for the hero and the
+ * closing.
  */
 export function Accent({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <em className={`type-accent not-italic ${className}`}>{children}</em>;

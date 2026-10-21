@@ -89,18 +89,30 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 
 | Role | Face | Recipe |
 | --- | --- | --- |
-| Display (h1, h2, h3, big numbers) | Mona Sans, 110% width, 430 | `type-display` plus a size; `leading-[0.98]` to `leading-none` |
-| Accent | Mona Sans 300 | `<Accent>`: same face, lighter, toned by color (`text-fog`, `text-muted`, `text-brand`, `text-blush`) |
+| Display (headlines, names, big numbers) | Mona Sans, normal width, 510 | `type-display` plus a size; `leading-[0.98]` to `leading-none` |
+| Title (sentences and smaller titles in the display face) | Mona Sans, normal width, 460 | `type-title` plus a size: list lines, sub-lines, questions, service names, figures |
+| Accent | Mona Sans, the headline's weight | `<Accent>`: the same face and weight, set back by tone (`text-fog`, `text-muted`, `text-brand`, `text-blush`) |
 | Body | Mona Sans 400 | 15 to 20px, `leading-[1.5]` to `[1.55]`, 34 to 68ch |
 | Kicker | Mona Sans 500, sentence case | `<Kicker>`: square marker, 14px (15px from sm), untracked |
 | Meta | JetBrains Mono caps | `<Meta>`: indexes, figure captions, counts, clocks |
 
-- `type-display` (in `globals.css`) sets the face, `font-stretch: 110%`,
-  weight 430, `-0.018em` tracking and balanced wrapping. Headlines are
-  never bold.
-- `<Accent>` (the light weight) ends a headline only in the hero
-  ("*Everywhere.*") and the closing. Every other headline is one weight:
-  a device on every headline reads as a formula. It is never italic.
+- The voice is a modern technology company's: compact, firm and tight,
+  never wide, light or airy. Width is what made the first cut read
+  friendly (round, open letters), so display type stays at normal width.
+- `type-display` (in `globals.css`) sets the face at normal width, weight
+  510 and `-0.032em` tracking with balanced wrapping, so a headline sets
+  as one solid shape. The two largest heads (the hero and the closing)
+  tighten to `-0.038em` through `--display-tracking`. Firm, never bold.
+- `type-title` is the same face a step down (460, `-0.018em`) for
+  sentences and smaller titles set in it, so a page of display lines
+  keeps a hierarchy instead of reading as a wall of weight. The services
+  chapter's house face (`HOUSE` in `lib/services-type.ts`) is this one,
+  since the names land on the band links.
+- `<Accent>` ends a headline only in the hero ("Everywhere.") and the
+  closing, set back by tone alone, never by a lighter weight: a thin
+  phrase reads editorial. Every other headline is one tone. Never italic.
+- The statement (What Plurel is) is reading type at display size: 440,
+  `-0.03em`.
 - `figures` sets lining, proportional numerals for stats.
 - Meta (mono, 11px caps) is for data only: dates, read times, units,
   scores, tags, the Method phase numbers. About fifteen on the whole

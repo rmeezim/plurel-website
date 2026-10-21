@@ -67,13 +67,16 @@ test("every supplier ends exactly on the house style", () => {
   }
 });
 
-test("the mono supplier reaches the house width, never stuck at 100", () => {
+test("the mono supplier eases from 100 onto the house width after its flip", () => {
+  const lo = Math.min(100, HOUSE.wdth);
+  const hi = Math.max(100, HOUSE.wdth);
   for (const table of [DESK, PHONE]) {
     const sp = table.find((s) => s.mono)!;
     assert.equal(faceAt(sp, 0.3).mono, true);
     assert.equal(faceAt(sp, 0.5).mono, false);
-    assert.ok(faceAt(sp, 0.5).wdth > 100);
-    assert.ok(faceAt(sp, 0.9).wdth >= 108.5);
+    const w5 = faceAt(sp, 0.5).wdth;
+    assert.ok(lo <= w5 && w5 <= hi, `between 100 and the house width: ${w5}`);
+    assert.ok(Math.abs(faceAt(sp, 0.9).wdth - HOUSE.wdth) <= (hi - lo) * 0.15 + 1e-9);
   }
 });
 

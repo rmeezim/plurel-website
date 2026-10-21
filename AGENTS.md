@@ -17,9 +17,12 @@ the divisions together later and say so).
 
 - Next.js 16 (App Router) + React 19 + TypeScript
 - Tailwind CSS v4 (CSS-first config in `src/app/globals.css` via `@theme`)
-- Fonts via `next/font/google`: Mona Sans (`--font-sans`, everything; the
-  `type-display` utility sets the wide display cut, `<Accent>` the light
-  weight), JetBrains Mono (`--font-mono`, Swiss metadata). Instrument Serif
+- Fonts via `next/font/google`: Mona Sans (`--font-sans`, everything, at
+  normal width: `type-display` sets headlines firm and tight, `type-title`
+  the display face a step down for sentences and smaller titles, `<Accent>`
+  sets a phrase back by tone, never by a lighter weight), JetBrains Mono
+  (`--font-mono`, Swiss metadata). The voice is a modern San Francisco
+  technology company's: never wide, light or airy. Instrument Serif
   (`--font-serif`) is kept only for interior pages not yet moved over.
 
 ## Design language: Cinematic Red x Swiss Systems

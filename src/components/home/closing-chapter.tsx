@@ -30,7 +30,7 @@ export function ClosingChapter() {
         <TypeReveal
           id="closing-heading"
           variant="chars"
-          className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none"
+          className="type-display text-[clamp(3.5rem,10.6vw,8.5rem)] leading-none [--display-tracking:-0.038em]"
           lines={["The Diagnostic."]}
         />
 
@@ -41,7 +41,7 @@ export function ClosingChapter() {
               as="p"
               variant="title"
               delay={160}
-              className="type-display max-w-[15em] text-[clamp(1.5rem,2.66vw,2.125rem)] leading-[1.12]"
+              className="type-title max-w-[15em] text-[clamp(1.5rem,2.66vw,2.125rem)] leading-[1.12]"
               lines={["Six parts of your distribution, scored by a strategist."]}
             />
             <div className="mt-auto pt-10 lg:pt-12">
@@ -79,7 +79,7 @@ export function ClosingChapter() {
                 as="p"
                 variant="title"
                 delay={240}
-                className="type-display text-[clamp(1.625rem,2.66vw,2.125rem)] leading-[1.12]"
+                className="type-title text-[clamp(1.625rem,2.66vw,2.125rem)] leading-[1.12]"
                 lines={OUTPUT}
                 lineClassName={OUTPUT.map((_, i) => (i === OUTPUT.length - 1 ? "text-blush" : undefined))}
               />

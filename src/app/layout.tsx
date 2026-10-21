@@ -6,8 +6,9 @@ import { HOME } from "@/lib/metadata";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
-// One family carries everything. Its width axis gives the display style
-// (wide, at 110%) and the reading style (normal) from the same face.
+// One family carries everything, at normal width: display set firm and
+// tight, reading set plain. Its width axis gives the services chapter its
+// eight supplier voices.
 const mona = Mona_Sans({
   subsets: ["latin"],
   axes: ["wdth"],

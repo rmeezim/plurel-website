@@ -183,7 +183,7 @@ export function FaqChapter() {
                 className={`${GRID} border-t border-ink lg:items-baseline`}
               >
                 <div className="col-span-4 pt-5 sm:col-span-6 lg:col-span-2 lg:pt-0 xl:pr-2">
-                  <h3 className="type-display text-[20px] leading-[1.1] text-brand lg:text-[17px] xl:text-[20px]">
+                  <h3 className="type-title text-[20px] leading-[1.1] text-brand lg:text-[17px] xl:text-[20px]">
                     {group.title}
                   </h3>
                 </div>
@@ -198,7 +198,7 @@ export function FaqChapter() {
                         key={item.q}
                         className={`border-t ${RULE} pb-5 pt-4 first:border-t-0 lg:grid lg:grid-cols-10 lg:items-baseline lg:gap-x-8 lg:pb-[18px]`}
                       >
-                        <h4 className="type-display text-[22px] leading-[1.14] lg:col-span-5 lg:pr-2 xl:col-span-4 xl:text-[24px]">
+                        <h4 className="type-title text-[22px] leading-[1.14] lg:col-span-5 lg:pr-2 xl:col-span-4 xl:text-[24px]">
                           {settle(item.q)}
                         </h4>
 

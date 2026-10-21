@@ -132,8 +132,8 @@ export const TONE: Record<Tone, Rgb> = {
   brand: [191, 58, 54],
 };
 
-/** The house display style (`type-display`): where every supplier ends */
-export const HOUSE = { mono: false, wght: 430, wdth: 110, tr: -0.018, rgb: TONE.paper, cs: "none", sk: 0 } as const;
+/** The house style (`type-title`, the face of the band links the names land on): where every supplier ends */
+export const HOUSE = { mono: false, wght: 460, wdth: 100, tr: -0.018, rgb: TONE.paper, cs: "none", sk: 0 } as const;
 
 /**
   One supplier's way of setting a name. x is a fraction of the list's
@@ -280,7 +280,7 @@ export function faceAt(sp: Supplier, t: number): Face {
   if (t >= 1) return { ...HOUSE };
   const mono = !!sp.mono && t < FAMILY_FLIP;
   // A mono face has no width axis: after the flip, width eases from 100
-  // to the house 110, so the row never ends narrower than the others
+  // to the house width, so the row never ends off the others' width
   const wdth = mono ? 100 : Math.round(lerp(sp.mono ? 100 : sp.wdth, HOUSE.wdth, t));
   return {
     mono,
@@ -715,7 +715,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
     const k = phone
       ? clamp(Math.min(cw / ref.w, H / ref.h), 0.8, 1.9)
       : clamp(Math.min(cw / ref.w, H / ref.h), 0.6, 1.12);
-    bS = baselineOf(SANS, "110%");
+    bS = baselineOf(SANS, `${HOUSE.wdth}%`);
     bM = baselineOf(MONO, "100%");
     measureTrack();
     // the rules span the rows; on desktop they draw back clear of the

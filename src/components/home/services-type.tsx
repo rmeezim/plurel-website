@@ -50,7 +50,7 @@ export function ServicesType({
             <div data-type-head="" className={`${GRID} ${s.head}`}>
               <div
                 data-type-cap=""
-                className={`${s.cap} type-display col-span-4 text-[20px] leading-[1.12] text-paper sm:col-span-6 lg:col-span-3 lg:text-[clamp(1.25rem,1.5vw,1.375rem)]`}
+                className={`${s.cap} type-title col-span-4 text-[20px] leading-[1.12] text-paper sm:col-span-6 lg:col-span-3 lg:text-[clamp(1.25rem,1.5vw,1.375rem)]`}
               >
                 <h3 id="system-heading" className={s.title}>
                   {SYSTEM.title}

@@ -80,7 +80,7 @@ function Score({ score, delay }: { score: number; delay: number }) {
     >
       <p aria-hidden className="flex w-10 shrink-0 items-baseline">
         <span
-          className={`type-display figures text-[28px] leading-none ${weak ? "text-brand" : ""}`}
+          className={`type-title figures text-[28px] leading-none ${weak ? "text-brand" : ""}`}
         >
           {score}
         </span>
@@ -220,7 +220,7 @@ function Measure() {
             <dt className="text-[15px] font-medium">
               {m.buyer}
             </dt>
-            <dd className="type-display mt-3 max-w-[24ch] text-[clamp(1.375rem,2vw,1.625rem)] leading-[1.15]">
+            <dd className="type-title mt-3 max-w-[24ch] text-[clamp(1.375rem,2vw,1.625rem)] leading-[1.15]">
               {m.definition}
             </dd>
           </div>
@@ -309,7 +309,7 @@ export function ProofChapter() {
                 >
                   <dt className="text-muted">Overall</dt>
                   <dd className="flex items-baseline gap-2">
-                    <span className="type-display figures text-[22px] leading-none">
+                    <span className="type-title figures text-[22px] leading-none">
                       {SAMPLE_TOTAL}
                     </span>
                     <span className="text-[14px] text-muted">out of 60</span>

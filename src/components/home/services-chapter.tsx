@@ -79,7 +79,7 @@ function SystemBands() {
                 {L.name}
               </h4>
               <div data-band-in="" className={s.builds}>
-                <p className={`${s.bt} type-display`}>{L.builds}</p>
+                <p className={`${s.bt} type-title`}>{L.builds}</p>
                 <p className={s.bl}>{L.line}</p>
                 <p className={s.bf}>{L.feeds}</p>
                 {L.s === TOP && <p className={s.bnote}>{SYSTEM.note}</p>}
@@ -88,7 +88,7 @@ function SystemBands() {
                 {L.services.map((svc) => (
                   <li key={svc.href}>
                     <Link href={svc.href} className={s.svc}>
-                      <span data-band-name={svc.i} className={`${s.sname} type-display`}>
+                      <span data-band-name={svc.i} className={`${s.sname} type-title`}>
                         {svc.name}
                       </span>
                       <ArrowUpRight className={s.arr} />
@@ -122,7 +122,7 @@ function SystemLegend() {
               <span aria-hidden data-tone={L.key} className={s.legMark} />
               {L.name}
             </p>
-            <p className={`${s.legTitle} type-display`}>{L.builds}</p>
+            <p className={`${s.legTitle} type-title`}>{L.builds}</p>
             <p className={s.legText}>{L.line}</p>
             <p className={s.legFeeds}>{L.feeds}</p>
           </li>
@@ -192,7 +192,7 @@ export function ServicesChapter() {
                   </span>
                   <span
                     data-slot=""
-                    className={`${s.name} type-display relative col-start-2 row-start-1 whitespace-nowrap leading-none lg:col-span-4 lg:col-start-4 xl:col-span-5`}
+                    className={`${s.name} type-title relative col-start-2 row-start-1 whitespace-nowrap leading-none lg:col-span-4 lg:col-start-4 xl:col-span-5`}
                   >
                     <span data-nm="">{svc.name}</span>
                   </span>

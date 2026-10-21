@@ -14,7 +14,7 @@ import { AUDIT_HREF } from "@/lib/nav";
 
   The one orchestrated load, from first paint, in CSS (the vocabulary is
   in type-reveal.tsx). In ms: the kicker's square at 80 and its label at
-  190; the headline's words at 220, 285 and 350, then 485, with the light
+  190; the headline's words at 220, 285 and 350, then 485, with the fog-toned
   "Everywhere." last at 670 over 1.4s; the copy at 860 and the action at
   960 (fade-up, 1s); the glass at 1080, rising slowly over 1.6s once the
   type has landed. No JS or reduced motion: finished and still.
@@ -47,7 +47,7 @@ export function Hero() {
               id="hero-heading"
               onLoad
               delay={220}
-              className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98]"
+              className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98] [--display-tracking:-0.038em]"
               lines={["Made to be", ["seen.", { text: "Everywhere.", accent: true, className: "text-fog" }]]}
             />
           </div>
