@@ -1,0 +1,169 @@
+/*
+  What you came for: the four wants set as a worked sum. Three factors
+  and their product, one row each: the operator hangs in the first
+  column, flush with the chapter label, the term is set large in columns
+  2-8, and what it means sits on the term's baseline in columns 9-12.
+  A hairline runs over each factor, the total's heavier rule over the
+  result, and a double rule, the bottom line, under it. Below lg the
+  operator and term share a line and the notes run under the term.
+
+  The operators are drawn, not set: two strokes each, in the same 2px as
+  the rules, so everything drawn on the sum is line and everything set
+  is type.
+
+  Motion, per row, keyed off its term's TypeReveal (which waits for the
+  pen, then holds it): the rule is drawn left to right, then the
+  operator's two strokes one after the other, then the term is plotted
+  (its delay waits for the strokes), then the notes light; under the
+  result the bottom line is drawn as they do. All linear, all at one
+  steady rate. The default is finished: no JS, reduced motion, print, or
+  a row already on screen at load.
+*/
+
+.sum {
+  --term: clamp(3rem, 1.6rem + 5.2vw, 7rem);
+  --hair: color-mix(in oklab, var(--color-paper) 34%, transparent);
+}
+
+.row {
+  position: relative;
+}
+
+/* The rule over a factor, and the total's heavier one over the result */
+.rule,
+.total {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: var(--hair);
+  transform-origin: left center;
+}
+.total {
+  height: 2px;
+  background: var(--color-paper);
+}
+
+/* The bottom line: two rules under the result */
+.bottom {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 5px;
+  border-block: 1px solid var(--color-paper);
+  transform-origin: left center;
+}
+
+.term {
+  --display-weight: 340;
+  --display-tracking: -0.046em;
+  font-size: var(--term);
+  line-height: 0.9;
+}
+
+/* The operator's cell shares the term's size, so its box sits on the
+   term's baseline and is measured in the term's ems: a square centred on
+   the math axis, about a third of an em up */
+.op {
+  font-size: var(--term);
+  line-height: 0.9;
+}
+.glyph {
+  position: relative;
+  display: inline-block;
+  width: 0.32em;
+  height: 0.32em;
+  margin-bottom: 0.15em;
+  vertical-align: baseline;
+}
+.stroke {
+  position: absolute;
+  left: 0;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--color-blush);
+  transform-origin: 0 50%;
+}
+/* times: top left to bottom right, then bottom left to top right */
+.times .stroke {
+  width: 141.42%;
+}
+.times .stroke:first-child {
+  top: 0;
+  rotate: 45deg;
+}
+.times .stroke:last-child {
+  top: 100%;
+  rotate: -45deg;
+}
+/* equals: two bars, top then bottom, a little wider than the times */
+.equals {
+  width: 0.38em;
+}
+.equals .stroke {
+  width: 100%;
+}
+.equals .stroke:first-child {
+  top: 32%;
+}
+.equals .stroke:last-child {
+  top: 68%;
+}
+
+.want {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+.how {
+  margin: 8px 0 0;
+  max-width: 42ch;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+@media (min-width: 64rem) {
+  .want {
+    font-size: 19px;
+  }
+  .how {
+    margin-top: 10px;
+  }
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  .row:has(:global(.type-reveal)[data-state="armed"]) :is(.rule, .total, .bottom, .stroke) {
+    scale: 0 1;
+  }
+  .row:has(:global(.type-reveal)[data-state="armed"]) .notes {
+    opacity: 0;
+  }
+
+  .row:has(:global(.type-reveal)[data-state="in"]) :is(.rule, .total) {
+    transition: scale var(--rule) linear;
+  }
+  .row:has(:global(.type-reveal)[data-state="in"]) .stroke:first-child {
+    transition: scale var(--stroke) linear var(--rule);
+  }
+  .row:has(:global(.type-reveal)[data-state="in"]) .stroke:last-child {
+    transition: scale var(--stroke) linear calc(var(--rule) + var(--stroke));
+  }
+  .row:has(:global(.type-reveal)[data-state="in"]) .notes {
+    transition: opacity 0.12s linear var(--done);
+  }
+  .row:has(:global(.type-reveal)[data-state="in"]) .bottom {
+    transition: scale var(--rule) linear var(--done);
+  }
+}
+
+/* Forced colors drop background colors, which would take the operators
+   and rules with them: draw them in the system's text color instead */
+@media (forced-colors: active) {
+  .rule,
+  .total,
+  .stroke {
+    forced-color-adjust: none;
+    background: CanvasText;
+  }
+}

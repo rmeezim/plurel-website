@@ -224,10 +224,10 @@ export function AccountabilityChapter() {
         <div className={`${GRID} gap-y-12`}>
           <Reveal className="col-span-4 sm:col-span-6 lg:col-span-6">
             <p className="max-w-[36ch] text-[20px] leading-[1.45] lg:text-[23px]">
-              Before any work starts, we agree one number with you: the one your business runs
-              on. Orders for a consumer brand, installs for an app, demos for a software company,
-              stockists for a product on shelves. Every layer of the system is engineered to move
-              it, and it is the result we report.
+              Reach and mentions are tracked as causes. We answer for the effect: the one number
+              your business runs on, agreed before any work starts. Orders for a consumer brand,
+              installs for an app, demos for a software company, stockists for a product on
+              shelves.
             </p>
           </Reveal>
           <Reveal className="col-span-4 sm:col-span-6 lg:col-span-5 lg:col-start-8">

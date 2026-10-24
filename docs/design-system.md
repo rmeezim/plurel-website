@@ -76,14 +76,16 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| dark | `bg-graphite` | paper, fog | The homepage's room: hero and What Plurel is, Why now, Why Plurel (services and the Plurel System), Accountability, proof, questions, journal, footer |
-| red | `bg-brand` | paper | Method, Who it's for, closing |
+| dark | `bg-graphite` | paper, fog | The homepage's room: hero and What Plurel is, Why now, Why Plurel (services and the Plurel System), Accountability, proof, questions, footer; the sample Diagnostic page |
+| red | `bg-brand` | paper | What you came for, Method, Who it's for, closing |
 | paper | `bg-paper` | ink | Interior pages until they move over; never a homepage chapter |
 
 All three are flat fills. The homepage is dark, punctuated by red:
-graphite hero, statement, Why now and Why Plurel, red Method, graphite
-Accountability, red Who it's for, graphite proof, questions and journal,
-red closing, graphite footer. Graphite chapters that meet part by their
+graphite hero and statement, red What you came for, graphite Why now and
+Why Plurel, red Method, graphite Accountability, red Who it's for,
+graphite proof and questions, red closing, graphite footer. The Journal
+is not a homepage chapter; it stays one click away in the nav and the
+footer. Graphite chapters that meet part by their
 kicker and their room alone, never a rule or a tint; no two red chapters
 touch, and every page keeps at least one red room. On graphite, small red
 type and markers are `signal` (5.1:1), secondary text `fog`, hairlines
@@ -176,12 +178,22 @@ Content on GRID
 
 ## Actions
 
-- `<CtaLink>`: the one primary action per view. Sharp block, sentence
-  case, diagonal arrow. `solid` (red) on paper and dark, `paper` on red.
-- `<TextLink>`: secondary. Sentence case on an underline, straight arrow.
-- Header CTA is outlined: "Get in touch". The hero's primary action is
-  "Request a diagnostic"; the closing chapter offers the Diagnostic
-  ("Request your diagnostic") and the strategy call as the secondary door.
+- `<CtaLink>`: a compact, square control, never a big slab: the label in
+  sentence case (14px medium, 15px at `size="lg"`) beside a square cell
+  for the arrow, 40px tall (44px at `lg`, kept for the closing). A filled
+  action is two tones, like a key and its port: `solid` is brand with an
+  ember cell (ember on hover), `paper` is paper with a blush cell (the
+  filled action on red). The secondary beside it draws the same split as
+  a hairline: `outline-light` on graphite and red, `outline` on paper.
+  The arrow is diagonal for the Diagnostic and other steps out, straight
+  (`arrow="right"`) for a page on the site. One filled action per view;
+  pairs sit 8px apart and wrap on phones.
+- `<TextLink>`: a quieter door inside a chapter's aside. Sentence case on
+  an underline, straight arrow.
+- Header CTA is outlined: "Get in touch". The hero pairs "Request a
+  diagnostic" with "See a sample" (the full sample Diagnostic); Proof
+  pairs it with "See the full sample"; the closing offers "Request a
+  diagnostic" and "See a sample" at `lg`, then the email.
 
 ## Motion
 
@@ -218,10 +230,11 @@ page read as a template.
   that only lights waits without holding it. The pen waits only for
   strokes still on screen, and never longer than 2.4s, so a quick scroll
   never stacks up delays; chapters never wait on each other.
-- **Lines are drawn** at a steady rate (linear): Why now's route and its
-  closing rule, the Method staircase (one bar after another, from lg),
-  the sample Diagnostic's bars (all at once, like an instrument reading
-  out).
+- **Lines are drawn** at a steady rate (linear): What you came for's
+  rules and operators (row by row: the rule, the operator's two strokes,
+  then the term is plotted), Why now's route and its closing rule, the
+  Method staircase (one bar after another, from lg), the sample
+  Diagnostic's bars (all at once, like an instrument reading out).
 - **States light:** `Reveal` blocks, nodes and markers switch on by
   opacity alone and never travel; Why now's stations light the moment the
   route reaches them, and the hero's copy, action and glass light in turn
@@ -293,8 +306,9 @@ then the glass:
 - **Kicker:** "Distribution, engineered".
 - **Statement:** "Made to be / seen. *Everywhere.*", the accent in fog.
   Copy: "Great work no longer sells itself. Distribution does. Plurel
-  engineers yours as one system, so the right customers find you and
-  growth compounds." Action: "Request a diagnostic".
+  engineers yours, from reach to revenue, as one system, so growth
+  compounds." Actions: "Request a diagnostic", and "See a sample" beside
+  it, outlined.
 - **Glass:** the `rise` band, set well below the actions, uncaptioned,
   resting a little over half its height on first load.
 
@@ -310,6 +324,26 @@ motion or without JS; unlit words stay above AA for large text). Under
 it, four facts on a hairline, set like a fact sheet: built for, how it
 runs, answers for, starts with. The mark watermark sits behind the
 statement, cropped at the right. A visually hidden h2 keeps the outline.
+
+## What you came for
+
+`home/came-for.tsx` and its module CSS, on red, third on the page. The
+four things a company comes for, in its own words, set as a worked sum
+rather than a menu: Reach × Reputation × Mindshare = Revenue. Each is
+bought from a different supplier, and they multiply, so a gap in any
+one empties the result (the standfirst says so). The sum is the
+chapter's headline (a visually hidden h2 keeps the outline; the kicker
+stays visual): the operators hang in column 1, flush with the kicker,
+drawn as two 2px strokes rather than set; the terms are display type in
+columns 2 to 8 (340, about 7rem at most); what each means sits on the
+term's baseline in columns 9 to 12, a want in the visitor's words ("Be
+seen, and sometimes go viral.") and one line on how. Hairlines over the
+factors, the total's 2px rule over Revenue and a double rule, the bottom
+line, under it. "Go viral" appears here once, with the line that keeps
+it honest (a viral moment is luck, reach is a system), and once in the
+questions. It closes on "Each supplier moves one term. We engineer the
+whole equation." with "Start with the Diagnostic". Below lg the
+operator and term share a line and the notes run under the term.
 
 ## Why now
 
@@ -424,8 +458,9 @@ another seed.
 ## Method
 
 `home/method-chapter.tsx`, on red. The four phases as a time chart, in
-few words: each phase is a name, a tagline and what it delivers; the full
-method, in prose, lives on /methodology. Under the chart, "Where AI
+few words: each phase is a name, a tagline and what it delivers (a ruled
+list from sm; on a phone one run-on line split by small squares, each
+item kept whole); the full method, in prose, lives on /methodology. Under the chart, "Where AI
 helps, and where a person decides" is one line per phase in one shape:
 what the machine does, then what a person decides.
 
@@ -435,7 +470,10 @@ what the machine does, then what a person decides.
 as a quiet list, one line each, whose answers open on demand (native
 `<details>`: no JS needed, keyboard and assistive tech included, and
 search engines read every answer, as they do the FAQPage data). The first
-sentence of an answer is the takeaway, in full paper.
+sentence of an answer is the takeaway, in full paper. "Can you make us go
+viral?" comes second and answers honestly: no one can promise one, and
+the system turns a spike into the number you run on. The Diagnostic is
+answered by the closing chapter and the sample, not by a question.
 
 ## Faint art
 
@@ -469,17 +507,22 @@ chapter.
   products.
 - Proof is never invented. No client, person, quote, logo or result is
   shown as real unless it is. Samples are labelled as samples in plain
-  view (the Proof chapter's sample Diagnostic for Halden; the sample
-  engagements on /work). The accountability strip's supplier metrics are
+  view (the sample Diagnostic for Halden, in Proof and on
+  /sample-diagnostic; the sample engagements on /work). The accountability strip's supplier metrics are
   generic examples of what suppliers report, not claims.
 - No props or invented scenes stand in for an idea (no sample buyers,
   mock screens or mock reports), and no cited statistics on the homepage.
 - The Proof chapter (`home/proof-chapter.tsx`, data in `lib/proof.ts`) shows
-  what Plurel delivers first: an excerpt of a Diagnostic, run on Halden, a
-  sample company (six parts scored, where you win, where you leak, what
-  to fix first, what runs first, what we would measure). Real cases join
-  it when they can be published: each opens with what the Diagnostic
-  found and reports the one number with its client, cause and period.
+  what Plurel delivers first, in one screen: an excerpt of a Diagnostic,
+  run on Halden, a sample company (the company and its total, six parts
+  scored with drawn bars, and the read in three short lines: where you
+  win, where you leak, what to fix first). The full sample, findings, the
+  first quarter's plan and what we would measure included, is a page of
+  its own, `/sample-diagnostic` (`components/diagnostic-sheet.tsx`, set
+  in the graphite room, the header floating over it as over the hero).
+  Real cases join Proof when they can be published: each opens with what
+  the Diagnostic found and reports the one number with its client, cause
+  and period.
 - People (`home/people-chapter.tsx`, `lib/people.ts`) renders only once
   real people are listed: faces, first names, one line each.
 - Photography direction for stills matches the film: people at work,
@@ -490,7 +533,8 @@ chapter.
 
 - Header (`site-header.tsx`): fixed and slim (56px, 64px at lg). At the
   top of the page it spans the width: transparent with paper type over a
-  cinematic hero, a paper bar elsewhere. After 24px of scroll it squeezes
+  dark opening (the homepage's hero, the sample Diagnostic;
+  `OVERLAY_ROUTES` in `lib/nav.ts`), a paper bar elsewhere. After 24px of scroll it squeezes
   into a floating pill (48px tall, 2px corners, at most 1080px wide) of
   frosted glass with a lit top edge, whose tint follows what sits behind
   it: dark glass with paper type over graphite or red, light glass with
@@ -521,16 +565,16 @@ one step of that argument, and says it once:
 | --- | --- |
 | Hero | The promise: made to be seen, everywhere; great work no longer sells itself, distribution does |
 | What Plurel is | Identity: a distribution engineering firm, the system it builds and runs, and the facts a buyer checks first |
+| What you came for | The wants, in the visitor's words: reach (and, honestly, going viral), reputation, mindshare and revenue, set as one sum; each supplier moves one term, Plurel engineers the whole equation |
 | Why now | The shift: buyers decide before they arrive, in places the company doesn't control |
 | Why Plurel | The thesis, shown: ten suppliers' voices become one system, the Plurel System's four layers and its loop, each layer with its instrument and services |
 | Method | How it runs: the Diagnostic, then the four phases as one monthly partnership |
 | Accountability | What we answer for: ten suppliers report ten numbers, we answer for one, agreed on day one |
 | Who it's for | Fit: consumer brands, physical products, B2B technology and consumer technology, the same system with a different number |
-| Proof | What a Diagnostic finds (a labelled sample until real cases can be published) |
+| Proof | What a Diagnostic finds, in one screen (a labelled sample until real cases can be published; the full sample on /sample-diagnostic) |
 | People | Who does the work (shown once real people are listed) |
-| FAQ | The real objections, biggest first: is this a full-service agency? every channel? what about our current agencies? cost |
-| Journal | What we're learning (later: the teardown series) |
-| Closing | The Diagnostic as the door in ("Request your diagnostic"), with an email as the second way in |
+| FAQ | The real objections, biggest first: is this a full-service agency? can you make us go viral? every channel? what about our current agencies? cost |
+| Closing | The Diagnostic as the door in ("Request a diagnostic", with "See a sample" beside it), what follows it, and an email as the other way in |
 
 Write "every relevant channel", never "every channel". The outcome is
 "one number, agreed on day one" (orders, installs, demos, stockists);

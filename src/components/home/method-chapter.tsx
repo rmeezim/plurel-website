@@ -153,19 +153,34 @@ export function MethodChapter() {
                       </p>
                     </div>
 
-                    {/* Row 3: the deliverables */}
+                    {/* Row 3: the deliverables. On a phone they run on as
+                        one line: each item kept whole with the small square
+                        after it, and a plain space to break on between
+                        them. From sm, a ruled list */}
                     <ul
                       aria-label={`${phase.name} deliverables`}
-                      className="mt-8 border-t border-paper/45 sm:grid sm:grid-cols-2 sm:gap-x-6 lg:mt-9 lg:block"
+                      className="mt-6 border-t border-paper/45 pt-3 sm:mt-8 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pt-0 lg:mt-9 lg:block"
                     >
-                      {phase.outputs.map((output) => (
-                        <li
-                          key={output}
-                          className="border-b border-paper/30 py-[9px] text-[14px] leading-[1.35]"
-                        >
-                          {output}
-                        </li>
-                      ))}
+                      {phase.outputs.map((output, j) => {
+                        const last = j === phase.outputs.length - 1;
+                        return (
+                          <li
+                            key={output}
+                            className="inline text-[14px] leading-[1.6] sm:block sm:border-b sm:border-paper/30 sm:py-[9px] sm:leading-[1.35]"
+                          >
+                            <span className="whitespace-nowrap sm:whitespace-normal">
+                              {output}
+                              {!last && (
+                                <span
+                                  aria-hidden
+                                  className="ml-2 inline-block size-[4px] -translate-y-[2px] bg-paper/70 sm:hidden"
+                                />
+                              )}
+                            </span>
+                            {!last && " "}
+                          </li>
+                        );
+                      })}
                     </ul>
                   </Reveal>
                 </li>

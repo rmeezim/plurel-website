@@ -22,7 +22,7 @@ export const PROOF_ID = "proof";
 export const SAMPLE_HREF = "/sample-diagnostic";
 
 export type PartScore = {
-  /** One of the Diagnostic's six parts, named as the FAQ names them */
+  /** One of the Diagnostic's six parts */
   part: string;
   /** Out of 10 */
   score: number;

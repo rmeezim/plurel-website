@@ -24,7 +24,7 @@ const WORDS = STATEMENT.split(" ");
 
 const FACTS = [
   ["Built for", "Consumer brands, physical products, B2B and consumer technology"],
-  ["How it runs", "One team, one brief, every relevant surface"],
+  ["How it runs", "One team and one brief, on every relevant channel"],
   ["Answers for", "One number, agreed on day one"],
   ["Starts with", "The Diagnostic, back within a business day"],
 ] as const;

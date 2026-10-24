@@ -50,15 +50,20 @@ export const PHASES = [
 ];
 
 /*
-  The FAQ, in the order a buyer's doubts arrive: what this is, how much of
-  it they need, what happens to the suppliers they have, cost, fit, who
-  does the work, and the Diagnostic. The first sentence of each answer is
-  the takeaway (set in ink on the page).
+  The FAQ, in the order a buyer's doubts arrive: what this is, whether it
+  can make them go viral, how much of it they need, what happens to the
+  suppliers they have, cost, fit, and who does the work. The Diagnostic
+  is answered by the closing chapter and the sample. The first sentence
+  of each answer is the takeaway (set in full paper on the page).
 */
 export const FAQS = [
   {
     q: "How is this different from a full-service agency?",
     a: "We sell the integration, not the menu. A full-service agency puts many services under one roof, and each still reports its own number. We run your marketing from one story, with one team and one report, across every relevant channel, and we answer for one number, agreed with you on day one.",
+  },
+  {
+    q: "Can you make us go viral?",
+    a: "No one can promise a viral moment, and anyone who does is selling luck. We build the conditions for one: a story worth repeating, cut for creators and short-form, with paid behind it. When something takes off, the system turns the spike into searches and into the number you run on.",
   },
   {
     q: "Do we need every channel?",
@@ -79,9 +84,5 @@ export const FAQS = [
   {
     q: "Who actually does the work?",
     a: "A senior Plurel team covering strategy, narrative, design, film, web and distribution. The people who run your Diagnostic are the people who run the work.",
-  },
-  {
-    q: "What exactly is the Diagnostic, and why is it free?",
-    a: "The Plurel Distribution Diagnostic: a strategist scores six parts of your distribution (market and category, narrative and positioning, website and touchpoints, assets and content, distribution across channels, and measurement) and returns a prioritized read within a business day. It’s free because it’s the fastest way for both of us to see whether there is real work to do together.",
   },
 ];

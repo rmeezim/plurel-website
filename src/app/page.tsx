@@ -1,8 +1,8 @@
 import { Hero } from "@/components/hero";
 import { AccountabilityChapter } from "@/components/home/accountability";
+import { CameForChapter } from "@/components/home/came-for";
 import { ClosingChapter } from "@/components/home/closing-chapter";
 import { FaqChapter } from "@/components/home/faq-chapter";
-import { JournalChapter } from "@/components/home/journal-chapter";
 import { MethodChapter } from "@/components/home/method-chapter";
 import { PeopleChapter } from "@/components/home/people-chapter";
 import { ProofChapter } from "@/components/home/proof-chapter";
@@ -15,20 +15,24 @@ import { HOME, pageMetadata } from "@/lib/metadata";
 export const metadata = pageMetadata({ ...HOME, path: "/" });
 
 /*
-  Home, as one argument: the promise (the glass over the film), what
-  Plurel is, why now, why one system (the services chapter, which ends on
-  the Plurel System), how an engagement runs (Method), what we answer for,
-  who it is built for, what a Diagnostic finds (a labelled sample until
-  real cases can be published; the people, once they can be shown), the
-  questions, the journal, and the Diagnostic itself before the footer.
-  Tones: one graphite room, footer included, punctuated by the red
-  Method, Who it's for and closing.
+  Home, as one argument, in the order a visitor asks: the promise (the
+  glass over the film), what Plurel is, what you came for (reach,
+  reputation, mindshare and revenue, set as one sum), why now, why one
+  system (the services chapter, which ends on the Plurel System), how an
+  engagement runs (Method), what we answer for, who it is built for,
+  what a Diagnostic finds (a labelled sample in one screen, the full one
+  a page of its own, until real cases can be published; the people, once
+  they can be shown), the questions, and the Diagnostic itself before the
+  footer. The Journal stays one click away, in the nav and the footer.
+  Tones: one graphite room, footer included, punctuated by the red What
+  you came for, Method, Who it's for and closing.
 */
 export default function Home() {
   return (
     <main data-room="dark">
       <Hero />
       <StatementChapter />
+      <CameForChapter />
       <WhyNowChapter />
       <ServicesChapter />
       <MethodChapter />
@@ -37,7 +41,6 @@ export default function Home() {
       <ProofChapter />
       <PeopleChapter />
       <FaqChapter />
-      <JournalChapter />
       <ClosingChapter />
     </main>
   );

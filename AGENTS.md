@@ -73,7 +73,11 @@ Plurel sells integration, not a menu of services: one narrative, one
 creative engine, one set of numbers and one accountable team across every
 relevant channel (never "every channel"). The category it names is
 distribution engineering. The thesis: "Your marketing shouldn't be ten
-companies." Plurel works for every kind of growing company: consumer
+companies." What a company comes for is named in its own
+words and set as one sum on the homepage (What you came for): reach
+(going viral is luck; reach is a system), reputation, mindshare and
+revenue. Each supplier moves one term; Plurel engineers the whole
+equation. Plurel works for every kind of growing company: consumer
 brands, physical products, B2B technology and consumer technology (name
 the kinds of business at that high level), and the copy
 reads for all of them (prefer customers, buyers and the people a company
@@ -126,5 +130,11 @@ argument onto the homepage chapters.
   saver get a still frame. Any other auto-moving media needs a pause
   control.
 - Never invent proof: no client, person, quote, logo or result is shown as
-  real unless it is; samples are labelled as samples in plain view.
+  real unless it is; samples are labelled as samples in plain view. The
+  sample Diagnostic shows in one screen in the homepage's Proof and in
+  full on /sample-diagnostic.
+- Actions are compact and square, never a big slab or a rounded pill:
+  `CtaLink` is a sentence-case label beside a square arrow cell, 40px
+  tall (44px in the closing), one filled action per view with an
+  outlined secondary beside it.
 - Design for mobile first; the layout must hold up from 360px to wide desktop.
