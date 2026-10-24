@@ -101,41 +101,80 @@ export function Accent({ children, className = "" }: { children: ReactNode; clas
 
 type CtaVariant = "solid" | "paper" | "outline" | "outline-light";
 
-const CTA_VARIANT: Record<CtaVariant, string> = {
-  solid: "bg-brand text-paper hover:bg-ember",
-  paper: "bg-paper text-ink hover:bg-blush",
-  outline: "border border-ink/30 text-ink hover:border-ink hover:bg-ink hover:text-paper",
-  "outline-light":
-    "border border-paper/40 text-paper hover:border-paper hover:bg-paper hover:text-ink",
+/**
+ * Each variant: the whole control, its label, and its arrow cell. A filled
+ * action is two tones, the label and a deeper square for the arrow, like a
+ * key and its port; an outlined one draws the same split as a hairline.
+ */
+const CTA_VARIANT: Record<CtaVariant, { root: string; label: string; cell: string }> = {
+  solid: {
+    root: "text-paper",
+    label: "bg-brand group-hover:bg-ember",
+    cell: "bg-ember",
+  },
+  paper: {
+    root: "text-ink",
+    label: "bg-paper group-hover:bg-blush",
+    cell: "bg-blush",
+  },
+  outline: {
+    root: "border border-ink/25 text-ink hover:border-ink",
+    label: "group-hover:bg-ink/[0.04]",
+    cell: "border-l border-ink/25 group-hover:border-ink",
+  },
+  "outline-light": {
+    root: "border border-paper/35 text-paper hover:border-paper",
+    label: "group-hover:bg-paper/[0.06]",
+    cell: "border-l border-paper/35 group-hover:border-paper",
+  },
 };
 
-/** Primary action: sharp block, sentence case, diagonal arrow */
+const CTA_SIZE = {
+  md: { root: "h-10 text-[14px]", label: "px-4" },
+  lg: { root: "h-11 text-[15px]", label: "px-[18px]" },
+} as const;
+
+/**
+ * An action: a compact, sharp control in sentence case, the label beside a
+ * square arrow cell (diagonal for a step out, straight for a page on the
+ * site). `solid` is the one primary action per view; a secondary beside it
+ * is `outline-light` on graphite and red, `outline` on paper.
+ */
 export function CtaLink({
   href,
   children,
   variant = "solid",
-  size = "lg",
+  size = "md",
+  arrow = "up-right",
   className = "",
 }: {
   href: string;
   children: ReactNode;
   variant?: CtaVariant;
-  size?: "md" | "lg" | "xl";
+  size?: keyof typeof CTA_SIZE;
+  arrow?: "up-right" | "right";
   className?: string;
 }) {
-  const sizing =
-    size === "xl"
-      ? "h-16 gap-6 px-6 text-[17px] tracking-[-0.01em]"
-      : size === "lg"
-        ? "h-12 gap-6 px-6 text-[15px]"
-        : "h-10 gap-4 px-4 text-[14px]";
+  const v = CTA_VARIANT[variant];
+  const s = CTA_SIZE[size];
+  const Icon = arrow === "right" ? ArrowRight : ArrowUpRight;
   return (
     <Link
       href={href}
-      className={`group inline-flex shrink-0 items-center justify-between font-medium transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current ${sizing} ${CTA_VARIANT[variant]} ${className}`}
+      className={`group inline-flex shrink-0 items-stretch font-medium leading-none tracking-[-0.005em] transition-colors duration-300 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current ${s.root} ${v.root} ${className}`}
     >
-      {children}
-      <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+      <span className={`flex flex-1 items-center transition-colors duration-300 ${s.label} ${v.label}`}>
+        {children}
+      </span>
+      <span aria-hidden className={`grid aspect-square place-items-center transition-colors duration-300 ${v.cell}`}>
+        <Icon
+          className={`size-3.5 transition-transform duration-300 ${
+            arrow === "right"
+              ? "motion-safe:group-hover:translate-x-0.5"
+              : "motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"
+          }`}
+        />
+      </span>
     </Link>
   );
 }

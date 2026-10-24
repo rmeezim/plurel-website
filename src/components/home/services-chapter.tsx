@@ -237,7 +237,7 @@ export function ServicesChapter() {
       <div className={`${CONTAINER} pb-28 pt-10 lg:pb-40 lg:pt-12`}>
         <div className={GRID}>
           <div className="col-span-4 sm:col-span-3">
-            <CtaLink href="/services" className="w-full">
+            <CtaLink href="/services" variant="outline-light" arrow="right">
               All services
             </CtaLink>
           </div>

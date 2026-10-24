@@ -2,7 +2,7 @@ import { Reveal } from "@/components/reveal";
 import { CONTAINER, CtaLink, GRID, Kicker, TextLink } from "@/components/system";
 import { pageMetadata } from "@/lib/metadata";
 import { AUDIT_HREF, CONTACT_EMAIL } from "@/lib/nav";
-import { PROOF_HREF } from "@/lib/proof";
+import { SAMPLE_HREF } from "@/lib/proof";
 
 export const metadata = pageMetadata({
   title: "Work — Plurel",
@@ -169,7 +169,7 @@ export default function WorkPage() {
                 these are sample engagements: the shape the work takes for three kinds of
                 company. They are illustrative, and none of them is a client.
               </p>
-              <TextLink href={PROOF_HREF} className="mt-4">
+              <TextLink href={SAMPLE_HREF} className="mt-4">
                 See a sample Diagnostic
               </TextLink>
             </Reveal>

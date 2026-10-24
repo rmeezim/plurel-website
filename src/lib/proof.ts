@@ -1,5 +1,8 @@
 /*
-  The Proof chapter (components/home/proof-chapter.tsx).
+  The sample Diagnostic: summarised in the homepage's Proof chapter
+  (components/home/proof-chapter.tsx, which reads each part's score and the
+  read's short lines) and shown in full on its own page
+  (app/sample-diagnostic, components/diagnostic-sheet.tsx).
 
   There are no client cases to show yet, so the chapter shows the work
   itself: an excerpt of a Plurel Distribution Diagnostic, run on Halden,
@@ -9,13 +12,14 @@
 
   When real cases exist, with permission, they join this chapter in the
   same order the work runs: what the Diagnostic found, which stages ran,
-  and one qualified-demand number with its client, cause and period.
+  and the one number with its client, cause and period.
 */
 
-/** The chapter's anchor, so /work and other pages can point at the sample */
+/** The homepage chapter's anchor */
 export const PROOF_ID = "proof";
 
-export const PROOF_HREF = `/#${PROOF_ID}`;
+/** The full sample, on its own page (app/sample-diagnostic) */
+export const SAMPLE_HREF = "/sample-diagnostic";
 
 export type PartScore = {
   /** One of the Diagnostic's six parts, named as the FAQ names them */
@@ -85,15 +89,18 @@ export const SAMPLE_DIAGNOSTIC = {
   read: [
     {
       head: "Where you win",
+      short: "The product answers the objection, and no rival brand talks about noise.",
       text: "The product answers the objection. The Q7 measured 32 dB at three metres, 10 dB under what the rules allow at a neighbour’s window, and no rival brand talks about noise at all.",
     },
     {
       head: "Where you leak",
+      short: "Developers land on a homeowner page, with no way to ask for specs.",
       text: "Developers. A housebuilder who could fit the Q7 to a whole street lands on a homeowner page and a survey form, with no way to ask for specs or volume pricing.",
     },
     {
       head: "What to fix first",
-      text: "Give developers their own front door, with specs and volume pricing. Then count qualified demand from both buyers in one report, before another pound goes into paid social.",
+      short: "Give developers their own front door, then count both buyers in one report.",
+      text: "Give developers their own front door, with specs and volume pricing. Then count both buyers in one report, before another pound goes into paid social.",
     },
   ],
 
@@ -120,7 +127,7 @@ export const SAMPLE_DIAGNOSTIC = {
     },
   ] satisfies readonly ChainStage[],
 
-  /** Qualified demand, defined for each buyer */
+  /** The one number, defined for each buyer */
   measure: [
     {
       buyer: "Homeowners",

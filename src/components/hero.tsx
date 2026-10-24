@@ -5,6 +5,7 @@ import { TypeReveal } from "@/components/type-reveal";
 import { heroFilm } from "@/lib/film";
 import { labelTime } from "@/lib/pen";
 import { AUDIT_HREF } from "@/lib/nav";
+import { SAMPLE_HREF } from "@/lib/proof";
 
 /*
   Home hero: the statement, then a full-bleed band of glass over the film.
@@ -18,9 +19,10 @@ import { AUDIT_HREF } from "@/lib/nav";
   kicker's square lights at 120 and its label is plotted from 180; the
   headline is plotted from 440 at the hero's pace, a line at a time, the
   pen lifting once before the fog-toned "Everywhere." (about 1.1s in
-  all); the copy and the action light at 980 and 1080; the glass comes up
-  last, from 1200 over 1.4s, by which time the film is drawing. No travel
-  anywhere. No JS or reduced motion: finished and still.
+  all); the copy and the two actions (a diagnostic, or a sample of one)
+  light at 980 and 1080; the glass comes up last, from 1200 over 1.4s, by
+  which time the film is drawing. No travel anywhere. No JS or reduced
+  motion: finished and still.
 */
 
 const KICKER = "Distribution, engineered";
@@ -61,11 +63,12 @@ export function Hero() {
           <div className="col-span-4 flex flex-col items-start gap-6 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pb-2">
             <p className="fade-in max-w-[36ch] text-[17px] leading-[1.5] text-fog lg:text-[18px]" style={at(980)}>
               Great work no longer sells itself. Distribution does. Plurel engineers
-              yours as one system, so the right customers find you and growth compounds.
+              yours, from reach to revenue, as one system, so growth compounds.
             </p>
-            <div className="fade-in flex w-full sm:w-auto" style={at(1080)}>
-              <CtaLink href={AUDIT_HREF} className="w-full sm:w-auto">
-                Request a diagnostic
+            <div className="fade-in flex flex-wrap gap-2" style={at(1080)}>
+              <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
+              <CtaLink href={SAMPLE_HREF} variant="outline-light" arrow="right">
+                See a sample
               </CtaLink>
             </div>
           </div>

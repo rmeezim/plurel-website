@@ -1,10 +1,9 @@
-import Link from "next/link";
-import { ArrowUpRight } from "@/components/icons";
 import { GlassBand } from "@/components/glass-band";
-import { CONTAINER, GRID } from "@/components/system";
+import { CONTAINER, CtaLink, GRID } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { heroFilm } from "@/lib/film";
 import { AUDIT_HREF, CONTACT_EMAIL } from "@/lib/nav";
+import { SAMPLE_HREF } from "@/lib/proof";
 
 /* What comes back, in a sentence. The Proof chapter has already shown its
    win, leak and fix headings, so they are not repeated here. */
@@ -17,8 +16,9 @@ const FOCUS =
   The last red room before the footer: the offer, specified, with one
   action and a person to write to. No running head: the headline names
   the chapter. Each fact lands once: what is scored (the sub-line), what
-  comes back (the sentence on the right), what it costs and how fast
-  (under the button), and that it is yours to keep.
+  comes back (the sentence on the right), what it costs, how fast and what
+  follows (under the actions), and that it is yours to keep. The actions
+  are the site's compact pair: the request, and the sample beside it.
 
   Motion: one pen. The name is plotted at the hero's pace, then the two
   display lines under it, one after the other (TypeReveal).
@@ -44,21 +44,18 @@ export function ClosingChapter() {
               lines={["Six parts of your distribution, scored by a strategist."]}
             />
             <div className="mt-auto pt-10 lg:pt-12">
-              <div className="grid grid-cols-4 gap-x-5 sm:grid-cols-6 sm:gap-x-6 lg:gap-x-8">
-                <Link
-                  href={AUDIT_HREF}
-                  className={`group col-span-4 flex h-16 items-center justify-between gap-6 bg-paper px-6 text-[17px] font-medium tracking-[-0.01em] text-ink transition-colors duration-300 hover:bg-blush ${FOCUS}`}
-                >
+              <div className="flex flex-wrap gap-2">
+                <CtaLink href={AUDIT_HREF} variant="paper" size="lg">
                   Request a diagnostic
-                  <ArrowUpRight
-                    aria-hidden
-                    className="size-4 shrink-0 transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5 motion-safe:group-hover:translate-x-0.5"
-                  />
-                </Link>
-                <p className="col-span-4 mt-3.5 text-[15px] leading-[1.4]">
-                  Free. Back within a business day.
-                </p>
+                </CtaLink>
+                <CtaLink href={SAMPLE_HREF} variant="outline-light" size="lg" arrow="right">
+                  See a sample
+                </CtaLink>
               </div>
+              <p className="mt-4 max-w-[44ch] text-[15px] leading-[1.45]">
+                Free. Back within a business day. If there&apos;s work to do, it starts as a
+                sprint of four to eight weeks or runs as the monthly partnership.
+              </p>
               <p className="mt-9 text-[17px] leading-[1.4] tracking-[-0.01em] sm:mt-10">
                 {"Or write to "}
                 <a

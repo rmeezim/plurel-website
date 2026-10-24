@@ -49,5 +49,6 @@ export const MOBILE_NAV = [
 export const AUDIT_HREF = "/contact";
 export const CONTACT_EMAIL = "hello@plurel.com";
 
-/** Routes that open on a full-bleed cinematic hero the header floats over */
-export const OVERLAY_ROUTES = new Set(["/"]);
+/** Routes that open dark, so the header floats over them: the homepage's
+    cinematic hero and the sample Diagnostic (no trailing slash) */
+export const OVERLAY_ROUTES = new Set(["/", "/sample-diagnostic"]);

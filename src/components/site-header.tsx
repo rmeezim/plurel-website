@@ -21,7 +21,8 @@ type MenuKey = "services" | "company";
 /*
   The header is a slim bar that becomes a floating glass pill. At the top
   of the page it spans the width: transparent with paper type over a
-  cinematic hero, a paper bar everywhere else. Once the page scrolls it
+  dark opening (the homepage's hero, the sample Diagnostic), a paper bar
+  everywhere else. Once the page scrolls it
   squeezes into a narrower, shorter, square-cornered pill of frosted glass
   with a lit edge,
   like the hero's flutes, whose tint follows whatever sits behind it (dark
@@ -241,7 +242,8 @@ function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const overlayRoute = OVERLAY_ROUTES.has(pathname);
+  // the static export serves every route with a trailing slash
+  const overlayRoute = OVERLAY_ROUTES.has(pathname.replace(/(.)\/$/, "$1"));
 
   const [menu, setMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
