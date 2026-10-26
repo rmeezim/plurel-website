@@ -5,7 +5,7 @@ import { TypeReveal } from "@/components/type-reveal";
 import { SAMPLE_DIAGNOSTIC as D, SAMPLE_TOTAL } from "@/lib/proof";
 
 /*
-  The sample Diagnostic in full (app/sample-diagnostic), set as the
+  The sample Diagnostic in full (app/diagnostic/sample), set as the
   printed report on a sheet a step up from the graphite room: section
   heads hang in the first three columns, the content runs on the other
   nine through subgrid. Mono only for the three month heads of the plan;

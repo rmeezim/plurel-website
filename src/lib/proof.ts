@@ -2,7 +2,7 @@
   The sample Diagnostic: summarised in the homepage's Proof chapter
   (components/home/proof-chapter.tsx, which reads each part's score and the
   read's short lines) and shown in full on its own page
-  (app/sample-diagnostic, components/diagnostic-sheet.tsx).
+  (app/diagnostic/sample, components/diagnostic-sheet.tsx).
 
   There are no client cases to show yet, so the chapter shows the work
   itself: an excerpt of a Plurel Distribution Diagnostic, run on Halden,
@@ -18,12 +18,42 @@
 /** The homepage chapter's anchor */
 export const PROOF_ID = "proof";
 
-/** The full sample, on its own page (app/sample-diagnostic) */
-export const SAMPLE_HREF = "/sample-diagnostic";
+/** The full sample, under the Diagnostic (app/diagnostic/sample) */
+export const SAMPLE_HREF = "/diagnostic/sample";
+
+/** The Diagnostic's six parts, the same for every company, and what a strategist reads in each */
+export const DIAGNOSTIC_PARTS = [
+  {
+    part: "Market and category",
+    look: "How buyers choose in your category, who they compare you with, and where the opening is.",
+  },
+  {
+    part: "Narrative and positioning",
+    look: "Whether your story is clear and true, and told the same way to every buyer.",
+  },
+  {
+    part: "Website and touchpoints",
+    look: "Where buyers land, what they find there and where they drop, from the first page to checkout.",
+  },
+  {
+    part: "Assets and content",
+    look: "What you already have to work with, and whether it is cut for the places buyers look.",
+  },
+  {
+    part: "Distribution across channels",
+    look: "Where your budget and attention go, against where your buyers actually decide.",
+  },
+  {
+    part: "Measurement",
+    look: "Whether anyone can say which spend produced last quarter’s results.",
+  },
+] as const;
+
+export type DiagnosticPart = (typeof DIAGNOSTIC_PARTS)[number]["part"];
 
 export type PartScore = {
   /** One of the Diagnostic's six parts */
-  part: string;
+  part: DiagnosticPart;
   /** Out of 10 */
   score: number;
   finding: string;

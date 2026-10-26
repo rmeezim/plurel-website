@@ -6,10 +6,10 @@ import {
   useState,
   type CSSProperties,
   type ElementType,
-  type ReactNode,
   type RefObject,
 } from "react";
-import { inReadingOrder, LABEL, labelTime, motionAllowed, plot } from "@/lib/pen";
+import { inReadingOrder, motionAllowed, plot } from "@/lib/pen";
+import { PACE, schedule, segments, type RevealLine } from "@/lib/plot";
 
 /*
   One reveal vocabulary for the whole site, taken from instruments rather
@@ -33,7 +33,6 @@ import { inReadingOrder, LABEL, labelTime, motionAllowed, plot } from "@/lib/pen
   hero      the h1, from first paint (onLoad)     30
   display   chapter h2s and names set large       18, or `pace`
   title     smaller heads and display-set lines   11
-  label     the chapter label (Kicker)            12, never under 180 in all
 
   Rules. Transforms only, so the compositor draws it even while the page
   is busy: each word is a window (.tr-w) sliding right over its own text
@@ -57,17 +56,7 @@ import { inReadingOrder, LABEL, labelTime, motionAllowed, plot } from "@/lib/pen
   wrap, select and copy as one sentence.
 */
 
-export type RevealSegment =
-  | string
-  | {
-      text: string;
-      className?: string;
-      /** Set in the quieter Accent (an <em>), after a short lift of the pen */
-      accent?: boolean;
-    };
-
-/** A line: one string, or segments (joined with a space) with their own class */
-export type RevealLine = string | readonly RevealSegment[];
+export type { RevealLine, RevealSegment } from "@/lib/plot";
 
 export type TypeRevealProps = {
   as?: "h1" | "h2" | "h3" | "p" | "span";
@@ -88,13 +77,6 @@ export type TypeRevealProps = {
 };
 
 type Css = CSSProperties & Record<`--${string}`, string | number>;
-
-/** Milliseconds per character */
-const PACE = { hero: 30, display: 18, title: 11 } as const;
-/** A new line: the pen returns */
-const RETURN = 60;
-/** Before the Accent: the pen lifts */
-const LIFT = 120;
 
 /* ---------- Arrival: armed below the fold, in once on screen ---------- */
 
@@ -169,82 +151,7 @@ export function useArrival(
   return state;
 }
 
-/**
- * A wrapper that carries its arrival as data-arrive ("armed", then "in")
- * for CSS to animate, so server markup inside it (the Kicker) can arrive
- * without becoming a client component: its square lights, then its label
- * is plotted. Renders plain without JS.
- */
-export function Arrive({
-  as = "div",
-  className,
-  chars = 12,
-  children,
-}: {
-  as?: "div" | "p" | "span";
-  className?: string;
-  /** The label's length, which sets how long it takes to plot */
-  chars?: number;
-  children: ReactNode;
-}) {
-  const Tag = as as ElementType;
-  const ref = useRef<HTMLElement>(null);
-  const time = labelTime(chars);
-  const state = useArrival(ref, true, LABEL.beat + time);
-  return (
-    <Tag
-      ref={ref}
-      className={className}
-      data-arrive={state === "idle" ? undefined : state}
-      style={{ "--kdur": `${time}ms` } as Css}
-    >
-      {children}
-    </Tag>
-  );
-}
-
 /* ---------- TypeReveal ---------- */
-
-type Seg = { text: string; className?: string; accent?: boolean };
-
-function segments(line: RevealLine): Seg[] {
-  const list = typeof line === "string" ? [line] : line;
-  return list
-    .map((s) => (typeof s === "string" ? { text: s } : s))
-    .map((s) => ({ ...s, text: s.text.trim() }))
-    .filter((s) => s.text);
-}
-
-const graphemes = (() => {
-  const seg =
-    typeof Intl !== "undefined" && "Segmenter" in Intl
-      ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
-      : undefined;
-  return (word: string) =>
-    seg ? Array.from(seg.segment(word), (g) => g.segment).length : Array.from(word).length;
-})();
-
-type Timed = { text: string; t: number; d: number };
-type TimedSeg = Omit<Seg, "text"> & { words: Timed[] };
-
-/** Where the pen is at each word: one clock across the head, each word starting where the last ended */
-function schedule(lines: Seg[][], pen: number, delay: number) {
-  let clock = delay;
-  const timed = lines.map((segs, li) => {
-    if (li > 0) clock += RETURN;
-    return segs.map((seg, si): TimedSeg => {
-      if (seg.accent) clock += LIFT;
-      const words = seg.text.split(/\s+/).map((text, wi) => {
-        if (si > 0 || wi > 0) clock += pen;
-        const word = { text, t: clock, d: graphemes(text) * pen };
-        clock += word.d;
-        return word;
-      });
-      return { className: seg.className, accent: seg.accent, words };
-    });
-  });
-  return { timed, total: clock };
-}
 
 export function TypeReveal({
   as = "h2",

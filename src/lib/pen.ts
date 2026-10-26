@@ -10,19 +10,11 @@
   Nothing waits longer than MAX_WAIT.
 
   plot and motionAllowed are client only (performance.now, setTimeout,
-  matchMedia): call them from effects. labelTime is pure.
+  matchMedia): call them from effects.
 */
 
 /** The longest anything waits for the pen, ms */
 const MAX_WAIT = 2400;
-
-/** The chapter label: ms per character, its shortest plot, and the beat after its square lights */
-export const LABEL = { pace: 12, min: 180, beat: 60 } as const;
-
-/** How long a chapter label takes to plot, ms, from its length (pure: safe on the server) */
-export function labelTime(chars: number): number {
-  return Math.max(LABEL.min, chars * LABEL.pace);
-}
 
 /** What each chapter's pen has drawn or will draw, and when each stroke ends */
 const strokes: { el: Element; chapter: Element; end: number }[] = [];

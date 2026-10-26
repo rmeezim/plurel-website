@@ -1,54 +1,71 @@
 /*
   Navigation data. Kept free of the heavy page-content modules because the
   header is a client component and ships this file to the browser.
-  Names and taglines mirror SERVICE_PAGES in services-pages.ts.
+  Names and taglines mirror DISCIPLINES in disciplines.ts; the layer each
+  sits in mirrors SERVICE_STAGE in services-type.ts.
 */
+export type LayerKey = "narrative" | "create" | "distribute" | "measure";
+
+/** The Plurel System's four layers, top to bottom */
+export const LAYERS: readonly { key: LayerKey; name: string }[] = [
+  { key: "narrative", name: "Narrative" },
+  { key: "create", name: "Create" },
+  { key: "distribute", name: "Distribute" },
+  { key: "measure", name: "Measure" },
+];
+
 const SERVICE_LIST = [
-  ["Website Design", "website-design", "Every buyer meets it, and most judge you by it.", "Web"],
-  ["Brand Identity", "brand-identity", "Look like the choice before you say a word.", "Brand"],
-  ["AI Search & SEO", "aeo-seo", "Be the answer, wherever the question is asked.", "Search"],
-  ["Content Marketing", "content-marketing", "Found by buyers long before they're ready.", "Content"],
-  ["Paid Ads", "paid-ads", "Rent attention on purpose. Keep what it earns.", "Paid"],
-  ["PR & Reputation", "pr-reputation", "What people say when you're not in the room.", "PR"],
-  ["Creative Direction", "creative-direction", "Someone with taste in every review.", "Creative"],
-  ["Martech & Consulting", "martech-consulting", "The wiring nobody sees until it breaks.", "Martech"],
+  ["Website Design", "website-design", "Every buyer meets it, and most judge you by it.", "create"],
+  ["Brand Identity", "brand-identity", "Look like the choice before you say a word.", "narrative"],
+  ["AI Search & SEO", "aeo-seo", "Be the answer, wherever the question is asked.", "distribute"],
+  ["Content Marketing", "content-marketing", "Found by buyers long before they're ready.", "create"],
+  ["Paid Ads", "paid-ads", "Rent attention on purpose. Keep what it earns.", "distribute"],
+  ["PR & Reputation", "pr-reputation", "What people say when you're not in the room.", "distribute"],
+  ["Creative Direction", "creative-direction", "Someone with taste in every review.", "narrative"],
+  ["Martech & Consulting", "martech-consulting", "The wiring nobody sees until it breaks.", "measure"],
 ] as const;
 
-/** The eight disciplines, in the order the site presents them */
-export const SERVICES = SERVICE_LIST.map(([name, slug, tagline, short], i) => ({
+/** The eight disciplines, in the order the site presents them, each with its layer */
+export const SERVICES = SERVICE_LIST.map(([name, slug, tagline, layer], i) => ({
   index: String(i + 1).padStart(2, "0"),
   name,
-  short,
   slug,
   tagline,
+  layer: layer as LayerKey,
   href: `/services/${slug}`,
 }));
 
-export const COMPANY = [
-  { name: "About", desc: "Who we are, and what every engagement includes.", href: "/about" },
-  { name: "Work", desc: "Sample engagements, until real cases can be published.", href: "/work" },
-  { name: "Methodology", desc: "The four phases, starting with the Diagnostic.", href: "/methodology" },
-  { name: "Studio", desc: "Where the work gets made.", href: "/studio" },
-  { name: "Careers", desc: "The kinds of roles we hire for, and how to introduce yourself.", href: "/careers" },
-  { name: "Journal", desc: "What we're learning about AI search, brand and growth.", href: "/blog" },
-  { name: "Contact", desc: "Request a diagnostic, or just write to us.", href: "/contact" },
+/** The Diagnostic's page, where a link names the Diagnostic itself */
+export const DIAGNOSTIC_HREF = "/diagnostic";
+/** Every "Request a diagnostic" lands on the Diagnostic's request form */
+export const AUDIT_HREF = `${DIAGNOSTIC_HREF}#request`;
+export const CONTACT_EMAIL = "hello@plurel.com";
+
+/** The primary navigation, in the order a visitor asks: what, how, for whom, who */
+export const PRIMARY = [
+  { name: "Method", href: "/method" },
+  { name: "Industries", href: "/industries" },
+  { name: "About", href: "/about" },
+  { name: "Journal", href: "/journal" },
 ];
 
-/** Full-screen mobile index, Swiss numbered */
-export const MOBILE_NAV = [
-  { name: "Services", href: "/services" },
-  { name: "Work", href: "/work" },
-  { name: "Method", href: "/methodology" },
+/** The footer's company list */
+export const COMPANY = [
   { name: "About", href: "/about" },
-  { name: "Studio", href: "/studio" },
-  { name: "Careers", href: "/careers" },
-  { name: "Journal", href: "/blog" },
+  { name: "Method", href: "/method" },
+  { name: "Industries", href: "/industries" },
+  { name: "Journal", href: "/journal" },
   { name: "Contact", href: "/contact" },
 ];
 
-export const AUDIT_HREF = "/contact";
-export const CONTACT_EMAIL = "hello@plurel.com";
+/** The full-screen mobile index */
+export const MOBILE_NAV = [
+  { name: "Services", href: "/services" },
+  { name: "Method", href: "/method" },
+  { name: "Industries", href: "/industries" },
+  { name: "The Diagnostic", href: DIAGNOSTIC_HREF },
+  { name: "About", href: "/about" },
+  { name: "Journal", href: "/journal" },
+  { name: "Contact", href: "/contact" },
+];
 
-/** Routes that open dark, so the header floats over them: the homepage's
-    cinematic hero and the sample Diagnostic (no trailing slash) */
-export const OVERLAY_ROUTES = new Set(["/", "/sample-diagnostic"]);

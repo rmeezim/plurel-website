@@ -26,24 +26,25 @@ the divisions together later and say so).
   Swiss metadata). The voice is a modern San Francisco technology
   company's: precise and quiet, never wide, bold or airy. Mona Sans loads
   only in the services chapter, for its supplier voices' widths.
-  Instrument Serif (`--font-serif`) is kept only for interior pages not
-  yet moved over.
 
 ## Design language: Cinematic Red x Swiss Systems
 
 Read `docs/design-system.md` before building any page. In short: red is
 the environment (flat red chapters, a red-graded film behind cool fluted glass),
-graphite is the room the homepage lives in, footer included (paper is for
-interior pages until they move over; on the homepage a light chapter read
-as a template), surfaces are flat color
+graphite is the room every page lives in, footer included (paper is type
+and the odd action, never a chapter: a light chapter read as a template),
+surfaces are flat color
 with no gradients or drawn grid lines (a chapter may carry one faint art
 field: the contour map or the mark watermark, `art.tsx`), structure
 is Swiss (a strict 12-column grid that is felt, not drawn; no eyebrow
 labels over headlines, no chapter numbers or rulers; mono only for
 data), and the look is authoritative, with a defense-grade precision and a
 little creativity. Primitives live in `src/components/system.tsx`; the
-homepage (`src/components/home/`) is the reference build. The hero film
-brief (real footage, not AI-generated) is in `docs/hero-video.md`.
+homepage (`src/components/home/`) is the reference build, and the interior
+pages share its parts through `src/components/page.tsx` (PageHead,
+ChapterHead, Room, Closing). The site map, what each page does and what
+was removed is in `docs/sitemap.md`. The hero film brief (real footage,
+not AI-generated) is in `docs/hero-video.md`.
 
 ## Brand tokens (defined in `globals.css` `@theme`)
 
@@ -53,17 +54,16 @@ brief (real footage, not AI-generated) is in `docs/hero-video.md`.
 | `ember`    | `#8e2824` | Deep red: hover on red, gradient floors                      |
 | `graphite` | `#141517` | The dark tone: hero, work, dark bands                        |
 | `fog`      | `#b9bcc2` | Secondary text and accents on graphite                       |
-| `oxblood`  | `#2a0d0b` | Legacy dark tone, interior pages only                        |
 | `blush`    | `#f2c9bf` | Rose: secondary text and dimmed lines on red and dark        |
 | `signal`   | `#e8564e` | Bright red: markers, rules, indexes on dark                  |
-| `paper`    | `#fbfaf6` | Light chapters; text on red and dark                         |
+| `paper`    | `#fbfaf6` | Text on red and dark; the paper action on red                |
 | `ink`      | `#110f0a` | Type on paper                                                |
 | `charcoal` | `#20201e` | Dark panels                                                  |
 | `line`     | `#d8d2c8` | Hairlines on paper                                           |
 | `muted`    | `#736d66` | Secondary text, metadata, captions                           |
 
-Legacy tokens (`canvas`, `clay`, `rust`) remain only for interior pages
-that haven't moved to the new system. Use the generated utilities
+The legacy tones (`oxblood`, `canvas`, `clay`, `rust`) are retired. Use
+the generated utilities
 (`bg-brand`, `bg-graphite`, `text-ink`, `border-line`, etc.) rather than
 hardcoded hex values.
 
@@ -104,14 +104,22 @@ argument onto the homepage chapters.
   its own title, description, canonical path (with the trailing slash) and
   social card. Next merges metadata shallowly, so a page that set only a
   title would inherit the homepage's canonical and card.
+- Interior pages are built from `components/page.tsx`: `PageHead` (the h1
+  plotted on load, standfirst and actions on columns 9 to 12, no eyebrow),
+  then chapters as `Room`s opening on a `ChapterHead`, and most end on a
+  red `Closing`. Every page keeps at least one red room, and no two red
+  rooms touch. Content data lives in `src/lib/`, not in the page. Every
+  "Request a diagnostic" uses `AUDIT_HREF` (the Diagnostic's request
+  form). A new page joins `sitemap.ts` and `docs/sitemap.md`.
 - Keep animations light and tasteful, all gated behind
   `prefers-reduced-motion` in `globals.css`. Motion comes from instruments,
   not slideshows: type is plotted (a steady left-to-right sweep,
   `type-reveal.tsx`), lines are drawn at a steady rate, and states light
   by opacity alone. Nothing rises, slides, blurs or bounces into place,
   and what arrives together in a chapter is drawn one after another by
-  its pen (`lib/pen.ts`). The hero's head is plotted on load (the one
-  orchestrated load moment), every other head once as it enters. Services'
+  its pen (`lib/pen.ts`). A page's own head (the hero, or an interior
+  page's `PageHead`) is plotted on load, the page's one orchestrated load
+  moment; every other head once as it enters. Services'
   typographic system, ending on the Plurel System's layers
   (`home/services-type.tsx`), is the one pinned, scroll-scrubbed chapter.
   Scroll-linked without pinning: the statement's lit words, the
@@ -133,7 +141,8 @@ argument onto the homepage chapters.
 - Never invent proof: no client, person, quote, logo or result is shown as
   real unless it is; samples are labelled as samples in plain view. The
   sample Diagnostic shows in one screen in the homepage's Proof and in
-  full on /sample-diagnostic.
+  full on /diagnostic/sample; the sample engagements on /industries are
+  each headed "Sample engagement, illustrative, not a client".
 - Actions are compact and square, never a big slab or a rounded pill:
   `CtaLink` is a sentence-case label beside a square arrow cell, 40px
   tall (44px in the closing), one filled action per view with an

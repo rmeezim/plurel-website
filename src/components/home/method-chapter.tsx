@@ -11,7 +11,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
   four phase numbers, whose order is real; the time axis is plain sans.
 
   Few words, so the chart carries it: each phase is a name, a tagline and
-  what it delivers (the full method, in prose, lives on /methodology).
+  what it delivers (the full method, in prose, lives on /method).
   Desktop: each phase is one column (span 3) whose rows line up across
   all four through subgrid: bar, name, deliverables. Mobile and tablet:
   the chart turns vertical. A thin left
@@ -79,7 +79,7 @@ export function MethodChapter() {
               Most engagements run all four as one monthly partnership. A focused
               sprint, like a rebrand or a new site, takes four to eight weeks.
             </p>
-            <TextLink href="/methodology" tone="red" className="mt-4">
+            <TextLink href="/method" tone="red" className="mt-4">
               The full method
             </TextLink>
           </Reveal>

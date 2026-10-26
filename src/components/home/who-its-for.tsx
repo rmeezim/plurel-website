@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import { ArtField } from "@/components/art";
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, GRID, H2 } from "@/components/system";
+import { CONTAINER, GRID, H2, TextLink } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
+import { INDUSTRIES } from "@/lib/industries";
 
 /*
   Who it's for, on red: different buyers, one system. Four kinds of
@@ -15,12 +16,8 @@ import { TypeReveal } from "@/components/type-reveal";
   different stretch from Why now's.
 */
 
-const TYPES = [
-  { key: "consumer", name: "Consumer brands", decide: "Feeds, creators and reviews", number: "Orders" },
-  { key: "products", name: "Physical products", decide: "Shelves, marketplaces and reviews", number: "Sell-through" },
-  { key: "b2b", name: "B2B technology", decide: "AI answers, search and peers", number: "Demos with buyers who fit" },
-  { key: "tech", name: "Consumer technology", decide: "Stores, creators and AI answers", number: "Users who stay" },
-] as const;
+/** The four, as /industries tells them in full (lib/industries.ts) */
+const TYPES = INDUSTRIES;
 
 const HEADS = ["Where their buyers decide", "The number we answer for"] as const;
 
@@ -53,6 +50,9 @@ export function WhoItsForChapter() {
               The four layers stay the same. What changes is where your buyers decide, and the
               number we answer for.
             </p>
+            <TextLink href="/industries" tone="red" className="mt-4">
+              How each one runs
+            </TextLink>
           </Reveal>
         </div>
 

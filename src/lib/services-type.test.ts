@@ -37,6 +37,7 @@ import {
   type LoopPart,
   type StageKey,
 } from "./services-type";
+import { LAYERS, SERVICES } from "./nav";
 
 const SLUGS = [
   "website-design",
@@ -310,6 +311,14 @@ test("the loop runs down the spine, Narrative first, then back up the return", (
   const note = spans.find((x) => x.kind === "note")!;
   assert.ok(note.d0 >= Math.max(...spans.filter((x) => x.kind !== "note").map((x) => x.d1)) - 1e-9);
   assert.equal(total, note.d1);
+});
+
+test("the nav's layers match the System's, so the menu groups the disciplines as the bands do", () => {
+  assert.deepEqual(
+    LAYERS.map((l) => l.key),
+    STAGES.map((s) => s.key),
+  );
+  for (const svc of SERVICES) assert.equal(svc.layer, SERVICE_STAGE[svc.slug], svc.name);
 });
 
 test("the System's copy: each layer builds one named thing and feeds the next", () => {

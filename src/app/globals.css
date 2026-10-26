@@ -3,12 +3,11 @@
 /*
   Plurel design system: Cinematic Red x Swiss Systems
   ---------------------------------------------------
-  Red is the environment, not an accent: flat full-bleed red chapters,
-  red-graded footage, deep oxblood rooms. Surfaces are flat color, never
+  Red is the environment, not an accent: flat full-bleed red chapters and
+  red-graded footage in a graphite room. Surfaces are flat color, never
   gradients. Structure is Swiss: a strict 12-column grid that is felt, not
-  drawn, numbered chapters, mono metadata. Palette is exposed as Tailwind
-  v4 theme tokens so utilities like `bg-brand`, `text-ink`, `border-line`
-  exist.
+  drawn, and mono only for data. Palette is exposed as Tailwind v4 theme
+  tokens so utilities like `bg-brand`, `text-fog`, `border-line` exist.
 */
 @theme {
   --color-paper: #fbfaf6; /* light chapters, cards, text on red and dark */
@@ -16,18 +15,12 @@
   --color-charcoal: #20201e; /* dark panels */
   --color-brand: #bf3a36; /* Plurel red: red chapters, CTAs, markers */
   --color-ember: #8e2824; /* deep red: hover on red, gradient floor */
-  --color-oxblood: #2a0d0b; /* legacy shadow red; dark chapters are graphite now */
   --color-graphite: #141517; /* the dark tone: hero, work, dark panels */
   --color-fog: #b9bcc2; /* secondary text and dimmed lines on graphite */
   --color-blush: #f2c9bf; /* rose: secondary text and dimmed lines on red */
   --color-signal: #e8564e; /* bright red: markers and numbers on dark */
   --color-line: #d8d2c8; /* hairlines and dividers on paper */
   --color-muted: #736d66; /* secondary text, metadata, captions */
-
-  /* Legacy surfaces: still used by interior pages until they move over */
-  --color-canvas: #ece8df;
-  --color-rust: #a65a45;
-  --color-clay: #c7b49d;
 
   /*
     Institutional radius scale — sharp enough to read as drafted panels,
@@ -44,10 +37,8 @@
   /* Geist carries everything: display set firm and tight, titles a step
      down, reading plain. Emphasis is by tone in the same face, never a
      second typeface. JetBrains Mono is Swiss metadata only. Mona Sans is
-     the services chapter's supplier voices, loaded there. Instrument Serif
-     stays only for interior pages that have not moved over. */
+     the services chapter's supplier voices, loaded there. */
   --font-sans: var(--font-geist);
-  --font-serif: var(--font-instrument);
   --font-mono: var(--font-jetbrains);
 }
 
@@ -111,25 +102,19 @@
     text-wrap: pretty;
   }
 
-  /* The canvas (what an overscroll shows) is graphite, the footer's room;
-     an interior page's body is still paper, and the homepage, one dark
-     room (main[data-room="dark"]), is graphite throughout */
+  /* Every page is one graphite room (main[data-room="dark"]), and so is
+     the canvas an overscroll shows */
   html {
     background-color: var(--color-graphite);
   }
 
   body {
-    background-color: var(--color-paper);
-    color: var(--color-ink);
+    background-color: var(--color-graphite);
+    color: var(--color-paper);
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-  }
-
-  body:has(main[data-room="dark"]) {
-    background-color: var(--color-graphite);
-    color: var(--color-paper);
   }
 
   ::selection {
@@ -370,29 +355,6 @@
     transition-delay: var(--reveal-delay, 0s);
   }
 
-  /* Interior headlines (cascade.tsx): each word plotted in reading order,
-     the type reveal's sweep (below), with more room at the sides for the
-     serif italics' overhang */
-  @keyframes plot-window-wide {
-    from {
-      transform: translate3d(calc(-100% - 0.3em), 0, 0);
-    }
-  }
-  @keyframes plot-text-wide {
-    from {
-      transform: translate3d(calc(100% + 0.3em), 0, 0);
-    }
-  }
-  .word-in {
-    display: inline-block;
-    clip-path: inset(-0.25em -0.3em -0.3em -0.3em);
-    animation: plot-window-wide var(--d, 0.4s) linear var(--t, 0ms) backwards;
-  }
-  .word-in > span {
-    display: inline-block;
-    animation: plot-text-wide var(--d, 0.4s) linear var(--t, 0ms) backwards;
-  }
-
   /* ---------- Cinematic x Swiss load sequence (hero, flagship only) ---------- */
 
   /* Logo mark: the nine cells settle into the grid, corners first */
@@ -478,41 +440,6 @@
   html[data-js] .type-reveal:is([data-state="in"], [data-state="load"]) .tr-u {
     animation: plot-text var(--d, 0ms) linear var(--t, 0ms) backwards;
   }
-
-  /* Kicker (system.tsx): the square lights, then the label is plotted
-     the same way (.kicker-label the window, .kicker-text its text) over
-     --kdur, from its length. <Arrive> arms it below the fold; the hero's
-     runs from first paint, after --kd. */
-  html[data-js] [data-arrive] > .kicker-label {
-    clip-path: inset(-0.3em -0.15em -0.3em -0.15em);
-  }
-  html[data-js] [data-arrive] .kicker-text {
-    display: inline-block;
-  }
-  html[data-js] [data-arrive="armed"] > .kicker-mark {
-    opacity: 0;
-  }
-  html[data-js] [data-arrive="armed"] > .kicker-label {
-    transform: translate3d(calc(-100% - 0.15em), 0, 0);
-  }
-  html[data-js] [data-arrive="armed"] .kicker-text {
-    transform: translate3d(calc(100% + 0.15em), 0, 0);
-  }
-  html[data-js] [data-arrive="in"] > .kicker-label {
-    animation: plot-window var(--kdur, 240ms) linear 60ms backwards;
-  }
-  html[data-js] [data-arrive="in"] .kicker-text {
-    animation: plot-text var(--kdur, 240ms) linear 60ms backwards;
-  }
-  html[data-js] [data-arrive="load"] > .kicker-mark {
-    animation: lit 1ms linear var(--kd, 0ms) backwards;
-  }
-  html[data-js] [data-arrive="load"] > .kicker-label {
-    animation: plot-window var(--kdur, 240ms) linear calc(var(--kd, 0ms) + 60ms) backwards;
-  }
-  html[data-js] [data-arrive="load"] .kicker-text {
-    animation: plot-text var(--kdur, 240ms) linear calc(var(--kd, 0ms) + 60ms) backwards;
-  }
 }
 
 /* A block armed to light is never left dark on paper */
@@ -535,16 +462,6 @@
   .type-display,
   .type-title {
     line-height: 1.12 !important;
-  }
-  [data-arrive] > .kicker-label,
-  [data-arrive] > .kicker-mark,
-  [data-arrive] .kicker-text,
-  .word-in,
-  .word-in > span {
-    clip-path: none !important;
-    transform: none !important;
-    opacity: 1 !important;
-    animation: none !important;
   }
   .type-reveal .tr-w,
   .type-reveal .tr-u {

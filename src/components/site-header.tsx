@@ -4,32 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { CityClock } from "@/components/city-clock";
-import { ArrowUpRight, Close, Menu } from "@/components/icons";
+import { ArrowRight, ArrowUpRight, Close, Menu } from "@/components/icons";
 import { Logo } from "@/components/logo";
-import { CONTAINER, GRID, Kicker, Meta } from "@/components/system";
-import {
-  AUDIT_HREF,
-  COMPANY,
-  CONTACT_EMAIL,
-  MOBILE_NAV,
-  OVERLAY_ROUTES,
-  SERVICES,
-} from "@/lib/nav";
+import { CONTAINER, GRID } from "@/components/system";
+import { AUDIT_HREF, CONTACT_EMAIL, LAYERS, MOBILE_NAV, PRIMARY, SERVICES } from "@/lib/nav";
 
-type MenuKey = "services" | "company";
+type MenuKey = "services";
 
 /*
   The header is a slim bar that becomes a floating glass pill. At the top
-  of the page it spans the width: transparent with paper type over a
-  dark opening (the homepage's hero, the sample Diagnostic), a paper bar
-  everywhere else. Once the page scrolls it
-  squeezes into a narrower, shorter, square-cornered pill of frosted glass
-  with a lit edge,
-  like the hero's flutes, whose tint follows whatever sits behind it (dark
-  glass and paper type over graphite or red, light glass and ink over
-  paper).
-  Desktop menus open a Swiss panel under it; mobile opens a full-screen
-  red index.
+  of every page it spans the width, transparent with paper type over the
+  page's dark opening (every page opens in the graphite room). Once the
+  page scrolls it squeezes into a narrower, shorter, square-cornered pill
+  of frosted glass with a lit edge, like the hero's flutes, whose tint
+  follows whatever sits behind it (dark glass and paper type over
+  graphite or red, light glass and ink over paper). Services opens a dark
+  panel under it, the disciplines grouped by the System's layers; the
+  other links go straight to their pages. Mobile opens a full-screen red
+  index.
 */
 
 const BAR_HEIGHT = "h-14 lg:h-16";
@@ -134,56 +126,50 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
   return (
     <div className={`${GRID} gap-y-8 py-10`}>
       <div className="col-span-4 sm:col-span-6 lg:col-span-3">
-        <Kicker>Services</Kicker>
-        <p className="mt-5 max-w-[26ch] text-[22px] leading-[1.15] tracking-[-0.02em] text-ink">
-          Eight disciplines, run by one team.
+        <p className="max-w-[22ch] text-[22px] leading-[1.15] tracking-[-0.018em] text-paper">
+          Eight disciplines, run as one system.
         </p>
         <Link
           href="/services"
           onClick={onNavigate}
-          className="group mt-6 inline-flex items-center gap-2 border-b border-brand pb-1.5 text-[14px] font-medium tracking-[-0.005em] text-ink"
+          className="group mt-6 inline-flex items-center gap-2 border-b border-signal pb-1.5 text-[14px] font-medium tracking-[-0.005em] text-paper"
         >
-          All services
-          <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          How the system works
+          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
 
-      <ul className="col-span-4 grid grid-cols-1 sm:col-span-6 sm:grid-cols-2 lg:col-span-6 lg:gap-x-8">
-        {SERVICES.map((s) => (
-          <li key={s.slug} className="border-t border-ink/10">
-            <Link
-              href={s.href}
-              onClick={onNavigate}
-              className="group grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-2 py-3.5"
-            >
-              <Meta className="pt-1 text-muted transition-colors group-hover:text-brand">
-                {s.index}
-              </Meta>
-              <span>
-                <span className="block text-[15px] text-ink transition-colors group-hover:text-brand">
-                  {s.name}
-                </span>
-                <span className="mt-0.5 block text-[12.5px] leading-snug text-muted">
-                  {s.tagline}
-                </span>
-              </span>
-            </Link>
-          </li>
+      {/* The disciplines, grouped as the System's layers, top to bottom */}
+      <div className="col-span-4 grid grid-cols-1 gap-x-8 gap-y-7 sm:col-span-6 sm:grid-cols-2 lg:col-span-6">
+        {LAYERS.map((L) => (
+          <div key={L.key}>
+            <p className="text-[13px] font-medium text-fog">{L.name}</p>
+            <ul className="mt-2.5">
+              {SERVICES.filter((svc) => svc.layer === L.key).map((svc) => (
+                <li key={svc.slug} className="border-t border-paper/10">
+                  <Link href={svc.href} onClick={onNavigate} className="group block py-2.5">
+                    <span className="block text-[15px] text-paper transition-colors group-hover:text-signal">
+                      {svc.name}
+                    </span>
+                    <span className="mt-0.5 block text-[13px] leading-snug text-fog">{svc.tagline}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
 
       <Link
         href={AUDIT_HREF}
         onClick={onNavigate}
-        className="group relative col-span-4 bg-brand flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3"
+        className="group relative col-span-4 flex min-h-[220px] flex-col justify-between overflow-hidden bg-brand p-6 text-paper sm:col-span-6 lg:col-span-3"
       >
-        <span className="relative text-[13px] text-paper/85">Free · back within a business day</span>
+        <span className="relative text-[13px]">Free, back within a business day</span>
         <span className="relative">
-          <span className="block text-[26px] leading-[1.05] tracking-[-0.02em]">
-            The Diagnostic
-          </span>
-          <span className="mt-2 block text-[13px] leading-relaxed text-paper">
-            A strategist&apos;s read on where your marketing system breaks.
+          <span className="block text-[26px] leading-[1.05] tracking-[-0.02em]">The Diagnostic</span>
+          <span className="mt-2 block text-[13px] leading-relaxed">
+            A strategist&apos;s read on where your distribution breaks.
           </span>
           <span className="mt-5 inline-flex items-center gap-2 text-[14px] font-medium tracking-[-0.005em]">
             Request it
@@ -195,55 +181,8 @@ function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
   );
 }
 
-function CompanyPanel({ onNavigate }: { onNavigate: () => void }) {
-  return (
-    <div className={`${GRID} gap-y-8 py-10`}>
-      <div className="col-span-4 sm:col-span-6 lg:col-span-3">
-        <Kicker>Company</Kicker>
-        <p className="mt-5 max-w-[26ch] text-[22px] leading-[1.15] tracking-[-0.02em] text-ink">
-          A senior team, accountable for the whole system.
-        </p>
-      </div>
-
-      <ul className="col-span-4 grid grid-cols-1 sm:col-span-6 sm:grid-cols-2 lg:col-span-6 lg:gap-x-8">
-        {COMPANY.map((item, i) => (
-          <li key={item.href} className="border-t border-ink/10">
-            <Link
-              href={item.href}
-              onClick={onNavigate}
-              className="group grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-2 py-3.5"
-            >
-              <Meta className="pt-1 text-muted transition-colors group-hover:text-brand">
-                {String(i + 1).padStart(2, "0")}
-              </Meta>
-              <span>
-                <span className="block text-[15px] text-ink transition-colors group-hover:text-brand">
-                  {item.name}
-                </span>
-                <span className="mt-0.5 block text-[12.5px] text-muted">
-                  {item.desc}
-                </span>
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-
-      <div className="relative col-span-4 bg-graphite flex min-h-[220px] flex-col justify-between overflow-hidden p-6 text-paper sm:col-span-6 lg:col-span-3">
-        <span className="relative text-[13px] text-fog">Plurel</span>
-        <p className="relative text-[15px] leading-relaxed text-paper/85">
-          A distribution engineering firm: one team, one brief and one
-          number, for every relevant channel.
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export function SiteHeader() {
   const pathname = usePathname();
-  // the static export serves every route with a trailing slash
-  const overlayRoute = OVERLAY_ROUTES.has(pathname.replace(/(.)\/$/, "$1"));
 
   const [menu, setMenu] = useState<MenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -271,12 +210,18 @@ export function SiteHeader() {
   // whole bar, so Tab alone would visit five unrelated stops first)
   const kbMenu = useRef<MenuKey | null>(null);
   const toggleMenu = (key: MenuKey, viaKeyboard = false) => {
-    const hovered = hoverOpened.current === key && menu === key;
+    // read from the ref, not state: a quick click can land before the
+    // hover's open has rendered
+    const hovered = hoverOpened.current === key;
     hoverOpened.current = null;
     if (hovered && !viaKeyboard) return;
     kbMenu.current = viaKeyboard && menu !== key ? key : null;
     setMenu((current) => (current === key ? null : key));
   };
+  // a closed panel forgets the hover that opened it, so a later tap toggles
+  useEffect(() => {
+    if (!menu) hoverOpened.current = null;
+  }, [menu]);
   useEffect(() => {
     if (!menu || kbMenu.current !== menu) return;
     kbMenu.current = null;
@@ -389,14 +334,14 @@ export function SiteHeader() {
   }, [mobileOpen]);
 
   const pill = scrolled;
-  // Paper type over dark glass, ink over light; an open menu reads as paper
-  const tone: Tone = menu ? "light" : pill ? behind : overlayRoute ? "dark" : "light";
+  // Paper type over dark glass, ink over light; an open menu is dark
+  const tone: Tone = menu ? "dark" : pill ? behind : "dark";
   const surface = pill
     ? tone === "dark"
       ? "glass-dark border-paper/15 bg-graphite/55 text-paper"
       : "glass-light border-ink/10 bg-paper/70 text-ink"
-    : menu || !overlayRoute
-      ? "border-ink/10 bg-paper text-ink"
+    : menu
+      ? "border-paper/10 bg-charcoal text-paper"
       : "border-paper/15 bg-transparent text-paper";
   const shape = pill
     ? "mt-2.5 h-12 w-[calc(100%-1.5rem)] max-w-[1080px] rounded-[2px] border backdrop-blur-xl backdrop-saturate-150"
@@ -435,22 +380,11 @@ export function SiteHeader() {
                 onOpen={openMenu}
                 onToggle={toggleMenu}
               />
-              <NavLink href="/work" onNavigate={closeAll}>
-                Work
-              </NavLink>
-              <NavLink href="/methodology" onNavigate={closeAll}>
-                Method
-              </NavLink>
-              <MenuTrigger
-                label="Company"
-                menuKey="company"
-                open={menu === "company"}
-                onOpen={openMenu}
-                onToggle={toggleMenu}
-              />
-              <NavLink href="/blog" onNavigate={closeAll}>
-                Journal
-              </NavLink>
+              {PRIMARY.map((item) => (
+                <NavLink key={item.href} href={item.href} onNavigate={closeAll}>
+                  {item.name}
+                </NavLink>
+              ))}
             </nav>
 
             <div className="flex items-center gap-4">
@@ -470,7 +404,7 @@ export function SiteHeader() {
                     : "border-paper/40 text-paper hover:border-paper hover:bg-paper hover:text-ink"
                 }`}
               >
-                Get in touch
+                Request a diagnostic
                 <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <button
@@ -494,19 +428,15 @@ export function SiteHeader() {
         {menu && (
           <div
             id={`menu-${menu}`}
-            className={`mega-in mx-auto hidden bg-paper text-ink lg:block ${
+            className={`mega-in mx-auto hidden bg-charcoal text-paper lg:block ${
               pill
-                ? "mt-2 w-[calc(100%-1.5rem)] max-w-[1080px] rounded-[2px] border border-ink/10 px-6"
-                : "border-b border-ink/10"
+                ? "mt-2 w-[calc(100%-1.5rem)] max-w-[1080px] rounded-[2px] border border-paper/10 px-6"
+                : "border-b border-paper/10"
             }`}
             onMouseEnter={cancelClose}
           >
             <div className={pill ? "" : CONTAINER}>
-              {menu === "services" ? (
-                <ServicesPanel onNavigate={closeAll} />
-              ) : (
-                <CompanyPanel onNavigate={closeAll} />
-              )}
+              <ServicesPanel onNavigate={closeAll} />
             </div>
           </div>
         )}
@@ -554,16 +484,9 @@ export function SiteHeader() {
             className={`${CONTAINER} relative flex-1 border-t border-paper/20 pt-4`}
           >
             <ul>
-              {MOBILE_NAV.map((item, i) => (
+              {MOBILE_NAV.map((item) => (
                 <li key={item.href} className="border-b border-paper/20">
-                  <Link
-                    href={item.href}
-                    onClick={closeAll}
-                    className="flex items-baseline gap-4 py-3"
-                  >
-                    <Meta className="w-8 text-paper">
-                      {String(i + 1).padStart(2, "0")}
-                    </Meta>
+                  <Link href={item.href} onClick={closeAll} className="flex items-baseline py-3">
                     <span className="text-[clamp(2rem,9vw,3rem)] leading-none tracking-[-0.03em]">
                       {item.name}
                     </span>
@@ -579,7 +502,7 @@ export function SiteHeader() {
               onClick={closeAll}
               className="flex h-14 items-center justify-between bg-paper px-6 text-[16px] font-medium tracking-[-0.005em] text-ink"
             >
-              Get in touch
+              Request a diagnostic
               <ArrowUpRight className="size-4" />
             </Link>
             <div className="flex flex-wrap items-center justify-between gap-3 text-paper">
@@ -592,8 +515,6 @@ export function SiteHeader() {
         </div>
       )}
 
-      {/* Pages without a cinematic hero start below the bar */}
-      {!overlayRoute && <div aria-hidden className={BAR_HEIGHT} />}
     </>
   );
 }

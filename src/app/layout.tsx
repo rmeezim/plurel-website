@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HOME } from "@/lib/metadata";
@@ -12,14 +12,6 @@ import "./globals.css";
 const geist = Geist({
   subsets: ["latin"],
   variable: "--font-geist",
-  display: "swap",
-});
-
-const instrument = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-instrument",
   display: "swap",
 });
 
@@ -86,7 +78,7 @@ export default function RootLayout({
       /* Lets the router force an instant jump to top on page navigations
          while keeping smooth scrolling for in-page anchors */
       data-scroll-behavior="smooth"
-      className={`${geist.variable} ${instrument.variable} ${jetbrains.variable} antialiased`}
+      className={`${geist.variable} ${jetbrains.variable} antialiased`}
     >
       <body id="top" className="min-h-screen">
         <a
@@ -96,7 +88,7 @@ export default function RootLayout({
           Skip to content
         </a>
         {/* Reloads always start at the top — pages open on the headline
-            cascade, never mid-scroll. Runs before the browser restores
+            as it is plotted, never mid-scroll. Runs before the browser restores
             the previous scroll position. An internal link switches the
             mode to auto, so Back returns the reader to where they left. Also marks html[data-js] so
             scroll-driven layout (the pinned Services chapter) is sized in CSS

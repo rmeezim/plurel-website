@@ -4,7 +4,7 @@ import { pageMetadata } from "@/lib/metadata";
 export const metadata = pageMetadata({
   title: "Terms of Service — Plurel",
   description:
-    "The terms that govern use of the Plurel website — plainly stated.",
+    "The terms that govern use of the Plurel website, plainly stated.",
   path: "/terms/",
 });
 
@@ -12,7 +12,7 @@ const SECTIONS = [
   {
     heading: "Agreement",
     body: [
-      "These terms govern your use of this website, operated by Plurel. By using the site you accept them. Client engagements are governed by their own written agreements — these terms cover the website itself.",
+      "These terms govern your use of this website, operated by Plurel. By using the site you accept them. Engagements are governed by their own written agreements; these terms cover the website itself.",
     ],
   },
   {
@@ -30,7 +30,7 @@ const SECTIONS = [
   {
     heading: "Informational only",
     body: [
-      "Content on this site — including methodology descriptions, case studies, and cited third-party research — is provided for general information. It isn't professional advice for your specific situation, and outcomes described are illustrative, not promised. Third-party statistics belong to their cited sources.",
+      "Content on this site, including the method, the sample Diagnostic and the sample engagements, is provided for general information. It isn't professional advice for your specific situation. Samples are illustrative, labelled as samples, and describe no real client; no outcome on this site is promised.",
     ],
   },
   {
@@ -48,7 +48,7 @@ const SECTIONS = [
   {
     heading: "Third-party links",
     body: [
-      "Where the site links to third-party sites or cites third-party research, those remain the responsibility of their owners — a link or citation isn't an endorsement, and their terms apply on their sites.",
+      "Where the site links to third-party sites, those remain the responsibility of their owners. A link isn't an endorsement, and their terms apply on their sites.",
     ],
   },
   {
@@ -62,9 +62,8 @@ const SECTIONS = [
 export default function TermsPage() {
   return (
     <LegalPage
-      kicker="Legal — terms"
       title="Terms of Service"
-      updated="July 2026"
+      updated="October 2026"
       sections={SECTIONS}
     />
   );

@@ -4,7 +4,7 @@ import { ArrowUpRight } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
 import { CONTAINER, GRID } from "@/components/system";
-import { AUDIT_HREF, COMPANY, CONTACT_EMAIL, SERVICES } from "@/lib/nav";
+import { COMPANY, CONTACT_EMAIL, DIAGNOSTIC_HREF, SERVICES } from "@/lib/nav";
 
 /*
   Footer: the quiet firm index every page ends on. The closing chapter
@@ -97,7 +97,7 @@ export function SiteFooter() {
                   </a>
                 </li>
                 <li className="flex">
-                  <Link href={AUDIT_HREF} className={`group gap-2 ${LINK}`}>
+                  <Link href={DIAGNOSTIC_HREF} className={`group gap-2 ${LINK}`}>
                     The Diagnostic
                     <ArrowUpRight
                       aria-hidden

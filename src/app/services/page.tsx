@@ -1,188 +1,173 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { Cascade } from "@/components/cascade";
-import { ArrowUpRight, Spark } from "@/components/icons";
+import { ArrowRight, ArrowUpRight } from "@/components/icons";
+import { Closing, PageHead } from "@/components/page";
 import { Reveal } from "@/components/reveal";
-import { StatementSection } from "@/components/statement-section";
+import { CONTAINER, CtaLink, GRID } from "@/components/system";
+import { TypeReveal } from "@/components/type-reveal";
+import { DISCIPLINES } from "@/lib/disciplines";
 import { pageMetadata } from "@/lib/metadata";
-import { SERVICE_PAGES } from "@/lib/services-pages";
+import { AUDIT_HREF } from "@/lib/nav";
+import { STAGES, type StageKey } from "@/lib/services-type";
 
 export const metadata = pageMetadata({
-  title: "Services | Plurel",
+  title: "Services: the Plurel System — Plurel",
   description:
-    "Eight kinds of work, run by one Plurel team from the same brief: website design, brand identity, AI search and SEO, content and creator programs, paid ads, PR and reputation, creative direction, and the martech underneath.",
+    "Brand, site, search, content, paid and press, run as one system: four layers (Narrative, Create, Distribute, Measure), eight disciplines, one team and one number.",
   path: "/services/",
 });
 
-const MODELS = [
-  {
-    number: "01",
-    name: "Project",
-    detail: "One piece of work with a fixed scope, like a new website or an identity.",
-  },
-  {
-    number: "02",
-    name: "Retainer",
-    detail: "A smaller monthly scope: the channels the Diagnostic ranks first, run by the same team and reported on the same number.",
-  },
-  {
-    number: "03",
-    name: "Monthly partnership",
-    detail: "All four phases on every relevant channel, run by one team and priced as a whole, never per channel.",
-  },
-];
+/*
+  /services: the Plurel System in full, the page the homepage's services
+  chapter points to. Its four layers as four full-width bands, read top to
+  bottom as on the homepage, each a graphite tone a step deeper than the
+  one above: the layer's name and the instrument it builds; what that is
+  and what goes into it; its disciplines (each to its own page), its
+  cadence and what it feeds. The loop is said in Measure's band, and the
+  page closes in the red room.
+*/
 
-export default function ServicesIndexPage() {
+const DETAIL: Record<StageKey, { what: string; contains: readonly string[]; cadence: string; tone: number }> = {
+  narrative: {
+    what: "The Core Brief is the one document every asset, ad and answer is cut from: who you are for, what you promise, why it is true, and how you sound, in the words your buyers use.",
+    contains: [
+      "The position, in one sentence",
+      "The proof behind it",
+      "A message for each buyer",
+      "The identity and the voice",
+      "What you never say",
+    ],
+    cadence: "Written in the first weeks, and reset every quarter from what the Ledger reads.",
+    tone: 16,
+  },
+  create: {
+    what: "The Asset System is everything the brief turns into: the site, content, film, creator kits and ads, each cut for the surface it runs on, from one shoot and one story.",
+    contains: [
+      "The site and its pages",
+      "Film, cut for every format",
+      "Creator and UGC kits",
+      "Ads, built in sets",
+      "Articles and research worth citing",
+    ],
+    cadence: "Something ships every week.",
+    tone: 12,
+  },
+  distribute: {
+    what: "The Surface Plan decides which surface gets which cut, in what order and on what budget, from AI answers and search to paid, press, creators and stores.",
+    contains: [
+      "Where your buyers decide, ranked",
+      "The order surfaces open in",
+      "A budget and a ceiling for each",
+      "Who carries each message",
+      "What runs this month",
+    ],
+    cadence: "Planned each quarter, and moved each month.",
+    tone: 8,
+  },
+  measure: {
+    what: "The Ledger holds the one number, agreed on day one, with the signals that moved it and where the budget goes next. Reach, mentions and clicks sit in it as causes, never as results.",
+    contains: [
+      "The one number, for each buyer",
+      "The signals that moved it",
+      "Spend against what it produced",
+      "What moves next month",
+      "What resets next quarter",
+    ],
+    cadence: "Read with you every month, and reset every quarter: what it learns goes back into Narrative and Distribute.",
+    tone: 5,
+  },
+};
+
+export default function ServicesPage() {
   return (
-    <main>
-      {/* ------------------------------------------------ Hero */}
-      <section aria-labelledby="services-page-heading">
-        <div className="mx-auto w-full max-w-[1440px] px-5 pb-14 pt-12 sm:px-8 lg:px-12 lg:pb-16 lg:pt-20">
-          <div className="max-w-[760px]">
-            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-              <Spark className="size-3.5 text-brand" aria-hidden />
-              Services &middot; SVC&middot;01&ndash;08
-            </p>
-            <h1
-              id="services-page-heading"
-              className="mt-5 max-w-[16ch] font-sans text-[clamp(2.5rem,6vw,5.5rem)] font-normal leading-[1.02] tracking-[-0.02em] text-ink"
-            >
-              <Cascade text="One team. The whole" base={0.08} step={0.045} />{" "}
-              <em className="italic">
-                <Cascade
-                  text="visible layer."
-                  base={0.08}
-                  step={0.045}
-                  offset={4}
-                />
-              </em>
-            </h1>
-            <p className="fade-in mt-6 max-w-[60ch] text-[15px] leading-relaxed text-ink/80 sm:text-base [animation-delay:250ms]">
-              In plain terms: Plurel builds everything a buyer meets before
-              they talk to you. Your brand, your website, how you show up in
-              Google and AI answers, your content and creators, your ads and
-              your reputation, run by one team and judged on qualified
-              demand, instead of split across eight suppliers.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ------------------------------------------ The index */}
-      <section
-        aria-labelledby="service-index-heading"
-        className="border-t border-line bg-paper"
+    <main data-room="dark" className="bg-graphite text-paper">
+      <PageHead
+        lines={["Your marketing,", "as one system."]}
+        standfirst="Brand, site, search, content, paid and press usually sit with different suppliers, each with its own brief and its own report. We run them as four layers of one system, against one number."
       >
-        <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-          <Reveal className="flex flex-wrap items-end justify-between gap-x-12 gap-y-4">
-            <h2
-              id="service-index-heading"
-              className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted"
-            >
-              The eight services, each explained on its own page
-            </h2>
-            <p className="max-w-[40ch] text-[13px] leading-relaxed text-muted">
-              What it is, why it matters, the research, and the cost of
-              skipping it.
-            </p>
-          </Reveal>
-          <div className="mt-8 border-b border-line">
-            <ol>
-              {SERVICE_PAGES.map((service) => (
-                <li key={service.slug} className="border-t border-line">
-                  <Link
-                    href={`/services/${service.slug}`}
-                    className="group grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-x-4 py-5 sm:grid-cols-[3.5rem_minmax(0,1fr)_minmax(0,1fr)_auto] sm:gap-x-6 sm:py-6"
-                  >
-                    <span className="text-[11px] font-semibold tabular-nums tracking-[0.08em] text-muted">
-                      {service.code}
-                    </span>
-                    <span className="text-[clamp(1.3rem,1.9vw,1.65rem)] font-normal leading-tight tracking-[-0.01em] text-ink transition-colors duration-300 group-hover:text-brand">
-                      {service.name}
-                    </span>
-                    <span className="hidden text-[13px] leading-snug text-muted sm:block">
-                      {service.tagline}
-                    </span>
-                    <ArrowUpRight className="size-5 text-ink transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </div>
-          <Reveal className="mt-8">
-            <Link
-              href="/#distribution"
-              className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
-            >
-              See how the eight connect
-              <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-          </Reveal>
-        </div>
-      </section>
+        <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
+        <CtaLink href="/method" variant="outline-light" arrow="right">
+          How an engagement runs
+        </CtaLink>
+      </PageHead>
 
-      {/* ------------------------------------------ The point */}
-      <StatementSection
-        kicker="Why one team"
-        note="SYS·09 · nine layers, one number"
-        surface="ink"
-      >
-        Eight services. <em className="italic text-clay">One system.</em>
-      </StatementSection>
+      <ol aria-label="The Plurel System, top to bottom">
+        {STAGES.map((st, i) => {
+          const d = DETAIL[st.key];
+          const disciplines = DISCIPLINES.filter((x) => x.layer === st.key);
+          const last = i === STAGES.length - 1;
+          return (
+            <li
+              key={st.key}
+              className="border-t border-graphite"
+              style={{ backgroundColor: `color-mix(in srgb, var(--color-graphite), var(--color-fog) ${d.tone}%)` } as CSSProperties}
+            >
+              <div className={`${CONTAINER} py-14 lg:py-20`}>
+                <div className={`${GRID} gap-y-10`}>
+                  <div className="col-span-4 sm:col-span-6 lg:col-span-4">
+                    <TypeReveal
+                      as="h2"
+                      id={`layer-${st.key}`}
+                      className="type-display text-[clamp(2.75rem,1rem+4.2vw,5.25rem)] leading-[0.9]"
+                      lines={[st.name]}
+                    />
+                    <p className="type-title mt-5 text-[clamp(1.25rem,1rem+0.8vw,1.625rem)] leading-[1.15]">{st.builds}</p>
+                  </div>
 
-      {/* ------------------------------------------ Engagement models */}
-      <section
-        aria-labelledby="models-heading"
-        className="border-t border-line"
-      >
-        <div className="mx-auto w-full max-w-[1440px] px-5 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-          <Reveal>
-            <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
-              <Spark className="size-3.5 text-brand" aria-hidden />
-              Three ways to engage
-            </p>
-            <h2
-              id="models-heading"
-              className="mt-5 max-w-[22ch] font-sans text-[clamp(2rem,4vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-ink"
-            >
-              Sized to the gap, not the pitch.
-            </h2>
-          </Reveal>
-          <div className="mt-10 grid grid-cols-1 sm:mt-12 sm:grid-cols-3">
-            {MODELS.map((model, i) => (
-              <Reveal
-                key={model.number}
-                delay={i * 0.08}
-                className={`border-t border-line py-6 lg:pb-2 ${
-                  i > 0 ? "sm:border-l sm:pl-8" : ""
-                } ${i < MODELS.length - 1 ? "sm:pr-8" : ""}`}
-              >
-                <p className="text-[11px] font-semibold tabular-nums tracking-[0.08em] text-brand">
-                  {model.number}
-                </p>
-                <p className="mt-3 text-[clamp(1.35rem,2vw,1.7rem)] font-normal leading-tight tracking-[-0.01em] text-ink">
-                  {model.name}
-                </p>
-                <p className="mt-2 max-w-[34ch] text-[14px] leading-relaxed text-muted">
-                  {model.detail}
-                </p>
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4 border-t border-line pt-6">
-            <p className="max-w-[52ch] text-[13px] leading-relaxed text-muted">
-              Every engagement, whatever its size, starts with the
-              Diagnostic, so the scope comes from evidence.
-            </p>
-            <Link
-              href="/contact"
-              className="group inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.18em] text-ink transition-colors hover:text-brand"
-            >
-              Request a diagnostic
-              <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-          </Reveal>
-        </div>
-      </section>
+                  <Reveal className="col-span-4 sm:col-span-6 lg:col-span-4">
+                    <p className="max-w-[46ch] text-[17px] leading-[1.55]">{d.what}</p>
+                    <ul aria-label={`In ${st.builds}`} className="mt-6 border-b border-paper/15">
+                      {d.contains.map((c) => (
+                        <li key={c} className="border-t border-paper/15 py-2.5 text-[15px] leading-[1.4] text-fog">
+                          {c}
+                        </li>
+                      ))}
+                    </ul>
+                  </Reveal>
+
+                  <Reveal className="col-span-4 sm:col-span-6 lg:col-span-4">
+                    <ul aria-label={`${st.name} disciplines`} className="border-b border-paper/15">
+                      {disciplines.map((x) => (
+                        <li key={x.slug} className="border-t border-paper/15">
+                          <Link href={x.href} className="group flex items-baseline justify-between gap-4 py-3.5">
+                            <span>
+                              <span className="type-title block text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-[1.2] transition-colors group-hover:text-signal">
+                                {x.name}
+                              </span>
+                              <span className="mt-1 block text-[14px] leading-[1.4] text-fog">{x.tagline}</span>
+                            </span>
+                            <ArrowUpRight className="size-4 shrink-0 opacity-70 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-6 max-w-[40ch] text-[15px] leading-[1.5] text-fog">{d.cadence}</p>
+                    <p className="mt-3 flex items-center gap-2 text-[15px] font-medium">
+                      {last ? (
+                        st.feeds
+                      ) : (
+                        <>
+                          <ArrowRight aria-hidden className="size-3.5 rotate-90 text-signal" />
+                          {st.feeds}
+                        </>
+                      )}
+                    </p>
+                  </Reveal>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+
+      <Closing lines={["Four layers.", "One number."]}>
+        <CtaLink href={AUDIT_HREF} variant="paper">
+          Request a diagnostic
+        </CtaLink>
+        <CtaLink href="/method" variant="outline-light" arrow="right">
+          How an engagement runs
+        </CtaLink>
+      </Closing>
     </main>
   );
 }

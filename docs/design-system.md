@@ -10,10 +10,9 @@ alone: no Northeon, Kelwin or group.
 
 - **Cinematic Red, set in graphite.** Red is the environment, not an
   accent: whole chapters are flat red, and the hero's film is graded red
-  behind fluted glass. Graphite is the room the homepage lives in,
-  footer included, and the red chapters punctuate it. Paper is kept for
-  interior pages until they move over: on the homepage a light chapter
-  read as a template.
+  behind fluted glass. Graphite is the room every page lives in, footer
+  included, and the red chapters punctuate it. Paper is type and the odd
+  action, never a chapter: a light chapter read as a template.
 - **Swiss Systems.** Structure is strict but never drawn. A 12-column grid
   sets every edge and the logo's own 3x3 grid is the source of it. The
   structure is felt, not labelled: no chapter numbers, running heads,
@@ -30,9 +29,10 @@ and the alignment do the work. The one exception is the faint art (see
 below): at most one field per chapter, felt more than seen.
 
 This document is the contract for every page. The homepage
-(`src/app/page.tsx`, `src/components/home/`) is the reference build.
-Interior pages still use the previous system (see the legacy docs) until
-they are rebuilt on this one.
+(`src/app/page.tsx`, `src/components/home/`) is the reference build, and
+the interior pages are built from the same parts (`components/page.tsx`;
+see "Interior pages" below, and `docs/sitemap.md` for what each page
+does).
 
 ---
 
@@ -59,7 +59,6 @@ they are rebuilt on this one.
 | `ember` | `#8e2824` | Deep red: hover on red, the floor of red gradients |
 | `graphite` | `#141517` | The dark tone: hero, work chapter, the AI layer band |
 | `fog` | `#b9bcc2` | Secondary text and the toned accent on graphite |
-| `oxblood` | `#2a0d0b` | Legacy dark tone; interior pages only until they move over |
 | `blush` | `#f2c9bf` | Rose: secondary text and the dimmed headline line on red and dark |
 | `signal` | `#e8564e` | Bright red: markers, rules, indexes and small red type on dark (5.1:1 on graphite) |
 | `paper` | `#fbfaf6` | Light chapters; text on red and dark |
@@ -68,8 +67,7 @@ they are rebuilt on this one.
 | `line` | `#d8d2c8` | Hairlines on paper (most hairlines use `ink/10` to `ink/15`) |
 | `muted` | `#736d66` | Secondary text and metadata on paper (4.9:1, AA) |
 
-Legacy tokens `canvas`, `clay`, `rust` remain for interior pages until
-they move over. Don't use them in new work.
+The legacy tones (`oxblood`, `canvas`, `clay`, `rust`) are retired.
 
 ### Surfaces
 
@@ -77,9 +75,9 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| dark | `bg-graphite` | paper, fog | The homepage's room: hero and What Plurel is, Why now, Why Plurel (services and the Plurel System), Accountability, proof, questions, footer; the sample Diagnostic page |
-| red | `bg-brand` | paper | What you came for, Method, Who it's for, closing |
-| paper | `bg-paper` | ink | Interior pages until they move over; never a homepage chapter |
+| dark | `bg-graphite` | paper, fog | The room every page lives in: on the homepage the hero and What Plurel is, Why now, Why Plurel (services and the Plurel System), Accountability, proof, questions and the footer; every interior page's head and most of its chapters |
+| red | `bg-brand` | paper | What you came for, Method, Who it's for, closing; at least one chapter on every interior page, usually its closing |
+| paper | `bg-paper` | ink | Never a chapter: only actions on red (the paper CtaLink) |
 
 All three are flat fills. The homepage is dark, punctuated by red:
 graphite hero and statement, red What you came for, graphite Why now and
@@ -143,8 +141,6 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 - Figures that people read (the accountability strips, the Diagnostic's
   scores) use the face's lining, proportional figures: its
   tabular set has a footed 1 and a slashed zero, which read as code.
-- Instrument Serif (`--font-serif`) remains loaded only for interior
-  pages that haven't moved over.
 
 ## Grid
 
@@ -238,8 +234,10 @@ page read as a template.
 - **States light:** `Reveal` blocks, nodes and markers switch on by
   opacity alone and never travel; Why now's stations light the moment the
   route reaches them, and the hero's copy, action and glass light in turn
-  after its head (timed in `hero.tsx`). Interior headlines (`Cascade`)
-  are plotted at the hero's pace.
+  as its head is drawn (timed in `hero.tsx`). An interior page's head
+  (`PageHead`) is plotted on load at the hero's pace, and its standfirst
+  and actions light once the pen lifts, timed from the head's length
+  (`plotEnd`, `lib/plot.ts`).
 - **Scroll:** one chapter is pinned and scrubbed: services' typographic
   system, which ends on the Plurel System. Scroll-linked without pinning:
   the statement's words light as the reader reaches them, the
@@ -472,7 +470,7 @@ another seed.
 `home/method-chapter.tsx`, on red. The four phases as a time chart, in
 few words: each phase is a name, a tagline and what it delivers (a ruled
 list from sm; on a phone one run-on line split by small squares, each
-item kept whole); the full method, in prose, lives on /methodology. Under the chart, "Where AI
+item kept whole); the full method lives on /method. Under the chart, "Where AI
 helps, and where a person decides" is one line per phase in one shape:
 what the machine does, then what a person decides.
 
@@ -520,7 +518,8 @@ chapter.
 - Proof is never invented. No client, person, quote, logo or result is
   shown as real unless it is. Samples are labelled as samples in plain
   view (the sample Diagnostic for Halden, in Proof and on
-  /sample-diagnostic; the sample engagements on /work). The accountability strip's supplier metrics are
+  /diagnostic/sample; the sample engagements on /industries, each headed
+  "Sample engagement, illustrative, not a client"). The accountability strip's supplier metrics are
   generic examples of what suppliers report, not claims.
 - No props or invented scenes stand in for an idea (no sample buyers,
   mock screens or mock reports), and no cited statistics on the homepage.
@@ -530,8 +529,8 @@ chapter.
   scored with drawn bars, and the read in three short lines: where you
   win, where you leak, what to fix first). The full sample, findings, the
   first quarter's plan and what we would measure included, is a page of
-  its own, `/sample-diagnostic` (`components/diagnostic-sheet.tsx`, set
-  in the graphite room, the header floating over it as over the hero).
+  its own, `/diagnostic/sample` (`components/diagnostic-sheet.tsx`, set
+  in the graphite room).
   Real cases join Proof when they can be published: each opens with what
   the Diagnostic found and reports the one number with its client, cause
   and period.
@@ -541,12 +540,48 @@ chapter.
   crimson light against graphite shadow, warm skin tones, shallow depth of
   field, nothing staged at the camera.
 
+## Interior pages
+
+Every page after the homepage takes one of its claims further, and is
+built from the same parts (`components/page.tsx`), so the site reads as
+one firm rather than a set of templates. What each page does is in
+`docs/sitemap.md`.
+
+```
+PageHead   h1, plotted on load (cols 1-8)       Standfirst, actions (cols 9-12)
+Room       ChapterHead: h2 (cols 1-8)           Aside (cols 9-12)
+           content on GRID: ruled lists, columns on a 2px rule, a chart
+...        graphite rooms, at least one red, no two reds touching
+Closing    red: one line (cols 1-8)             paper action + outlined one
+```
+
+- The page head is the page's one orchestrated moment: the h1 is
+  plotted on load at the hero's pace, and its standfirst and actions
+  light as the pen lifts, timed from the head's own length
+  (`plotEnd`, `lib/plot.ts`). Every other head is plotted once as it
+  enters.
+- Chapters sit in graphite. Unlike the homepage, an interior page can
+  run several graphite chapters in a row, so two of them may part by a
+  hairline (`border-paper/10`), never a tint. The page's red room carries
+  what the page is surest of: the rules on About, what comes back on the
+  Diagnostic, where a discipline sits in the System.
+- Lists are ruled (hairline above each row, one below the last), never
+  carded. Small squares mark items (`bg-signal` on graphite, paper on
+  red); the current item is marked by a filled node and a heavier rule,
+  never by color alone.
+- Forms (`components/diagnostic-form.tsx`) use square fields on a
+  hairline, sentence-case labels and choices as square chips over real
+  radios and checkboxes. The site is static, so a sent form opens the
+  visitor's email app with the message written out, and says so.
+- Samples are labelled where they stand ("Sample engagement,
+  illustrative, not a client"), in signal, above the sample itself.
+
 ## Header and footer
 
 - Header (`site-header.tsx`): fixed and slim (56px, 64px at lg). At the
-  top of the page it spans the width: transparent with paper type over a
-  dark opening (the homepage's hero, the sample Diagnostic;
-  `OVERLAY_ROUTES` in `lib/nav.ts`), a paper bar elsewhere. After 24px of scroll it squeezes
+  top of every page it spans the width, transparent with paper type over
+  the page's dark opening (every page opens in graphite, its head padded
+  clear of the bar). After 24px of scroll it squeezes
   into a floating pill (48px tall, 2px corners, at most 1080px wide) of
   frosted glass with a lit top edge, whose tint follows what sits behind
   it: dark glass with paper type over graphite or red, light glass with
@@ -556,13 +591,14 @@ chapter.
   the CTA shows the visitor's own time zone, labelled with its city.
   Nav, menus and the CTA are sentence case (15px nav, 14px CTA, 13px
   clock), never tracked capitals.
-  Routes with a cinematic hero are listed in `OVERLAY_ROUTES`
-  (`src/lib/nav.ts`); other routes get a spacer so content starts below
-  the bar. Desktop menus open a Swiss panel (a card under the pill): on
-  hover for a mouse (the click that follows keeps it open), on the first
-  tap for touch, and on Enter, which moves focus into the panel. Mobile
-  opens a full-screen red index, which closes itself if the window widens
-  past lg.
+  The primary nav is Services, Method, Industries, About and Journal
+  (`PRIMARY` in `lib/nav.ts`); every "Request a diagnostic" goes to the
+  Diagnostic's request form (`AUDIT_HREF`). Services opens a dark panel
+  (a card under the pill) with the eight disciplines grouped by the
+  System's layers and the Diagnostic as a red card: on hover for a mouse
+  (the click that follows keeps it open), on the first tap for touch, and
+  on Enter, which moves focus into the panel. Mobile opens a full-screen
+  red index, which closes itself if the window widens past lg.
 - Footer (`site-footer.tsx`): graphite, brand-red lockup, Swiss link
   columns, one identity line ("Plurel is a distribution engineering firm:
   one team for every relevant channel, answerable for one number."), live
@@ -583,7 +619,7 @@ one step of that argument, and says it once:
 | Method | How it runs: the Diagnostic, then the four phases as one monthly partnership |
 | Accountability | What we answer for: ten suppliers report ten numbers, we answer for one, agreed on day one |
 | Who it's for | Fit: consumer brands, physical products, B2B technology and consumer technology, the same system with a different number |
-| Proof | What a Diagnostic finds, in one screen (a labelled sample until real cases can be published; the full sample on /sample-diagnostic) |
+| Proof | What a Diagnostic finds, in one screen (a labelled sample until real cases can be published; the full sample on /diagnostic/sample) |
 | People | Who does the work (shown once real people are listed) |
 | FAQ | The real objections, biggest first: is this a full-service agency? can you make us go viral? every channel? what about our current agencies? cost |
 | Closing | The Diagnostic as the door in ("Request a diagnostic", with "See a sample" beside it), what follows it, and an email as the other way in |

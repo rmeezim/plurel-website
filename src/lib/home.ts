@@ -13,7 +13,7 @@ export const CLIENTS: string[] = [];
 /*
   The four phases. Phase 01 is the Diagnostic itself, named so the
   closing can pay it off. The homepage shows each as a name, a tagline and
-  what it delivers; the full method lives on /methodology. `ai` is one
+  what it delivers; the full method lives on /method. `ai` is one
   line in a fixed shape for "Where AI helps, and where a person decides":
   what the machine does, then what a person decides. No tool names until
   the real stack is confirmed.

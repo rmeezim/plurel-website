@@ -1,17 +1,14 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight, ArrowUpRight } from "@/components/icons";
-import { Arrive } from "@/components/type-reveal";
 
 /*
   Plurel system primitives: Cinematic Red x Swiss Systems.
 
   - CONTAINER and GRID are the Swiss frame. Every chapter lays its content
     on GRID. The grid is never drawn: it shows only through alignment.
-  - Kicker is the chapter label: a square marker and a sentence-case
-    label. A chapter carries one at most (ChapterHead), or none when its
-    headline names it. Below the fold it arrives just before its
-    headline: the square lights, then the label is plotted (type-reveal.tsx).
+  - No chapter labels: each headline names its chapter, so there is no
+    eyebrow over it (the retired Kicker).
   - Meta is Plurel's own Swiss metadata voice (mono, small caps), kept for
     data: dates, units, tags, counts with a real order. Never a caption
     that only announces what follows.
@@ -30,45 +27,6 @@ export const GRID =
 export const H2 = "type-display leading-none text-[clamp(2.25rem,1.6rem+2.6vw,4rem)]";
 
 export type Tone = "paper" | "red" | "dark";
-
-const KICKER_TONE: Record<Tone, { text: string; mark: string }> = {
-  paper: { text: "text-ink/70", mark: "bg-brand" },
-  red: { text: "text-paper", mark: "bg-paper" },
-  dark: { text: "text-paper", mark: "bg-signal" },
-};
-
-/**
- * Chapter label: square marker + sentence-case label. Server markup; its
- * arrival (the square lights, the label is plotted) is CSS armed by
- * <Arrive>, and it renders finished without JS, under reduced motion and
- * when on screen at load. `chars`, the label's length, sets how long it
- * takes to plot; a plain-text label gives its own.
- */
-export function Kicker({
-  children,
-  tone = "paper",
-  chars,
-  className = "",
-}: {
-  children: ReactNode;
-  tone?: Tone;
-  chars?: number;
-  className?: string;
-}) {
-  const t = KICKER_TONE[tone];
-  return (
-    <Arrive
-      as="p"
-      chars={chars ?? (typeof children === "string" ? children.length : undefined)}
-      className={`flex items-center gap-2.5 text-[14px] font-medium leading-none tracking-[-0.005em] sm:text-[15px] ${t.text} ${className}`}
-    >
-      <span aria-hidden className={`kicker-mark size-[7px] shrink-0 ${t.mark}`} />
-      <span className="kicker-label">
-        <span className="kicker-text">{children}</span>
-      </span>
-    </Arrive>
-  );
-}
 
 /** Swiss metadata: mono caps for data only (dates, units, tags, real order) */
 export function Meta({
@@ -205,33 +163,5 @@ export function TextLink({
       {children}
       <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
     </Link>
-  );
-}
-
-/**
- * Chapter label: the one quiet line that names a chapter ("Services",
- * "Method"), set as a Kicker. No number, no running head, no ruler: the
- * headline below carries the chapter. `index` and `meta` are accepted
- * only so older callers keep compiling; neither renders.
- */
-export function ChapterHead({
-  label,
-  tone = "paper",
-  id,
-  className = "",
-}: {
-  label: string;
-  tone?: Tone;
-  id?: string;
-  className?: string;
-  /** @deprecated chapter numbers are retired; ignored */
-  index?: string;
-  /** @deprecated running heads are retired; ignored */
-  meta?: string;
-}) {
-  return (
-    <Kicker tone={tone} chars={label.length} className={className}>
-      <span id={id}>{label}</span>
-    </Kicker>
   );
 }
