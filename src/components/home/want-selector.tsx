@@ -1,8 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import Link from "next/link";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type AnimationEvent,
+  type CSSProperties,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
+import { ArrowRight } from "@/components/icons";
 import { GRID } from "@/components/system";
 import { useArrival } from "@/components/type-reveal";
+import { motionAllowed } from "@/lib/pen";
 import s from "./came-for.module.css";
 
 /*
@@ -10,15 +21,24 @@ import s from "./came-for.module.css";
   the chapter's headline and its controls at once: a tab list set in
   display type, the chosen one in paper with a paper rule under it, the
   others in blush. Under them, one panel per want: the want in the
-  visitor's words, Plurel's line on it, and the four layers of the
-  Plurel System, each with what it does for that want, on a spine.
+  visitor's words, Plurel's line on it, the four layers of the Plurel
+  System, each with what it does for that want, on a spine, and a link to
+  the want's package.
+
+  The tour: while the chapter is on screen the four take turns on their
+  own, so a visitor sees each can be chosen. The chosen word's rule is
+  drawn at a steady rate over the turn (a faint track under it shows the
+  length), and when it is full the next word is chosen. It holds while a
+  pointer rests on the selector or focus is inside it, and while it is off
+  screen; the Pause control holds it until Play. The first choice a
+  visitor makes ends the tour for good. Reduced motion, and no JS, get no
+  tour.
 
   Motion, in the site's vocabulary: the four words are plotted once as
   the chapter arrives (the same window-over-text sweep as TypeReveal,
-  one pen, reading order), then the chosen word's rule is drawn. Picking
-  another want lights its panel, its lines one after another, by opacity
-  alone. Without JS every panel shows, one after another; reduced
-  motion gets the same switching with no motion.
+  one pen, reading order), then the chosen word's rule is drawn. A new
+  choice lights its panel, its lines one after another, by opacity alone.
+  Without JS every panel shows, one after another.
 
   Keyboard: the tabs follow the ARIA tabs pattern (arrows, Home, End).
 */
@@ -32,10 +52,14 @@ export type Want = {
   stance: string;
   /** What each layer does for it, in the System's order */
   layers: readonly string[];
+  /** The want's package page */
+  href: string;
 };
 
 /** The tabs' plotting pace and a space's crossing, in ms per character */
 const PACE = 24;
+/** How long each want holds the stage during the tour, ms */
+const TURN = 6500;
 
 /** Where the pen is at each word, and when it lifts: one clock across the four */
 function schedule(terms: readonly string[]) {
@@ -64,6 +88,12 @@ export function WantSelector({
   const [active, setActive] = useState(0);
   const [moved, setMoved] = useState(false);
   const [played, setPlayed] = useState(false);
+  // the tour: offered once motion is allowed, ended by the visitor's first choice
+  const [tour, setTour] = useState(false);
+  const [settled, setSettled] = useState(false);
+  const [onScreen, setOnScreen] = useState(false);
+  const [held, setHeld] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const panelsRef = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -79,10 +109,43 @@ export function WantSelector({
     return () => window.clearTimeout(id);
   }, [arrival, total]);
 
+  // The tour is offered once, from the observer's first report (just after
+  // load), when motion is allowed. Words already on screen at load are
+  // finished, so the tour may start at once; otherwise it waits for them
+  // to be plotted. After that the observer reports whether the middle
+  // half of the screen holds some of the selector.
+  const offered = useRef(false);
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || !motionAllowed()) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!offered.current) {
+          offered.current = true;
+          setTour(true);
+          const list = listRef.current;
+          if (list && list.getBoundingClientRect().top < window.innerHeight) setSettled(true);
+        }
+        setOnScreen(entry.isIntersecting);
+      },
+      { rootMargin: "-25% 0px -25% 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   const choose = (i: number, focus = false) => {
+    setTour(false);
     setActive(i);
     setMoved(true);
     if (focus) tabs.current[i]?.focus();
+  };
+
+  // the chosen word's rule is the tour's clock: when it is full, move on
+  const onTurnEnd = (e: AnimationEvent<HTMLButtonElement>) => {
+    if (!tour || !e.animationName.includes("turn")) return;
+    setActive((a) => (a + 1) % wants.length);
+    setMoved(true);
   };
 
   const onKey = (e: KeyboardEvent<HTMLButtonElement>) => {
@@ -102,8 +165,18 @@ export function WantSelector({
     choose(next, true);
   };
 
+  const touring = tour && (settled || played);
+
   return (
-    <div className={s.selector} data-moved={moved || undefined}>
+    <div
+      ref={rootRef}
+      className={s.selector}
+      data-moved={moved || undefined}
+      data-tourable={tour || undefined}
+      data-tour={touring || undefined}
+      data-run={(touring && onScreen && !held) || undefined}
+      style={{ "--turn": `${TURN}ms` } as CSSProperties}
+    >
       <div
         ref={listRef}
         role="tablist"
@@ -127,6 +200,7 @@ export function WantSelector({
             tabIndex={i === active ? 0 : -1}
             onClick={() => choose(i)}
             onKeyDown={onKey}
+            onAnimationEnd={i === active ? onTurnEnd : undefined}
             className={`${s.tab} type-display`}
           >
             <span
@@ -139,7 +213,16 @@ export function WantSelector({
         ))}
       </div>
 
-      {children}
+      <div className={s.lead}>
+        {children}
+        {tour && (
+          <button type="button" className={s.hold} onClick={() => setHeld((h) => !h)}>
+            <span aria-hidden className={s.holdIcon} data-held={held || undefined} />
+            {held ? "Play" : "Pause"}
+            <span className="sr-only"> the four in turn</span>
+          </button>
+        )}
+      </div>
 
       <div
         ref={panelsRef}
@@ -172,6 +255,12 @@ export function WantSelector({
                 </li>
               ))}
             </ol>
+            <p className={s.more} style={{ "--i": w.layers.length + 2 } as CSSProperties}>
+              <Link href={w.href} className={s.moreLink}>
+                The {w.term} package
+                <ArrowRight aria-hidden className="size-4" />
+              </Link>
+            </p>
           </div>
         ))}
       </div>

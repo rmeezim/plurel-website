@@ -7,7 +7,7 @@ import { CityClock } from "@/components/city-clock";
 import { ArrowRight, ArrowUpRight, Close, Menu } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import { CONTAINER, GRID } from "@/components/system";
-import { AUDIT_HREF, CONTACT_EMAIL, LAYERS, MOBILE_NAV, PRIMARY, SERVICES } from "@/lib/nav";
+import { AUDIT_HREF, CONTACT_EMAIL, MOBILE_NAV, PACKAGES, PRIMARY, SERVICES } from "@/lib/nav";
 
 type MenuKey = "services";
 
@@ -19,8 +19,8 @@ type MenuKey = "services";
   of frosted glass with a lit edge, like the hero's flutes, whose tint
   follows whatever sits behind it (dark glass and paper type over
   graphite or red, light glass and ink over paper). Services opens a dark
-  panel under it, the disciplines grouped by the System's layers; the
-  other links go straight to their pages. Mobile opens a full-screen red
+  panel under it: the four packages, the eight individual services and
+  the Diagnostic; the other links go straight to their pages. Mobile opens a full-screen red
   index.
 */
 
@@ -125,39 +125,47 @@ function MenuTrigger({
 function ServicesPanel({ onNavigate }: { onNavigate: () => void }) {
   return (
     <div className={`${GRID} gap-y-8 py-10`}>
-      <div className="col-span-4 sm:col-span-6 lg:col-span-3">
-        <p className="max-w-[22ch] text-[22px] leading-[1.15] tracking-[-0.018em] text-paper">
-          Eight disciplines, run as one system.
-        </p>
+      {/* The packages: what a company comes for, each run on all four layers */}
+      <div className="col-span-4 sm:col-span-6 lg:col-span-5">
+        <p className="text-[13px] font-medium text-fog">Packages</p>
+        <ul className="mt-2.5 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+          {PACKAGES.map((p) => (
+            <li key={p.key} className="border-t border-paper/10">
+              <Link href={p.href} onClick={onNavigate} className="group block py-3">
+                <span className="block text-[22px] leading-[1.1] tracking-[-0.02em] text-paper transition-colors group-hover:text-signal">
+                  {p.term}
+                </span>
+                <span className="mt-1 block text-[13px] leading-snug text-fog">{p.want}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
         <Link
           href="/services"
           onClick={onNavigate}
-          className="group mt-6 inline-flex items-center gap-2 border-b border-signal pb-1.5 text-[14px] font-medium tracking-[-0.005em] text-paper"
+          className="group mt-5 inline-flex items-center gap-2 border-b border-signal pb-1.5 text-[14px] font-medium tracking-[-0.005em] text-paper"
         >
-          How the system works
+          All services and the system
           <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
         </Link>
       </div>
 
-      {/* The disciplines, grouped as the System's layers, top to bottom */}
-      <div className="col-span-4 grid grid-cols-1 gap-x-8 gap-y-7 sm:col-span-6 sm:grid-cols-2 lg:col-span-6">
-        {LAYERS.map((L) => (
-          <div key={L.key}>
-            <p className="text-[13px] font-medium text-fog">{L.name}</p>
-            <ul className="mt-2.5">
-              {SERVICES.filter((svc) => svc.layer === L.key).map((svc) => (
-                <li key={svc.slug} className="border-t border-paper/10">
-                  <Link href={svc.href} onClick={onNavigate} className="group block py-2.5">
-                    <span className="block text-[15px] text-paper transition-colors group-hover:text-signal">
-                      {svc.name}
-                    </span>
-                    <span className="mt-0.5 block text-[13px] leading-snug text-fog">{svc.tagline}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      {/* The individual services, each also sold on its own */}
+      <div className="col-span-4 sm:col-span-6 lg:col-span-4">
+        <p className="text-[13px] font-medium text-fog">Individual services</p>
+        <ul className="mt-2.5 grid grid-cols-2 gap-x-6">
+          {SERVICES.map((svc) => (
+            <li key={svc.slug} className="border-t border-paper/10">
+              <Link
+                href={svc.href}
+                onClick={onNavigate}
+                className="block py-2.5 text-[15px] leading-[1.25] text-paper transition-colors hover:text-signal"
+              >
+                {svc.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
 
       <Link

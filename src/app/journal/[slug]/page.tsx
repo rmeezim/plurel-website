@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Cover } from "@/components/artifacts/cover";
 import { ArrowUpRight } from "@/components/icons";
 import { Closing } from "@/components/page";
 import { Reveal } from "@/components/reveal";
@@ -13,10 +14,10 @@ import { getPost, getRelatedPosts, POSTS, type PostBlock } from "@/lib/posts";
 
 /*
   An essay (app/journal/[slug]), set for reading in the graphite room: the
-  title plotted on load, its category, length and line beside it, then a
-  single column at a reading measure (paper at 18px, 1.7), quotes set
-  large on a signal rule, lists on small squares. Then two more essays
-  and the closing.
+  title plotted on load, its category, length and line beside it; its
+  survey plate (artifacts/cover.tsx) across the page; then a single column
+  at a reading measure (paper at 18px, 1.7), quotes set large on a signal
+  rule, lists on small squares. Then two more essays and the closing.
 */
 
 export function generateStaticParams() {
@@ -99,8 +100,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        <div className={`${CONTAINER} pb-24 lg:pb-32`}>
-          <div className={`${GRID} border-t border-paper/15 pt-4`}>
+        <div className={CONTAINER}>
+          <Cover slug={post.slug} category={post.category} className="aspect-[3/1] w-full sm:aspect-[4/1]" />
+        </div>
+
+        <div className={`${CONTAINER} pb-24 pt-6 lg:pb-32 lg:pt-10`}>
+          <div className={GRID}>
             <div className="col-span-4 sm:col-span-6 lg:col-span-7 lg:col-start-4">
               <div className="max-w-[68ch]">
                 {post.content.map((block, i) => (

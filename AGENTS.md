@@ -77,7 +77,11 @@ companies." What a company comes for is named in its own
 words on the homepage (What you came for): reach (going viral is luck;
 reach is a system), reputation, mindshare and revenue, each delivered
 by the same four layers of the Plurel System. Each supplier sells one of
-them; Plurel builds the system that delivers all four. Plurel works for every kind of growing company: consumer
+them; Plurel builds the system that delivers all four. They are also how
+Plurel sells: four packages (Reach, Reputation, Mindshare, Revenue;
+`lib/packages.ts`, pages at `/services/<package>`), each running on all
+four layers and built from the eight services, which are also sold one
+by one (the Services menu shows both). Plurel works for every kind of growing company: consumer
 brands, physical products, B2B technology and consumer technology (name
 the kinds of business at that high level), and the copy
 reads for all of them (prefer customers, buyers and the people a company
@@ -86,7 +90,10 @@ or sales team, nor to B2C-only ones). The outcome is one number, agreed on
 day one in the Diagnostic: the one the business runs on (orders, installs,
 demos, stockists, sell-through). Never headline "qualified demand" (it reads
 as agency vocabulary), and never "inquiries" or "pipeline" alone. No cited
-statistics on the homepage. Engagements
+statistics on the homepage. Interior pages may cite published numbers
+(`Numbers` in `components/instruments.tsx`), each checked against its
+source, quoted within that source's scope (country, sample, year), and
+shown with its publisher, title, year and link in plain view. Engagements
 start with the Diagnostic (the Plurel Distribution Diagnostic: six parts
 scored and a prioritized read within a business day; the action is
 "Request a diagnostic") and run as an integrated monthly partnership.
@@ -111,6 +118,15 @@ argument onto the homepage chapters.
   rooms touch. Content data lives in `src/lib/`, not in the page. Every
   "Request a diagnostic" uses `AUDIT_HREF` (the Diagnostic's request
   form). A new page joins `sitemap.ts` and `docs/sitemap.md`.
+- Every interior page carries at least one drawn instrument, a plate
+  (`components/artifacts/`): the system itself drawn as lines, nodes and
+  a few labels (a mechanism, a path, a chart of a principle), never a
+  mock screen or a fake dashboard. `Plate` draws it once as it enters,
+  through the pen; a plate that loops keeps one quiet motion (pulses
+  along its lines, a sweep, a ping) only while on screen, never under
+  reduced motion, always with a Pause control. Labels are HTML at 13px
+  and up; where they would crowd a phone, the plate gets a phone layout
+  or a legend. Its readout says in words what it shows.
 - Keep animations light and tasteful, all gated behind
   `prefers-reduced-motion` in `globals.css`. Motion comes from instruments,
   not slideshows: type is plotted (a steady left-to-right sweep,
@@ -137,7 +153,9 @@ argument onto the homepage chapters.
 - The film behind the glass loops muted with no control (the owner's
   call); it stops off screen and in hidden tabs, and reduced motion or data
   saver get a still frame. Any other auto-moving media needs a pause
-  control.
+  control: What you came for takes its four wants in turn while on
+  screen (the chosen word's rule is the clock), holds on hover or focus,
+  has a Pause control, and stops at the visitor's first choice.
 - Never invent proof: no client, person, quote, logo or result is shown as
   real unless it is; samples are labelled as samples in plain view. The
   sample Diagnostic shows in one screen in the homepage's Proof and in

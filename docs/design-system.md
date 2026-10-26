@@ -336,10 +336,11 @@ step deeper, in ember, reads out the choice: the want in the visitor's
 words ("Be seen, and sometimes go viral."), Plurel's line on it in
 blush ("A viral moment is luck. Reach is a system that gives luck more
 chances."), and the four layers of the Plurel System on a spine, each
-with what it does for that want. It is the System's first sighting; the
-services chapter goes on to build it. It closes on "Each supplier sells
-you one of these. We build the system that delivers all four." with
-"Start with the Diagnostic".
+with what it does for that want, then a link to the want's package page
+("The Reach package"). It is the System's first sighting; the services
+chapter goes on to build it. It closes on "Each supplier sells you one of
+these. We build the system that delivers all four." with "Start with the
+Diagnostic".
 
 Rules:
 - ARIA tabs (arrows, Home, End; the panel takes focus). The panels share
@@ -350,6 +351,14 @@ Rules:
   shared window-over-text sweep, 24ms a character), then the chosen
   word's rule is drawn; a new choice draws its rule at once and lights
   its panel's lines one after another, by opacity alone.
+- The tour: so a visitor sees each word can be chosen, the four take
+  turns while the selector is in the middle of the screen. The chosen
+  word's rule is the clock, drawn over 6.5s on a faint track; when it is
+  full the next word is chosen. It holds while a pointer rests on the
+  words or the panel, while focus is in the panel, off screen, and on
+  Pause (a small outlined control beside the standfirst, Play to resume).
+  The visitor's first choice ends it for good. No tour under reduced
+  motion or without JS.
 - "Go viral" appears here once, with the line that keeps it honest, and
   once in the questions.
 
@@ -378,9 +387,11 @@ The services chapter carries the thesis, on graphite, between Why now
 and the red Method. Markup in `home/services-chapter.tsx`, the
 motion in `home/services-type.tsx` (client) with the engine in
 `lib/services-type.ts` and the pin and clone rules in
-`home/services-type.module.css`. Its head: the h2 "Your marketing
-shouldn't be ten companies. / It should be one system." (TypeReveal),
-with the side line beside its first line. Then the figure, the contents
+`home/services-type.module.css`. Its head is the standard chapter head
+(`ChapterHead`, left-aligned on columns 1-8): the h2 "Your marketing
+shouldn't be ten companies. / It should be one system.", with the side
+line as its aside on columns 9-12, so it reads like every other chapter
+before the figure takes over. Then the figure, the contents
 list itself, so the chapter's artifact makes the argument (integration,
 not a menu) in the one place that has to show a menu:
 
@@ -497,9 +508,8 @@ type. Two motifs:
   seeds, 28 to 60KB each) and painted through a CSS mask in the tone's
   token color: ink about 7% on paper, paper about 9% on graphite, ember
   on red (darker lines only raise the contrast of paper type). `focus`
-  places the summit; `annotate` adds one quiet readout ("Field 03 ·
-  Contour interval 4", the generator's real interval) with registration
-  crosshairs, on Why now only, hidden on phones.
+  places the summit. No readout or label rides on it: a survey caption
+  ("Field 03") read as a stray label, so the field is art alone.
 - **The mark:** the logo's exact cells, outlined and filled with fine
   vertical lines that echo the hero's nine flutes, huge and cropped at the
   chapter's edge, as if engraved. Never filled, split, opened or
@@ -575,6 +585,53 @@ Closing    red: one line (cols 1-8)             paper action + outlined one
   visitor's email app with the message written out, and says so.
 - Samples are labelled where they stand ("Sample engagement,
   illustrative, not a client"), in signal, above the sample itself.
+- Published numbers (`Numbers`, `components/instruments.tsx`) make a
+  page's case: the figure set large in display type, what it measured,
+  and its source (publisher, title, year) linked under it. Each is
+  checked against its source and quoted within the source's own scope.
+  Never on the homepage.
+- Measures (`Measures`) are what a page answers to: a 2px rule, the
+  measure's name, what it is, and how often it is read. They are
+  definitions, never results.
+
+## Plates: the drawn instruments
+
+Every interior page carries at least one plate (`components/artifacts/`),
+so a page is read through a drawing as well as its words. A plate draws
+the system itself: a mechanism (where buyers come from and what the site
+does with them), a path (the surfaces a buyer passes through), or a
+principle (luck against a system, memory fading and holding). Never a
+mock screen, a fake dashboard or invented data; a sample drawn on one is
+labelled as a sample (the Diagnostic's radar).
+
+```
+Plate      frame: a hairline and 3% paper on graphite, ember on red
+           Stage: the drawing at its own aspect ratio
+             Svg: lines (pl-stroke), nodes (pl-lit), pulses (pl-pulse)
+             Label: HTML type in the drawing's coordinates, 13px and up
+           figcaption: the readout (Readout), beside it from lg or under it
+```
+
+- The vocabulary is the site's: lines drawn at a steady rate, nodes and
+  labels lit by opacity, each on its own clock (`--t`, `--d`), through
+  the pen, so a plate draws as it enters and what follows waits for it.
+- Hairlines in paper at 15 to 60%, the line that matters in paper or
+  signal, the outcome as a signal square. One accent per drawing.
+- A plate that loops keeps one quiet motion once drawn (pulses along its
+  lines, the rhythm's sweep, the echo's ping), only while on screen,
+  never under reduced motion, always with a Pause control at its corner.
+  The rest draw once and hold.
+- Phones: labels never scale with the drawing. Where they would crowd,
+  the plate has a phone layout (Revenue, the industry paths and the
+  suppliers run top to bottom) or hides its in-drawing labels for a
+  legend (Reach and Mindshare).
+- The drawings: the packages' signatures (`package-art.tsx`, with a
+  small glyph of each for the packages index), the eight services'
+  mechanisms (`discipline-art.tsx`), and the company pages' (`page-art.tsx`:
+  Method's rhythm and team, the industries' paths, About's suppliers, the
+  Diagnostic's radar). The journal's covers (`cover.tsx`) are survey
+  plates: each essay's own patch of the contour terrain, turned per
+  essay, with a mark at its summit.
 
 ## Header and footer
 
@@ -594,8 +651,8 @@ Closing    red: one line (cols 1-8)             paper action + outlined one
   The primary nav is Services, Method, Industries, About and Journal
   (`PRIMARY` in `lib/nav.ts`); every "Request a diagnostic" goes to the
   Diagnostic's request form (`AUDIT_HREF`). Services opens a dark panel
-  (a card under the pill) with the eight disciplines grouped by the
-  System's layers and the Diagnostic as a red card: on hover for a mouse
+  (a card under the pill) with the four packages (each with its want),
+  the eight individual services and the Diagnostic as a red card: on hover for a mouse
   (the click that follows keeps it open), on the first tap for touch, and
   on Enter, which moves focus into the panel. Mobile opens a full-screen
   red index, which closes itself if the window widens past lg.

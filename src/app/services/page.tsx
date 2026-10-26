@@ -1,30 +1,33 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
+import { PackageGlyph } from "@/components/artifacts/package-art";
 import { ArrowRight, ArrowUpRight } from "@/components/icons";
-import { Closing, PageHead } from "@/components/page";
+import { ChapterHead, Closing, PageHead, Room } from "@/components/page";
 import { Reveal } from "@/components/reveal";
 import { CONTAINER, CtaLink, GRID } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { DISCIPLINES } from "@/lib/disciplines";
 import { pageMetadata } from "@/lib/metadata";
 import { AUDIT_HREF } from "@/lib/nav";
+import { PACKAGES } from "@/lib/packages";
 import { STAGES, type StageKey } from "@/lib/services-type";
 
 export const metadata = pageMetadata({
-  title: "Services: the Plurel System — Plurel",
+  title: "Services and packages — Plurel",
   description:
-    "Brand, site, search, content, paid and press, run as one system: four layers (Narrative, Create, Distribute, Measure), eight disciplines, one team and one number.",
+    "Four packages, by what you came for (reach, reputation, mindshare, revenue), each run on the same system: four layers, eight services you can also buy on their own, one team and one number.",
   path: "/services/",
 });
 
 /*
-  /services: the Plurel System in full, the page the homepage's services
-  chapter points to. Its four layers as four full-width bands, read top to
-  bottom as on the homepage, each a graphite tone a step deeper than the
-  one above: the layer's name and the instrument it builds; what that is
-  and what goes into it; its disciplines (each to its own page), its
-  cadence and what it feeds. The loop is said in Measure's band, and the
-  page closes in the red room.
+  /services: what Plurel sells, the page the homepage's services chapter
+  and the menu point to. First the four packages, named for what a
+  company comes for (each with its glyph, its want and the services it is
+  built from). Then the system underneath them: its four layers as four
+  full-width bands, read top to bottom as on the homepage, each a graphite
+  tone a step deeper than the one above, with the instrument it builds,
+  what goes into it, and its services, each one also sold on its own.
+  The page closes in the red room.
 */
 
 const DETAIL: Record<StageKey, { what: string; contains: readonly string[]; cadence: string; tone: number }> = {
@@ -82,14 +85,48 @@ export default function ServicesPage() {
   return (
     <main data-room="dark" className="bg-graphite text-paper">
       <PageHead
-        lines={["Your marketing,", "as one system."]}
-        standfirst="Brand, site, search, content, paid and press usually sit with different suppliers, each with its own brief and its own report. We run them as four layers of one system, against one number."
+        lines={["Four packages.", "One system."]}
+        standfirst="Pick what you came for. Each package runs on the same four layers, is built from the services below, and answers to one number agreed on day one."
       >
         <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
         <CtaLink href="/method" variant="outline-light" arrow="right">
           How an engagement runs
         </CtaLink>
       </PageHead>
+
+      <section aria-labelledby="packages-heading">
+        <div className="mx-auto w-full max-w-[1440px] px-5 pb-4 sm:px-8 lg:px-12 lg:pb-6">
+          <h2 id="packages-heading" className="sr-only">
+            The four packages
+          </h2>
+          <ul className={`${GRID} gap-y-12`}>
+            {PACKAGES.map((p) => (
+              <li key={p.key} className="group relative col-span-4 sm:col-span-3 lg:col-span-3">
+                <PackageGlyph pkg={p.key} />
+                <h3 className="type-display mt-6 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-none">
+                  <Link href={p.href} className="transition-colors after:absolute after:inset-0 group-hover:text-signal">
+                    {p.term}
+                  </Link>
+                </h3>
+                <p className="type-title mt-3 text-[19px] leading-[1.3]">{p.want}</p>
+                <p className="mt-3 max-w-[36ch] text-[15px] leading-[1.5] text-fog">{p.stance}</p>
+                <p className="mt-5 flex items-center gap-2 text-[15px] font-medium">
+                  The {p.term} package
+                  <ArrowUpRight aria-hidden className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <Room labelledBy="system-heading" className="pb-12 lg:pb-16">
+        <ChapterHead
+          id="system-heading"
+          lines={["One system", "underneath."]}
+          aside="Every package runs on the same four layers, read top to bottom. Each layer is built from individual services, and each service can also be bought on its own."
+        />
+      </Room>
 
       <ol aria-label="The Plurel System, top to bottom">
         {STAGES.map((st, i) => {
@@ -106,7 +143,7 @@ export default function ServicesPage() {
                 <div className={`${GRID} gap-y-10`}>
                   <div className="col-span-4 sm:col-span-6 lg:col-span-4">
                     <TypeReveal
-                      as="h2"
+                      as="h3"
                       id={`layer-${st.key}`}
                       className="type-display text-[clamp(2.75rem,1rem+4.2vw,5.25rem)] leading-[0.9]"
                       lines={[st.name]}
@@ -160,7 +197,7 @@ export default function ServicesPage() {
         })}
       </ol>
 
-      <Closing lines={["Four layers.", "One number."]}>
+      <Closing lines={["Four packages.", "One number."]}>
         <CtaLink href={AUDIT_HREF} variant="paper">
           Request a diagnostic
         </CtaLink>

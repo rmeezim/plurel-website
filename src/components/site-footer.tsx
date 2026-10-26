@@ -4,7 +4,7 @@ import { ArrowUpRight } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
 import { CONTAINER, GRID } from "@/components/system";
-import { COMPANY, CONTACT_EMAIL, DIAGNOSTIC_HREF, SERVICES } from "@/lib/nav";
+import { COMPANY, CONTACT_EMAIL, DIAGNOSTIC_HREF, PACKAGES, SERVICES } from "@/lib/nav";
 
 /*
   Footer: the quiet firm index every page ends on. The closing chapter
@@ -41,7 +41,7 @@ export function SiteFooter() {
           <div className={`${GRID} items-stretch gap-y-12 lg:gap-y-0`}>
             {/* Identity: lockup on top, the identity line pinned to the
                 bottom of the index, so the two frame it */}
-            <div className="col-span-4 flex flex-col justify-between gap-6 sm:col-span-6 lg:col-span-4">
+            <div className="col-span-4 flex flex-col justify-between gap-6 sm:col-span-6 lg:col-span-3">
               <Logo className="block h-auto w-[148px] text-brand" title="Plurel" />
               <p className="max-w-[320px] text-[14px] leading-[22px] text-fog lg:mb-1">
                 Plurel is a distribution engineering firm: one team for every
@@ -50,8 +50,26 @@ export function SiteFooter() {
             </div>
 
             <nav
+              aria-label="Packages"
+              className="col-span-4 min-[390px]:col-span-2 lg:col-span-2 lg:col-start-4"
+            >
+              <p className={LABEL}>
+                Packages
+              </p>
+              <ul className={LIST}>
+                {PACKAGES.map((p) => (
+                  <li key={p.key} className="flex">
+                    <Link href={p.href} className={LINK}>
+                      {p.term}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <nav
               aria-label="Services"
-              className="col-span-4 min-[390px]:col-span-2 lg:col-span-3 lg:col-start-5"
+              className="col-span-4 min-[390px]:col-span-2 lg:col-span-3 lg:col-start-6"
             >
               <p className={LABEL}>
                 Services
@@ -69,7 +87,7 @@ export function SiteFooter() {
 
             <nav
               aria-label="Company"
-              className="col-span-4 min-[390px]:col-span-2 lg:col-span-2 lg:col-start-8"
+              className="col-span-4 min-[390px]:col-span-2 lg:col-span-2 lg:col-start-9"
             >
               <p className={LABEL}>
                 Company
@@ -85,7 +103,7 @@ export function SiteFooter() {
               </ul>
             </nav>
 
-            <div className="col-span-4 sm:col-span-2 lg:col-span-3 lg:col-start-10">
+            <div className="col-span-4 min-[390px]:col-span-2 lg:col-span-2 lg:col-start-11">
               <p className={LABEL}>Contact</p>
               <ul className={LIST}>
                 <li className="flex">
@@ -119,22 +137,22 @@ export function SiteFooter() {
 
         {/* Legal bar under one plain hairline. Phones: copyright and Back
             to top, then Privacy and Terms. Desktop: registered to the
-            columns at 1, 5, 8 and 10. */}
+            columns at 1, 4, 6 and 9. */}
         <div className={`${GRID} mt-14 border-t border-paper/15 pt-1 text-[14px] text-fog lg:mt-20`}>
-          <p className="order-1 col-span-2 flex min-h-10 items-center sm:order-none lg:col-span-4">
+          <p className="order-1 col-span-2 flex min-h-10 items-center sm:order-none lg:col-span-3">
             &copy; 2026 Plurel
           </p>
-          <p className="order-3 col-span-2 sm:order-none sm:col-span-1 lg:col-span-3">
+          <p className="order-3 col-span-2 sm:order-none sm:col-span-1 lg:col-span-2">
             <Link href="/privacy" className={BAR_LINK}>
               Privacy
             </Link>
           </p>
-          <p className="order-4 col-span-2 sm:order-none sm:col-span-1 lg:col-span-2">
+          <p className="order-4 col-span-2 sm:order-none sm:col-span-1 lg:col-span-3">
             <Link href="/terms" className={BAR_LINK}>
               Terms
             </Link>
           </p>
-          <p className="order-2 col-span-2 sm:order-none lg:col-span-3">
+          <p className="order-2 col-span-2 sm:order-none lg:col-span-4">
             <a href="#top" className={BAR_LINK}>
               Back to top <span aria-hidden>&uarr;</span>
             </a>

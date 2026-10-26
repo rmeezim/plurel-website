@@ -1,3 +1,4 @@
+import { RhythmArt, TeamArt } from "@/components/artifacts/page-art";
 import { ChapterHead, PageHead, Room } from "@/components/page";
 import { Reveal } from "@/components/reveal";
 import { CtaLink, GRID } from "@/components/system";
@@ -16,7 +17,8 @@ export const metadata = pageMetadata({
   /method: how an engagement runs, the page the homepage's Method chapter
   points to. The four phases on a time chart (weeks 1 to 12, then monthly),
   each with what happens and what it delivers; the rhythm, in the page's
-  first red room; the team; where AI helps and where a person decides;
+  first red room, beside its clock (artifacts/page-art.tsx); the team,
+  drawn around you; where AI helps and where a person decides;
   and the two ways to work, in the red room the page closes on. The
   phases' names, taglines, deliverables and AI lines are the homepage's
   (lib/home.ts); the rest is said here.
@@ -155,14 +157,19 @@ export default function MethodPage() {
           lines={["The rhythm."]}
           aside="The same cadence in every engagement, so you always know what happens next."
         />
-        <Reveal className={`${GRID} mt-14 gap-y-10 lg:mt-20`}>
-          {RHYTHM.map((r) => (
-            <div key={r.head} className="col-span-4 border-t-2 border-paper pt-5 sm:col-span-6 lg:col-span-4">
-              <h3 className="type-title text-[clamp(1.5rem,1.2rem+1vw,2rem)] leading-[1.1]">{r.head}</h3>
-              <p className="mt-3 max-w-[38ch] text-[16px] leading-[1.55]">{r.line}</p>
-            </div>
-          ))}
-        </Reveal>
+        <div className={`${GRID} mt-14 gap-y-10 lg:mt-20 lg:items-center`}>
+          <div className="col-span-4 sm:col-span-6 lg:col-span-5">
+            <RhythmArt />
+          </div>
+          <Reveal className="col-span-4 space-y-10 sm:col-span-6 lg:col-span-6 lg:col-start-7">
+            {RHYTHM.map((r) => (
+              <div key={r.head} className="border-t-2 border-paper pt-5">
+                <h3 className="type-title text-[clamp(1.5rem,1.2rem+1vw,2rem)] leading-[1.1]">{r.head}</h3>
+                <p className="mt-3 max-w-[44ch] text-[16px] leading-[1.55]">{r.line}</p>
+              </div>
+            ))}
+          </Reveal>
+        </div>
       </Room>
 
       <Room labelledBy="team-heading">
@@ -171,20 +178,21 @@ export default function MethodPage() {
           lines={["One senior team."]}
           aside="The people who run your Diagnostic run the work, with no account managers between you and the people making it."
         />
-        <Reveal className="mt-12 border-b border-paper/15 lg:mt-16">
-          <ul>
-            {TEAM.map((m) => (
-              <li key={m.role} className={`${GRID} gap-y-1.5 border-t border-paper/15 py-5`}>
-                <h3 className="type-title col-span-4 text-[20px] leading-[1.25] sm:col-span-2 lg:col-span-4 lg:text-[22px]">
-                  {m.role}
-                </h3>
-                <p className="col-span-4 max-w-[56ch] text-[16px] leading-[1.55] text-fog sm:col-span-4 lg:col-span-7 lg:col-start-6">
-                  {m.line}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+        <div className={`${GRID} mt-12 gap-y-10 lg:mt-16 lg:items-start`}>
+          <div className="col-span-4 sm:col-span-6 lg:col-span-7">
+            <TeamArt roles={TEAM.map((m) => m.role)} />
+          </div>
+          <Reveal className="col-span-4 border-b border-paper/15 sm:col-span-6 lg:col-span-5 lg:col-start-8">
+            <ul>
+              {TEAM.map((m) => (
+                <li key={m.role} className="border-t border-paper/15 py-4">
+                  <h3 className="type-title text-[19px] leading-[1.25] lg:text-[20px]">{m.role}</h3>
+                  <p className="mt-1.5 max-w-[48ch] text-[15px] leading-[1.5] text-fog">{m.line}</p>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
       </Room>
 
       <Room labelledBy="ai-heading" className="border-t border-paper/10">

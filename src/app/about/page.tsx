@@ -1,3 +1,5 @@
+import { Readout } from "@/components/artifacts/kit";
+import { SuppliersArt } from "@/components/artifacts/page-art";
 import { ChapterHead, Closing, PageHead, Room } from "@/components/page";
 import { Reveal } from "@/components/reveal";
 import { CtaLink, GRID, TextLink } from "@/components/system";
@@ -12,7 +14,8 @@ export const metadata = pageMetadata({
 });
 
 /*
-  /about: the firm. Why it exists (the problem, the idea, the practice),
+  /about: the firm. Why it exists (the problem, the idea, the practice,
+  then ten suppliers drawn into one number, artifacts/page-art.tsx),
   the rules every engagement runs on (the page's first red room), how it
   is built, and how it hires (by introduction: no invented openings, no
   invented people; the People chapter on the homepage waits for real
@@ -67,6 +70,19 @@ export default function AboutPage() {
               </p>
             ))}
           </Reveal>
+        </div>
+        <div className="mt-16 lg:mt-24">
+          <SuppliersArt
+            caption={
+              <Readout
+                items={[
+                  "Each supplier reports the number that flatters its own work.",
+                  "None of those is the number you run on.",
+                  "We run the pieces as one team, answerable for one number.",
+                ]}
+              />
+            }
+          />
         </div>
       </Room>
 

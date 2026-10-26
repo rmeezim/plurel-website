@@ -1,3 +1,4 @@
+import { PathArt } from "@/components/artifacts/page-art";
 import { ChapterHead, Closing, PageHead, Room } from "@/components/page";
 import { Reveal } from "@/components/reveal";
 import { CtaLink, GRID } from "@/components/system";
@@ -85,31 +86,39 @@ export default function IndustriesPage() {
                 </Reveal>
               </div>
 
-              <Reveal className="col-span-4 sm:col-span-6 lg:col-span-7 lg:col-start-6">
-                <p className="text-[15px] font-medium text-fog">How the system is tuned</p>
-                <ol className="mt-3 border-b border-paper/15">
-                  {LAYERS.map((L, i) => (
-                    <li key={L.key} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 border-t border-paper/15 py-3.5 sm:grid-cols-[8rem_minmax(0,1fr)]">
-                      <span className="text-[15px] text-fog">{L.name}</span>
-                      <span className="text-[16px] leading-[1.5] lg:text-[17px]">{ind.tuning[i]}</span>
-                    </li>
-                  ))}
-                </ol>
+              <div className="col-span-4 sm:col-span-6 lg:col-span-7 lg:col-start-6">
+                <p className="mb-3 text-[15px] font-medium text-fog">How their buyers get to the number</p>
+                <PathArt
+                  steps={ind.path}
+                  end={ind.number}
+                  label={`The path ${ind.name.toLowerCase()} buyers take: ${ind.path.join(", then ")}, and then ${ind.number.toLowerCase()}.`}
+                />
+                <Reveal className="mt-10">
+                  <p className="text-[15px] font-medium text-fog">How the system is tuned</p>
+                  <ol className="mt-3 border-b border-paper/15">
+                    {LAYERS.map((L, i) => (
+                      <li key={L.key} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 border-t border-paper/15 py-3.5 sm:grid-cols-[8rem_minmax(0,1fr)]">
+                        <span className="text-[15px] text-fog">{L.name}</span>
+                        <span className="text-[16px] leading-[1.5] lg:text-[17px]">{ind.tuning[i]}</span>
+                      </li>
+                    ))}
+                  </ol>
 
-                <div className="mt-8 bg-paper/[0.04] p-5 sm:p-6 lg:p-7">
-                  <p className="text-[14px] font-medium text-signal">{SAMPLE_LABEL}</p>
-                  <div className="mt-4 grid gap-6 sm:grid-cols-2 sm:gap-8">
-                    <div>
-                      <p className="text-[14px] font-medium text-fog">What the Diagnostic found</p>
-                      <p className="mt-2 text-[16px] leading-[1.55]">{ind.sample.found}</p>
-                    </div>
-                    <div>
-                      <p className="text-[14px] font-medium text-fog">What ran first</p>
-                      <p className="mt-2 text-[16px] leading-[1.55]">{ind.sample.ran}</p>
+                  <div className="mt-8 bg-paper/[0.04] p-5 sm:p-6 lg:p-7">
+                    <p className="text-[14px] font-medium text-signal">{SAMPLE_LABEL}</p>
+                    <div className="mt-4 grid gap-6 sm:grid-cols-2 sm:gap-8">
+                      <div>
+                        <p className="text-[14px] font-medium text-fog">What the Diagnostic found</p>
+                        <p className="mt-2 text-[16px] leading-[1.55]">{ind.sample.found}</p>
+                      </div>
+                      <div>
+                        <p className="text-[14px] font-medium text-fog">What ran first</p>
+                        <p className="mt-2 text-[16px] leading-[1.55]">{ind.sample.ran}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Reveal>
+                </Reveal>
+              </div>
             </div>
           </div>
         </section>

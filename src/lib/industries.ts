@@ -18,6 +18,8 @@ export type Industry = {
   who: string;
   /** The number, said in full */
   numberLong: string;
+  /** The surfaces their buyers pass through, in order, before the number */
+  path: readonly string[];
   /** What each layer does for them, top to bottom */
   tuning: readonly [string, string, string, string];
   sample: { found: string; ran: string };
@@ -33,6 +35,7 @@ export const INDUSTRIES: readonly Industry[] = [
     number: "Orders",
     who: "Brands that sell to people directly and through retail, where a feed, a creator or a review usually makes the decision.",
     numberLong: "First orders from new customers, at a margin you can repeat.",
+    path: ["A feed", "A creator", "Reviews", "Your site or a store"],
     tuning: [
       "One idea the product can prove, said the same way in every format.",
       "One shoot, cut into ads, creator briefs and product pages.",
@@ -51,6 +54,7 @@ export const INDUSTRIES: readonly Industry[] = [
     number: "Sell-through",
     who: "Products sold through retailers and marketplaces, where the shelf and the listing do most of the selling.",
     numberLong: "Sell-through: units that leave the shelf or the listing, not units shipped to it.",
+    path: ["A marketplace search", "The listing", "Reviews", "The shelf"],
     tuning: [
       "The reason to pick it up, sharp enough to win at the shelf.",
       "Packaging, listings and product pages written from the same brief.",
@@ -69,6 +73,7 @@ export const INDUSTRIES: readonly Industry[] = [
     number: "Demos with buyers who fit",
     who: "Software and technology sold to businesses, where a committee decides, and asks an assistant before it asks you.",
     numberLong: "Demo requests from companies that fit, accepted by the people who sell.",
+    path: ["An AI answer", "Search", "Peers", "Your site"],
     tuning: [
       "One position for the whole buying committee, written for the person who signs.",
       "The site and the sales material rebuilt from one brief, with research worth citing.",
@@ -87,6 +92,7 @@ export const INDUSTRIES: readonly Industry[] = [
     number: "Users who stay",
     who: "Apps, devices and services people choose for themselves, in app stores, on creators’ channels and in AI answers.",
     numberLong: "Users who stay: people still active after their first month, not installs.",
+    path: ["A creator", "An AI answer", "The app store", "The first week"],
     tuning: [
       "The one thing it does better, in the words users use when they recommend it.",
       "Store pages, onboarding and creator kits cut from one story.",

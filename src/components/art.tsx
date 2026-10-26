@@ -19,10 +19,6 @@ import { asset } from "@/lib/site";
     edge, engraved rather than printed: each cell's outline with fine
     vertical lines cut into it, the nine flutes of the hero's glass. Never
     filled, split, opened or assembled.
-  - annotate: one quiet survey readout, fixed to the sheet while the field
-    moves under it: registration crosses at two corners of the grid and a
-    single mono line. One per page at most; leave it off where it would
-    read as a label.
   - drift (default on): the field slides a few dozen pixels against the
     scroll while its chapter crosses the screen. A CSS scroll-driven
     animation, so it runs on the compositor, does nothing off screen, and
@@ -39,13 +35,12 @@ export type ArtKind = "contours" | "mark";
 export type ArtTone = "paper" | "dark" | "red";
 
 /** The survey's own numbers, shared with scripts/art/contours.mjs */
-const TILE = 1600; // px, each tile is drawn and shown at 1:1
-const SHEET = { cols: 5, rows: 4 }; // tiles stamped across each file
+export const TILE = 1600; // px, each tile is drawn and shown at 1:1
+export const SHEET = { cols: 5, rows: 4 }; // tiles stamped across each file
 const ANCHOR = { col: 2, row: 1 }; // the stamp whose summit sits at `focus`
-const INTERVAL = 4; // contour interval, in the sheet's units
 
 /** The fields in public/art, by seed: where each summit sits in its tile, px */
-const SUMMIT: Record<number, readonly [number, number]> = {
+export const SUMMIT: Record<number, readonly [number, number]> = {
   1: [1596, 1292],
   2: [720, 1516],
   3: [672, 536],
@@ -69,13 +64,6 @@ const TONE: Record<ArtTone, string> = {
 const STRENGTH: Record<ArtKind, Record<ArtTone, number>> = {
   contours: { paper: 0.07, dark: 0.09, red: 0.45 },
   mark: { paper: 0.07, dark: 0.08, red: 0.5 },
-};
-
-/** The readout's own tone: AA for its 11px line, quieter for its crosses */
-const READOUT: Record<ArtTone, { text: string; cross: string }> = {
-  paper: { text: "text-muted", cross: "text-ink/35" },
-  dark: { text: "text-fog", cross: "text-paper/35" },
-  red: { text: "text-paper", cross: "text-paper/45" },
 };
 
 /** Total travel each way, px */
@@ -126,42 +114,6 @@ function Mark() {
   );
 }
 
-/** A registration cross: a ring on a hairline cross, centered on its point */
-function Cross({ className }: { className: string }) {
-  return (
-    <svg
-      viewBox="0 0 17 17"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1}
-      className={`absolute size-[17px] ${className}`}
-    >
-      <circle cx="8.5" cy="8.5" r="4" />
-      <path d="M8.5 0v17M0 8.5h17" />
-    </svg>
-  );
-}
-
-function Readout({ seed, tone }: { seed: number; tone: ArtTone }) {
-  const t = READOUT[tone];
-  return (
-    <div className="absolute inset-0 hidden sm:block">
-      {/* the grid's own frame: the same edges as CONTAINER's content */}
-      <div className="relative mx-auto h-full max-w-[1440px]">
-        <div className="absolute inset-y-0 left-8 right-8 lg:left-12 lg:right-12">
-          <Cross className={`right-0 top-10 -translate-y-1/2 translate-x-1/2 ${t.cross}`} />
-          <Cross className={`bottom-10 left-0 -translate-x-1/2 translate-y-1/2 ${t.cross}`} />
-          <p
-            className={`absolute bottom-10 left-5 translate-y-1/2 font-mono text-[11px] uppercase leading-none tracking-[0.03em] ${t.text}`}
-          >
-            Field {String(seed).padStart(2, "0")} · Contour interval {INTERVAL}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /** The field as a mask: the anchor stamp's summit placed at `focus` */
 function contourMask(seed: number, tone: ArtTone, focus: readonly [number, number]): CSSProperties {
   const x = SUMMIT[seed][0] + ANCHOR.col * TILE;
@@ -187,7 +139,6 @@ export function ArtField({
   kind,
   seed = 1,
   tone,
-  annotate = false,
   drift = true,
   focus = [0.74, 0.34],
   className = "",
@@ -196,8 +147,6 @@ export function ArtField({
   /** Which contour field (1 to 6); ignored by the mark */
   seed?: number;
   tone: ArtTone;
-  /** One survey readout (contours only): crosses and a mono line */
-  annotate?: boolean;
   /** A slow parallax against the scroll */
   drift?: boolean;
   /** Where the field's summit sits, as fractions of the chapter [x, y] */
@@ -225,7 +174,6 @@ export function ArtField({
           </div>
         )}
       </div>
-      {annotate && kind === "contours" ? <Readout seed={field} tone={tone} /> : null}
     </div>
   );
 }

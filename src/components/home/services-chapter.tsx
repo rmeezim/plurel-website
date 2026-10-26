@@ -2,8 +2,8 @@ import { Mona_Sans } from "next/font/google";
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { ServicesType } from "@/components/home/services-type";
-import { CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
-import { TypeReveal } from "@/components/type-reveal";
+import { ChapterHead } from "@/components/page";
+import { CONTAINER, CtaLink, GRID } from "@/components/system";
 import { SERVICES } from "@/lib/nav";
 import { FEEDS_BACK, SERVICE_STAGE, STAGES, stageName, SYSTEM, type StageKey } from "@/lib/services-type";
 import s from "./services-type.module.css";
@@ -155,19 +155,11 @@ export function ServicesChapter() {
       className={`${mona.variable} ${s.root} bg-graphite text-paper`}
     >
       <div className={`${CONTAINER} pt-24 lg:pt-36`}>
-        <div className={`${GRID} items-start gap-y-7`}>
-          <TypeReveal
-            as="h2"
-            id="services-heading"
-            className={`${H2} col-span-4 sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-start-1`}
-            lines={["Your marketing shouldn’t be ten companies.", "It should be one system."]}
-            variant="display"
-          />
-          <p className="col-span-4 max-w-[34ch] text-[17px] leading-[1.5] text-fog sm:col-span-6 lg:col-span-3 lg:col-start-1 lg:row-start-1 lg:max-w-[30ch] lg:pt-2 lg:text-[16px]">
-            Brand, site, search, content, social, paid and press usually sit
-            with different suppliers. We run them as one.
-          </p>
-        </div>
+        <ChapterHead
+          id="services-heading"
+          lines={["Your marketing shouldn’t be ten companies.", "It should be one system."]}
+          aside="Brand, site, search, content, social, paid and press usually sit with different suppliers. We run them as one."
+        />
       </div>
 
       <ServicesType items={SERVICES.map((svc) => ({ name: svc.name, st: st(svc.slug) }))} system={<SystemBands />}>

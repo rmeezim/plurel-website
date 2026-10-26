@@ -25,7 +25,7 @@ const SERVICE_LIST = [
   ["Martech & Consulting", "martech-consulting", "The wiring nobody sees until it breaks.", "measure"],
 ] as const;
 
-/** The eight disciplines, in the order the site presents them, each with its layer */
+/** The eight disciplines (the individual services), in the order the site presents them, each with its layer */
 export const SERVICES = SERVICE_LIST.map(([name, slug, tagline, layer], i) => ({
   index: String(i + 1).padStart(2, "0"),
   name,
@@ -34,6 +34,20 @@ export const SERVICES = SERVICE_LIST.map(([name, slug, tagline, layer], i) => ({
   layer: layer as LayerKey,
   href: `/services/${slug}`,
 }));
+
+export type PackageKey = "reach" | "reputation" | "mindshare" | "revenue";
+
+/**
+ * The four packages, by what a company comes for (the homepage's What you
+ * came for): each runs on all four layers. Wants mirror PACKAGES in
+ * packages.ts, which holds each page's copy.
+ */
+export const PACKAGES: readonly { key: PackageKey; term: string; want: string; href: string }[] = [
+  { key: "reach", term: "Reach", want: "Be seen, and sometimes go viral.", href: "/services/reach" },
+  { key: "reputation", term: "Reputation", want: "Be talked about, and believed.", href: "/services/reputation" },
+  { key: "mindshare", term: "Mindshare", want: "Be the one they think of first.", href: "/services/mindshare" },
+  { key: "revenue", term: "Revenue", want: "Be chosen when they’re ready.", href: "/services/revenue" },
+];
 
 /** The Diagnostic's page, where a link names the Diagnostic itself */
 export const DIAGNOSTIC_HREF = "/diagnostic";

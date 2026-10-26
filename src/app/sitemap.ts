@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { POSTS } from "@/lib/posts";
-import { SERVICES } from "@/lib/nav";
+import { PACKAGES, SERVICES } from "@/lib/nav";
 import { SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -12,12 +12,14 @@ const page = (path: string, changeFrequency: Entry["changeFrequency"], priority:
   priority,
 });
 
-/* The site in the order it tells its story: the system, how it runs, who
-   it is for, the way in, the firm, the journal, then the fine print. */
+/* The site in the order it tells its story: the packages and services,
+   how it runs, who it is for, the way in, the firm, the journal, then the
+   fine print. */
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     page("/", "weekly", 1),
     page("/services/", "monthly", 0.9),
+    ...PACKAGES.map((p) => page(`/services/${p.key}/`, "monthly", 0.8)),
     ...SERVICES.map((s) => page(`/services/${s.slug}/`, "monthly", 0.7)),
     page("/method/", "monthly", 0.8),
     page("/industries/", "monthly", 0.8),

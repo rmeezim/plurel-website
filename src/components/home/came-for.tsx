@@ -3,6 +3,7 @@ import { CONTAINER, CtaLink, GRID } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { WantSelector, type Want } from "@/components/home/want-selector";
 import { AUDIT_HREF } from "@/lib/nav";
+import { PACKAGES } from "@/lib/packages";
 import { STAGES } from "@/lib/services-type";
 
 /*
@@ -13,63 +14,26 @@ import { STAGES } from "@/lib/services-type";
   pick one and the panel under them, a step deeper in ember, reads out
   what each layer of the Plurel System does for it. The layers are the
   ones the services chapter goes on to build, so this is the System's
-  first sighting. "Go viral" is said once, with the line that keeps it
-  honest; the questions say it again.
+  first sighting. Each want is also a package, and its panel links to the
+  package's page. While the chapter is on screen the four take turns on
+  their own, so a visitor sees that each can be chosen (want-selector.tsx).
+  "Go viral" is said once, with the line that keeps it honest; the
+  questions say it again.
 
   The chapter's heading is for screen readers; the four words carry it on
   screen. Server component around the client selector.
 */
 
-const WANTS: readonly Want[] = [
-  {
-    key: "reach",
-    term: "Reach",
-    want: "Be seen, and sometimes go viral.",
-    stance: "A viral moment is luck. Reach is a system that gives luck more chances.",
-    layers: [
-      "One idea short enough to travel, and true enough to survive the comments.",
-      "Cut for creators and short-form: many versions of one story, made to be shared.",
-      "Paid behind whatever is already moving, with search and AI answers ready for the people it reaches.",
-      "Reach counted as a cause: we follow a spike into searches and into the one number.",
-    ],
-  },
-  {
-    key: "reputation",
-    term: "Reputation",
-    want: "Be talked about, and believed.",
-    stance: "Press works when it says what everything else already says.",
-    layers: [
-      "The story a reporter can repeat in a sentence and a founder can tell on stage.",
-      "Proof people can check, from original research to reviews worth reading.",
-      "Press and podcasts, timed with the campaigns that make them findable.",
-      "Mentions read as a cause: what they do to searches and to the one number.",
-    ],
-  },
-  {
-    key: "mindshare",
-    term: "Mindshare",
-    want: "Be the one they think of first.",
-    stance: "People remember what they meet the same way, many times.",
-    layers: [
-      "One position, said the same way everywhere you show up.",
-      "A look and a voice consistent enough to recognize in half a second.",
-      "Present wherever the choice gets made, including the answers AI gives.",
-      "Branded search and direct visits, read as the memory working.",
-    ],
-  },
-  {
-    key: "revenue",
-    term: "Revenue",
-    want: "Be chosen when they’re ready.",
-    stance: "The first three are wasted if the last step leaks.",
-    layers: [
-      "The reasons to buy, in the words your buyers use.",
-      "A site and a path to purchase built to convert, from first visit to checkout.",
-      "Spend moved to whatever turns into orders, installs, demos or stockists.",
-      "One number, agreed on day one, read every month.",
-    ],
-  },
-];
+/* The four wants are the four packages (lib/packages.ts): the panel reads
+   each one's want, stance and layer lines, and links to its page */
+const WANTS: readonly Want[] = PACKAGES.map((p) => ({
+  key: p.key,
+  term: p.term,
+  want: p.want,
+  stance: p.stance,
+  layers: p.layers,
+  href: p.href,
+}));
 
 export function CameForChapter() {
   return (

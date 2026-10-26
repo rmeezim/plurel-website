@@ -1,0 +1,197 @@
+/*
+  The few motions a drawing needs beyond the shared ones (globals.css,
+  "Plates"), keyed to the same plate states. Each holds its finished
+  state as its plain value, so no JS, reduced motion and print show the
+  drawing finished.
+*/
+
+/* A heading that turns to point where the story sets: lit at --t, then
+   turned from its own angle (--a0) to the shared one at --nt */
+.needle {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+/* A leak: drawn down at --t over --d, then closed at --fix to a stub */
+.leak {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  transform: scaleY(0.14);
+}
+
+/* The same leak on a phone, running right */
+.leakX {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  transform: scaleX(0.14);
+}
+
+/* Paid: a bar's share of spend, week by week (--w1 to --w6), ending on week 6 */
+.bar {
+  transform-box: fill-box;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--w6));
+}
+/* Paid: the week now showing, stepping along the week marks to --to */
+.week {
+  translate: var(--to) 0;
+}
+/* Creative direction: the drafts not kept, set back once reviewed */
+.draft {
+  opacity: 0.35;
+}
+/* Creative direction: the review, a line passing over the drafts */
+.scan {
+  opacity: 0;
+}
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  :global(html[data-js] .plate[data-state="armed"]) .leakX {
+    transform: scaleX(0);
+  }
+  :global(html[data-js] .plate[data-state="in"]) .leakX {
+    animation:
+      growX var(--d) linear var(--t) both,
+      closeX 420ms linear var(--fix) forwards;
+  }
+  :global(html[data-js] .plate[data-state="armed"]) .bar {
+    transform: scaleX(0);
+  }
+  :global(html[data-js] .plate[data-state="in"]) .bar {
+    animation: weeks var(--d) linear var(--t) both;
+  }
+  :global(html[data-js] .plate[data-state="armed"]) .week {
+    opacity: 0;
+    translate: 0 0;
+  }
+  :global(html[data-js] .plate[data-state="in"]) .week {
+    animation:
+      lit 180ms linear var(--t) backwards,
+      step var(--d) steps(5, jump-end) var(--t) both;
+  }
+  :global(html[data-js] .plate[data-state="armed"]) .draft {
+    opacity: 1;
+  }
+  :global(html[data-js] .plate[data-state="in"]) .draft {
+    animation: dim 400ms linear var(--t) backwards;
+  }
+  :global(html[data-js] .plate[data-live]) .scan {
+    opacity: 1;
+    animation: scan var(--p) linear infinite;
+  }
+  :global(html[data-js] .plate[data-live]:not([data-run])) .scan {
+    animation-play-state: paused;
+  }
+
+  :global(html[data-js] .plate[data-state="armed"]) .needle {
+    opacity: 0;
+    rotate: var(--a0);
+  }
+  :global(html[data-js] .plate[data-state="in"]) .needle {
+    animation:
+      lit 180ms linear var(--t) backwards,
+      turn 520ms cubic-bezier(0.45, 0, 0.25, 1) var(--nt) backwards;
+  }
+
+  :global(html[data-js] .plate[data-state="armed"]) .leak {
+    transform: scaleY(0);
+  }
+  :global(html[data-js] .plate[data-state="in"]) .leak {
+    animation:
+      grow var(--d) linear var(--t) both,
+      close 420ms linear var(--fix) forwards;
+  }
+}
+
+@keyframes lit {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes turn {
+  from {
+    rotate: var(--a0);
+  }
+  to {
+    rotate: 0deg;
+  }
+}
+@keyframes grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes close {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.14);
+  }
+}
+@keyframes weeks {
+  0% {
+    transform: scaleX(0);
+  }
+  10% {
+    transform: scaleX(var(--w1));
+  }
+  28% {
+    transform: scaleX(var(--w2));
+  }
+  46% {
+    transform: scaleX(var(--w3));
+  }
+  64% {
+    transform: scaleX(var(--w4));
+  }
+  82% {
+    transform: scaleX(var(--w5));
+  }
+  100% {
+    transform: scaleX(var(--w6));
+  }
+}
+@keyframes step {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: var(--to) 0;
+  }
+}
+@keyframes dim {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.35;
+  }
+}
+@keyframes scan {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: var(--to) 0;
+  }
+}
+@keyframes growX {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes closeX {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0.14);
+  }
+}

@@ -1,13 +1,15 @@
+import type { Measure, Stat } from "@/components/instruments";
 import type { QA } from "@/components/questions";
 import { SERVICES, type LayerKey } from "@/lib/nav";
 
 /*
-  The eight disciplines, one page each (app/services/[slug]). Every page
-  says what the discipline does inside the Plurel System: the layer it sits
-  in, what it runs on and what it feeds, what you get, and how it is read
-  in the Ledger. No borrowed statistics: a number on these pages is either
-  the visitor's own (the one number) or absent. Names, taglines and layers
-  come from nav.ts, so the menu, the footer and the pages never disagree.
+  The eight disciplines, the individual services, one page each
+  (app/services/[slug]). Every page tells one story: the job, the case for
+  it (with published numbers, each with its source), how it works inside
+  the Plurel System (the page's drawing and its readout), what you get,
+  the measures it answers to, where it sits, and its questions. Names,
+  taglines and layers come from nav.ts, so the menu, the footer and the
+  pages never disagree.
 
   Copy rules (AGENTS.md): plain words, no triplet lists for rhythm, no
   "every channel", nothing promised that cannot be (coverage, virality).
@@ -30,8 +32,12 @@ export type Discipline = {
   runsOn: string;
   /** What it gives the rest of the system */
   feeds: string;
-  /** What we read in the Ledger */
-  signals: readonly string[];
+  /** What the drawing shows, step by step */
+  readout: readonly [string, string, string];
+  /** The measures it answers to, read in the Ledger */
+  metrics: readonly Measure[];
+  /** Published numbers that make the case, each with its source */
+  numbers?: readonly Stat[];
   questions: readonly QA[];
 };
 
@@ -55,11 +61,30 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief: the position, the proof and the voice every page is written from.",
     feeds: "The Surface Plan and the Ledger: every surface lands here, and every visit is counted against the one number.",
-    signals: [
-      "What visits turn into, by buyer and by source",
-      "Speed and accessibility on the devices your buyers use",
-      "Where buyers drop, page by page",
-      "How search and AI answers describe you",
+    readout: [
+      "Every surface sends people to the same place: ads, search, AI answers, press and creators.",
+      "The site takes them from a first look to proof to purchase, in the order buyers decide.",
+      "What arrives is counted once, as the one number, by where it came from.",
+    ],
+    metrics: [
+      { name: "Conversion by source", what: "What visits turn into, by where they came from and which buyer they are.", when: "Weekly" },
+      { name: "Speed", what: "How fast pages load and respond on the phones your buyers use, against Google’s Core Web Vitals.", when: "Weekly" },
+      { name: "Drop-off", what: "Where buyers leave, page by page, on the way to purchase.", when: "Weekly" },
+      { name: "Readable by machines", what: "Whether search engines and AI assistants can read and quote each page.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "8.4%",
+        text: "More retail conversions after a mobile site got 0.1 seconds faster on every page on the way to purchase, in a study of 37 brands.",
+        source: "Deloitte for Google, Milliseconds Make Millions, 2020",
+        url: "https://www.deloitte.com/ie/en/services/consulting/research/milliseconds-make-millions.html",
+      },
+      {
+        figure: "2.5 s",
+        text: "The time within which Google expects a page’s main content to appear, for three in four real visits, to rate it good.",
+        source: "Google, Core Web Vitals, web.dev",
+        url: "https://web.dev/articles/vitals",
+      },
     ],
     questions: [
       {
@@ -93,10 +118,30 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Diagnostic’s read of your market, your buyers and what already works.",
     feeds: "The Asset System: every page, film, ad and creator brief is cut from it.",
-    signals: [
-      "Recognition, read in branded search and direct visits",
-      "Consistency in what ships each month",
-      "How buyers describe you, in reviews and in AI answers",
+    readout: [
+      "Your buyers meet you on many surfaces, often for a second or two.",
+      "The same signal sits in the same place on every one of them: type, colour, layout and voice.",
+      "Each meeting is recognized faster, so every surface spends less effort being remembered.",
+    ],
+    metrics: [
+      { name: "Share of search", what: "Searches for your name, as a share of searches for you and your competitors.", when: "Monthly" },
+      { name: "Consistency", what: "How much of what ships each month follows the identity, checked in review.", when: "Monthly" },
+      { name: "How you’re described", what: "The words buyers use about you, in reviews and in what AI assistants say.", when: "Quarterly" },
+      { name: "Speed to ship", what: "How quickly your team and suppliers make new work without asking.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "50 ms",
+        text: "Enough for people to judge how a web page looks: in lab studies, a 50 ms glimpse matched their verdict after ten times as long.",
+        source: "Lindgaard et al., Behaviour & Information Technology, 2006",
+        url: "https://www.tandfonline.com/doi/abs/10.1080/01449290500330448",
+      },
+      {
+        figure: "40%",
+        text: "Of category buyers, on average, linked a brand’s shapes, such as its logo or pack, to the brand. For its colours, 12%. Across 1,162 assets in 21 categories.",
+        source: "Phua, Bali, Anesbury & Sharp, International Journal of Advertising, 2026",
+        url: "https://www.tandfonline.com/doi/full/10.1080/02650487.2026.2637295",
+      },
     ],
     questions: [
       {
@@ -130,11 +175,36 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief’s claims and the Asset System’s pages.",
     feeds: "The Ledger: searches and answers, counted as causes of the one number.",
-    signals: [
-      "Whether assistants name you for your category",
-      "Where you rank for the questions that matter",
-      "Visits from search and answers, by intent",
-      "What those visits turn into",
+    readout: [
+      "A buyer asks a question, and an assistant answers it with a few names.",
+      "It builds the answer from the sources it trusts: your site, reviews, press, directories and forums.",
+      "We make each of those sources say the same clear thing, so the answer names you.",
+    ],
+    metrics: [
+      { name: "Share of answers", what: "How often AI assistants name you when asked the questions your buyers ask.", when: "Monthly" },
+      { name: "Rankings that matter", what: "Where you rank for the questions tied to the one number, not for vanity terms.", when: "Weekly" },
+      { name: "Visits by intent", what: "Visits from search and from AI answers, by the question that brought them.", when: "Weekly" },
+      { name: "What they turn into", what: "The share of those visits that becomes the one number.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "68%",
+        text: "Of US Google searches ended without a click in the first four months of 2026.",
+        source: "SparkToro, from Similarweb data, 2026",
+        url: "https://sparktoro.com/blog/in-2026-less-than-one-third-of-google-searches-still-send-a-click/",
+      },
+      {
+        figure: "8%",
+        text: "Of visits in which Google users clicked a traditional result when an AI summary appeared, against 15% when none did.",
+        source: "Pew Research Center, 2025",
+        url: "https://www.pewresearch.org/short-reads/2025/07/22/google-users-are-less-likely-to-click-on-links-when-an-ai-summary-appears-in-the-results/",
+      },
+      {
+        figure: "94%",
+        text: "Of business buyers say they use AI during their buying process, up from 89% the year before.",
+        source: "Forrester, The State of Business Buying, 2026",
+        url: "https://www.forrester.com/blogs/state-of-business-buying-2026/",
+      },
     ],
     questions: [
       {
@@ -168,11 +238,36 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief, and the questions the Surface Plan ranks.",
     feeds: "The Surface Plan: every piece is made for a surface, and paid and press carry the best of it.",
-    signals: [
-      "What gets found, shared and cited",
-      "Which pieces lead to the one number",
-      "What a piece costs against what it earns",
-      "What creators’ audiences do next",
+    readout: [
+      "One story, from the Core Brief, made once and made well.",
+      "Cut into what each place needs: articles, film, clips, posts, newsletters and creator kits.",
+      "Each cut is made for a surface, so it is found where buyers already look.",
+    ],
+    metrics: [
+      { name: "Found and cited", what: "What gets found in search, shared, and cited by AI assistants.", when: "Monthly" },
+      { name: "Assists", what: "Which pieces people read before they become the one number.", when: "Monthly" },
+      { name: "Cost per piece", what: "What each piece costs, against what it earns over time.", when: "Quarterly" },
+      { name: "Creator reach", what: "What creators’ audiences do next: search, visit or buy.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "88%",
+        text: "Of people trust recommendations from people they know more than any other source, in a study of over 40,000 people worldwide.",
+        source: "Nielsen, Trust in Advertising, 2021",
+        url: "https://www.nielsen.com/insights/2021/beyond-martech-building-trust-with-consumers-and-engaging-where-sentiment-is-high/",
+      },
+      {
+        figure: "95%",
+        text: "Of business buyers aren’t in the market at any given time, by a rule-of-thumb estimate: content has to reach them long before they are.",
+        source: "Ehrenberg-Bass Institute for LinkedIn’s B2B Institute, 2021",
+        url: "https://business.linkedin.com/advertise/resources/b2b-institute/b2b-research/trends/95-5-rule",
+      },
+      {
+        figure: "73%",
+        text: "Of decision-makers say a company’s thought leadership is a more trustworthy way to judge its capabilities than its marketing materials.",
+        source: "Edelman and LinkedIn, B2B Thought Leadership Impact Report, 2024",
+        url: "https://www.edelman.com/sites/g/files/aatuss191/files/2024-02/_2024%20Edelman-LinkedIn%20B2B%20Thought%20Leadership%20Impact%20Report%20Final.pdf",
+      },
     ],
     questions: [
       {
@@ -206,11 +301,30 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Asset System’s cuts and the Surface Plan’s order.",
     feeds: "The Ledger: spend against what it produced, by channel and by buyer.",
-    signals: [
-      "What a unit of the one number costs",
-      "New customers against returning ones",
-      "What paid adds beyond what would happen anyway",
-      "Creative fatigue, read weekly",
+    readout: [
+      "Every surface and every creative starts with a share of one budget.",
+      "Each week, spend moves toward whatever turns into the one number.",
+      "What doesn’t work gets less each week, until it is cut.",
+    ],
+    metrics: [
+      { name: "Cost per number", what: "What one order, install, demo or stockist costs, by channel.", when: "Weekly" },
+      { name: "Incremental lift", what: "What paid adds beyond what would have happened anyway, tested rather than assumed.", when: "Quarterly" },
+      { name: "New against returning", what: "How much spend reaches new customers rather than people already coming back.", when: "Monthly" },
+      { name: "Creative fatigue", what: "When an ad stops working, caught before it wastes budget.", when: "Weekly" },
+    ],
+    numbers: [
+      {
+        figure: "60:40",
+        text: "The most effective average split between building the brand and driving sales now, across the IPA’s effectiveness data. For B2B brands, 46:54.",
+        source: "Binet & Field, The Long and the Short of It, IPA, 2013",
+        url: "https://ipa.co.uk/media/5811/long_and_short_of_it_presentation_final.pdf",
+      },
+      {
+        figure: "+0.7",
+        text: "Points of yearly market-share growth associated with every 10 points of excess share of voice, for B2B brands; 0.6 for consumer brands.",
+        source: "Binet & Field, for LinkedIn’s B2B Institute, 2019",
+        url: "https://www.linkedin.com/business/marketing/blog/linkedin-ads/the-b2b-marketers-guide-to-the-share-of-voice-rule",
+      },
     ],
     questions: [
       {
@@ -244,11 +358,30 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief’s story and its proof.",
     feeds: "The Asset System and the Surface Plan: quotes, citations and reviews that every other surface uses.",
-    signals: [
-      "Mentions in the outlets your buyers read",
-      "Reviews, in number and in rating, where it matters",
-      "Branded search after coverage",
-      "Citations in AI answers",
+    readout: [
+      "It starts with one story worth repeating, and the proof behind it.",
+      "Press and podcasts carry it first; reviews and creators echo it.",
+      "The echo reaches the places buyers check last: search and AI answers.",
+    ],
+    metrics: [
+      { name: "Share of voice", what: "Your mentions against your competitors’, in the outlets your buyers read.", when: "Monthly" },
+      { name: "Reviews", what: "Rating and volume where buyers check, and how quickly you reply.", when: "Weekly" },
+      { name: "Search after coverage", what: "Searches for your name in the weeks after a story runs.", when: "Weekly" },
+      { name: "Cited in answers", what: "How often AI assistants cite the coverage when they describe you.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "270%",
+        text: "Greater purchase likelihood for a product with five reviews than for one with none.",
+        source: "Spiegel Research Center, Northwestern University, 2017",
+        url: "https://spiegel.medill.northwestern.edu/how-online-reviews-influence-sales/",
+      },
+      {
+        figure: "97%",
+        text: "Of US consumers read online reviews for local businesses, and 41% always do.",
+        source: "BrightLocal, Local Consumer Review Survey, 2026",
+        url: "https://www.brightlocal.com/research/local-consumer-review-survey/",
+      },
     ],
     questions: [
       {
@@ -282,10 +415,24 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief, and the Ledger’s read of what worked.",
     feeds: "The Asset System: everything is made, and reviewed, to one standard.",
-    signals: [
-      "Consistency in what ships",
-      "Which ideas move the one number",
-      "Creative fatigue, read in paid",
+    readout: [
+      "Many directions, drafted fast: this is where machines help.",
+      "A creative director keeps one, and says why.",
+      "That one direction runs through every format, from film to the pack.",
+    ],
+    metrics: [
+      { name: "Consistency", what: "How much of what ships holds to the platform, checked in every review.", when: "Monthly" },
+      { name: "Ideas that work", what: "Which creative ideas lead to the one number, read across channels.", when: "Monthly" },
+      { name: "Creative fatigue", what: "When an idea stops working in paid, so the next one is ready.", when: "Weekly" },
+      { name: "Time to sign-off", what: "How long work takes from first draft to approval.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "49%",
+        text: "Of the extra sales advertising drives comes from creative quality, ahead of brand (21%), reach (14%) and targeting (11%), across nearly 450 consumer-goods campaigns.",
+        source: "NCSolutions, Five Keys to Advertising Effectiveness, 2023",
+        url: "https://info.ncsolutions.com/hubfs/2023%20Five%20Keys%20to%20Advertising%20Effectiveness/NCS_Five_Keys_to_Advertising_Effectiveness_E-Book_08-23.pdf",
+      },
     ],
     questions: [
       {
@@ -319,10 +466,36 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "Every other layer: it reads what they produce.",
     feeds: "Narrative and Distribute, every quarter: the brief and the plan are reset from what it reads.",
-    signals: [
-      "Whether the number is counted the same way everywhere",
-      "Broken data, caught within a day",
-      "Decisions made from the Ledger each month",
+    readout: [
+      "Your site, store, ads, email and reviews each count in their own way.",
+      "The Ledger reconciles them into one set of numbers, read the same way every month.",
+      "Out comes one number everyone trusts, and the wiring that keeps it true.",
+    ],
+    metrics: [
+      { name: "One definition", what: "Whether the number is counted the same way in every tool and report.", when: "Monthly" },
+      { name: "Data health", what: "Broken tracking and missing data, caught within a day.", when: "Daily" },
+      { name: "Tools that earn their cost", what: "Which tools pay for themselves, and which can go.", when: "Quarterly" },
+      { name: "Decisions made", what: "What changed each month because of what the Ledger read.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "33%",
+        text: "Of their stack’s capability is what martech teams reported using, down from 42% the year before.",
+        source: "Gartner, Marketing Technology Survey, 2023",
+        url: "https://www.gartner.com/en/newsroom/press-releases/2023-08-23-gartner-survey-finds-63-percent-of-marketing-leaders-plan-to-invest-in-generative-ai-in-the-next-24-months",
+      },
+      {
+        figure: "15,505",
+        text: "Marketing technology products on the market, in the 2026 count.",
+        source: "Scott Brinker, Marketing Technology Landscape, 2026",
+        url: "https://chiefmartec.com/2026/05/2026-marketing-technology-landscape-supergraphic-peak-martech-achieved-maybe/",
+      },
+      {
+        figure: "7.8%",
+        text: "Of company revenue goes to marketing, on average, among the marketing leaders surveyed.",
+        source: "Gartner, CMO Spend Survey, 2026",
+        url: "https://www.gartner.com/en/newsroom/press-releases/2026-05-11-gartner-2026-cmo-spend-survey-finds-cmos-allocate-15-point-3-percent-of-marketing-budgets-to-ai-but-only-30-percent-are-ready-to-scale-ai-capabilities",
+      },
     ],
     questions: [
       {

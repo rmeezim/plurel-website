@@ -442,6 +442,152 @@
   }
 }
 
+/* ---------- Plates (components/artifacts) ----------
+   The drawn instruments. Each element carries its own clock: --t (start)
+   and --d (duration), in ms.
+   - pl-stroke: an SVG line drawn at a steady rate (pathLength="1").
+   - pl-x / pl-y: an HTML or SVG rule drawn the same way, across or down
+     (scale from its origin).
+   - pl-lit: a node, mark or label that switches on, by opacity alone.
+   - Once drawn, a looping plate ([data-live]) keeps one motion going
+     while on screen ([data-run]): pl-pulse (a short dash running along a
+     pathLength="1" line), pl-dot (a runner across its track), pl-spin (a
+     sweep) and pl-ping (a ring sent out), each on its own period --p
+     after --pd. Off screen or on Pause they hold where they are.
+   Finished and still without JS, under reduced motion and in print. */
+.pl-stroke {
+  stroke-dasharray: 1 1;
+}
+.pl-x,
+.pl-y,
+.pl-ping {
+  transform-box: fill-box;
+}
+.pl-x {
+  transform-origin: 0 50%;
+}
+.pl-y {
+  transform-origin: 50% 0;
+}
+.pl-ping {
+  transform-origin: 50% 50%;
+}
+.pl-pulse {
+  stroke-dasharray: 0.06 1.2;
+  stroke-dashoffset: 0.06;
+  opacity: 0;
+}
+.pl-dot,
+.pl-ping {
+  opacity: 0;
+}
+.plate-hold {
+  width: 8px;
+  height: 9px;
+  border-inline: 2.5px solid currentColor;
+}
+.plate-hold-play {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4.5px 0 4.5px 8px;
+  border-color: transparent transparent transparent currentColor;
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html[data-js] .plate[data-state="armed"] .pl-stroke {
+    stroke-dashoffset: 1;
+  }
+  html[data-js] .plate[data-state="armed"] .pl-lit {
+    opacity: 0;
+  }
+  html[data-js] .plate[data-state="armed"] .pl-x {
+    transform: scaleX(0);
+  }
+  html[data-js] .plate[data-state="armed"] .pl-y {
+    transform: scaleY(0);
+  }
+  html[data-js] .plate[data-state="in"] .pl-stroke {
+    animation: pl-stroke var(--d, 600ms) linear var(--t, 0ms) backwards;
+  }
+  html[data-js] .plate[data-state="in"] .pl-lit {
+    animation: pl-lit 180ms linear var(--t, 0ms) backwards;
+  }
+  html[data-js] .plate[data-state="in"] .pl-x {
+    animation: pl-x var(--d, 400ms) linear var(--t, 0ms) backwards;
+  }
+  html[data-js] .plate[data-state="in"] .pl-y {
+    animation: pl-y var(--d, 400ms) linear var(--t, 0ms) backwards;
+  }
+  html[data-js] .plate[data-live] .pl-pulse {
+    opacity: 1;
+    animation: pl-pulse var(--p, 2400ms) linear var(--pd, 0ms) infinite;
+  }
+  html[data-js] .plate[data-live] .pl-dot {
+    opacity: 1;
+    animation: pl-dot var(--p, 2400ms) linear var(--pd, 0ms) infinite;
+  }
+  html[data-js] .plate[data-live] .pl-spin {
+    animation: pl-spin var(--p, 9000ms) linear var(--pd, 0ms) infinite;
+  }
+  html[data-js] .plate[data-live] .pl-ping {
+    animation: pl-ping var(--p, 3200ms) linear var(--pd, 0ms) infinite;
+  }
+  html[data-js] .plate[data-live]:not([data-run]) :is(.pl-pulse, .pl-dot, .pl-spin, .pl-ping, .pl-loop) {
+    animation-play-state: paused;
+  }
+}
+@keyframes pl-stroke {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes pl-lit {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes pl-x {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes pl-y {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes pl-pulse {
+  from {
+    stroke-dashoffset: 0.06;
+  }
+  to {
+    stroke-dashoffset: -1.2;
+  }
+}
+@keyframes pl-dot {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes pl-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+@keyframes pl-ping {
+  from {
+    scale: 0.08;
+    opacity: 0.85;
+  }
+  to {
+    scale: 1;
+    opacity: 0;
+  }
+}
+
 /* A block armed to light is never left dark on paper */
 @media print {
   .reveal-armed {

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { RadarArt } from "@/components/artifacts/page-art";
 import { DiagnosticForm } from "@/components/diagnostic-form";
 import { ChapterHead, PageHead, Room } from "@/components/page";
 import { faqJsonLd, QuestionList, type QA } from "@/components/questions";
@@ -5,7 +7,7 @@ import { Reveal } from "@/components/reveal";
 import { CtaLink, GRID } from "@/components/system";
 import { pageMetadata } from "@/lib/metadata";
 import { CONTACT_EMAIL } from "@/lib/nav";
-import { DIAGNOSTIC_PARTS, SAMPLE_HREF } from "@/lib/proof";
+import { DIAGNOSTIC_PARTS, SAMPLE_DIAGNOSTIC, SAMPLE_HREF, SAMPLE_TOTAL } from "@/lib/proof";
 
 export const metadata = pageMetadata({
   title: "The Diagnostic — Plurel",
@@ -16,10 +18,22 @@ export const metadata = pageMetadata({
 
 /*
   /diagnostic: the way in, and where every "Request a diagnostic" lands.
-  What it is (the six parts, the same for every company), what comes back
+  What it is (the six parts, the same for every company, beside a radar
+  of them with the sample's read drawn on it), what comes back
   (the read, as the sample shows it, in the page's red room), how it runs
   (four steps on a hairline), the request itself, and its questions.
 */
+
+/** The six parts by their short names, with the sample's scores, for the radar */
+const SHORT: Record<string, string> = {
+  "Market and category": "Market",
+  "Narrative and positioning": "Narrative",
+  "Website and touchpoints": "Website",
+  "Assets and content": "Assets",
+  "Distribution across channels": "Distribution",
+  Measurement: "Measurement",
+};
+const RADAR = SAMPLE_DIAGNOSTIC.parts.map((p) => ({ short: SHORT[p.part] ?? p.part, score: p.score }));
 
 const COMES_BACK = [
   { head: "Six scores", line: "Each part out of 10, with the finding behind the number." },
@@ -87,20 +101,27 @@ export default function DiagnosticPage() {
           lines={["Six parts, scored out of 10."]}
           aside="The same six for every company, so a score means the same thing wherever you sit."
         />
-        <Reveal className="mt-14 border-b border-paper/15 lg:mt-20">
-          <ol>
-            {DIAGNOSTIC_PARTS.map((p) => (
-              <li key={p.part} className={`${GRID} gap-y-2 border-t border-paper/15 py-6 lg:py-7`}>
-                <h3 className="type-title col-span-4 text-[clamp(1.375rem,1.1rem+0.9vw,1.75rem)] leading-[1.15] sm:col-span-6 lg:col-span-5">
-                  {p.part}
-                </h3>
-                <p className="col-span-4 max-w-[52ch] text-[16px] leading-[1.55] text-fog sm:col-span-6 lg:col-span-6 lg:col-start-7 lg:text-[17px]">
-                  {p.look}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
+        <div className={`${GRID} mt-14 gap-y-10 lg:mt-20 lg:items-start`}>
+          <div className="col-span-4 sm:col-span-6 lg:col-span-5">
+            <RadarArt parts={RADAR} sample={SAMPLE_DIAGNOSTIC.client} />
+            <p className="mt-4 max-w-[44ch] text-[14px] leading-[1.5] text-fog">
+              {SAMPLE_DIAGNOSTIC.note} Its read scored {SAMPLE_TOTAL} of 60.{" "}
+              <Link href={SAMPLE_HREF} className="text-paper underline decoration-signal underline-offset-4 hover:text-signal">
+                See it in full
+              </Link>
+            </p>
+          </div>
+          <Reveal className="col-span-4 border-b border-paper/15 sm:col-span-6 lg:col-span-6 lg:col-start-7">
+            <ol>
+              {DIAGNOSTIC_PARTS.map((p) => (
+                <li key={p.part} className="border-t border-paper/15 py-5 lg:py-6">
+                  <h3 className="type-title text-[clamp(1.25rem,1.05rem+0.7vw,1.5rem)] leading-[1.15]">{p.part}</h3>
+                  <p className="mt-2 max-w-[52ch] text-[16px] leading-[1.55] text-fog">{p.look}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        </div>
       </Room>
 
       <Room labelledBy="back-heading" tone="red">

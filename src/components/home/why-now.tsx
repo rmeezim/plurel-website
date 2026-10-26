@@ -36,7 +36,7 @@ export function WhyNowChapter() {
       aria-labelledby="why-now-heading"
       className="relative isolate overflow-hidden bg-graphite text-paper"
     >
-      <ArtField kind="contours" seed={3} tone="dark" annotate />
+      <ArtField kind="contours" seed={3} tone="dark" />
       <div className={`${CONTAINER} py-24 lg:py-36`}>
         <div className={`${GRID} gap-y-8`}>
           <div className="col-span-4 sm:col-span-6 lg:col-span-7">
