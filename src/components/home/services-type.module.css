@@ -211,12 +211,12 @@
 /* ---------- the System: four bands, the loop drawn along them ---------- */
 
 /*
-  Each band: a flat fill (the colour; it rises into place while the
+  Each band: a flat fill (the colour; it comes down into place while the
   figure runs), its name, what it builds and feeds, and its services as
-  links, on the container's grid. Foundation at the floor in brand red,
-  the three above in graphite tones that lift as they rise (graphite
-  mixed with fog: flat, never a gradient). Pointing at a band, or into
-  it, lifts it one tone and brightens its services.
+  links, on the container's grid. Read top to bottom, Narrative first,
+  each band a graphite tone a step deeper than the one above it
+  (graphite mixed with fog: flat, never a gradient). Pointing at a band,
+  or into it, lifts it one tone and brightens its services.
 */
 .system {
   /* the grid, as CONTAINER and GRID set it, for the loop's position */
@@ -271,33 +271,27 @@
 .band {
   position: relative;
   overflow: clip;
-  --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 6%);
-  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 12%);
-}
-.band[data-band="distribute"] {
-  --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 11%);
-  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 17%);
-}
-.band[data-band="measure"] {
   --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 16%);
   --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 22%);
 }
-/* the foundation: Plurel red; it lifts toward signal, and its type stays
-   paper (blush and fog are too quiet for small type on red) */
-.band[data-band="narrative"] {
-  --band: var(--color-brand);
-  --lift: color-mix(in srgb, var(--color-brand), var(--color-signal) 18%);
-  --spine: var(--color-paper);
-  --ret: color-mix(in srgb, var(--color-paper) 70%, transparent);
-  --rule: color-mix(in srgb, var(--color-paper) 30%, transparent);
-  --mute: var(--color-paper);
-  --svc: color-mix(in srgb, var(--color-paper) 92%, var(--color-brand));
+.band[data-band="create"] {
+  --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 12%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 18%);
 }
+.band[data-band="distribute"] {
+  --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 8%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 14%);
+}
+.band[data-band="measure"] {
+  --band: color-mix(in srgb, var(--color-graphite), var(--color-fog) 5%);
+  --lift: color-mix(in srgb, var(--color-graphite), var(--color-fog) 11%);
+}
+/* drawn from its top edge down: it comes down from the band above */
 .fill {
   position: absolute;
   inset: 0;
   background-color: var(--tone, var(--band));
-  transform-origin: 50% 100%;
+  transform-origin: 50% 0;
 }
 /* the slab between two bands: a graphite hairline at each band's top */
 .band::after {
@@ -487,10 +481,10 @@
 
 /*
   The loop: the same two lines drawn in every band, meeting across the
-  bands as one drawing. The spine (solid) carries the signal up through
+  bands as one drawing. The spine (solid) carries the signal down through
   each layer's node, with an arrowhead where it crosses into the layer
-  above; the return (dashed) carries the Ledger's read back down to the
-  foundation, tapping the layers it feeds back into. Hairlines, flat
+  below; the return (dashed) carries the Ledger's read back up to
+  Narrative, tapping the layers it feeds back into. Hairlines, flat
   colour, no glow. Its x is the gutter before the builds column (lg) or
   the lane (below lg); its y, each band's node, is the builds title's cap
   centre (computed from the type sizes, so no script is needed).
@@ -516,30 +510,30 @@
   position: absolute;
   display: block;
 }
-/* the spine: from the band below up to the node, from the node up to the band above */
+/* the spine: from the band above down to the node, from the node down to the band below */
 .lIn,
 .lOut {
   left: -0.5px;
   width: 1px;
   background: var(--spine);
-  transform-origin: 50% 100%;
+  transform-origin: 50% 0;
 }
 .lIn {
-  top: var(--ny);
-  bottom: 0;
-}
-.lOut {
   top: 0;
   height: var(--ny);
 }
-/* where the spine crosses into the band above */
+.lOut {
+  top: var(--ny);
+  bottom: 0;
+}
+/* where the spine crosses into the band below */
 .arrow {
-  top: 0;
+  bottom: 0;
   left: -4.5px;
   width: 9px;
   height: 8px;
   background: var(--spine);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 .node {
   top: calc(var(--ny) - 3.5px);
@@ -548,33 +542,32 @@
   height: 7px;
   background: var(--color-signal);
 }
-.band[data-band="narrative"] .node {
-  background: var(--color-paper);
-}
-/* the return: dashed, --rg left of the spine (24px from lg); from the Ledger's node
-   down, through every band, to the foundation's node. (A dash pattern
-   in one flat colour: hard stops, not a gradient.) A cover in the band's
-   tone draws it in place: it slides down off the line as it is drawn. */
+/* the return: dashed, --rg left of the spine (24px from lg); from the
+   Ledger's node up, through every band, to Narrative's node. (A dash
+   pattern in one flat colour: hard stops, not a gradient.) A cover in
+   the band's tone draws it in place: it slides up off the line as it is
+   drawn. */
 .ret {
   top: 0;
   bottom: 0;
   left: calc(-0.5px - var(--rg));
   width: 1px;
   overflow: clip;
-  background-image: repeating-linear-gradient(to bottom, var(--ret) 0 5px, transparent 5px 9px);
+  background-image: repeating-linear-gradient(to top, var(--ret) 0 5px, transparent 5px 9px);
 }
-.retTop {
-  top: var(--ny);
-}
-.retFoot {
+/* in the Ledger's band it starts at the node; in Narrative's it ends there */
+.retStart {
   bottom: auto;
   height: var(--ny);
+}
+.retEnd {
+  top: var(--ny);
 }
 .cover {
   position: absolute;
   inset: 0;
   background-color: var(--tone, var(--band));
-  transform: translateY(101%);
+  transform: translateY(-101%);
 }
 /* the Ledger's read leaves its node for the return line */
 .stub {
@@ -628,7 +621,7 @@
   }
   .ret {
     forced-color-adjust: none;
-    background-image: repeating-linear-gradient(to bottom, CanvasText 0 5px, transparent 5px 9px);
+    background-image: repeating-linear-gradient(to top, CanvasText 0 5px, transparent 5px 9px);
   }
 }
 
@@ -666,9 +659,6 @@
   width: 7px;
   height: 7px;
   background: color-mix(in srgb, var(--color-graphite), var(--color-fog) 30%);
-}
-.legMark[data-tone="narrative"] {
-  background: var(--color-brand);
 }
 .legTitle {
   margin: 12px 0 0;
@@ -736,7 +726,7 @@
 /*
   Pinned, the bands lie over the menu: from its top down to the floor of
   the stage (--below, set by the engine: the room the head and the menu
-  leave under them), filling it in four equal floors. The foundation's
+  leave under them), filling it in four equal floors. The last band's
   padding reaches past the visible (svh) foot to the floor, so its
   content stays on the visible screen. Desktop keeps the whole band;
   below lg each band is its name and services, and what it builds and
@@ -746,7 +736,7 @@
 /* Before the engine decides (first paint), TYPE_QUERY alone pins, so the
    track is sized with no layout shift; phones need 650px of height (a
    360x640 screen keeps the static System) and lg 640px. The menu takes
-   its room unseen, and the bands lie over it, not yet risen. */
+   its room unseen, and the bands lie over it, not yet come down. */
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 360px) and (max-width: 63.99rem) and (min-height: 650px), (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
   :global(html[data-js]) .root:not([data-type-motion]) .track {
     height: calc(100vh + var(--travel));

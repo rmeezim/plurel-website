@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/reveal";
-import { ChapterHead, CONTAINER, GRID, H2, Meta, TextLink } from "@/components/system";
+import { CONTAINER, GRID, H2, Meta, TextLink } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { PHASES } from "@/lib/home";
 
@@ -68,9 +68,7 @@ export function MethodChapter() {
       className="bg-brand text-paper"
     >
       <div className={`${CONTAINER} py-24 lg:py-36`}>
-        <ChapterHead label="Method" tone="red" />
-
-        <div className={`${GRID} mt-8 gap-y-8 lg:mt-10 lg:items-end`}>
+        <div className={`${GRID} gap-y-8 lg:items-end`}>
           <TypeReveal
             id="method-heading"
             className={`${H2} col-span-4 sm:col-span-6 lg:col-span-8`}

@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, CtaLink, GRID, H2, Kicker } from "@/components/system";
+import { CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { AUDIT_HREF } from "@/lib/nav";
 import { PROOF_ID, SAMPLE_DIAGNOSTIC as D, SAMPLE_HREF, SAMPLE_TOTAL } from "@/lib/proof";
@@ -39,10 +39,9 @@ export function ProofChapter() {
       <div className={`${CONTAINER} py-24 lg:py-36`}>
         <div className={`${GRID} gap-y-8 lg:items-end`}>
           <div className="col-span-4 sm:col-span-6 lg:col-span-8">
-            <Kicker tone="dark">Proof</Kicker>
             <TypeReveal
               id="proof-heading"
-              className={`${H2} mt-8 lg:mt-10`}
+              className={H2}
               lines={["What a Diagnostic finds."]}
             />
           </div>
@@ -61,7 +60,7 @@ export function ProofChapter() {
           >
             {/* Top bar: the sample label, in plain view */}
             <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2.5">
-              <Kicker tone="dark">{D.label}</Kicker>
+              <p className="text-[14px] font-medium">{D.label}</p>
               <p className="text-[14px] font-medium text-signal">{D.note}</p>
             </div>
 

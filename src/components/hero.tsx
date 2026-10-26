@@ -3,7 +3,6 @@ import { GlassBand } from "@/components/glass-band";
 import { CONTAINER, CtaLink, GRID } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { heroFilm } from "@/lib/film";
-import { labelTime } from "@/lib/pen";
 import { AUDIT_HREF } from "@/lib/nav";
 import { SAMPLE_HREF } from "@/lib/proof";
 
@@ -15,17 +14,15 @@ import { SAMPLE_HREF } from "@/lib/proof";
   from here.
 
   The one orchestrated load, from first paint, in CSS (the vocabulary is
-  in type-reveal.tsx): one pen, so nothing arrives at once. In ms: the
-  kicker's square lights at 120 and its label is plotted from 180; the
-  headline is plotted from 440 at the hero's pace, a line at a time, the
-  pen lifting once before the fog-toned "Everywhere." (about 1.1s in
-  all); the copy and the two actions (a diagnostic, or a sample of one)
-  light at 980 and 1080; the glass comes up last, from 1200 over 1.4s, by
-  which time the film is drawing. No travel anywhere. No JS or reduced
-  motion: finished and still.
+  in type-reveal.tsx): one pen, so nothing arrives at once, and no label
+  over the headline. In ms: the headline is plotted from 160 at the
+  hero's pace, a line at a time, the pen lifting once before the
+  fog-toned "Everywhere." (about 1.1s in all); the copy and the two
+  actions (a diagnostic, or a sample of one) light at 700 and 800; the
+  glass comes up last, from 920 over 1.4s, by which time the film is
+  drawing. No travel anywhere. No JS or reduced motion: finished and
+  still.
 */
-
-const KICKER = "Distribution, engineered";
 
 const at = (delay: number, duration?: number): CSSProperties => ({
   animationDelay: `${delay}ms`,
@@ -41,31 +38,21 @@ export function Hero() {
       <div className={`${CONTAINER} pt-32 sm:pt-36 lg:pt-40`}>
         <div className={`${GRID} gap-y-9 lg:items-end`}>
           <div className="col-span-4 sm:col-span-6 lg:col-span-8">
-            <p
-              data-arrive="load"
-              className="flex items-start gap-2.5 text-[13px] font-medium leading-[1.5]"
-              style={{ "--kd": "120ms", "--kdur": `${labelTime(KICKER.length)}ms` } as CSSProperties}
-            >
-              <i aria-hidden className="kicker-mark mt-[6px] block size-[7px] shrink-0 bg-signal" />
-              <span className="kicker-label">
-                <span className="kicker-text">{KICKER}</span>
-              </span>
-            </p>
             <TypeReveal
               as="h1"
               id="hero-heading"
               onLoad
-              delay={440}
-              className="type-display mt-6 text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98] [--display-tracking:-0.044em] [--display-weight:360]"
+              delay={160}
+              className="type-display text-[clamp(2.75rem,6.4vw,6.25rem)] leading-[0.98] [--display-tracking:-0.044em] [--display-weight:360]"
               lines={["Made to be", ["seen.", { text: "Everywhere.", accent: true, className: "text-fog" }]]}
             />
           </div>
           <div className="col-span-4 flex flex-col items-start gap-6 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pb-2">
-            <p className="fade-in max-w-[36ch] text-[17px] leading-[1.5] text-fog lg:text-[18px]" style={at(980)}>
+            <p className="fade-in max-w-[36ch] text-[17px] leading-[1.5] text-fog lg:text-[18px]" style={at(700)}>
               Great work no longer sells itself. Distribution does. Plurel engineers
               yours, from reach to revenue, as one system, so growth compounds.
             </p>
-            <div className="fade-in flex flex-wrap gap-2" style={at(1080)}>
+            <div className="fade-in flex flex-wrap gap-2" style={at(800)}>
               <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
               <CtaLink href={SAMPLE_HREF} variant="outline-light" arrow="right">
                 See a sample
@@ -77,7 +64,7 @@ export function Hero() {
 
       {/* Glass over the film: full bleed, well clear of the statement. It
           comes up last and slowly, by which time the film is drawing. */}
-      <div className="fade-in mt-20 sm:mt-24 lg:mt-28" style={at(1200, 1400)}>
+      <div className="fade-in mt-20 sm:mt-24 lg:mt-28" style={at(920, 1400)}>
         <GlassBand
           film={film}
           profile="rise"

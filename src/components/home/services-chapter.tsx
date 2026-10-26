@@ -2,7 +2,7 @@ import { Mona_Sans } from "next/font/google";
 import Link from "next/link";
 import { ArrowUpRight } from "@/components/icons";
 import { ServicesType } from "@/components/home/services-type";
-import { ChapterHead, CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
+import { CONTAINER, CtaLink, GRID, H2 } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { SERVICES } from "@/lib/nav";
 import { FEEDS_BACK, SERVICE_STAGE, STAGES, stageName, SYSTEM, type StageKey } from "@/lib/services-type";
@@ -20,17 +20,18 @@ const mona = Mona_Sans({
 
 /*
   Why Plurel, on graphite: the thesis, then the eight disciplines shown
-  becoming one system. Between the paper "Why now" and the red Method.
+  becoming one system. Between Why now and the red Method.
 
   The figure (ServicesType) starts as a menu: the eight names first
   appear in eight suppliers' voices, line up on the menu's rows ("still a
   menu"), are set in one face stage by stage along the chain, and then
-  drain into the Plurel System, layer by layer, foundation first: each
-  layer a full-bleed band (Narrative on red at the floor, the three above
-  in graphite tones that lift as they rise), its names landing in its
-  rows. Last the loop is drawn along the bands. What stays is the System:
-  four bands, each its name, what it builds, what it feeds and its
-  services as links. With motion off, it is simply that.
+  drain into the Plurel System, read top to bottom, layer by layer,
+  Narrative first: each layer a full-bleed band in a graphite tone (a
+  step deeper for each layer down), coming down from the foot of the one
+  above, its names landing in its rows. Last the loop is drawn along the
+  bands: down through the layers, and the Ledger's read back up. What
+  stays is the System: four bands, each its name, what it builds, what it
+  feeds and its services as links. With motion off, it is simply that.
 
   The menu is aria-hidden and shown only while the figure runs. Its rows:
   equal heights, hairlines on the container measure, the name flush on
@@ -41,32 +42,32 @@ const mona = Mona_Sans({
 
 const st = (slug: string): StageKey => SERVICE_STAGE[slug] ?? "create";
 
-/** The bands, top first as they are drawn: Measure at the top, Narrative at the floor */
-const LAYERS = [...STAGES].reverse().map((L) => ({
+/** The bands, top to bottom: Narrative first, Measure last */
+const LAYERS = STAGES.map((L, s) => ({
   ...L,
-  s: STAGES.findIndex((x) => x.key === L.key),
+  s,
   services: SERVICES.flatMap((svc, i) => (st(svc.slug) === L.key ? [{ i, name: svc.name, href: svc.href }] : [])),
 }));
-const TOP = STAGES.length - 1;
+const LAST = STAGES.length - 1;
 
 /*
   The loop, drawn in each band from the same two lines, so they meet
-  across the bands as one drawing: the spine (the signal up, through
+  across the bands as one drawing: the spine (the signal down, through
   every layer's node, an arrowhead where it crosses into the layer
-  above) and the return (the Ledger's read, dashed, back down to the
-  foundation, tapping the layers it feeds back into). aria-hidden: the
-  bands' text says the same in words ("Feeds Create").
+  below) and the return (the Ledger's read, dashed, back up to Narrative,
+  tapping the layers it feeds back into). aria-hidden: the bands' text
+  says the same in words ("Feeds Create").
 */
 function Loop({ s: i, back, label }: { s: number; back: boolean; label: boolean }) {
   return (
     <span aria-hidden className={s.loop}>
       {i > 0 && <span data-loop="in" className={s.lIn} />}
-      {i < TOP && <span data-loop="out" className={s.lOut} />}
-      {i < TOP && <span data-loop="arrow" className={s.arrow} />}
-      <span data-loop="ret" className={`${s.ret} ${i === TOP ? s.retTop : i === 0 ? s.retFoot : ""}`}>
+      {i < LAST && <span data-loop="out" className={s.lOut} />}
+      {i < LAST && <span data-loop="arrow" className={s.arrow} />}
+      <span data-loop="ret" className={`${s.ret} ${i === LAST ? s.retStart : i === 0 ? s.retEnd : ""}`}>
         <span className={s.cover} />
       </span>
-      {i === TOP && <span data-loop="stub" className={s.stub} />}
+      {i === LAST && <span data-loop="stub" className={s.stub} />}
       {back && <span data-loop="tap" className={s.tap} />}
       <span data-loop="node" className={s.node} />
       {label && (
@@ -93,7 +94,7 @@ function SystemBands() {
                 <p className={`${s.bt} type-title`}>{L.builds}</p>
                 <p className={s.bl}>{L.line}</p>
                 <p className={s.bf}>{L.feeds}</p>
-                {L.s === TOP && <p className={s.bnote}>{SYSTEM.note}</p>}
+                {L.s === LAST && <p className={s.bnote}>{SYSTEM.note}</p>}
               </div>
               <ul data-band-in="" className={s.svcs}>
                 {L.services.map((svc) => (
@@ -119,8 +120,8 @@ function SystemBands() {
 /*
   Below lg, while the figure runs, the pinned frame shows each band's
   name and services only; what each layer builds and feeds follows the
-  pin here, foundation first, in the order the loop runs. Hidden
-  everywhere else (the bands carry it).
+  pin here, top to bottom, in the order the loop runs. Hidden everywhere
+  else (the bands carry it).
 */
 function SystemLegend() {
   return (
@@ -154,20 +155,15 @@ export function ServicesChapter() {
       className={`${mona.variable} ${s.root} bg-graphite text-paper`}
     >
       <div className={`${CONTAINER} pt-24 lg:pt-36`}>
-        <div className={`${GRID} items-start gap-y-7 lg:grid-rows-[auto_1fr]`}>
-          <ChapterHead
-            label="Why Plurel"
-            tone="dark"
-            className="col-span-4 sm:col-span-6 lg:col-span-3 lg:row-start-1 lg:pt-4"
-          />
+        <div className={`${GRID} items-start gap-y-7`}>
           <TypeReveal
             as="h2"
             id="services-heading"
-            className={`${H2} col-span-4 sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-span-2 lg:row-start-1`}
+            className={`${H2} col-span-4 sm:col-span-6 lg:col-span-9 lg:col-start-4 lg:row-start-1`}
             lines={["Your marketing shouldn’t be ten companies.", "It should be one system."]}
             variant="display"
           />
-          <p className="col-span-4 max-w-[34ch] text-[17px] leading-[1.5] text-fog sm:col-span-6 lg:col-span-3 lg:col-start-1 lg:row-start-2 lg:max-w-[30ch] lg:text-[16px]">
+          <p className="col-span-4 max-w-[34ch] text-[17px] leading-[1.5] text-fog sm:col-span-6 lg:col-span-3 lg:col-start-1 lg:row-start-1 lg:max-w-[30ch] lg:pt-2 lg:text-[16px]">
             Brand, site, search, content, social, paid and press usually sit
             with different suppliers. We run them as one.
           </p>

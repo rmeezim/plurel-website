@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { ArtField } from "@/components/art";
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, GRID, H2, Kicker } from "@/components/system";
+import { CONTAINER, GRID, H2 } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 
 /*
@@ -41,15 +41,14 @@ export function WhoItsForChapter() {
       <div className={`${CONTAINER} py-24 lg:py-36`}>
         <div className={`${GRID} gap-y-8`}>
           <div className="col-span-4 sm:col-span-6 lg:col-span-7">
-            <Kicker tone="red">Who it&rsquo;s for</Kicker>
             <TypeReveal
               as="h2"
               id="who-heading"
-              className={`${H2} mt-7`}
+              className={H2}
               lines={["Different buyers.", "One system."]}
             />
           </div>
-          <Reveal className="col-span-4 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pt-12">
+          <Reveal className="col-span-4 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pt-1.5">
             <p className="text-[18px] leading-[1.5] lg:text-[19px]">
               The four layers stay the same. What changes is where your buyers decide, and the
               number we answer for.

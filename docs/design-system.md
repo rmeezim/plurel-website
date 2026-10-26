@@ -3,8 +3,9 @@
 Plurel is a distribution engineering firm. The site reads like a
 proprietary systems partner (the way Legora reads to law firms), never an
 agency: authoritative, with a defense-grade precision and a little
-creativity. Its layout (square-marker kickers, sharp blocks for actions,
-diagonal arrows) carries three things of its own. On the site Plurel stands
+creativity. Its layout (headlines that name their chapters with no label
+over them, sharp blocks for actions, diagonal arrows) carries three
+things of its own. On the site Plurel stands
 alone: no Northeon, Kelwin or group.
 
 - **Cinematic Red, set in graphite.** Red is the environment, not an
@@ -86,7 +87,7 @@ Why Plurel, red Method, graphite Accountability, red Who it's for,
 graphite proof and questions, red closing, graphite footer. The Journal
 is not a homepage chapter; it stays one click away in the nav and the
 footer. Graphite chapters that meet part by their
-kicker and their room alone, never a rule or a tint; no two red chapters
+headline and their room alone, never a rule or a tint; no two red chapters
 touch, and every page keeps at least one red room. On graphite, small red
 type and markers are `signal` (5.1:1), secondary text `fog`, hairlines
 paper at 15 to 25%; brand red stays for fills and actions. A panel on
@@ -103,7 +104,6 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 | Title (sentences and smaller titles in the display face) | Geist 400 | `type-title` plus a size: sub-lines, questions, station and service names, figures |
 | Accent | Geist, the headline's weight | `<Accent>`: the same face and weight, set back by tone (`text-fog`, `text-muted`, `text-brand`, `text-blush`) |
 | Body | Geist 400 | 15 to 20px, `leading-[1.5]` to `[1.6]`, 34 to 68ch |
-| Kicker | Geist 500, sentence case | `<Kicker>`: square marker, 14px (15px from sm), untracked |
 | Meta | JetBrains Mono caps | `<Meta>`: indexes, figure captions, counts, clocks |
 
 - The voice is a modern San Francisco technology company's: precise,
@@ -161,16 +161,18 @@ Fonts load in `src/app/layout.tsx` through `next/font/google`.
 ## Chapter anatomy
 
 ```
-<ChapterHead label="Services" />
-■ Services
 Headline, one weight (lg:col-span-7/8)            Aside + TextLink (lg:col-span-3/4)
 
 Content on GRID
 ```
 
-- One quiet label per chapter at most (`ChapterHead`, a `Kicker` with its
-  square), or none where the headline carries it. No numbers, no running
-  head, no ruler, no second kicker.
+- No eyebrow labels: the headline names the chapter. A small label over
+  a headline ("Why now", "Method") read as a template and as AI-made, so
+  there are none, on the homepage or the pages that follow it. No
+  numbers, no running head, no ruler. A chapter whose headline is a
+  figure (What you came for, What Plurel is) keeps a visually hidden h2
+  for the outline. A sample keeps its label in plain view, as text on the
+  sheet, never as an eyebrow.
 - Padding: `py-24 lg:py-36`; closing chapters `py-28 lg:py-40`.
 - Full-bleed index rows put the hairline on the `li`
   and the content in `CONTAINER` inside the link, so the rule runs edge
@@ -213,9 +215,8 @@ page read as a template.
   new line waits a short return and the hero's "Everywhere." a short
   lift. A long line takes longer than a short one; the speed never
   changes. Paces, in ms a character: the hero and the closing's name 30,
-  chapter heads and names set large 18, smaller heads 11. A kicker's
-  square lights, then its label is plotted (12ms a character, never under
-  180ms in all). Transforms only (each word a window sliding over its own
+  What you came for's four words 24, chapter heads and names set large
+  18, smaller heads 11. Transforms only (each word a window sliding over its own
   text, which slides back by as much), so the compositor draws it even
   while the page is busy hydrating. A head below the fold is plotted once
   as it comes up the screen; one already on screen stays still. Each
@@ -224,15 +225,14 @@ page read as a template.
   (the backplate behind each line would otherwise cover the descenders of
   the line above).
 - **One pen per chapter** (`lib/pen.ts`). What arrives together is drawn
-  one after another in reading order, never all at once: a kicker, then
-  its head, then the copy beside it. A head holds its chapter's pen while
+  one after another in reading order, never all at once: a head, then
+  the copy beside it. A head holds its chapter's pen while
   it plots, a drawn figure while it draws (Why now's route), and a block
   that only lights waits without holding it. The pen waits only for
   strokes still on screen, and never longer than 2.4s, so a quick scroll
   never stacks up delays; chapters never wait on each other.
-- **Lines are drawn** at a steady rate (linear): What you came for's
-  rules and operators (row by row: the rule, the operator's two strokes,
-  then the term is plotted), Why now's route and its closing rule, the
+- **Lines are drawn** at a steady rate (linear): the rule under What
+  you came for's chosen word, Why now's route and its closing rule, the
   Method staircase (one bar after another, from lg), the sample
   Diagnostic's bars (all at once, like an instrument reading out).
 - **States light:** `Reveal` blocks, nodes and markers switch on by
@@ -303,7 +303,7 @@ crossing) is drawn in the shader.
 Graphite, statement left, one line of copy and the primary action right,
 then the glass:
 
-- **Kicker:** "Distribution, engineered".
+- **No label** over the headline: it opens the page on its own.
 - **Statement:** "Made to be / seen. *Everywhere.*", the accent in fog.
   Copy: "Great work no longer sells itself. Distribution does. Plurel
   engineers yours, from reach to revenue, as one system, so growth
@@ -327,23 +327,33 @@ statement, cropped at the right. A visually hidden h2 keeps the outline.
 
 ## What you came for
 
-`home/came-for.tsx` and its module CSS, on red, third on the page. The
-four things a company comes for, in its own words, set as a worked sum
-rather than a menu: Reach × Reputation × Mindshare = Revenue. Each is
-bought from a different supplier, and they multiply, so a gap in any
-one empties the result (the standfirst says so). The sum is the
-chapter's headline (a visually hidden h2 keeps the outline; the kicker
-stays visual): the operators hang in column 1, flush with the kicker,
-drawn as two 2px strokes rather than set; the terms are display type in
-columns 2 to 8 (340, about 7rem at most); what each means sits on the
-term's baseline in columns 9 to 12, a want in the visitor's words ("Be
-seen, and sometimes go viral.") and one line on how. Hairlines over the
-factors, the total's 2px rule over Revenue and a double rule, the bottom
-line, under it. "Go viral" appears here once, with the line that keeps
-it honest (a viral moment is luck, reach is a system), and once in the
-questions. It closes on "Each supplier moves one term. We engineer the
-whole equation." with "Start with the Diagnostic". Below lg the
-operator and term share a line and the notes run under the term.
+`home/came-for.tsx` (server) with `home/want-selector.tsx` (client) and
+`came-for.module.css`, on red, third on the page. The four things a
+company comes for, Reach, Reputation, Mindshare and Revenue, are the
+chapter's headline and its controls at once: a tab list in display type
+(340, one line from lg), the chosen word in paper on a drawn paper rule,
+the others in blush. "Pick the one you came for. Each runs through the
+same four layers, so the other three come with it." Under them a panel a
+step deeper, in ember, reads out the choice: the want in the visitor's
+words ("Be seen, and sometimes go viral."), Plurel's line on it in
+blush ("A viral moment is luck. Reach is a system that gives luck more
+chances."), and the four layers of the Plurel System on a spine, each
+with what it does for that want. It is the System's first sighting; the
+services chapter goes on to build it. It closes on "Each supplier sells
+you one of these. We build the system that delivers all four." with
+"Start with the Diagnostic".
+
+Rules:
+- ARIA tabs (arrows, Home, End; the panel takes focus). The panels share
+  one grid cell, so the box keeps the tallest one's height and nothing
+  below moves when the choice changes. Without JS all four panels show,
+  one after another.
+- Motion: the four words are plotted once as the chapter arrives (the
+  shared window-over-text sweep, 24ms a character), then the chosen
+  word's rule is drawn; a new choice draws its rule at once and lights
+  its panel's lines one after another, by opacity alone.
+- "Go viral" appears here once, with the line that keeps it honest, and
+  once in the questions.
 
 ## Why now
 
@@ -370,9 +380,9 @@ The services chapter carries the thesis, on graphite, between Why now
 and the red Method. Markup in `home/services-chapter.tsx`, the
 motion in `home/services-type.tsx` (client) with the engine in
 `lib/services-type.ts` and the pin and clone rules in
-`home/services-type.module.css`. Its head: the kicker "Why Plurel", the
-h2 "Your marketing shouldn't be ten companies. / It should be one
-system." (TypeReveal) and the side line. Then the figure, the contents
+`home/services-type.module.css`. Its head: the h2 "Your marketing
+shouldn't be ten companies. / It should be one system." (TypeReveal),
+with the side line beside its first line. Then the figure, the contents
 list itself, so the chapter's artifact makes the argument (integration,
 not a menu) in the one place that has to show a menu:
 
@@ -385,23 +395,25 @@ not a menu) in the one place that has to show a menu:
    rows of the list, still in their own voices.
 3. **One system.** "Set as one, it's a system." Stage by stage along the
    chain (Narrative, Create, Distribute, Measure), the names take one face,
-   one scale and one rhythm; then each layer's names leave the menu, the
-   rows close ranks, and the layer's band rises from the one below,
-   foundation first. On desktop the names fly into their band's service
+   one scale and one rhythm; then the set menu settles onto the floor,
+   each layer's names leave it, the rows close ranks toward the floor,
+   and the layer's band comes down from the foot of the one above,
+   Narrative first. On desktop the names fly into their band's service
    links; below lg they fold away. The narrator hands over to the title,
    "The Plurel System".
 
-What stays is the Plurel System, drawn the way an architect draws a
-building in section: four full-width flat bands, foundation at the foot,
-Narrative on brand red and the three layers above in graphite tones that
-lift as they rise. Each band carries its name (h4, display face), the
-instrument it builds and its one line (Narrative: The Core Brief; Create:
-The Asset System; Distribute: The Surface Plan; Measure: The Ledger),
-what it feeds (the layer above; the Ledger feeds back into Narrative and
-Distribute every quarter) and its services as links. A hairline loop
-runs through the bands: a signal-red spine up through a node on each
-layer and a dashed return from the Ledger, labelled "Read monthly. Reset
-quarterly." from 1280px. Pointing at or focusing a band lifts it a tone
+What stays is the Plurel System, read top to bottom like everything
+else on the page: four full-width flat bands, Narrative first, each a
+graphite tone a step deeper than the one above it (no red band: a red
+floor broke the room's pattern and made the stack read upward). Each band
+carries its name (h4, display face), the instrument it builds and its one
+line (Narrative: The Core Brief; Create: The Asset System; Distribute:
+The Surface Plan; Measure: The Ledger), what it feeds (the layer below;
+the Ledger feeds back into Narrative and Distribute every quarter) and
+its services as links. A hairline loop runs through the bands: a
+signal-red spine down through a node on each layer, an arrowhead where
+it crosses into the next, and a dashed return from the Ledger back up,
+labelled "Read monthly. Reset quarterly." from 1280px. Pointing at or focusing a band lifts it a tone
 (never a shadow) and brightens its services.
 
 Rules:
@@ -565,7 +577,7 @@ one step of that argument, and says it once:
 | --- | --- |
 | Hero | The promise: made to be seen, everywhere; great work no longer sells itself, distribution does |
 | What Plurel is | Identity: a distribution engineering firm, the system it builds and runs, and the facts a buyer checks first |
-| What you came for | The wants, in the visitor's words: reach (and, honestly, going viral), reputation, mindshare and revenue, set as one sum; each supplier moves one term, Plurel engineers the whole equation |
+| What you came for | The wants, in the visitor's words: reach (and, honestly, going viral), reputation, mindshare and revenue; pick one and the same four layers deliver it, so each supplier sells one of them and Plurel builds the system that delivers all four |
 | Why now | The shift: buyers decide before they arrive, in places the company doesn't control |
 | Why Plurel | The thesis, shown: ten suppliers' voices become one system, the Plurel System's four layers and its loop, each layer with its instrument and services |
 | Method | How it runs: the Diagnostic, then the four phases as one monthly partnership |

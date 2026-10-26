@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/reveal";
-import { GRID, Kicker, Meta } from "@/components/system";
+import { GRID, Meta } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { SAMPLE_DIAGNOSTIC as D, SAMPLE_TOTAL } from "@/lib/proof";
 
@@ -229,9 +229,7 @@ export function DiagnosticSheet({ className = "" }: { className?: string }) {
       <Reveal>
         {/* Top bar: the sample label, in plain view */}
         <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2.5">
-          <Kicker tone="dark">
-            {D.label}
-          </Kicker>
+          <p className="text-[14px] font-medium">{D.label}</p>
           <p className="text-[14px] font-medium text-signal">{D.note}</p>
         </div>
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, GRID, H2, Kicker } from "@/components/system";
+import { CONTAINER, GRID, H2 } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import s from "./accountability.module.css";
 
@@ -200,11 +200,10 @@ export function AccountabilityChapter() {
   return (
     <section aria-labelledby="accountability-heading" className="bg-graphite text-paper">
       <div className={`${CONTAINER} pt-24 lg:pt-36`}>
-        <Kicker tone="dark">Accountability</Kicker>
         <TypeReveal
           as="h2"
           id="accountability-heading"
-          className={`${H2} mt-7`}
+          className={H2}
           lines={["Ten suppliers report ten numbers.", "We answer for one."]}
         />
       </div>

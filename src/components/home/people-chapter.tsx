@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, GRID, Kicker } from "@/components/system";
+import { CONTAINER, GRID } from "@/components/system";
 import { PEOPLE, type Person } from "@/lib/people";
 
 /*
@@ -51,10 +51,9 @@ export function PeopleChapter() {
     >
       <div className={`${CONTAINER} py-24 lg:py-32`}>
         <Reveal>
-          <Kicker>People</Kicker>
           <h2
             id="people-heading"
-            className="type-display mt-8 text-[clamp(2.25rem,4vw,3.25rem)] leading-none lg:mt-10"
+            className="type-display text-[clamp(2.25rem,4vw,3.25rem)] leading-none"
           >
             You’ll work with
           </h2>

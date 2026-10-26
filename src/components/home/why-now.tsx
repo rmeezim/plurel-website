@@ -1,13 +1,13 @@
 import type { CSSProperties } from "react";
 import { ArtField } from "@/components/art";
 import { Reveal } from "@/components/reveal";
-import { CONTAINER, GRID, H2, Kicker } from "@/components/system";
+import { CONTAINER, GRID, H2 } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import s from "./why-now.module.css";
 
 /*
   Why now, on graphite: buyers decide before they arrive. The head follows
-  the chapter anatomy (kicker, a two-line headline, the standfirst beside
+  the chapter anatomy (a two-line headline, the standfirst beside
   it). Then the argument drawn rather than told: a route of six small
   stations on one hairline, under a bracket that names them as where the
   choice gets made, ending at the red node where the buyer finally reaches
@@ -40,15 +40,14 @@ export function WhyNowChapter() {
       <div className={`${CONTAINER} py-24 lg:py-36`}>
         <div className={`${GRID} gap-y-8`}>
           <div className="col-span-4 sm:col-span-6 lg:col-span-7">
-            <Kicker tone="dark">Why now</Kicker>
             <TypeReveal
               as="h2"
               id="why-now-heading"
-              className={`${H2} mt-7`}
+              className={H2}
               lines={["Buyers decide", "before they arrive."]}
             />
           </div>
-          <Reveal className="col-span-4 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pt-12">
+          <Reveal className="col-span-4 sm:col-span-5 lg:col-span-4 lg:col-start-9 lg:pt-1.5">
             <p className="text-[18px] leading-[1.5] text-fog lg:text-[19px]">
               They ask an assistant, watch a creator, read the reviews. By the time they reach
               you, the choice is mostly made.

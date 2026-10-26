@@ -38,8 +38,8 @@ interior pages until they move over; on the homepage a light chapter read
 as a template), surfaces are flat color
 with no gradients or drawn grid lines (a chapter may carry one faint art
 field: the contour map or the mark watermark, `art.tsx`), structure
-is Swiss (a strict 12-column grid that is felt, not drawn; one quiet
-label per chapter at most, no chapter numbers or rulers; mono only for
+is Swiss (a strict 12-column grid that is felt, not drawn; no eyebrow
+labels over headlines, no chapter numbers or rulers; mono only for
 data), and the look is authoritative, with a defense-grade precision and a
 little creativity. Primitives live in `src/components/system.tsx`; the
 homepage (`src/components/home/`) is the reference build. The hero film
@@ -74,10 +74,10 @@ creative engine, one set of numbers and one accountable team across every
 relevant channel (never "every channel"). The category it names is
 distribution engineering. The thesis: "Your marketing shouldn't be ten
 companies." What a company comes for is named in its own
-words and set as one sum on the homepage (What you came for): reach
-(going viral is luck; reach is a system), reputation, mindshare and
-revenue. Each supplier moves one term; Plurel engineers the whole
-equation. Plurel works for every kind of growing company: consumer
+words on the homepage (What you came for): reach (going viral is luck;
+reach is a system), reputation, mindshare and revenue, each delivered
+by the same four layers of the Plurel System. Each supplier sells one of
+them; Plurel builds the system that delivers all four. Plurel works for every kind of growing company: consumer
 brands, physical products, B2B technology and consumer technology (name
 the kinds of business at that high level), and the copy
 reads for all of them (prefer customers, buyers and the people a company
@@ -118,9 +118,10 @@ argument onto the homepage chapters.
   accountability strips and the faint art's drift. The fluted glass
   (`glass-band.tsx`) is the one WebGL surface; blocks light through
   `Reveal`. No heavy 3D.
-- Keep chrome sparse: no sprinkle of tiny mono labels, no tracked
-  uppercase micro-type for navigation or labels (sentence case, 13px and
-  up), no placeholder boxes, and the Plurel mark is a signature, never a
+- Keep chrome sparse: no eyebrow labels over headlines (the headline
+  names the chapter; a small label over it reads as a template), no
+  sprinkle of tiny mono labels, no tracked uppercase micro-type for
+  navigation or labels (sentence case, 13px and up), no placeholder boxes, and the Plurel mark is a signature, never a
   prop that splits, opens or assembles (a faint, static watermark of it is
   fine). No props or invented scenes standing in for an idea (sample
   buyers, mock screens, mock reports): speak from a point of view, show

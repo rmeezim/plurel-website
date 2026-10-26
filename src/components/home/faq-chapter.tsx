@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { ArrowUpRight } from "@/components/icons";
 import { Reveal } from "@/components/reveal";
-import { ChapterHead, CONTAINER, GRID, H2 } from "@/components/system";
+import { CONTAINER, GRID, H2 } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { FAQS } from "@/lib/home";
 import { CONTACT_EMAIL } from "@/lib/nav";
@@ -100,9 +100,7 @@ export function FaqChapter() {
         }}
       />
       <div className={`${CONTAINER} py-24 lg:py-36`}>
-        <ChapterHead label="Questions" tone="dark" />
-
-        <header className={`${GRID} mt-8 gap-y-6 lg:mt-10 lg:items-end`}>
+        <header className={`${GRID} gap-y-6 lg:items-end`}>
           <TypeReveal
             id="faq-heading"
             className={`${H2} col-span-4 sm:col-span-6 lg:col-span-8`}

@@ -9,13 +9,14 @@
   colours, slants and rotations. Scroll lines them up on the rows' grid
   ("Lined up, it's still a menu."), then sets them in one face, one scale
   and one rhythm, stage by stage along the chain (Narrative, Create,
-  Distribute, Measure). Then the menu drains into the Plurel System:
-  layer by layer, foundation first, a layer's names leave their rows, the
-  rows below close ranks, the layer's band rises from the floor (or from
-  the band below it), and the names land in its rows. The chain lights
-  again as each layer locks. Last, the loop is drawn along the bands:
-  the signal up through the layers, the Ledger's read back down to the
-  foundation. The finished frame is the System.
+  Distribute, Measure). Then the menu settles onto the floor and drains
+  into the Plurel System, read top to bottom: layer by layer, Narrative
+  first, a layer's names leave their rows, the rows above close ranks
+  toward the floor, the layer's band comes down from the top (or from the
+  foot of the band above it), and the names land in its rows. The chain
+  lights again as each layer locks. Last, the loop is drawn along the
+  bands: the signal down through the layers, the Ledger's read back up to
+  Narrative. The finished frame is the System.
 
   The bands are the real, accessible text: four layers, each with its
   name, what it builds, what it feeds and its services as links. The
@@ -39,13 +40,13 @@ export type Stage = {
   /** What the layer builds: the named instrument and its one line */
   builds: string;
   line: string;
-  /** What it feeds: the layer above (Measure feeds back down) */
+  /** What it feeds: the layer below (Measure feeds back up) */
   feeds: string;
 };
 
 /**
   The chain the eight run on, in order, which is also the System's four
-  layers, foundation first.
+  layers, top to bottom.
 */
 export const STAGES: readonly Stage[] = [
   {
@@ -81,7 +82,7 @@ export const STAGES: readonly Stage[] = [
 /** The System's title, its line, and the loop's note */
 export const SYSTEM = {
   title: "The Plurel System",
-  line: "Four layers, one loop. Each layer builds the thing the layer above depends on, and the top layer reads the result and feeds it back down.",
+  line: "Four layers, one loop. Each layer builds what the one below it runs on, and the last reads the result and feeds it back up.",
   note: "Read monthly. Reset quarterly.",
 } as const;
 
@@ -104,7 +105,7 @@ export function setOrder(stages: readonly StageKey[]): number[][] {
   return STAGES.map((s) => stages.flatMap((k, i) => (k === s.key ? [i] : [])));
 }
 
-/** The layer each band's loop taps on the way back down (Measure feeds these) */
+/** The layers the Ledger's read taps on its way back up (Measure feeds these) */
 export const FEEDS_BACK: readonly StageKey[] = ["narrative", "distribute"];
 
 /*
@@ -327,8 +328,9 @@ export const textSize = (s: number, house: number) => house + Math.round((s - ho
   anything moves. Caption: a (eight voices) -> b at .35 (a menu) -> c at
   .53, as the first names are set (a system) -> d at 1.175, the System's
   title. The chain fades in at .35 and lights stage by stage as its rows
-  are set; then, once every name is set, the menu drains into the bands,
-  foundation first, and the chain lights again as each layer locks. The
+  are set; then, once every name is set, the menu settles onto the floor
+  and drains into the bands, Narrative first, each band coming down under
+  the one before, and the chain lights again as each layer locks. The
   chain gives way to the System's line, the loop is drawn, and the
   figure takes the pointer (1.27).
 */
@@ -341,22 +343,24 @@ export const T = {
   chain: { at: 0.35, len: 0.1 },
   face: { at: 0.485, step: 0.07, inner: 0.012, len: 0.1 }, // one stage at a time
   cap: [0.35, 0.53] as const,
-  // one layer at a time: its names leave together, its band rises and
-  // they land in it as it locks, len after the layer's turn starts
+  // the set menu settles onto the floor, clearing the top for the bands
+  sink: { at: 0.85, len: 0.065 },
+  // one layer at a time: its names leave together, its band comes down
+  // and they land in it as it locks, len after the layer's turn starts
   drain: { at: 0.86, step: 0.07, inner: 0, len: 0.105 },
-  // the rows below close ranks once the names have cleared the menu: 60%
+  // the rows above close ranks once the names have cleared the menu: 60%
   // into a flight (desktop), or as soon as a name has folded away (below
   // lg, in fold); as fractions of drain.len
   close: { lag: 0.6, foldLag: 0.45, len: 0.35 },
   fold: 0.45,
-  // a layer's band rises (from the floor, or from the band below) once
-  // the rows have closed ranks above its place, and its name and text
-  // rise in as it locks; as fractions of drain.len
+  // a layer's band comes down (from the top, or from the foot of the band
+  // above) once the rows have closed ranks below its place, and its name
+  // and text light as it locks; as fractions of drain.len
   band: { lag: 0.6, text: 0.7 },
   chainOut: { at: 1.12, len: 0.08 },
   line: { at: 1.175, len: 0.06 }, // the System's line takes the chain's place
   title: 1.175, // the narrator hands over to the System's title
-  loop: { at: 1.175, len: 0.09 }, // the loop is drawn: up through the layers, then back down
+  loop: { at: 1.175, len: 0.09 }, // the loop is drawn: down through the layers, then back up
   settled: 1.27, // the bands take the pointer from here
 } as const;
 
@@ -399,13 +403,13 @@ export function lockWindow(s: number): [number, number] {
   return [at, at + T.drain.len];
 }
 
-/** A layer's band rising into place: [starts, locks] */
+/** A layer's band coming down into place: [starts, locks] */
 export function bandWindow(s: number): [number, number] {
   const [at, lock] = lockWindow(s);
   return [at + T.band.lag * T.drain.len, lock];
 }
 
-/** A layer's name and text rising in: [starts, locks] */
+/** A layer's name and text lighting: [starts, locks] */
 export function textWindow(s: number): [number, number] {
   const [at, lock] = lockWindow(s);
   return [at + T.band.text * T.drain.len, lock];
@@ -416,10 +420,15 @@ export function closeAt(p: number, leave: number, desk: boolean) {
   return snap(seg(p, leave + (desk ? T.close.lag : T.close.foldLag) * T.drain.len, T.close.len * T.drain.len));
 }
 
-/** How far a layer's band has risen into place, at p (0 to 1) */
-export function riseAt(p: number, s: number) {
+/** How far a layer's band has come down into place, at p (0 to 1) */
+export function dropAt(p: number, s: number) {
   const [a, b] = bandWindow(s);
   return io(seg(p, a, b - a));
+}
+
+/** How far the set menu has settled onto the floor, at p (0 to 1) */
+export function sinkAt(p: number) {
+  return io(seg(p, T.sink.at, T.sink.len));
 }
 
 /** A stage's chain word lights again for its layer's turn, until the next layer's starts */
@@ -456,18 +465,18 @@ export function flightAt(t: number, x0: number, y0: number, x1: number, y1: numb
 
 /*
   The loop, as one path drawn along the bands at a steady pace: the
-  signal up the spine, foundation first (each band's way in from below,
-  its node, its way out to the band above, and the arrowhead where it
+  signal down the spine, Narrative first (each band's way in from above,
+  its node, its way out to the band below, and the arrowhead where it
   crosses), then the Ledger's read: a stub across to the return line and
-  the return down through every band to the foundation, tapping the
-  layers it feeds back into on the way. Taps draw alongside the return
-  (they start as it passes their node); everything else in order.
+  the return up through every band to Narrative, tapping the layers it
+  feeds back into on the way. Taps draw alongside the return (they start
+  as it passes their node); everything else in order.
 */
 export type LoopPart = {
   /** which band (stage index) and which part of its drawing */
   s: number;
   kind: "in" | "node" | "out" | "arrow" | "stub" | "ret" | "tap" | "note";
-  /** px: a line's length; for taps, how far down the band's return line its node sits */
+  /** px: a line's length; for taps, how far along the band's return line (from its foot) its node sits */
   len: number;
   at?: number;
 };
@@ -579,7 +588,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
   const ruleEnd = q("[data-rule-end]", list);
   const words = qa("[data-chain-word]", chain);
   const wordStage = words.map((b) => STAGES.findIndex((x) => x.key === b.dataset.chainWord));
-  // the bands, top first as they are drawn; their stage indexes, foundation 0
+  // the bands, top to bottom: their stage indexes, Narrative 0 first
   const bands = qa("[data-band]", system);
   const bandStage = bands.map((b) => STAGES.findIndex((x) => x.key === b.dataset.band));
   const fills = bands.map((b) => q("[data-band-fill]", b));
@@ -604,6 +613,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
   let geo: Geo[] | null = null;
   let desk = true; // names fly into their bands (lg); below lg they fold away
   let narrowK = 1; // desktop: the menu's rules draw back clear of the bands' link column
+  let sinkBy = 0; // the room under the set menu, down to the visible floor: how far it settles
   let ruleW = 0; // a row's hairline at full length
   let cur = -1; // eased progress (-1: not yet read)
   let target = 0;
@@ -699,10 +709,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
     // loop drawn, nothing lit by the pointer
     for (const el of rows) put(el, "translate", "");
     for (const el of fills) if (el) put(el, "transform", "");
-    for (const el of texts.flat()) {
-      put(el, "opacity", "");
-      put(el, "translate", "");
-    }
+    for (const el of texts.flat()) put(el, "opacity", "");
     for (const el of [...loopEls, ...covers]) {
       put(el, "transform", "");
       put(el, "opacity", "");
@@ -724,6 +731,9 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
     // finished list leaves below it
     const foot = ir.bottom - sr.top - parseFloat(getComputedStyle(stageIn!).paddingBottom);
     const H = Math.max(lr.height, foot - top);
+    // before it drains, the set menu settles onto that floor (never past
+    // the visible foot), so the bands can come down from the top
+    sinkBy = Math.max(0, foot - (lr.bottom - sr.top));
     const k = phone
       ? clamp(Math.min(cw / ref.w, H / ref.h), 0.8, 1.9)
       : clamp(Math.min(cw / ref.w, H / ref.h), 0.6, 1.12);
@@ -815,8 +825,9 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
       const horiz = kind === "stub" || kind === "tap";
       let at: number | undefined;
       if (kind === "tap") {
+        // the return runs up: how far it has come from its foot to this node
         const ret = band!.querySelector<HTMLElement>('[data-loop="ret"]')?.getBoundingClientRect();
-        at = ret ? r.top + r.height / 2 - ret.top : 0;
+        at = ret ? ret.bottom - (r.top + r.height / 2) : 0;
       }
       parts.push({ el, s, kind, len: horiz ? r.width : r.height, at });
     }
@@ -842,17 +853,19 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
       settledFlag = settled;
       flag(system!, "data-unsettled", !settled);
     }
-    // Closing ranks: each row moves up by the share of every row above it
-    // that has left (as its slot closes), so the menu drains from the top
-    // of each gap and never leaves a hole
+    // The set menu settles onto the floor, then closes ranks toward it:
+    // each row moves down by the share of every row below it that has
+    // left (as its slot closes), so the menu drains from the floor of each
+    // gap and never leaves a hole, and the top stays clear for the bands
     const shift: number[] = [];
-    // (a row follows the slots that close above it from earlier layers
+    const sunk = sinkAt(p) * sinkBy;
+    // (a row follows the slots that close below it from earlier layers
     // only: never its own layer's, which close once it has cleared the
     // menu, so a leaving name moves in step with the rows around it)
     for (let i = 0; i < rows.length; i++) {
-      let up = 0;
-      for (let j = 0; j < i; j++) if (drains[j].layer < drains[i].layer) up += closedAt(j, p) * geo[j].pitch;
-      shift[i] = -up;
+      let down = sunk;
+      for (let j = i + 1; j < rows.length; j++) if (drains[j].layer < drains[i].layer) down += closedAt(j, p) * geo[j].pitch;
+      shift[i] = down;
     }
     const narrow = lerp(1, narrowK, io(seg(p, T.drain.at - 0.05, 0.08)));
     for (let i = 0; i < rows.length; i++) {
@@ -985,19 +998,16 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
       const draw = io(seg(p, T.rule.at + rows.length * T.rule.step, T.rule.len));
       put(ruleEnd, "transform", ruleAt(draw * narrow, pulled[lastRow]));
     }
-    // the bands rise into place, foundation first, each from the top of
-    // the one below it; their names and text rise in as they lock
+    // the bands come down into place, Narrative first, each from the foot
+    // of the one above it; their names and text light as they lock
     bands.forEach((_, j) => {
       const s = bandStage[j];
       const fl = fills[j];
       if (s < 0) return;
-      const e = riseAt(p, s);
+      const e = dropAt(p, s);
       if (fl) put(fl, "transform", e >= 1 ? "" : `scaleY(${e.toFixed(4)})`);
       const c = io(seg(p, textIn[s][0], textIn[s][1] - textIn[s][0]));
-      for (const el of texts[j]) {
-        put(el, "opacity", c >= 1 ? "" : c.toFixed(3));
-        put(el, "translate", c >= 1 ? "" : `0 ${((1 - c) * 10).toFixed(2)}px`);
-      }
+      for (const el of texts[j]) put(el, "opacity", c >= 1 ? "" : c.toFixed(3));
     });
     // the loop, drawn along the bands at a steady pace once they all stand
     const d = seg(p, T.loop.at, T.loop.len) * loopTotal;
@@ -1005,11 +1015,11 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
       const k = clamp((d - pt.d0) / (pt.d1 - pt.d0));
       if (pt.kind === "node" || pt.kind === "arrow" || pt.kind === "note") put(pt.el, "opacity", k >= 1 ? "" : k.toFixed(3));
       else if (pt.kind === "ret") {
-        // the dashed return is drawn in place: its cover (in its band's
-        // tone) slides down off it; before it starts, neither shows
+        // the dashed return is drawn in place, upward: its cover (in its
+        // band's tone) slides up off it; before it starts, neither shows
         const cv = pt.el.firstElementChild as HTMLElement | null;
         put(pt.el, "visibility", k <= 0 ? "hidden" : "");
-        if (cv) put(cv, "transform", k >= 1 ? "" : `translateY(${(k * 101).toFixed(2)}%)`);
+        if (cv) put(cv, "transform", k >= 1 ? "" : `translateY(${(-k * 101).toFixed(2)}%)`);
       } else {
         const sc = pt.kind === "stub" || pt.kind === "tap" ? "scaleX" : "scaleY";
         put(pt.el, "transform", k >= 1 ? "" : `${sc}(${k.toFixed(4)})`);
@@ -1159,7 +1169,7 @@ export function mountServicesType(root: HTMLElement): TypeHandle {
       const top = head!.getBoundingClientRect().top;
       const lr = list!.getBoundingClientRect();
       // the bands at their natural heights (each its content and its
-      // padding; the foundation's reaches down to the floor) must fit
+      // padding; the last's reaches down to the floor) must fit
       // between the menu's top and the floor of the stage
       system!.setAttribute("data-measure", "");
       const natural = bands.reduce((sum, b) => sum + b.getBoundingClientRect().height, 0);

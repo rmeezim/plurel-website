@@ -9,6 +9,7 @@ import {
   closeAt,
   DESK,
   drainTimes,
+  dropAt,
   END,
   FACE_STEPS,
   faceAt,
@@ -20,10 +21,10 @@ import {
   lockWindow,
   loopPath,
   PHONE,
-  riseAt,
   rowTimes,
   SERVICE_STAGE,
   setOrder,
+  sinkAt,
   sizeAt,
   STAGES,
   SYSTEM,
@@ -164,7 +165,7 @@ test("the first two beats keep the timing they were drawn for", () => {
   assert.deepEqual([...T.cap], [0.35, 0.53]);
 });
 
-test("names are set in chain order, then drain into the bands, foundation first", () => {
+test("names are set in chain order, then drain into the bands, Narrative first", () => {
   assert.deepEqual(order, [[1, 6], [0, 3], [2, 4, 5], [7]]);
   const times = rowTimes(order);
   for (let s = 1; s < order.length; s++) {
@@ -180,13 +181,13 @@ test("names are set in chain order, then drain into the bands, foundation first"
     // a layer's names leave together and land as its band locks
     const rows = order[s].map((i) => drains[i]);
     assert.ok(rows.every((d) => d.layer === s && d.land === lockWindow(s)[1] && d.leave < d.land));
-    // its band rises after its names have left, and its text rises in as it locks
+    // its band comes down after its names have left, and its text lights as it locks
     const [b0, b1] = bandWindow(s);
     const [t0, t1] = textWindow(s);
     assert.ok(b0 > lockWindow(s)[0] && b1 === lockWindow(s)[1] && t0 >= b0 && t1 === b1);
-    assert.equal(riseAt(b0, s), 0);
-    assert.equal(riseAt(b1, s), 1);
-    // foundation first: each band starts rising after the one below it
+    assert.equal(dropAt(b0, s), 0);
+    assert.equal(dropAt(b1, s), 1);
+    // top to bottom: each band starts coming down after the one above it
     if (s > 0) assert.ok(bandWindow(s)[0] > bandWindow(s - 1)[0] && lockWindow(s)[1] > lockWindow(s - 1)[1]);
   }
   // then the head hands over, the loop is drawn, the figure settles, and the pin rests a while
@@ -198,41 +199,52 @@ test("names are set in chain order, then drain into the bands, foundation first"
 });
 
 /*
-  The choreography on a pinned screen: rows of pitch P from the menu's top,
-  four equal bands of height B stacked from the floor (A below the menu's
-  top). While a layer drains, the rows below its names close ranks and its
-  band rises from the top of the one below; at no point may a rising band
-  cover a row still on the menu.
+  The choreography on a pinned screen: rows of pitch P from the menu's
+  top, four equal bands of height B stacked from the top of an area A
+  tall (the menu's top to the floor), the visible floor G above its foot.
+  The set menu settles onto the visible floor; while a layer drains, the
+  rows above its names close ranks toward the floor and its band comes
+  down from the foot of the one above; at no point may a band coming
+  down cover a row still on the menu.
 */
-function menuClear(P: number, B: number, A: number, desk: boolean) {
+function menuClear(P: number, B: number, A: number, G: number, desk: boolean) {
   const drains = drainTimes(order);
+  const sinkBy = Math.max(0, A - G - 8 * P);
   let worst = Infinity;
-  for (let p = T.drain.at; p <= END; p += 0.0005) {
-    // the top of the risen stack
-    let top = A;
+  for (let p = T.sink.at; p <= END; p += 0.0005) {
+    // the foot of the stack come down so far
+    let foot = 0;
     for (let s = 0; s < STAGES.length; s++) {
-      const e = riseAt(p, s);
-      if (e > 0) top = Math.min(top, A - s * B - e * B);
+      const e = dropAt(p, s);
+      if (e > 0) foot = Math.max(foot, s * B + e * B);
     }
-    // the lowest row still on the menu (its layer has not left yet)
-    let bottom = -Infinity;
+    // the highest row still on the menu (its layer has not left yet)
+    let top = Infinity;
     for (let i = 0; i < 8; i++) {
       if (p >= drains[i].leave) continue;
-      let up = 0;
-      for (let j = 0; j < i; j++) if (drains[j].layer < drains[i].layer) up += closeAt(p, drains[j].leave, desk) * P;
-      bottom = Math.max(bottom, (i + 1) * P - up);
+      let down = sinkAt(p) * sinkBy;
+      for (let j = i + 1; j < 8; j++) if (drains[j].layer < drains[i].layer) down += closeAt(p, drains[j].leave, desk) * P;
+      top = Math.min(top, i * P + down);
     }
-    if (bottom > -Infinity) worst = Math.min(worst, top - bottom);
+    if (top < Infinity && foot > 0) worst = Math.min(worst, top - foot);
   }
   return worst;
 }
 
-test("a rising band never covers a row still on the menu", () => {
+test("a band coming down never covers a row still on the menu", () => {
   // 1440x900 and 1366x768 (desktop, names fly); 390x844 and 768x1024 (they fold)
-  assert.ok(menuClear(78, 175.5, 702, true) >= 0, "1440x900");
-  assert.ok(menuClear(59.6, 140.6, 562.5, true) >= 0, "1366x768");
-  assert.ok(menuClear(62, 162, 648, false) >= 0, "390x844");
-  assert.ok(menuClear(75, 205, 820, false) >= 0, "768x1024");
+  assert.ok(menuClear(78, 175.5, 702, 20, true) >= 0, "1440x900");
+  assert.ok(menuClear(59.6, 140.6, 562.5, 20, true) >= 0, "1366x768");
+  assert.ok(menuClear(62, 162, 648, 16, false) >= 0, "390x844");
+  assert.ok(menuClear(75, 205, 820, 16, false) >= 0, "768x1024");
+});
+
+test("the set menu settles onto the floor after the last name is set and before the first band comes down", () => {
+  const lastSet = Math.max(...rowTimes(order).map((t) => t.face + T.face.len));
+  assert.ok(T.sink.at > lastSet, "set first");
+  assert.ok(T.sink.at + T.sink.len <= bandWindow(0)[0], "settled before Narrative comes down");
+  assert.equal(sinkAt(T.sink.at), 0);
+  assert.equal(sinkAt(T.sink.at + T.sink.len), 1);
 });
 
 test("a flight starts flat on its row and lands exactly in its band", () => {
@@ -250,7 +262,7 @@ test("a flight starts flat on its row and lands exactly in its band", () => {
   for (let t = 0; t < 1; t += 0.05) assert.ok(flightX(t + 0.05) >= flightX(t));
 });
 
-test("the loop runs up the spine, foundation first, then back down the return", () => {
+test("the loop runs down the spine, Narrative first, then back up the return", () => {
   // the parts each band draws, as the markup has them (lengths in px)
   const parts: LoopPart[] = [];
   STAGES.forEach((L, s) => {
@@ -267,7 +279,7 @@ test("the loop runs up the spine, foundation first, then back down the return", 
   parts.push({ s: 1, kind: "note", len: 0 });
   const { spans, total } = loopPath(parts);
   const at = (s: number, kind: LoopPart["kind"]) => spans.find((x) => x.s === s && x.kind === kind)!;
-  // the spine: each band's way in, its node, its way out, in order, foundation first
+  // the spine: each band's way in, its node, its way out, in order, Narrative first
   let d = -1;
   for (let s = 0; s < STAGES.length; s++) {
     if (s > 0) {
@@ -277,15 +289,15 @@ test("the loop runs up the spine, foundation first, then back down the return", 
     assert.ok(at(s, "node").d0 >= d - 1e-9, `${STAGES[s].name} node`);
     if (s < STAGES.length - 1) {
       d = at(s, "out").d1;
-      // the arrowhead pops as the spine crosses into the band above
+      // the arrowhead pops as the spine crosses into the band below
       assert.ok(at(s, "arrow").d0 < d && at(s, "arrow").d1 > d);
     }
   }
-  // then the Ledger's stub, and the return from the top band down to the foundation
-  const top = STAGES.length - 1;
-  assert.ok(at(top, "stub").d0 >= d);
-  let r = at(top, "stub").d1;
-  for (let s = top; s >= 0; s--) {
+  // then the Ledger's stub, and the return from the last band back up to Narrative
+  const last = STAGES.length - 1;
+  assert.ok(at(last, "stub").d0 >= d);
+  let r = at(last, "stub").d1;
+  for (let s = last; s >= 0; s--) {
     assert.ok(Math.abs(at(s, "ret").d0 - r) < 1e-9, `${STAGES[s].name} return`);
     r = at(s, "ret").d1;
   }

@@ -1,169 +1,241 @@
 /*
-  What you came for: the four wants set as a worked sum. Three factors
-  and their product, one row each: the operator hangs in the first
-  column, flush with the chapter label, the term is set large in columns
-  2-8, and what it means sits on the term's baseline in columns 9-12.
-  A hairline runs over each factor, the total's heavier rule over the
-  result, and a double rule, the bottom line, under it. Below lg the
-  operator and term share a line and the notes run under the term.
+  What you came for (came-for.tsx, want-selector.tsx). The four wants are
+  a tab list set in display type, one line from lg (two below it): the
+  chosen one in paper on a paper rule, the others in blush (above 3:1 on
+  red at this size). Under them the panel, a step deeper in ember: the
+  want in the visitor's words and Plurel's line on it, then the four
+  layers on a spine, a node at each, the layer's name and what it does
+  for this want. One panel shows at a time with JS; without it they all
+  show, one after another.
 
-  The operators are drawn, not set: two strokes each, in the same 2px as
-  the rules, so everything drawn on the sum is line and everything set
-  is type.
-
-  Motion, per row, keyed off its term's TypeReveal (which waits for the
-  pen, then holds it): the rule is drawn left to right, then the
-  operator's two strokes one after the other, then the term is plotted
-  (its delay waits for the strokes), then the notes light; under the
-  result the bottom line is drawn as they do. All linear, all at one
-  steady rate. The default is finished: no JS, reduced motion, print, or
-  a row already on screen at load.
+  Motion: the words are plotted by the shared type-reveal rules (the tab
+  list carries .type-reveal and its state), then the chosen word's rule
+  is drawn; a new choice draws its rule at once and lights its panel's
+  lines one after another, by opacity alone.
 */
 
-.sum {
-  --term: clamp(3rem, 1.6rem + 5.2vw, 7rem);
-  --hair: color-mix(in oklab, var(--color-paper) 34%, transparent);
-}
-
-.row {
-  position: relative;
-}
-
-/* The rule over a factor, and the total's heavier one over the result */
-.rule,
-.total {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: 1px;
-  background: var(--hair);
-  transform-origin: left center;
-}
-.total {
-  height: 2px;
-  background: var(--color-paper);
-}
-
-/* The bottom line: two rules under the result */
-.bottom {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  height: 5px;
-  border-block: 1px solid var(--color-paper);
-  transform-origin: left center;
-}
-
-.term {
+.tabs {
   --display-weight: 340;
   --display-tracking: -0.046em;
-  font-size: var(--term);
-  line-height: 0.9;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.3em;
+  row-gap: 0.06em;
+  font-size: clamp(2.25rem, 0.2rem + 5vw, 5rem);
 }
 
-/* The operator's cell shares the term's size, so its box sits on the
-   term's baseline and is measured in the term's ems: a square centred on
-   the math axis, about a third of an em up */
-.op {
-  font-size: var(--term);
-  line-height: 0.9;
-}
-.glyph {
+.tab {
   position: relative;
-  display: inline-block;
-  width: 0.32em;
-  height: 0.32em;
-  margin-bottom: 0.15em;
-  vertical-align: baseline;
+  margin: 0;
+  padding: 0.08em 0 0.16em;
+  border: 0;
+  background: none;
+  color: var(--color-blush);
+  font-size: inherit;
+  line-height: 1;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s linear;
 }
-.stroke {
+.tab[aria-selected="true"],
+.tab:hover {
+  color: var(--color-paper);
+}
+.tab:focus-visible {
+  outline: 2px solid var(--color-paper);
+  outline-offset: 6px;
+}
+/* the chosen word's rule */
+.tab::after {
+  content: "";
   position: absolute;
   left: 0;
+  right: 0.04em;
+  bottom: 0;
   height: 2px;
-  margin-top: -1px;
-  background: var(--color-blush);
+  background: var(--color-paper);
+  transform: scaleX(0);
   transform-origin: 0 50%;
 }
-/* times: top left to bottom right, then bottom left to top right */
-.times .stroke {
-  width: 141.42%;
+.tab[aria-selected="true"]::after {
+  transform: scaleX(1);
 }
-.times .stroke:first-child {
-  top: 0;
-  rotate: 45deg;
+
+/* ---------- the panel ---------- */
+
+.panels {
+  margin-top: 40px;
 }
-.times .stroke:last-child {
-  top: 100%;
-  rotate: -45deg;
+.panel {
+  padding: 28px 20px 8px;
+  background: var(--color-ember);
 }
-/* equals: two bars, top then bottom, a little wider than the times */
-.equals {
-  width: 0.38em;
+.panel:focus-visible {
+  outline: 2px solid var(--color-paper);
+  outline-offset: 4px;
 }
-.equals .stroke {
-  width: 100%;
+/* With JS the panels share one cell, so the box keeps the tallest one's
+   height and nothing below it moves when the choice changes; the others
+   are hidden from sight and from assistive tech. Without JS they all
+   show, one after another. */
+:global(html[data-js]) .panels {
+  display: grid;
 }
-.equals .stroke:first-child {
-  top: 32%;
+:global(html[data-js]) .panel {
+  grid-area: 1 / 1;
 }
-.equals .stroke:last-child {
-  top: 68%;
+:global(html[data-js]) .panel:not([data-active]) {
+  visibility: hidden;
+}
+:global(html:not([data-js])) .panel + .panel {
+  margin-top: 16px;
 }
 
 .want {
+  grid-column: 1 / -1;
   margin: 0;
-  font-size: 17px;
-  font-weight: 500;
-  line-height: 1.35;
+  font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.25rem);
+  line-height: 1.1;
 }
-.how {
-  margin: 8px 0 0;
-  max-width: 42ch;
-  font-size: 15px;
+.stance {
+  grid-column: 1 / -1;
+  max-width: 40ch;
+  margin: 0;
+  font-size: 16px;
   line-height: 1.5;
+  color: var(--color-blush);
 }
 
-@media (min-width: 64rem) {
-  .want {
-    font-size: 19px;
+.layers {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.layer {
+  --node-y: 12px; /* the node on the name's first line (14px at 1.4) */
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  row-gap: 6px;
+  padding-block: 16px 18px;
+  border-top: 1px solid color-mix(in srgb, var(--color-paper) 16%, transparent);
+}
+/* the spine: each layer draws its stretch down to the next one's node */
+.layer:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: calc(16px + var(--node-y));
+  height: 100%;
+  width: 1px;
+  background: color-mix(in srgb, var(--color-paper) 45%, transparent);
+}
+.node {
+  grid-column: 1;
+  grid-row: 1;
+  width: 7px;
+  height: 7px;
+  margin-top: calc(var(--node-y) - 3.5px);
+  background: var(--color-paper);
+}
+.lname {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-blush);
+}
+.lline {
+  grid-column: 2;
+  grid-row: 2;
+  max-width: 62ch;
+  font-size: 17px;
+  line-height: 1.45;
+  letter-spacing: -0.008em;
+}
+
+@media (min-width: 40rem) {
+  .panel {
+    padding: 36px 32px 12px;
   }
-  .how {
-    margin-top: 10px;
+}
+
+/* From lg: the want over columns 1-6, Plurel's line at 9-12 on its foot;
+   each layer one row, its name in a fixed column beside what it does */
+@media (min-width: 64rem) {
+  .panels {
+    margin-top: 56px;
+  }
+  .panel {
+    padding: 44px 48px 16px;
+  }
+  .want {
+    grid-column: 1 / span 6;
+  }
+  .stance {
+    grid-column: 9 / span 4;
+    align-self: end;
+  }
+  .layers {
+    margin-top: 40px;
+  }
+  .layer {
+    --node-y: 14px; /* the node on the line's first line (19px at 1.45) */
+    grid-template-columns: 22px minmax(0, 11rem) minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 24px;
+    padding-block: 18px 20px;
+  }
+  .node {
+    align-self: start;
+  }
+  .lname {
+    grid-column: 2;
+  }
+  .lline {
+    grid-column: 3;
+    grid-row: 1;
+    font-size: 19px;
   }
 }
 
 @media screen and (prefers-reduced-motion: no-preference) {
-  .row:has(:global(.type-reveal)[data-state="armed"]) :is(.rule, .total, .bottom, .stroke) {
-    scale: 0 1;
+  .tab::after {
+    transition: transform 0.24s linear;
   }
-  .row:has(:global(.type-reveal)[data-state="armed"]) .notes {
+  /* the first rule waits for the words to be plotted */
+  :global(html[data-js]) .tabs[data-state="armed"] .tab::after {
+    transform: scaleX(0);
+  }
+  :global(html[data-js]) .tabs[data-state="in"]:not([data-played]) .tab[aria-selected="true"]::after {
+    animation: draw 0.24s linear var(--total) backwards;
+  }
+  /* a new choice lights its panel's lines one after another */
+  .selector[data-moved] .panel[data-active] :is(.want, .stance, .layer) {
+    animation: light 0.2s linear calc(var(--i) * 70ms) backwards;
+  }
+}
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes light {
+  from {
     opacity: 0;
-  }
-
-  .row:has(:global(.type-reveal)[data-state="in"]) :is(.rule, .total) {
-    transition: scale var(--rule) linear;
-  }
-  .row:has(:global(.type-reveal)[data-state="in"]) .stroke:first-child {
-    transition: scale var(--stroke) linear var(--rule);
-  }
-  .row:has(:global(.type-reveal)[data-state="in"]) .stroke:last-child {
-    transition: scale var(--stroke) linear calc(var(--rule) + var(--stroke));
-  }
-  .row:has(:global(.type-reveal)[data-state="in"]) .notes {
-    transition: opacity 0.12s linear var(--done);
-  }
-  .row:has(:global(.type-reveal)[data-state="in"]) .bottom {
-    transition: scale var(--rule) linear var(--done);
   }
 }
 
-/* Forced colors drop background colors, which would take the operators
-   and rules with them: draw them in the system's text color instead */
+/* Forced colors: the rule, the nodes and the spine in the system colours */
 @media (forced-colors: active) {
-  .rule,
-  .total,
-  .stroke {
+  .tab::after,
+  .node,
+  .layer:not(:last-child)::before {
     forced-color-adjust: none;
     background: CanvasText;
+  }
+  .tab[aria-selected="true"] {
+    text-decoration: underline;
   }
 }
