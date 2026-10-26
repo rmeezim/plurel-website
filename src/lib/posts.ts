@@ -118,13 +118,13 @@ export const POSTS: Post[] = [
           "A voice: how you sound in a headline, an error message and an invoice",
           "Tokens: the exact colors, typefaces and spacing that make work recognizably yours",
           "Layouts: repeatable structures for the pages and posts you actually publish",
-          "Proof: how results, clients and claims are presented and backed up",
+          "Proof: how results, customers and claims are presented and backed up",
           "Imagery: what gets photographed, illustrated or composed, and how",
         ],
       },
       {
         type: "p",
-        text: "When the parts agree, every touchpoint adds to the same memory: the proposal echoes the website, the website echoes the deck, and by the third exposure a prospect recognizes you before they read your name.",
+        text: "When the parts agree, every touchpoint adds to the same memory: the proposal echoes the website, the website echoes the deck, and by the third exposure a buyer recognizes you before they read your name.",
       },
       {
         type: "quote",
@@ -149,7 +149,7 @@ export const POSTS: Post[] = [
     readTime: "8 min read",
     title: "Twelve things buyers check before they get in touch",
     excerpt:
-      "What prospects look at in the first minute or two, and how to score yourself honestly before they do.",
+      "What buyers look at in the first minute or two, and how to score yourself honestly before they do.",
     content: [
       {
         type: "p",
