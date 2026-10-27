@@ -8,10 +8,11 @@ import s from "./services-type.module.css";
 
 /*
   The figure of Services: the eight names, first set the way eight
-  suppliers would set them, lined up on the menu's rows, set in one face
-  stage by stage along the chain, then drained into the Plurel System:
-  four bands, foundation first, each rising from the one below it as its
-  names land in its rows, and the loop drawn along them last (engine in
+  suppliers would set them, lined up on the menu's rows (in the System's
+  order), set in one face stage by stage along the chain, then drained
+  into the Plurel System: four bands, Narrative first, each coming down
+  from the one above it as the names at the top of the menu land in its
+  rows, and the loop drawn along them last (engine in
   lib/services-type.ts). This component renders the figure head (the
   narrator, who hands over to the System's title, and the chain, which
   gives way to the System's line), the body (the menu, passed in as

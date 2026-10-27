@@ -399,17 +399,20 @@ not a menu) in the one place that has to show a menu:
    arrive set the way eight different suppliers would set them: condensed
    lowercase, tracked thin caps, a rotated italic, a huge red extended
    black, a vertical name, a light display cut, mono caps. Mismatched, but
-   composed; the house face pushed to its extremes, no other fonts.
+   composed; the house face pushed to its extremes, no other fonts. They
+   already stand in the menu's order, top to bottom, each near its row.
 2. **Still a menu.** "Lined up, it's still a menu." They drop onto the
-   rows of the list, still in their own voices.
+   rows of the list, still in their own voices. The list runs in the
+   System's order (Narrative, Create, Distribute, Measure: the site's
+   order for the services everywhere), never mixed.
 3. **One system.** "Set as one, it's a system." Stage by stage along the
-   chain (Narrative, Create, Distribute, Measure), the names take one face,
-   one scale and one rhythm; then the set menu settles onto the floor,
-   each layer's names leave it, the rows close ranks toward the floor,
-   and the layer's band comes down from the foot of the one above,
-   Narrative first. On desktop the names fly into their band's service
-   links; below lg they fold away. The narrator hands over to the title,
-   "The Plurel System".
+   chain, top to bottom, the names take one face, one scale and one
+   rhythm; then the set menu settles onto the floor, and layer by layer,
+   Narrative first, the names at the top of the menu leave it and the
+   layer's band comes down from the foot of the one above to take them.
+   Nothing is picked out of the middle of the list. On desktop the names
+   fly into their band's service links; below lg they fold away. The
+   narrator hands over to the title, "The Plurel System".
 
 What stays is the Plurel System, read top to bottom like everything
 else on the page: four full-width flat bands, Narrative first, each a

@@ -13,10 +13,13 @@
   into the Plurel System, read top to bottom: layer by layer, Narrative
   first, a layer's names leave their rows, the rows above close ranks
   toward the floor, the layer's band comes down from the top (or from the
-  foot of the band above it), and the names land in its rows. The chain
-  lights again as each layer locks. Last, the loop is drawn along the
-  bands: the signal down through the layers, the Ledger's read back up to
-  Narrative. The finished frame is the System.
+  foot of the band above it), and the names land in its rows. The menu
+  runs in the System's order (nav.ts), so a layer's names are always the
+  menu's top rows when they leave: they go straight into their band, and
+  no row has to close ranks. The chain lights again as each layer locks.
+  Last, the loop is drawn along the bands: the signal down through the
+  layers, the Ledger's read back up to Narrative. The finished frame is
+  the System.
 
   The bands are the real, accessible text: four layers, each with its
   name, what it builds, what it feeds and its services as links. The
@@ -163,32 +166,34 @@ export type Supplier = {
 };
 
 /*
-  Eight suppliers, eight house styles. Each name keeps roughly its own
-  row's height in the poster, so no name ever has to cross another on its
-  way to the grid; the disorder is in face, weight, width, case, slant,
-  rotation, colour and x. Checked by the overlap probe at p 0 to 0.45 on
-  eighteen screens, 360x620 to 1920x1080 (min gap 8px between boxes).
+  Eight suppliers, eight house styles, one per row in the menu's order
+  (the System's: Narrative, Create, Distribute, Measure; see nav.ts).
+  Each name keeps roughly its own row's height in the poster, so no name
+  ever has to cross another on its way to the grid; the disorder is in
+  face, weight, width, case, slant, rotation, colour and x. Checked by the
+  overlap probe at p 0 to 0.5 on eighteen screens, 360x740 to 2560x1440
+  (min gap 8px between boxes).
 */
 export const DESK: readonly Supplier[] = [
-  { who: "web team", cs: "lower", wdth: 75, wght: 820, size: 92, tr: -0.045, c: "paper", rot: 0, sk: 0, x: 0, y: 0, ax: "l", ay: "t" },
-  { who: "brand studio", cs: "upper", wdth: 125, wght: 210, size: 20, min: 20, tr: 0.44, c: "blush", rot: 0, sk: 0, x: 1, y: 0.04, ax: "r", ay: "t" },
-  { who: "SEO agency", cs: "upper", wdth: 82, wght: 900, size: 54, tr: -0.012, c: "signal", rot: -7, sk: 0, x: 0.36, y: 0.165, ax: "l", ay: "t" },
-  { who: "writers", cs: "none", wdth: 88, wght: 330, size: 40, tr: 0, c: "fog", rot: 0, sk: -13, x: 0.87, y: 0.335, ax: "r", ay: "t" },
-  { who: "ads agency", cs: "upper", wdth: 125, wght: 900, size: 156, tr: -0.04, c: "brand", rot: 0, sk: 0, x: -0.004, y: 0.465, ax: "l", ay: "t" },
-  { who: "PR firm", cs: "none", wdth: 100, wght: 540, size: 28, min: 18, tr: -0.005, c: "paper", rot: -90, sk: 0, x: 1, y: 0.75, ax: "r", ay: "b" },
-  { who: "creative studio", cs: "none", wdth: 112, wght: 200, size: 116, tr: -0.05, c: "paper", rot: 0, sk: 0, x: 0.3, y: 0.765, ax: "l", ay: "t" },
+  { who: "brand studio", cs: "upper", wdth: 125, wght: 210, size: 20, min: 20, tr: 0.44, c: "blush", rot: 0, sk: 0, x: 1, y: 0, ax: "r", ay: "t" },
+  { who: "creative studio", cs: "none", wdth: 112, wght: 200, size: 116, tr: -0.05, c: "paper", rot: 0, sk: 0, x: 0, y: 0.045, ax: "l", ay: "t" },
+  { who: "web team", cs: "lower", wdth: 75, wght: 820, size: 92, tr: -0.045, c: "paper", rot: 0, sk: 0, x: 1, y: 0.25, ax: "r", ay: "t" },
+  { who: "writers", cs: "none", wdth: 88, wght: 330, size: 40, tr: 0, c: "fog", rot: 0, sk: -13, x: 0.08, y: 0.31, ax: "l", ay: "t" },
+  { who: "SEO agency", cs: "upper", wdth: 82, wght: 900, size: 54, tr: -0.012, c: "signal", rot: -7, sk: 0, x: 0.38, y: 0.4, ax: "l", ay: "t" },
+  { who: "ads agency", cs: "upper", wdth: 125, wght: 900, size: 156, tr: -0.04, c: "brand", rot: 0, sk: 0, x: -0.004, y: 0.6, ax: "l", ay: "t" },
+  { who: "PR firm", cs: "none", wdth: 100, wght: 540, size: 28, min: 18, tr: -0.005, c: "paper", rot: -90, sk: 0, x: 1, y: 0.93, ax: "r", ay: "b" },
   { who: "consultants", cs: "upper", mono: true, wdth: 100, wght: 400, size: 22, min: 20, tr: 0.06, c: "fog", rot: 0, sk: 0, x: 0, y: 1, ax: "l", ay: "b" },
 ];
 
 export const PHONE: readonly Supplier[] = [
-  { who: "web team", cs: "lower", wdth: 75, wght: 820, size: 46, tr: -0.045, c: "paper", rot: 0, sk: 0, x: 0, y: 0, ax: "l", ay: "t" },
-  { who: "brand studio", cs: "upper", wdth: 125, wght: 210, size: 16, min: 16, tr: 0.36, c: "blush", rot: 0, sk: 0, x: 1, y: 0.125, ax: "r", ay: "t" },
-  { who: "SEO agency", cs: "upper", wdth: 80, wght: 900, size: 29, tr: -0.012, c: "signal", rot: -7, sk: 0, x: 0.1, y: 0.2, ax: "l", ay: "t" },
-  { who: "writers", cs: "none", wdth: 88, wght: 330, size: 23, tr: 0, c: "fog", rot: 0, sk: -13, x: 0.82, y: 0.345, ax: "r", ay: "t" },
-  { who: "ads agency", cs: "upper", wdth: 125, wght: 900, size: 58, tr: -0.04, c: "brand", rot: 0, sk: 0, x: -0.01, y: 0.455, ax: "l", ay: "t" },
-  { who: "PR firm", cs: "none", wdth: 100, wght: 540, size: 16, min: 16, tr: -0.005, c: "paper", rot: -90, sk: 0, x: 1, y: 0.7, ax: "r", ay: "b" },
-  { who: "creative studio", cs: "none", wdth: 112, wght: 200, size: 44, tr: -0.05, c: "paper", rot: 0, sk: 0, x: 0, y: 0.73, ax: "l", ay: "t" },
-  { who: "consultants", cs: "upper", mono: true, wdth: 100, wght: 400, size: 20, min: 20, tr: 0.04, c: "fog", rot: 0, sk: 0, x: 1, y: 1, ax: "r", ay: "b" },
+  { who: "brand studio", cs: "upper", wdth: 125, wght: 210, size: 16, min: 16, tr: 0.36, c: "blush", rot: 0, sk: 0, x: 1, y: 0, ax: "r", ay: "t" },
+  { who: "creative studio", cs: "none", wdth: 112, wght: 200, size: 44, tr: -0.05, c: "paper", rot: 0, sk: 0, x: 0, y: 0.075, ax: "l", ay: "t" },
+  { who: "web team", cs: "lower", wdth: 75, wght: 820, size: 46, tr: -0.045, c: "paper", rot: 0, sk: 0, x: 1, y: 0.2, ax: "r", ay: "t" },
+  { who: "writers", cs: "none", wdth: 88, wght: 330, size: 23, tr: 0, c: "fog", rot: 0, sk: -13, x: 0, y: 0.335, ax: "l", ay: "t" },
+  { who: "SEO agency", cs: "upper", wdth: 80, wght: 900, size: 29, tr: -0.012, c: "signal", rot: -7, sk: 0, x: 0.3, y: 0.42, ax: "l", ay: "t" },
+  { who: "ads agency", cs: "upper", wdth: 125, wght: 900, size: 58, tr: -0.04, c: "brand", rot: 0, sk: 0, x: -0.01, y: 0.56, ax: "l", ay: "t" },
+  { who: "PR firm", cs: "none", wdth: 100, wght: 540, size: 16, min: 16, tr: -0.005, c: "paper", rot: -90, sk: 0, x: 1, y: 0.86, ax: "r", ay: "b" },
+  { who: "consultants", cs: "upper", mono: true, wdth: 100, wght: 400, size: 20, min: 20, tr: 0.04, c: "fog", rot: 0, sk: 0, x: 0, y: 1, ax: "l", ay: "b" },
 ];
 
 /** Reference poster each table is drawn for (content width x poster height) */

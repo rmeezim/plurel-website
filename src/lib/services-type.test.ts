@@ -39,17 +39,8 @@ import {
 } from "./services-type";
 import { LAYERS, SERVICES } from "./nav";
 
-const SLUGS = [
-  "website-design",
-  "brand-identity",
-  "aeo-seo",
-  "content-marketing",
-  "paid-ads",
-  "pr-reputation",
-  "creative-direction",
-  "martech-consulting",
-];
-const stages = SLUGS.map((s) => SERVICE_STAGE[s] as StageKey);
+// the menu's rows, as the site sets them
+const stages = SERVICES.map((s) => SERVICE_STAGE[s.slug] as StageKey);
 const order = setOrder(stages);
 
 test("every supplier ends exactly on the house style", () => {
@@ -166,8 +157,18 @@ test("the first two beats keep the timing they were drawn for", () => {
   assert.deepEqual([...T.cap], [0.35, 0.53]);
 });
 
+test("the menu runs in the System's order, so each layer leaves from its top", () => {
+  // every layer's rows are one run, in the bands' order: when a layer
+  // drains, its names are the menu's top rows and nothing closes ranks
+  assert.deepEqual(order, [[0, 1], [2, 3], [4, 5, 6], [7]]);
+  assert.deepEqual(order.flat(), SERVICES.map((_, i) => i));
+  const drains = drainTimes(order);
+  for (let i = 0; i < SERVICES.length; i++) {
+    for (let j = i + 1; j < SERVICES.length; j++) assert.ok(drains[j].layer >= drains[i].layer, `${SERVICES[j].name} after ${SERVICES[i].name}`);
+  }
+});
+
 test("names are set in chain order, then drain into the bands, Narrative first", () => {
-  assert.deepEqual(order, [[1, 6], [0, 3], [2, 4, 5], [7]]);
   const times = rowTimes(order);
   for (let s = 1; s < order.length; s++) {
     const prev = Math.max(...order[s - 1].map((i) => times[i].face));

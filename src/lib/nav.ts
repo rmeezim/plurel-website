@@ -14,18 +14,22 @@ export const LAYERS: readonly { key: LayerKey; name: string }[] = [
   { key: "measure", name: "Measure" },
 ];
 
+/* In the System's order, layer by layer (Narrative, Create, Distribute,
+   Measure), so every list of them reads top to bottom the way the bands
+   do, and on the homepage each layer's names leave the menu from its top,
+   straight into their band */
 const SERVICE_LIST = [
-  ["Website Design", "website-design", "Every buyer meets it, and most judge you by it.", "create"],
   ["Brand Identity", "brand-identity", "Look like the choice before you say a word.", "narrative"],
-  ["AI Search & SEO", "aeo-seo", "Be the answer, wherever the question is asked.", "distribute"],
+  ["Creative Direction", "creative-direction", "Someone with taste in every review.", "narrative"],
+  ["Website Design", "website-design", "Every buyer meets it, and most judge you by it.", "create"],
   ["Content Marketing", "content-marketing", "Found by buyers long before they're ready.", "create"],
+  ["AI Search & SEO", "aeo-seo", "Be the answer, wherever the question is asked.", "distribute"],
   ["Paid Ads", "paid-ads", "Rent attention on purpose. Keep what it earns.", "distribute"],
   ["PR & Reputation", "pr-reputation", "What people say when you're not in the room.", "distribute"],
-  ["Creative Direction", "creative-direction", "Someone with taste in every review.", "narrative"],
   ["Martech & Consulting", "martech-consulting", "The wiring nobody sees until it breaks.", "measure"],
 ] as const;
 
-/** The eight disciplines (the individual services), in the order the site presents them, each with its layer */
+/** The eight disciplines (the individual services), in the System's order, each with its layer */
 export const SERVICES = SERVICE_LIST.map(([name, slug, tagline, layer], i) => ({
   index: String(i + 1).padStart(2, "0"),
   name,
