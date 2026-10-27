@@ -315,7 +315,7 @@ const COPY: Record<string, Copy> = {
     numbers: [
       {
         figure: "60:40",
-        text: "The most effective average split between building the brand and driving sales now, across the IPA’s effectiveness data. For B2B brands, 46:54.",
+        text: "The most effective average split between building the brand and driving sales now, across the IPA’s effectiveness data.",
         source: "Binet & Field, The Long and the Short of It, IPA, 2013",
         url: "https://ipa.co.uk/media/5811/long_and_short_of_it_presentation_final.pdf",
       },
