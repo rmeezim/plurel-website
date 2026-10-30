@@ -43,8 +43,8 @@ function simulate(consistency: number, presence: number): RunOut {
       const c = w >= START ? [consistency, ...con.slice(1)] : con;
       for (let i = 0; i < N; i++)
         for (let b = 0; b < 4; b++) {
-          let v = m[i * 4 + b] * 0.93;
-          if (r() < e[b]) v += 0.26 * c[b] * (1 - v);
+          let v = m[i * 4 + b] * 0.96;
+          if (r() < e[b]) v += 0.12 * c[b] * (1 - v);
           m[i * 4 + b] = v;
         }
     }
@@ -54,7 +54,7 @@ function simulate(consistency: number, presence: number): RunOut {
       let best = 0;
       let bv = -1;
       for (let b = 0; b < 4; b++) {
-        const v = m[i * 4 + b] + (r() - 0.5) * 0.04;
+        const v = m[i * 4 + b] + (r() - 0.5) * 0.2;
         if (v > bv) {
           bv = v;
           best = b;
