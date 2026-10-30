@@ -40,6 +40,8 @@ export type Engagement = {
   readout: readonly string[];
   /** The disciplines it is built from, by layer */
   uses: Record<LayerKey, readonly string[]>;
+  /** What ships, how often, and the layer that makes it (the manifest) */
+  deliverables: readonly { item: string; when: string; layer: LayerKey }[];
   /** The measures it answers to */
   metrics: readonly Metric[];
   /** The first ninety days */
@@ -81,6 +83,14 @@ const COPY: Record<EngagementKey, Copy> = {
       distribute: ["paid-media", "aeo-seo"],
       measure: ["analytics-martech"],
     },
+    deliverables: [
+      { item: "The Reach brief: one idea, and the hooks to test it with", when: "Each quarter", layer: "narrative" },
+      { item: "15 to 20 cuts of the idea, for short-form and creators", when: "Weekly", layer: "create" },
+      { item: "Creator briefs, with the rights settled before anyone films", when: "Weekly", layer: "create" },
+      { item: "Paid behind the cuts the rules pick, the same day", when: "Daily", layer: "distribute" },
+      { item: "Pages ready for search and AI answers before each push", when: "Each push", layer: "distribute" },
+      { item: "The Ledger read: new people reached, earned share, search lift and the number", when: "Monthly", layer: "measure" },
+    ],
     metrics: [
       { name: "New people reached", what: "People who saw you for the first time, by surface, with the overlap taken out.", when: "Monthly" },
       { name: "Earned share", what: "The part of that reach you didn’t pay for: shares, creators’ own audiences, press.", when: "Monthly" },
@@ -149,6 +159,14 @@ const COPY: Record<EngagementKey, Copy> = {
       distribute: ["pr-reputation", "aeo-seo"],
       measure: ["analytics-martech"],
     },
+    deliverables: [
+      { item: "The story, in a sentence a reporter can repeat", when: "Each quarter", layer: "narrative" },
+      { item: "Proof behind every claim, from original research to case material", when: "Each quarter", layer: "create" },
+      { item: "Reviews asked for, read and answered", when: "Weekly", layer: "distribute" },
+      { item: "Press and podcasts, pitched with the campaign that makes them findable", when: "Monthly", layer: "distribute" },
+      { item: "Your facts kept the same everywhere AI answers read from", when: "Monthly", layer: "distribute" },
+      { item: "The Ledger read: share of voice, reviews, answers and the number", when: "Monthly", layer: "measure" },
+    ],
     metrics: [
       { name: "Share of voice", what: "Your mentions against your competitors’, in the press and the places your buyers read.", when: "Monthly" },
       { name: "Reviews", what: "Rating and volume where your buyers look, and how quickly you reply.", when: "Weekly" },
@@ -211,6 +229,14 @@ const COPY: Record<EngagementKey, Copy> = {
       distribute: ["paid-media", "aeo-seo"],
       measure: ["analytics-martech"],
     },
+    deliverables: [
+      { item: "One position, and the identity that carries it", when: "Once, then held", layer: "narrative" },
+      { item: "Work in the same look and voice, on a steady rhythm", when: "Weekly", layer: "create" },
+      { item: "Film and stills cut for every surface the plan uses", when: "Monthly", layer: "create" },
+      { item: "Presence where the choice gets made, including AI answers", when: "Always on", layer: "distribute" },
+      { item: "A consistency check of everything that ships", when: "Monthly", layer: "measure" },
+      { item: "The Ledger read: share of search, direct visits and answers", when: "Monthly", layer: "measure" },
+    ],
     metrics: [
       { name: "Share of search", what: "Searches for your name, as a share of searches for you and your competitors.", when: "Monthly" },
       { name: "Direct visits", what: "People who come straight to you, without an ad or a link.", when: "Weekly" },
@@ -269,6 +295,14 @@ const COPY: Record<EngagementKey, Copy> = {
       distribute: ["paid-media", "aeo-seo"],
       measure: ["analytics-martech"],
     },
+    deliverables: [
+      { item: "The reasons to buy, in your buyers’ own words", when: "Once, then tested", layer: "narrative" },
+      { item: "The leaks fixed, costliest first: speed, reasons, the last steps", when: "Weekly", layer: "create" },
+      { item: "Pages and paths tested against the one number", when: "Weekly", layer: "create" },
+      { item: "Spend moved to what converts", when: "Weekly", layer: "distribute" },
+      { item: "Measurement wired to the Ledger, by source", when: "First month", layer: "measure" },
+      { item: "The Ledger read: the number by source, its cost and its payback", when: "Monthly", layer: "measure" },
+    ],
     metrics: [
       { name: "The one number", what: "Orders, installs, demos or stockists, agreed on day one.", when: "Monthly" },
       { name: "Conversion by step", what: "Where buyers drop, from first visit to purchase, by source.", when: "Weekly" },

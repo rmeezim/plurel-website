@@ -15,7 +15,8 @@ import { PACE, plotEnd, type RevealLine } from "@/lib/plot";
   - PageHead: the page's h1, plotted on load at the hero's pace (the
     page's one orchestrated moment), its standfirst and then its actions
     lit as the pen lifts (timed from the head's own length, lib/plot.ts),
-    on columns 9-12.
+    on columns 9-12; then, on the service pages, its spec sheet: what it
+    is in a few plain facts, across the grid.
   - ChapterHead: a chapter's h2 (plotted as it enters) with an optional
     aside on columns 9-12.
   - Room: a chapter's room, graphite or red, with the chapter padding.
@@ -31,12 +32,15 @@ export function PageHead({
   lines,
   standfirst,
   children,
+  spec,
   id = "page-heading",
 }: {
   lines: readonly RevealLine[];
   standfirst: ReactNode;
   /** The page's actions, under the standfirst */
   children?: ReactNode;
+  /** The page's spec sheet: a few plain facts, label and value */
+  spec?: readonly { k: string; v: ReactNode }[];
   id?: string;
 }) {
   const lit = plotEnd(lines, PACE.hero, HEAD.delay) + HEAD.beat;
@@ -64,6 +68,19 @@ export function PageHead({
           )}
         </div>
       </div>
+      {spec && (
+        <dl
+          className="fade-in mt-16 grid grid-cols-2 border-t border-paper/15 sm:grid-cols-3 lg:mt-24 lg:grid-cols-5"
+          style={at(lit + 2 * HEAD.beat)}
+        >
+          {spec.map((r) => (
+            <div key={r.k} className="border-b border-paper/10 py-4 pr-4 sm:py-5 lg:border-b-0 lg:border-l lg:px-5 lg:first:border-l-0 lg:first:pl-0">
+              <dt className="text-[13px] leading-[1.3] text-fog">{r.k}</dt>
+              <dd className="mt-2 text-[16px] leading-[1.35] text-paper lg:text-[17px]">{r.v}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
     </div>
   );
 }

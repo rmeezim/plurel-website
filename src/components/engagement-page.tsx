@@ -1,24 +1,31 @@
 import Link from "next/link";
-import { PackageArt } from "@/components/artifacts/package-art";
-import { Readout } from "@/components/artifacts/kit";
+import { Instrument } from "@/components/console/instrument";
 import { ArrowUpRight } from "@/components/icons";
-import { LayerRows, Measures, Numbers, Steps } from "@/components/instruments";
+import { Manifest } from "@/components/interior/manifest";
+import { MetricGraph } from "@/components/interior/metric-graph";
+import { PhaseTrack } from "@/components/interior/phase-track";
+import { SystemMap } from "@/components/interior/system-map";
+import { Numbers } from "@/components/instruments";
 import { ChapterHead, Closing, PageHead, Room } from "@/components/page";
 import { faqJsonLd, QuestionList } from "@/components/questions";
 import { CtaLink, GRID } from "@/components/system";
-import { DISCIPLINES } from "@/lib/disciplines";
-import { AUDIT_HREF, LAYERS } from "@/lib/nav";
 import { ENGAGEMENTS, type Engagement } from "@/lib/engagements";
+import { AUDIT_HREF, LAYERS, SERVICES } from "@/lib/nav";
+import { STAGES } from "@/lib/services-type";
 import { SITE_URL } from "@/lib/site";
 
 /*
   An engagement (app/services/[slug] for reach, reputation, mindshare
-  and revenue): what a company comes for, told as one argument. The want
-  and who it is for; the case, with its live instrument (the page's
-  artifact); the four layers tuned for it, with the disciplines that do
-  each; the numbers it answers to, in the page's red room; the first
-  ninety days; its questions; the other three engagements; then the
-  closing. Copy in lib/engagements.ts.
+  and revenue): what a company comes for, told so it can be understood
+  in a minute. The head says what it is and who it is for, with its spec
+  sheet (what it runs on, how it starts, what ships, what it answers to,
+  how it is read); the case, with the page's live instrument (a working
+  model of the mechanism) and the published numbers behind it; what
+  ships, as a manifest; the System, mapped with this engagement's
+  disciplines lit; the numbers it answers to, as a graph into the one
+  number, in the page's red room; the first ninety days on a ruler of
+  weeks; its questions; the other three; then the closing. Copy in
+  lib/engagements.ts.
 */
 
 export function EngagementPage({ pkg }: { pkg: Engagement }) {
@@ -30,16 +37,9 @@ export function EngagementPage({ pkg }: { pkg: Engagement }) {
     provider: { "@id": `${SITE_URL}/#organization` },
     serviceType: "Marketing and distribution",
   };
-  const rows = LAYERS.map((L, i) => ({
-    key: L.key,
-    name: L.name,
-    line: pkg.layers[i],
-    links: pkg.uses[L.key].map((slug) => {
-      const d = DISCIPLINES.find((x) => x.slug === slug)!;
-      return { name: d.name, href: d.href };
-    }),
-  }));
+  const focus = LAYERS.flatMap((L) => pkg.uses[L.key]);
   const others = ENGAGEMENTS.filter((p) => p.key !== pkg.key);
+  const layerName = (k: string) => LAYERS.find((L) => L.key === k)!.name;
 
   return (
     <main data-room="dark" className="bg-graphite text-paper">
@@ -54,6 +54,13 @@ export function EngagementPage({ pkg }: { pkg: Engagement }) {
             <p className="mt-4">{pkg.lead}</p>
           </>
         }
+        spec={[
+          { k: "Runs on", v: `All four layers, ${focus.length} disciplines` },
+          { k: "Starts with", v: "The Diagnostic, read within a business day" },
+          { k: "Ships", v: "Something every week" },
+          { k: "Answers to", v: "One number, agreed on day one" },
+          { k: "Read", v: "Monthly in the Ledger, reset each quarter" },
+        ]}
       >
         <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
         <CtaLink href="/services" variant="outline-light" arrow="right">
@@ -61,21 +68,39 @@ export function EngagementPage({ pkg }: { pkg: Engagement }) {
         </CtaLink>
       </PageHead>
 
-      <Room labelledBy="case-heading" className="pt-0 lg:pt-4">
+      <Room labelledBy="case-heading" className="pt-4 lg:pt-8">
         <ChapterHead id="case-heading" lines={pkg.caseHead} aside={pkg.caseBody} />
-        <Numbers items={pkg.numbers} />
-        <div className="mt-14 lg:mt-20">
-          <PackageArt pkg={pkg.key} caption={<Readout items={pkg.readout} />} />
+        <div className="mt-12 lg:mt-16">
+          <Instrument k={pkg.key} readout={pkg.readout} />
         </div>
+        <Numbers items={pkg.numbers} />
+      </Room>
+
+      <Room labelledBy="ships-heading" className="border-t border-paper/10">
+        <ChapterHead
+          id="ships-heading"
+          lines={["What ships."]}
+          aside="Everything below is made from one brief and read against one number. How often is the commitment; the volumes are set with you in the Diagnostic."
+        />
+        <Manifest
+          label={`What the ${pkg.term} engagement ships`}
+          items={pkg.deliverables.map((d) => ({ item: d.item, when: d.when, layer: layerName(d.layer) }))}
+        />
       </Room>
 
       <Room labelledBy="layers-heading" className="border-t border-paper/10">
         <ChapterHead
           id="layers-heading"
           lines={["Four layers,", `tuned for ${pkg.term.toLowerCase()}.`]}
-          aside="The same system runs every engagement. What changes is what each layer does, and which disciplines do it."
+          aside="The same system runs every engagement. What changes is what each layer does, and which disciplines do it. Choose a layer to see its part here."
         />
-        <LayerRows rows={rows} label={`The Plurel System, tuned for ${pkg.term.toLowerCase()}`} />
+        <SystemMap
+          label={`The Plurel System, tuned for ${pkg.term.toLowerCase()}: the disciplines it puts to work, layer by layer`}
+          layers={STAGES.map((s) => ({ key: s.key, name: s.name, builds: s.builds, line: s.line }))}
+          nodes={SERVICES.map((s) => ({ slug: s.slug, name: s.name, tagline: s.tagline, href: s.href, layer: s.layer }))}
+          focus={focus}
+          lines={pkg.layers}
+        />
       </Room>
 
       <Room labelledBy="numbers-heading" tone="red">
@@ -85,12 +110,12 @@ export function EngagementPage({ pkg }: { pkg: Engagement }) {
           lines={["The numbers", "it answers to."]}
           aside="Read with you in the Ledger, each as a cause of the one number agreed on day one."
         />
-        <Measures items={pkg.metrics} tone="red" />
+        <MetricGraph metrics={pkg.metrics} tone="red" label={`The measures ${pkg.term} answers to, and the one number they feed`} />
       </Room>
 
       <Room labelledBy="first90-heading">
         <ChapterHead id="first90-heading" lines={["The first", "ninety days."]} aside="It starts with the Diagnostic, and something ships every week after it." />
-        <Steps items={pkg.first90.map((f) => ({ head: f.when, line: f.what }))} />
+        <PhaseTrack items={pkg.first90} label={`The first ninety days of ${pkg.term}, week by week`} />
       </Room>
 
       <Room labelledBy="engagement-questions" className="border-t border-paper/10">
