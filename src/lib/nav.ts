@@ -19,17 +19,23 @@ export const LAYERS: readonly { key: LayerKey; name: string }[] = [
    do, and on the homepage each layer's names leave the menu from its top,
    straight into their band */
 const SERVICE_LIST = [
-  ["Brand Identity", "brand-identity", "Look like the choice before you say a word.", "narrative"],
-  ["Creative Direction", "creative-direction", "Someone with taste in every review.", "narrative"],
+  ["Fractional CMO", "fractional-cmo", "A senior leader who owns the plan and the number.", "narrative"],
+  ["Branding", "branding", "Look like the choice before you say a word.", "narrative"],
   ["Website Design", "website-design", "Every buyer meets it, and most judge you by it.", "create"],
   ["Content Marketing", "content-marketing", "Found by buyers long before they're ready.", "create"],
+  ["Video & Photo", "video-photo", "One shoot, cut for every surface you need.", "create"],
+  ["UGC & Creators", "ugc-creators", "Recommended by people your buyers already trust.", "create"],
   ["AI Search & SEO", "aeo-seo", "Be the answer, wherever the question is asked.", "distribute"],
-  ["Paid Ads", "paid-ads", "Rent attention on purpose. Keep what it earns.", "distribute"],
+  ["Paid Media", "paid-media", "Rent attention on purpose. Keep what it earns.", "distribute"],
   ["PR & Reputation", "pr-reputation", "What people say when you're not in the room.", "distribute"],
-  ["Martech & Consulting", "martech-consulting", "The wiring nobody sees until it breaks.", "measure"],
+  ["Analytics & Martech", "analytics-martech", "The wiring nobody sees until it breaks.", "measure"],
 ] as const;
 
-/** The eight disciplines (the individual services), in the System's order, each with its layer */
+/**
+ * The ten disciplines, in the System's order, each with its layer: the
+ * ten companies a growing business usually hires, run here as one system.
+ * Each is part of the engagements and can also be hired on its own.
+ */
 export const SERVICES = SERVICE_LIST.map(([name, slug, tagline, layer], i) => ({
   index: String(i + 1).padStart(2, "0"),
   name,
@@ -39,14 +45,14 @@ export const SERVICES = SERVICE_LIST.map(([name, slug, tagline, layer], i) => ({
   href: `/services/${slug}`,
 }));
 
-export type PackageKey = "reach" | "reputation" | "mindshare" | "revenue";
+export type EngagementKey = "reach" | "reputation" | "mindshare" | "revenue";
 
 /**
- * The four packages, by what a company comes for (the homepage's What you
- * came for): each runs on all four layers. Wants mirror PACKAGES in
- * packages.ts, which holds each page's copy.
+ * The four engagements, by what a company comes for (the homepage's What
+ * you came for): each runs on all four layers. Wants mirror ENGAGEMENTS in
+ * engagements.ts, which holds each page's copy.
  */
-export const PACKAGES: readonly { key: PackageKey; term: string; want: string; href: string }[] = [
+export const ENGAGEMENTS: readonly { key: EngagementKey; term: string; want: string; href: string }[] = [
   { key: "reach", term: "Reach", want: "Be seen, and sometimes go viral.", href: "/services/reach" },
   { key: "reputation", term: "Reputation", want: "Be talked about, and believed.", href: "/services/reputation" },
   { key: "mindshare", term: "Mindshare", want: "Be the one they think of first.", href: "/services/mindshare" },

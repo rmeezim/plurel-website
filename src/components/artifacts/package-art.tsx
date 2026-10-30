@@ -1,7 +1,7 @@
 import type { CSSProperties, JSX, ReactNode } from "react";
 import { clock, curve, Label, Legend, Line, Node, plot, Pulse, Stage, Svg } from "@/components/artifacts/kit";
 import { Plate } from "@/components/artifacts/plate";
-import type { PackageKey } from "@/lib/nav";
+import type { EngagementKey } from "@/lib/nav";
 import s from "./artifacts.module.css";
 
 /*
@@ -348,7 +348,7 @@ function RevenueTall() {
   );
 }
 
-const ART: Record<PackageKey, { draw: () => JSX.Element; hold: number; label: string }> = {
+const ART: Record<EngagementKey, { draw: () => JSX.Element; hold: number; label: string }> = {
   reach: {
     draw: ReachArt,
     hold: 4400,
@@ -375,7 +375,7 @@ const ART: Record<PackageKey, { draw: () => JSX.Element; hold: number; label: st
   },
 };
 
-export function PackageArt({ pkg, caption }: { pkg: PackageKey; caption?: ReactNode }) {
+export function PackageArt({ pkg, caption }: { pkg: EngagementKey; caption?: ReactNode }) {
   const { draw: Draw, hold, label } = ART[pkg];
   return (
     <Plate label={label} hold={hold} loop layout="side" caption={caption} frameClassName="px-5 pb-14 pt-6 sm:px-8 sm:pt-8 lg:px-10 lg:pt-10">
@@ -388,7 +388,7 @@ export function PackageArt({ pkg, caption }: { pkg: PackageKey; caption?: ReactN
   Each package's glyph: its drawing reduced to one small figure, no
   labels, for the packages index and the menu. Drawn once as it enters.
 */
-function GlyphPaths({ pkg }: { pkg: PackageKey }) {
+function GlyphPaths({ pkg }: { pkg: EngagementKey }) {
   const W = 240;
   if (pkg === "reach") {
     const luck = (x: number) => 126 - (x < 64 ? 2 : x < 70 ? 2 + ((x - 64) / 6) * 104 : 2 + 104 * Math.exp(-(x - 70) / 12));
@@ -466,7 +466,7 @@ function GlyphPaths({ pkg }: { pkg: PackageKey }) {
   );
 }
 
-export function PackageGlyph({ pkg }: { pkg: PackageKey }) {
+export function PackageGlyph({ pkg }: { pkg: EngagementKey }) {
   return (
     <Plate hold={2100} frameClassName="px-4 py-4">
       <Stage w={240} h={150}>

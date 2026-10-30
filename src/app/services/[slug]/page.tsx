@@ -1,30 +1,30 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { DisciplinePage } from "@/components/discipline-page";
-import { PackagePage } from "@/components/package-page";
+import { EngagementPage } from "@/components/engagement-page";
 import { DISCIPLINES, disciplineBySlug } from "@/lib/disciplines";
 import { pageMetadata } from "@/lib/metadata";
-import { PACKAGES, packageBySlug } from "@/lib/packages";
+import { ENGAGEMENTS, engagementBySlug } from "@/lib/engagements";
 
 /*
-  /services/[slug]: the four packages (reach, reputation, mindshare,
-  revenue; components/package-page.tsx) and the eight individual services
-  (components/discipline-page.tsx) share one address space, so every
-  service the site sells lives under /services.
+  /services/[slug]: the four engagements (reach, reputation, mindshare,
+  revenue; components/engagement-page.tsx) and the ten disciplines
+  (components/discipline-page.tsx) share one address space, so everything
+  the site sells lives under /services.
 */
 
 type Params = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return [...PACKAGES.map((p) => ({ slug: p.key })), ...DISCIPLINES.map((d) => ({ slug: d.slug }))];
+  return [...ENGAGEMENTS.map((p) => ({ slug: p.key })), ...DISCIPLINES.map((d) => ({ slug: d.slug }))];
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const pkg = packageBySlug(slug);
+  const pkg = engagementBySlug(slug);
   if (pkg) {
     return pageMetadata({
-      title: `${pkg.term}, a Plurel package`,
+      title: `${pkg.term}, a Plurel engagement`,
       description: `${pkg.want} ${pkg.lead}`,
       path: `/services/${pkg.key}/`,
     });
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const d = disciplineBySlug(slug);
   if (!d) return {};
   return pageMetadata({
-    title: `${d.name} — Plurel`,
+    title: `${d.name}, a Plurel discipline`,
     description: `${d.tagline} ${d.lead}`,
     path: `/services/${d.slug}/`,
   });
@@ -40,8 +40,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Params) {
   const { slug } = await params;
-  const pkg = packageBySlug(slug);
-  if (pkg) return <PackagePage pkg={pkg} />;
+  const pkg = engagementBySlug(slug);
+  if (pkg) return <EngagementPage pkg={pkg} />;
   const d = disciplineBySlug(slug);
   if (!d) notFound();
   return <DisciplinePage d={d} />;

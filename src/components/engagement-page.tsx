@@ -8,24 +8,24 @@ import { faqJsonLd, QuestionList } from "@/components/questions";
 import { CtaLink, GRID } from "@/components/system";
 import { DISCIPLINES } from "@/lib/disciplines";
 import { AUDIT_HREF, LAYERS } from "@/lib/nav";
-import { PACKAGES, type Package } from "@/lib/packages";
+import { ENGAGEMENTS, type Engagement } from "@/lib/engagements";
 import { SITE_URL } from "@/lib/site";
 
 /*
-  A package (app/services/[slug] for reach, reputation, mindshare and
-  revenue): what a company comes for, told as one argument. The want and
-  who it is for; the case, with its signature drawing (the page's
-  artifact); the four layers tuned for it, with the services that do each;
-  the numbers it answers to, in the page's red room; the first ninety
-  days; its questions; the other three packages; then the closing. Copy
-  in lib/packages.ts.
+  An engagement (app/services/[slug] for reach, reputation, mindshare
+  and revenue): what a company comes for, told as one argument. The want
+  and who it is for; the case, with its live instrument (the page's
+  artifact); the four layers tuned for it, with the disciplines that do
+  each; the numbers it answers to, in the page's red room; the first
+  ninety days; its questions; the other three engagements; then the
+  closing. Copy in lib/engagements.ts.
 */
 
-export function PackagePage({ pkg }: { pkg: Package }) {
+export function EngagementPage({ pkg }: { pkg: Engagement }) {
   const SERVICE_LD = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: `${pkg.term}, a Plurel package`,
+    name: `${pkg.term}, a Plurel engagement`,
     description: pkg.lead,
     provider: { "@id": `${SITE_URL}/#organization` },
     serviceType: "Marketing and distribution",
@@ -39,7 +39,7 @@ export function PackagePage({ pkg }: { pkg: Package }) {
       return { name: d.name, href: d.href };
     }),
   }));
-  const others = PACKAGES.filter((p) => p.key !== pkg.key);
+  const others = ENGAGEMENTS.filter((p) => p.key !== pkg.key);
 
   return (
     <main data-room="dark" className="bg-graphite text-paper">
@@ -57,7 +57,7 @@ export function PackagePage({ pkg }: { pkg: Package }) {
       >
         <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
         <CtaLink href="/services" variant="outline-light" arrow="right">
-          All packages
+          All engagements
         </CtaLink>
       </PageHead>
 
@@ -73,7 +73,7 @@ export function PackagePage({ pkg }: { pkg: Package }) {
         <ChapterHead
           id="layers-heading"
           lines={["Four layers,", `tuned for ${pkg.term.toLowerCase()}.`]}
-          aside="The same system runs every package. What changes is what each layer does, and which services do it."
+          aside="The same system runs every engagement. What changes is what each layer does, and which disciplines do it."
         />
         <LayerRows rows={rows} label={`The Plurel System, tuned for ${pkg.term.toLowerCase()}`} />
       </Room>
@@ -93,8 +93,8 @@ export function PackagePage({ pkg }: { pkg: Package }) {
         <Steps items={pkg.first90.map((f) => ({ head: f.when, line: f.what }))} />
       </Room>
 
-      <Room labelledBy="package-questions" className="border-t border-paper/10">
-        <ChapterHead id="package-questions" lines={["Questions."]} />
+      <Room labelledBy="engagement-questions" className="border-t border-paper/10">
+        <ChapterHead id="engagement-questions" lines={["Questions."]} />
         <QuestionList items={pkg.questions} className="mt-12 lg:mt-16" />
       </Room>
 

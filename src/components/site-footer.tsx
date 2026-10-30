@@ -4,7 +4,7 @@ import { ArrowUpRight } from "@/components/icons";
 import { Logo } from "@/components/logo";
 import { Reveal } from "@/components/reveal";
 import { CONTAINER, GRID } from "@/components/system";
-import { COMPANY, CONTACT_EMAIL, DIAGNOSTIC_HREF, PACKAGES, SERVICES } from "@/lib/nav";
+import { COMPANY, CONTACT_EMAIL, DIAGNOSTIC_HREF, ENGAGEMENTS, SERVICES } from "@/lib/nav";
 
 /*
   Footer: the quiet firm index every page ends on. The closing chapter
@@ -57,7 +57,7 @@ export function SiteFooter() {
                 Packages
               </p>
               <ul className={LIST}>
-                {PACKAGES.map((p) => (
+                {ENGAGEMENTS.map((p) => (
                   <li key={p.key} className="flex">
                     <Link href={p.href} className={LINK}>
                       {p.term}

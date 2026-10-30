@@ -5,7 +5,7 @@ import { Reveal } from "@/components/reveal";
 import { GRID } from "@/components/system";
 
 /*
-  Shared parts of the service, package and company pages, set as
+  Shared parts of the discipline, engagement and company pages, set as
   instruments rather than paragraphs: the measures a page answers to, a
   run of steps on a hairline, and the System's four layers as rows.
 */

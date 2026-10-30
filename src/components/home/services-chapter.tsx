@@ -9,7 +9,7 @@ import { FEEDS_BACK, SERVICE_STAGE, STAGES, stageName, SYSTEM, type StageKey } f
 import s from "./services-type.module.css";
 
 /* The supplier voices' face, loaded for this chapter only: Mona Sans's width
-   axis gives the eight suppliers their condensed, wide and in-between cuts.
+   axis gives the ten suppliers their condensed, wide and in-between cuts.
    The house face they settle into is the site's own, Geist. */
 const mona = Mona_Sans({
   subsets: ["latin"],
@@ -19,11 +19,11 @@ const mona = Mona_Sans({
 });
 
 /*
-  Why Plurel, on graphite: the thesis, then the eight disciplines shown
+  Why Plurel, on graphite: the thesis, then the ten disciplines shown
   becoming one system. Between Why now and the red Method.
 
-  The figure (ServicesType) starts as a menu: the eight names first
-  appear in eight suppliers' voices, line up on the menu's rows ("still a
+  The figure (ServicesType) starts as a menu: the ten names first
+  appear in ten suppliers' voices, line up on the menu's rows ("still a
   menu"), are set in one face stage by stage along the chain, and then
   drain into the Plurel System, read top to bottom, layer by layer,
   Narrative first: each layer a full-bleed band in a graphite tone (a
@@ -158,7 +158,7 @@ export function ServicesChapter() {
         <ChapterHead
           id="services-heading"
           lines={["Your marketing shouldn’t be ten companies.", "It should be one system."]}
-          aside="Brand, site, search, content, social, paid and press usually sit with different suppliers. We run them as one."
+          aside="Strategy, brand, site, content, film, creators, search, paid, press and analytics usually sit with ten different suppliers. We run them as one."
         />
       </div>
 

@@ -3,13 +3,14 @@ import type { QA } from "@/components/questions";
 import { SERVICES, type LayerKey } from "@/lib/nav";
 
 /*
-  The eight disciplines, the individual services, one page each
-  (app/services/[slug]). Every page tells one story: the job, the case for
-  it (with published numbers, each with its source), how it works inside
-  the Plurel System (the page's drawing and its readout), what you get,
-  the measures it answers to, where it sits, and its questions. Names,
-  taglines and layers come from nav.ts, so the menu, the footer and the
-  pages never disagree.
+  The ten disciplines, one page each (app/services/[slug]): the ten
+  companies a growing business usually hires, run here as one system.
+  Every page tells one story: the job, the case for it (with published
+  numbers, each with its source), how it works inside the Plurel System
+  (the page's live instrument and its readout), what you get, the measures
+  it answers to, where it sits, and its questions. Names, taglines and
+  layers come from nav.ts, so the menu, the footer and the pages never
+  disagree.
 
   Copy rules (AGENTS.md): plain words, no triplet lists for rhythm, no
   "every channel", nothing promised that cannot be (coverage, virality).
@@ -32,7 +33,7 @@ export type Discipline = {
   runsOn: string;
   /** What it gives the rest of the system */
   feeds: string;
-  /** What the drawing shows, step by step */
+  /** What the instrument shows, step by step */
   readout: readonly [string, string, string];
   /** The measures it answers to, read in the Ledger */
   metrics: readonly Measure[];
@@ -44,6 +45,114 @@ export type Discipline = {
 type Copy = Omit<Discipline, "slug" | "name" | "tagline" | "layer" | "href">;
 
 const COPY: Record<string, Copy> = {
+  "fractional-cmo": {
+    lead: "A fractional CMO is senior marketing leadership, part time: the plan, the budget, the team and the suppliers, and the board conversation. Ours runs your marketing on the Plurel System and answers for the one number.",
+    job: "Own the plan, the budget and the number, part time.",
+    body: [
+      "Growing companies often need a marketing leader before they can justify a full-time one, or between one and the next. Without one, each supplier sets its own goals, budget drifts to whoever asks loudest, and nobody can tell the board what worked.",
+      "Ours sets the plan from the Diagnostic, owns the budget and the suppliers, runs the weekly rhythm and the monthly Ledger read, and builds your team when it is time to, then hands it over.",
+    ],
+    deliverables: [
+      "A plan for the year, reset every quarter",
+      "The budget, owned and moved every month",
+      "Suppliers briefed, reviewed and held to one brief",
+      "The weekly rhythm and the monthly Ledger read",
+      "A board page, every month",
+      "Your marketing team hired, and the handover",
+    ],
+    runsOn: "The Diagnostic’s read of the business, and the Ledger every month.",
+    feeds: "Every layer: the Core Brief, the plan each team works to, and the budget each surface gets.",
+    readout: [
+      "The plan sets the number for the quarter, week by week.",
+      "Each week the CMO reads it, and moves budget, work or suppliers.",
+      "Every decision is logged with what it did to the number.",
+    ],
+    metrics: [
+      { name: "The one number", what: "Against the plan, read with you every month.", when: "Monthly" },
+      { name: "Budget moved", what: "What moved, where to, and what it returned.", when: "Monthly" },
+      { name: "Suppliers on brief", what: "Work reviewed against the Core Brief: kept, fixed or replaced.", when: "Monthly" },
+      { name: "Time to decision", what: "How long a decision takes, from the question to the answer.", when: "Quarterly" },
+    ],
+    numbers: [
+      {
+        figure: "7.8%",
+        text: "Of company revenue goes to marketing, on average, among the marketing leaders surveyed.",
+        source: "Gartner, CMO Spend Survey, 2026",
+        url: "https://www.gartner.com/en/newsroom/press-releases/2026-05-11-gartner-2026-cmo-spend-survey-finds-cmos-allocate-15-point-3-percent-of-marketing-budgets-to-ai-but-only-30-percent-are-ready-to-scale-ai-capabilities",
+      },
+    ],
+    questions: [
+      {
+        q: "How much of their time do we get?",
+        a: "A set share of their time, agreed before we start, and the same weekly rhythm every week. You know when they are yours.",
+      },
+      {
+        q: "Do they replace our head of marketing?",
+        a: "They can lead until you hire one, or work above the one you have. We help you hire, and hand over when you are ready.",
+      },
+      {
+        q: "Is this part of an engagement?",
+        a: "Every engagement has a senior lead. Hired on its own, the fractional CMO runs all of your marketing, not only the parts we deliver.",
+      },
+    ],
+  },
+  branding: {
+    lead: "Branding is how you look, sound and come across wherever a buyer meets you: positioning, naming, identity and voice, and the creative direction that keeps it one thing. We build it into the Core Brief, so everything the system makes carries the same signal.",
+    job: "Look like the choice before you say a word.",
+    body: [
+      "Buyers judge what they cannot yet test by the signals they can: how you look and sound, and whether it holds from one place to the next. A brand that holds up everywhere earns trust before the first conversation.",
+      "We build brands to be used, not admired in a deck: a system of type, colour, layout and voice, with the templates and rules your team and every supplier can work from, and a creative director who reviews what ships against it.",
+    ],
+    deliverables: [
+      "Positioning, and the message for each buyer",
+      "Name, logo and visual identity, where they need work",
+      "A type, colour and layout system",
+      "The voice, and the words you use and avoid",
+      "The creative platform, and direction for every shoot and campaign",
+      "Templates and guidelines your team and suppliers can follow",
+    ],
+    runsOn: "The Diagnostic’s read of your market, your buyers and what already works.",
+    feeds: "The Asset System: every page, film, ad and creator brief is cut from it.",
+    readout: [
+      "Everything that ships is checked against the system: type, colour, layout and voice.",
+      "Before it, each surface looks a little different; after it, they match.",
+      "Buyers link what they see to you sooner, so every surface works harder.",
+    ],
+    metrics: [
+      { name: "Share of search", what: "Searches for your name, as a share of searches for you and your competitors.", when: "Monthly" },
+      { name: "Consistency", what: "How much of what ships each month follows the system, checked in review.", when: "Monthly" },
+      { name: "How you’re described", what: "The words buyers use about you, in reviews and in what AI assistants say.", when: "Quarterly" },
+      { name: "Speed to ship", what: "How quickly your team and suppliers make new work without asking.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "50 ms",
+        text: "Enough for people to judge how a web page looks: in lab studies, a 50 ms glimpse matched their verdict after ten times as long.",
+        source: "Lindgaard et al., Behaviour & Information Technology, 2006",
+        url: "https://www.tandfonline.com/doi/abs/10.1080/01449290500330448",
+      },
+      {
+        figure: "40%",
+        text: "Of category buyers, on average, linked a brand’s shapes, such as its logo or pack, to the brand. For its colours, 12%. Across 1,162 assets in 21 categories.",
+        source: "Phua, Bali, Anesbury & Sharp, International Journal of Advertising, 2026",
+        url: "https://www.tandfonline.com/doi/full/10.1080/02650487.2026.2637295",
+      },
+    ],
+    questions: [
+      {
+        q: "Do we need a full rebrand?",
+        a: "Usually not. Most companies need sharper positioning and a consistent system more than a new logo. The Diagnostic tells you which.",
+      },
+      {
+        q: "Who is the creative director?",
+        a: "A senior creative on your team from the Diagnostic on, who reviews everything that ships against the system, not a name on the pitch.",
+      },
+      {
+        q: "Who owns the work?",
+        a: "You do. Every file, font licence and guideline is yours, and we train your team to use it.",
+      },
+    ],
+  },
   "website-design": {
     lead: "Ads, search, press, creators and AI answers all send people to your site. We design and build it as the home of the Asset System: cut from the Core Brief, and measured against the one number.",
     job: "Turn the attention everything else earns into the number you run on.",
@@ -62,9 +171,9 @@ const COPY: Record<string, Copy> = {
     runsOn: "The Core Brief: the position, the proof and the voice every page is written from.",
     feeds: "The Surface Plan and the Ledger: every surface lands here, and every visit is counted against the one number.",
     readout: [
-      "Every surface sends people to the same place: ads, search, AI answers, press and creators.",
-      "The site takes them from a first look to proof to purchase, in the order buyers decide.",
-      "What arrives is counted once, as the one number, by where it came from.",
+      "This page, measured on your device as you read it.",
+      "Against Google’s lines for good, and our own stricter budget.",
+      "Tap or scroll anything: every response is timed.",
     ],
     metrics: [
       { name: "Conversion by source", what: "What visits turn into, by where they came from and which buyer they are.", when: "Weekly" },
@@ -101,60 +210,162 @@ const COPY: Record<string, Copy> = {
       },
     ],
   },
-  "brand-identity": {
-    lead: "Brand identity is how you look and sound wherever a buyer meets you. We build it as part of the Core Brief, so everything the system makes carries the same signal.",
-    job: "Look like the choice before you say a word.",
+  "content-marketing": {
+    lead: "Content is how buyers find you long before they are ready to buy. We make it from the Core Brief and cut it for the places they look: search, AI answers, your own channels and social.",
+    job: "Be found by buyers long before they’re ready.",
     body: [
-      "Buyers judge what they cannot yet test by the signals they can: how you look and sound, and whether it holds from one place to the next. An identity that holds up everywhere earns trust before the first conversation.",
-      "We build identities to be used, not admired in a deck: a system of type, colour, layout and voice, with the templates and rules your team and every supplier can work from without asking.",
+      "Most content fails because it is made for a calendar, not for a buyer. We start from the questions your buyers ask and the places they ask them, then make fewer, better pieces and cut each one many ways.",
+      "One good conversation with your founder becomes an article, a newsletter, short clips, posts and an answer page: a month of publishing from one source, each cut made for the surface it runs on.",
     ],
     deliverables: [
-      "Positioning, and the message for each buyer",
-      "Name, logo and visual identity, where they need work",
-      "A type, colour and layout system",
-      "The voice, and the words you use and avoid",
-      "Templates for the formats you ship most",
-      "Guidelines your team and suppliers can follow",
+      "A program built on your buyers’ questions",
+      "Articles and research worth citing",
+      "Short-form cut from every long piece",
+      "Organic social, planned and run",
+      "Newsletters and your own channels",
+      "A library your team can reuse",
     ],
-    runsOn: "The Diagnostic’s read of your market, your buyers and what already works.",
-    feeds: "The Asset System: every page, film, ad and creator brief is cut from it.",
+    runsOn: "The Core Brief, and the questions the Surface Plan ranks.",
+    feeds: "The Surface Plan: every piece is made for a surface, and paid and press carry the best of it.",
     readout: [
-      "Your buyers meet you on many surfaces, often for a second or two.",
-      "The same signal sits in the same place on every one of them: type, colour, layout and voice.",
-      "Each meeting is recognized faster, so every surface spends less effort being remembered.",
+      "One long conversation, recorded once.",
+      "Cut into the article, the newsletter, clips, posts and an answer page.",
+      "Each cut lands where buyers look, over four weeks.",
     ],
     metrics: [
-      { name: "Share of search", what: "Searches for your name, as a share of searches for you and your competitors.", when: "Monthly" },
-      { name: "Consistency", what: "How much of what ships each month follows the identity, checked in review.", when: "Monthly" },
-      { name: "How you’re described", what: "The words buyers use about you, in reviews and in what AI assistants say.", when: "Quarterly" },
-      { name: "Speed to ship", what: "How quickly your team and suppliers make new work without asking.", when: "Monthly" },
+      { name: "Found and cited", what: "What gets found in search, shared, and cited by AI assistants.", when: "Monthly" },
+      { name: "Assists", what: "Which pieces people read before they become the one number.", when: "Monthly" },
+      { name: "Cost per piece", what: "What each piece costs, against what it earns over time.", when: "Quarterly" },
+      { name: "Organic reach", what: "What your own channels reach, and what those people do next.", when: "Monthly" },
     ],
     numbers: [
       {
-        figure: "50 ms",
-        text: "Enough for people to judge how a web page looks: in lab studies, a 50 ms glimpse matched their verdict after ten times as long.",
-        source: "Lindgaard et al., Behaviour & Information Technology, 2006",
-        url: "https://www.tandfonline.com/doi/abs/10.1080/01449290500330448",
+        figure: "95%",
+        text: "Of business buyers aren’t in the market at any given time, by a rule-of-thumb estimate: content has to reach them long before they are.",
+        source: "Ehrenberg-Bass Institute for LinkedIn’s B2B Institute, 2021",
+        url: "https://business.linkedin.com/advertise/resources/b2b-institute/b2b-research/trends/95-5-rule",
       },
       {
-        figure: "40%",
-        text: "Of category buyers, on average, linked a brand’s shapes, such as its logo or pack, to the brand. For its colours, 12%. Across 1,162 assets in 21 categories.",
-        source: "Phua, Bali, Anesbury & Sharp, International Journal of Advertising, 2026",
-        url: "https://www.tandfonline.com/doi/full/10.1080/02650487.2026.2637295",
+        figure: "73%",
+        text: "Of decision-makers say a company’s thought leadership is a more trustworthy way to judge its capabilities than its marketing materials.",
+        source: "Edelman and LinkedIn, B2B Thought Leadership Impact Report, 2024",
+        url: "https://www.edelman.com/sites/g/files/aatuss191/files/2024-02/_2024%20Edelman-LinkedIn%20B2B%20Thought%20Leadership%20Impact%20Report%20Final.pdf",
       },
     ],
     questions: [
       {
-        q: "Do we need a full rebrand?",
-        a: "Usually not. Most companies need sharper positioning and a consistent system more than a new logo. The Diagnostic tells you which.",
+        q: "How much content do we need?",
+        a: "Less than you might think. A few pieces made well and cut many ways do more than a busy calendar.",
       },
       {
-        q: "Who owns the work?",
-        a: "You do. Every file, font licence and guideline is yours.",
+        q: "Who writes it?",
+        a: "Our team, from interviews with yours. Nothing ships without your sign-off.",
       },
       {
-        q: "Can you work with our in-house designers?",
-        a: "Yes. We build the system so your team can use it, and we train them on it.",
+        q: "Do you work with creators?",
+        a: "Yes, through UGC & Creators: briefed from the same story, so a creator’s video and your article say the same thing.",
+      },
+    ],
+  },
+  "video-photo": {
+    lead: "Film and photography, planned from the Core Brief and shot to be cut: one shoot day gives you the hero film, the cut-downs, the vertical clips and the stills every surface needs.",
+    job: "Shoot once, and have what every surface needs.",
+    body: [
+      "Most production is planned shot by shot for one ad, so every new format means another shoot. We plan from the brief and the surfaces instead: every scene is lit for the widest frame and composed for the narrowest, so one take survives the film, the post, the square and the vertical clip.",
+      "Production runs inside the Create layer, so the edit starts from the cut list, and every asset arrives named, captioned and ready for the surface it was made for.",
+    ],
+    deliverables: [
+      "The shoot plan, from the brief and the cut list",
+      "Direction, crew, casting and locations",
+      "The hero film and its cut-downs",
+      "Vertical clips for short-form and creators",
+      "Product and in-use photography",
+      "A library, named and captioned for every surface",
+    ],
+    runsOn: "The Core Brief, and the cut list the Surface Plan asks for.",
+    feeds: "The Asset System: film and stills cut for every surface the plan uses.",
+    readout: [
+      "One take, lit for the widest frame.",
+      "Each crop follows the subject: 16:9, 4:5, 1:1 and 9:16.",
+      "Shot once, it survives every surface it was planned for.",
+    ],
+    metrics: [
+      { name: "Cost per asset", what: "What each usable asset costs, from the plan to delivery.", when: "Per shoot" },
+      { name: "Assets in use", what: "How much of what was shot runs somewhere within a quarter.", when: "Quarterly" },
+      { name: "Creative fatigue", what: "When a film or clip stops working, so the next one is ready.", when: "Weekly" },
+      { name: "Time to first cut", what: "Days from the shoot to the first asset live.", when: "Per shoot" },
+    ],
+    numbers: [
+      {
+        figure: "49%",
+        text: "Of the extra sales advertising drives comes from creative quality, ahead of brand (21%), reach (14%) and targeting (11%), across nearly 450 consumer-goods campaigns.",
+        source: "NCSolutions, Five Keys to Advertising Effectiveness, 2023",
+        url: "https://info.ncsolutions.com/hubfs/2023%20Five%20Keys%20to%20Advertising%20Effectiveness/NCS_Five_Keys_to_Advertising_Effectiveness_E-Book_08-23.pdf",
+      },
+    ],
+    questions: [
+      {
+        q: "Do you run the shoots?",
+        a: "Yes. We direct every shoot and bring the crew it needs, from a small team for creator-style clips to a full crew for a hero film.",
+      },
+      {
+        q: "Can you use what we already have?",
+        a: "Yes. We start from your library, cut what can be cut, and shoot only what is missing.",
+      },
+      {
+        q: "Who owns the footage?",
+        a: "You do: every file, with usage cleared for the surfaces it was made for.",
+      },
+    ],
+  },
+  "ugc-creators": {
+    lead: "Content made by creators, in their own voice, and partnerships with the creators your buyers already follow: briefed from the Core Brief, tested before money goes behind it, with rights settled before anyone films.",
+    job: "Be recommended by people your buyers already trust.",
+    body: [
+      "People trust people more than brands, and short-form travels best in a creator’s voice. But creator programs fail in familiar ways: a hundred videos that say a hundred different things, rights nobody checked, and no way to tell which creator sold anything.",
+      "We brief every creator from the same idea, test hooks before paid goes behind them, settle usage and whitelisting up front, and read every creator against the one number.",
+    ],
+    deliverables: [
+      "Creator search, outreach and contracts",
+      "Briefs from the Core Brief, with hooks to test",
+      "UGC for ads, product pages and social",
+      "Usage rights and whitelisting, settled up front",
+      "Hook tests, and paid behind the winners",
+      "Every creator read in the Ledger",
+    ],
+    runsOn: "The Core Brief, and the hooks the Surface Plan needs tested.",
+    feeds: "The Surface Plan: tested cuts for paid, product pages and creators’ own audiences.",
+    readout: [
+      "Ten hooks, three creators each: thirty videos from one brief.",
+      "Views come in; each video is read on how many keep watching.",
+      "The winners are reshot and get paid behind them; the rest are retired.",
+    ],
+    metrics: [
+      { name: "Hook hold", what: "How many keep watching past the first three seconds, by hook and by creator.", when: "Weekly" },
+      { name: "Cost per usable video", what: "What each video that runs costs, rights included.", when: "Monthly" },
+      { name: "Creator reach", what: "What creators’ audiences do next: search, visit or buy.", when: "Monthly" },
+      { name: "The one number", what: "Orders, installs or demos from creator content, counted once.", when: "Monthly" },
+    ],
+    numbers: [
+      {
+        figure: "88%",
+        text: "Of people trust recommendations from people they know more than any other source, in a study of over 40,000 people worldwide.",
+        source: "Nielsen, Trust in Advertising, 2021",
+        url: "https://www.nielsen.com/insights/2021/beyond-martech-building-trust-with-consumers-and-engaging-where-sentiment-is-high/",
+      },
+    ],
+    questions: [
+      {
+        q: "How do you find creators?",
+        a: "From your buyers outward: the people they already follow first, then creators who make the kind of content your category buys from.",
+      },
+      {
+        q: "Do creators follow a script?",
+        a: "No. They get the idea, the proof to show and the limits, then say it in their own words. That is why it works.",
+      },
+      {
+        q: "Who owns the videos?",
+        a: "Rights are agreed before anyone films: where each video can run, for how long, and whether ads can run from the creator’s handle.",
       },
     ],
   },
@@ -176,9 +387,9 @@ const COPY: Record<string, Copy> = {
     runsOn: "The Core Brief’s claims and the Asset System’s pages.",
     feeds: "The Ledger: searches and answers, counted as causes of the one number.",
     readout: [
-      "A buyer asks a question, and an assistant answers it with a few names.",
-      "It builds the answer from the sources it trusts: your site, reviews, press, directories and forums.",
-      "We make each of those sources say the same clear thing, so the answer names you.",
+      "A buyer asks an assistant a question.",
+      "It answers from the sources it trusts, and cites them.",
+      "Fix the sources, and the answer starts to name you.",
     ],
     metrics: [
       { name: "Share of answers", what: "How often AI assistants name you when asked the questions your buyers ask.", when: "Monthly" },
@@ -221,78 +432,15 @@ const COPY: Record<string, Copy> = {
       },
     ],
   },
-  "content-marketing": {
-    lead: "Content is how buyers find you long before they are ready to buy. We make it from the Core Brief, cut for the places they look, with creators and UGC run as part of the program.",
-    job: "Be found by buyers long before they’re ready.",
-    body: [
-      "Most content fails because it is made for a calendar, not for a buyer. We start from the questions your buyers ask and the places they ask them, then make fewer, better pieces and cut each one many ways.",
-      "Creators and UGC sit here too, briefed from the same story, so a creator’s video, an article and a product page say the same thing in their own way.",
-    ],
-    deliverables: [
-      "A program built on your buyers’ questions",
-      "Articles and research worth citing",
-      "Film and short-form, cut from one shoot",
-      "Creator and UGC programs, briefed from the Core Brief",
-      "Newsletters and your own channels",
-      "A library your team can reuse",
-    ],
-    runsOn: "The Core Brief, and the questions the Surface Plan ranks.",
-    feeds: "The Surface Plan: every piece is made for a surface, and paid and press carry the best of it.",
-    readout: [
-      "One story, from the Core Brief, made once and made well.",
-      "Cut into what each place needs: articles, film, clips, posts, newsletters and creator kits.",
-      "Each cut is made for a surface, so it is found where buyers already look.",
-    ],
-    metrics: [
-      { name: "Found and cited", what: "What gets found in search, shared, and cited by AI assistants.", when: "Monthly" },
-      { name: "Assists", what: "Which pieces people read before they become the one number.", when: "Monthly" },
-      { name: "Cost per piece", what: "What each piece costs, against what it earns over time.", when: "Quarterly" },
-      { name: "Creator reach", what: "What creators’ audiences do next: search, visit or buy.", when: "Monthly" },
-    ],
-    numbers: [
-      {
-        figure: "88%",
-        text: "Of people trust recommendations from people they know more than any other source, in a study of over 40,000 people worldwide.",
-        source: "Nielsen, Trust in Advertising, 2021",
-        url: "https://www.nielsen.com/insights/2021/beyond-martech-building-trust-with-consumers-and-engaging-where-sentiment-is-high/",
-      },
-      {
-        figure: "95%",
-        text: "Of business buyers aren’t in the market at any given time, by a rule-of-thumb estimate: content has to reach them long before they are.",
-        source: "Ehrenberg-Bass Institute for LinkedIn’s B2B Institute, 2021",
-        url: "https://business.linkedin.com/advertise/resources/b2b-institute/b2b-research/trends/95-5-rule",
-      },
-      {
-        figure: "73%",
-        text: "Of decision-makers say a company’s thought leadership is a more trustworthy way to judge its capabilities than its marketing materials.",
-        source: "Edelman and LinkedIn, B2B Thought Leadership Impact Report, 2024",
-        url: "https://www.edelman.com/sites/g/files/aatuss191/files/2024-02/_2024%20Edelman-LinkedIn%20B2B%20Thought%20Leadership%20Impact%20Report%20Final.pdf",
-      },
-    ],
-    questions: [
-      {
-        q: "How much content do we need?",
-        a: "Less than you might think. A few pieces made well and cut many ways do more than a busy calendar.",
-      },
-      {
-        q: "Do you work with creators?",
-        a: "Yes. We find, brief and manage creators and UGC, and paid puts money behind what works.",
-      },
-      {
-        q: "Who writes it?",
-        a: "Our team, from interviews with yours. Nothing ships without your sign-off.",
-      },
-    ],
-  },
-  "paid-ads": {
-    lead: "Paid media rents attention. We run it inside the Surface Plan, so spend goes behind what already works and every dollar is read against the one number.",
+  "paid-media": {
+    lead: "Paid media rents attention: search, social, video, creators and retail media. We run it inside the Surface Plan, so spend goes behind what already works and every dollar is read against the one number.",
     job: "Rent attention on purpose, and keep what it earns.",
     body: [
       "Paid works best when it amplifies something that already lands: a message that converts, a creator’s video that took off, a page that turns visits into orders. Run on its own, it buys cheap clicks and reports them as success.",
-      "We plan, build and run paid search, social and creator amplification as one budget, moved each month to whatever the Ledger says is working.",
+      "We plan, build and run paid search, social, video and creator amplification as one budget, moved each week to whatever the Ledger says is working.",
     ],
     deliverables: [
-      "One budget across search, social and creators",
+      "One budget across search, social, video and creators",
       "Ads built in sets from the Asset System",
       "Landing pages that match the ad",
       "Audiences built from your buyers",
@@ -302,9 +450,9 @@ const COPY: Record<string, Copy> = {
     runsOn: "The Asset System’s cuts and the Surface Plan’s order.",
     feeds: "The Ledger: spend against what it produced, by channel and by buyer.",
     readout: [
-      "Every surface and every creative starts with a share of one budget.",
-      "Each week, spend moves toward whatever turns into the one number.",
-      "What doesn’t work gets less each week, until it is cut.",
+      "One budget, across the surfaces that earn it.",
+      "Each week, spend moves toward whatever turns into the number.",
+      "What doesn’t earn it gets less each week, until it is cut.",
     ],
     metrics: [
       { name: "Cost per number", what: "What one order, install, demo or stockist costs, by channel.", when: "Weekly" },
@@ -359,9 +507,9 @@ const COPY: Record<string, Copy> = {
     runsOn: "The Core Brief’s story and its proof.",
     feeds: "The Asset System and the Surface Plan: quotes, citations and reviews that every other surface uses.",
     readout: [
-      "It starts with one story worth repeating, and the proof behind it.",
-      "Press and podcasts carry it first; reviews and creators echo it.",
-      "The echo reaches the places buyers check last: search and AI answers.",
+      "A story runs.",
+      "Outlets, podcasts and creators pick it up; ads and pages quote it.",
+      "AI answers start citing it, and searches for your name rise.",
     ],
     metrics: [
       { name: "Share of voice", what: "Your mentions against your competitors’, in the outlets your buyers read.", when: "Monthly" },
@@ -398,78 +546,27 @@ const COPY: Record<string, Copy> = {
       },
     ],
   },
-  "creative-direction": {
-    lead: "Creative direction keeps the work good, and the story the same everywhere. Someone with taste reviews everything the system makes against the Core Brief.",
-    job: "Someone with taste in every review.",
-    body: [
-      "When marketing is spread across suppliers, nobody owns the whole impression. Each supplier’s work is fine on its own and inconsistent next to the others. A creative director owns the whole: the ideas, the look and the bar.",
-      "We set the creative platform from the Core Brief, run the shoots, and review everything that ships, from a homepage to a creator’s script.",
-    ],
-    deliverables: [
-      "The creative platform and the ideas behind it",
-      "Campaign concepts, built to be cut",
-      "Art direction for shoots and film",
-      "Creator briefs and reviews",
-      "A review of everything that ships",
-      "Direction for your in-house team and suppliers",
-    ],
-    runsOn: "The Core Brief, and the Ledger’s read of what worked.",
-    feeds: "The Asset System: everything is made, and reviewed, to one standard.",
-    readout: [
-      "Many directions, drafted fast: this is where machines help.",
-      "A creative director keeps one, and says why.",
-      "That one direction runs through every format, from film to the pack.",
-    ],
-    metrics: [
-      { name: "Consistency", what: "How much of what ships holds to the platform, checked in every review.", when: "Monthly" },
-      { name: "Ideas that work", what: "Which creative ideas lead to the one number, read across channels.", when: "Monthly" },
-      { name: "Creative fatigue", what: "When an idea stops working in paid, so the next one is ready.", when: "Weekly" },
-      { name: "Time to sign-off", what: "How long work takes from first draft to approval.", when: "Monthly" },
-    ],
-    numbers: [
-      {
-        figure: "49%",
-        text: "Of the extra sales advertising drives comes from creative quality, ahead of brand (21%), reach (14%) and targeting (11%), across nearly 450 consumer-goods campaigns.",
-        source: "NCSolutions, Five Keys to Advertising Effectiveness, 2023",
-        url: "https://info.ncsolutions.com/hubfs/2023%20Five%20Keys%20to%20Advertising%20Effectiveness/NCS_Five_Keys_to_Advertising_Effectiveness_E-Book_08-23.pdf",
-      },
-    ],
-    questions: [
-      {
-        q: "Do we need this if we have a brand agency?",
-        a: "If nobody reviews everything that ships, yes. We can direct alongside the suppliers you already have.",
-      },
-      {
-        q: "Do you shoot?",
-        a: "Yes. We plan and run shoots built to be cut into every format the system needs.",
-      },
-      {
-        q: "Who is the creative director?",
-        a: "A senior creative on your team from the Diagnostic on, not a name on the pitch.",
-      },
-    ],
-  },
-  "martech-consulting": {
-    lead: "Martech is the wiring nobody sees until it breaks. We build the measurement behind the Ledger, so everyone reads the same number, and advise on the tools around it.",
+  "analytics-martech": {
+    lead: "Analytics and martech are the wiring nobody sees until it breaks. We build the measurement behind the Ledger, so everyone reads the same number, and set up the tools around it: analytics, your CRM or store, email and automation.",
     job: "One number everyone trusts, and the wiring behind it.",
     body: [
       "Most companies cannot say which spend produced last quarter’s results, because each tool reports its own version. We agree the one number in the Diagnostic, then wire analytics, your CRM or store, and the ad platforms so it is counted once, the same way, everywhere.",
-      "Consulting sits here too: which tools you need, which you don’t, and how your team works with the system once it is running.",
+      "Then the tools around it: which you need and which you don’t, and the automation that turns a first order or sign-up into the next one, from email to the CRM.",
     ],
     deliverables: [
       "The one number, defined with you, for each buyer",
       "Analytics and tracking, set up and checked",
       "Your CRM or store connected to the Ledger",
       "Attribution you can explain to a board",
+      "Email, lifecycle and automation, wired to the number",
       "A review of your tools: keep, cut or replace",
-      "The monthly Ledger, read with you",
     ],
     runsOn: "Every other layer: it reads what they produce.",
     feeds: "Narrative and Distribute, every quarter: the brief and the plan are reset from what it reads.",
     readout: [
-      "Your site, store, ads, email and reviews each count in their own way.",
-      "The Ledger reconciles them into one set of numbers, read the same way every month.",
-      "Out comes one number everyone trusts, and the wiring that keeps it true.",
+      "Every platform reports the sales it touched.",
+      "The Ledger matches them, and counts each sale once.",
+      "Out comes one number everyone trusts.",
     ],
     metrics: [
       { name: "One definition", what: "Whether the number is counted the same way in every tool and report.", when: "Monthly" },
@@ -490,12 +587,6 @@ const COPY: Record<string, Copy> = {
         source: "Scott Brinker, Marketing Technology Landscape, 2026",
         url: "https://chiefmartec.com/2026/05/2026-marketing-technology-landscape-supergraphic-peak-martech-achieved-maybe/",
       },
-      {
-        figure: "7.8%",
-        text: "Of company revenue goes to marketing, on average, among the marketing leaders surveyed.",
-        source: "Gartner, CMO Spend Survey, 2026",
-        url: "https://www.gartner.com/en/newsroom/press-releases/2026-05-11-gartner-2026-cmo-spend-survey-finds-cmos-allocate-15-point-3-percent-of-marketing-budgets-to-ai-but-only-30-percent-are-ready-to-scale-ai-capabilities",
-      },
     ],
     questions: [
       {
@@ -514,7 +605,7 @@ const COPY: Record<string, Copy> = {
   },
 };
 
-/** The eight, in the site's order, each with its page copy */
+/** The ten, in the System's order, each with its page copy */
 export const DISCIPLINES: readonly Discipline[] = SERVICES.map((svc) => ({
   slug: svc.slug,
   name: svc.name,

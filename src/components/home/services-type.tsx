@@ -7,7 +7,7 @@ import { mountServicesType, STAGES, SYSTEM, type StageKey } from "@/lib/services
 import s from "./services-type.module.css";
 
 /*
-  The figure of Services: the eight names, first set the way eight
+  The figure of Services: the ten names, first set the way ten
   suppliers would set them, lined up on the menu's rows (in the System's
   order), set in one face stage by stage along the chain, then drained
   into the Plurel System: four bands, Narrative first, each coming down
@@ -17,7 +17,7 @@ import s from "./services-type.module.css";
   narrator, who hands over to the System's title, and the chain, which
   gives way to the System's line), the body (the menu, passed in as
   children, and the System's bands, passed in server-rendered) and the
-  eight aria-hidden clones that carry the motion.
+  ten aria-hidden clones that carry the motion.
 
   Static (no JS, reduced motion, forced colours, a screen too short for
   the finished frame) it is simply the System, unpinned: its title, its
@@ -57,7 +57,7 @@ export function ServicesType({
                   {SYSTEM.title}
                 </h3>
                 <p aria-hidden className={s.capMotion}>
-                  <span className={s.ca}>Eight disciplines, eight voices.</span>
+                  <span className={s.ca}>Ten disciplines, ten voices.</span>
                   <span className={s.cb}>Lined up, it&rsquo;s still a menu.</span>
                   <span className={s.cc}>Set as one, it&rsquo;s a system.</span>
                 </p>

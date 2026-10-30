@@ -23,7 +23,7 @@ import s from "./came-for.module.css";
   others in blush. Under them, one panel per want: the want in the
   visitor's words, Plurel's line on it, the four layers of the Plurel
   System, each with what it does for that want, on a spine, and a link to
-  the want's package.
+  the want's engagement.
 
   The tour: while the chapter is on screen the four take turns on their
   own, so a visitor sees each can be chosen. The chosen word's rule is
@@ -52,7 +52,7 @@ export type Want = {
   stance: string;
   /** What each layer does for it, in the System's order */
   layers: readonly string[];
-  /** The want's package page */
+  /** The want's engagement page */
   href: string;
 };
 
@@ -257,7 +257,7 @@ export function WantSelector({
             </ol>
             <p className={s.more} style={{ "--i": w.layers.length + 2 } as CSSProperties}>
               <Link href={w.href} className={s.moreLink}>
-                The {w.term} package
+                The {w.term} engagement
                 <ArrowRight aria-hidden className="size-4" />
               </Link>
             </p>

@@ -45,7 +45,7 @@ const order = setOrder(stages);
 
 test("every supplier ends exactly on the house style", () => {
   for (const table of [DESK, PHONE]) {
-    assert.equal(table.length, 8);
+    assert.equal(table.length, SERVICES.length);
     for (const sp of table) {
       const f = faceAt(sp, 1);
       assert.equal(f.mono, false, `${sp.who}: family`);
@@ -160,7 +160,7 @@ test("the first two beats keep the timing they were drawn for", () => {
 test("the menu runs in the System's order, so each layer leaves from its top", () => {
   // every layer's rows are one run, in the bands' order: when a layer
   // drains, its names are the menu's top rows and nothing closes ranks
-  assert.deepEqual(order, [[0, 1], [2, 3], [4, 5, 6], [7]]);
+  assert.deepEqual(order, [[0, 1], [2, 3, 4, 5], [6, 7, 8], [9]]);
   assert.deepEqual(order.flat(), SERVICES.map((_, i) => i));
   const drains = drainTimes(order);
   for (let i = 0; i < SERVICES.length; i++) {
@@ -211,7 +211,8 @@ test("names are set in chain order, then drain into the bands, Narrative first",
 */
 function menuClear(P: number, B: number, A: number, G: number, desk: boolean) {
   const drains = drainTimes(order);
-  const sinkBy = Math.max(0, A - G - 8 * P);
+  const N = SERVICES.length;
+  const sinkBy = Math.max(0, A - G - N * P);
   let worst = Infinity;
   for (let p = T.sink.at; p <= END; p += 0.0005) {
     // the foot of the stack come down so far
@@ -222,10 +223,10 @@ function menuClear(P: number, B: number, A: number, G: number, desk: boolean) {
     }
     // the highest row still on the menu (its layer has not left yet)
     let top = Infinity;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < N; i++) {
       if (p >= drains[i].leave) continue;
       let down = sinkAt(p) * sinkBy;
-      for (let j = i + 1; j < 8; j++) if (drains[j].layer < drains[i].layer) down += closeAt(p, drains[j].leave, desk) * P;
+      for (let j = i + 1; j < N; j++) if (drains[j].layer < drains[i].layer) down += closeAt(p, drains[j].leave, desk) * P;
       top = Math.min(top, i * P + down);
     }
     if (top < Infinity && foot > 0) worst = Math.min(worst, top - foot);
@@ -235,10 +236,10 @@ function menuClear(P: number, B: number, A: number, G: number, desk: boolean) {
 
 test("a band coming down never covers a row still on the menu", () => {
   // 1440x900 and 1366x768 (desktop, names fly); 390x844 and 768x1024 (they fold)
-  assert.ok(menuClear(78, 175.5, 702, 20, true) >= 0, "1440x900");
-  assert.ok(menuClear(59.6, 140.6, 562.5, 20, true) >= 0, "1366x768");
-  assert.ok(menuClear(62, 162, 648, 16, false) >= 0, "390x844");
-  assert.ok(menuClear(75, 205, 820, 16, false) >= 0, "768x1024");
+  assert.ok(menuClear(62, 176.75, 707, 20, true) >= 0, "1440x900");
+  assert.ok(menuClear(53.4, 149.5, 598, 20, true) >= 0, "1366x768");
+  assert.ok(menuClear(55.7, 159, 636, 16, false) >= 0, "390x844");
+  assert.ok(menuClear(74.4, 204.75, 819, 16, false) >= 0, "768x1024");
 });
 
 test("the set menu settles onto the floor after the last name is set and before the first band comes down", () => {

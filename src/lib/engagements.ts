@@ -1,13 +1,13 @@
 import type { Stat } from "@/components/instruments";
 import type { QA } from "@/components/questions";
-import { PACKAGES as NAV_PACKAGES, type LayerKey, type PackageKey } from "@/lib/nav";
+import { ENGAGEMENTS as NAV_ENGAGEMENTS, type LayerKey, type EngagementKey } from "@/lib/nav";
 
 /*
-  The four packages (app/services/[slug]), named for what a company comes
-  for: reach, reputation, mindshare and revenue. Each runs on all four
-  layers of the Plurel System and is built from the individual services;
+  The four engagements (app/services/[slug]), named for what a company
+  comes for: reach, reputation, mindshare and revenue. Each runs on all
+  four layers of the Plurel System and is built from the disciplines;
   only the tuning differs. The homepage's What you came for reads the
-  first part of each (want, stance, the four layer lines); the package
+  first part of each (want, stance, the four layer lines); the engagement
   page reads all of it. Terms, wants and links come from nav.ts, so the
   menu, the homepage and the pages never disagree.
 
@@ -20,8 +20,8 @@ import { PACKAGES as NAV_PACKAGES, type LayerKey, type PackageKey } from "@/lib/
 
 export type Metric = { name: string; what: string; when: string };
 
-export type Package = {
-  key: PackageKey;
+export type Engagement = {
+  key: EngagementKey;
   term: string;
   want: string;
   href: string;
@@ -36,9 +36,9 @@ export type Package = {
   caseBody: string;
   /** Published numbers that make the case, each with its source */
   numbers: readonly Stat[];
-  /** What the signature drawing shows, step by step (its readout) */
+  /** What the page's instrument shows, step by step (its readout) */
   readout: readonly string[];
-  /** The individual services it is built from, by layer */
+  /** The disciplines it is built from, by layer */
   uses: Record<LayerKey, readonly string[]>;
   /** The measures it answers to */
   metrics: readonly Metric[];
@@ -47,9 +47,9 @@ export type Package = {
   questions: readonly QA[];
 };
 
-type Copy = Omit<Package, "key" | "term" | "want" | "href">;
+type Copy = Omit<Engagement, "key" | "term" | "want" | "href">;
 
-const COPY: Record<PackageKey, Copy> = {
+const COPY: Record<EngagementKey, Copy> = {
   reach: {
     stance: "A viral moment is luck. Reach is a system that gives luck more chances.",
     layers: [
@@ -76,10 +76,10 @@ const COPY: Record<PackageKey, Copy> = {
       "Over a quarter, the floor rises: more people know you, and more of them look for you.",
     ],
     uses: {
-      narrative: ["creative-direction"],
-      create: ["content-marketing"],
-      distribute: ["paid-ads", "aeo-seo"],
-      measure: ["martech-consulting"],
+      narrative: ["branding"],
+      create: ["content-marketing", "video-photo", "ugc-creators"],
+      distribute: ["paid-media", "aeo-seo"],
+      measure: ["analytics-martech"],
     },
     metrics: [
       { name: "New people reached", what: "People who saw you for the first time, by surface, with the overlap taken out.", when: "Monthly" },
@@ -144,10 +144,10 @@ const COPY: Record<PackageKey, Copy> = {
       "When they agree, they reach the places buyers check last: search and AI answers.",
     ],
     uses: {
-      narrative: ["brand-identity"],
+      narrative: ["branding"],
       create: ["content-marketing"],
       distribute: ["pr-reputation", "aeo-seo"],
-      measure: ["martech-consulting"],
+      measure: ["analytics-martech"],
     },
     metrics: [
       { name: "Share of voice", what: "Your mentions against your competitors’, in the press and the places your buyers read.", when: "Monthly" },
@@ -206,10 +206,10 @@ const COPY: Record<PackageKey, Copy> = {
       "Steady enough, you cross the line where you’re the name that comes to mind first.",
     ],
     uses: {
-      narrative: ["brand-identity", "creative-direction"],
-      create: ["content-marketing", "website-design"],
-      distribute: ["paid-ads", "aeo-seo"],
-      measure: ["martech-consulting"],
+      narrative: ["branding"],
+      create: ["content-marketing", "website-design", "video-photo"],
+      distribute: ["paid-media", "aeo-seo"],
+      measure: ["analytics-martech"],
     },
     metrics: [
       { name: "Share of search", what: "Searches for your name, as a share of searches for you and your competitors.", when: "Monthly" },
@@ -264,10 +264,10 @@ const COPY: Record<PackageKey, Copy> = {
       "More of the same attention arrives at the one number.",
     ],
     uses: {
-      narrative: ["brand-identity"],
+      narrative: ["branding"],
       create: ["website-design"],
-      distribute: ["paid-ads", "aeo-seo"],
-      measure: ["martech-consulting"],
+      distribute: ["paid-media", "aeo-seo"],
+      measure: ["analytics-martech"],
     },
     metrics: [
       { name: "The one number", what: "Orders, installs, demos or stockists, agreed on day one.", when: "Monthly" },
@@ -298,10 +298,10 @@ const COPY: Record<PackageKey, Copy> = {
   },
 };
 
-export const PACKAGES: readonly Package[] = NAV_PACKAGES.map((p) => ({ ...p, ...COPY[p.key] }));
+export const ENGAGEMENTS: readonly Engagement[] = NAV_ENGAGEMENTS.map((p) => ({ ...p, ...COPY[p.key] }));
 
-export const packageBySlug = (slug: string) => PACKAGES.find((p) => p.key === slug);
+export const engagementBySlug = (slug: string) => ENGAGEMENTS.find((p) => p.key === slug);
 
-/** The packages a service is part of, by its slug */
-export const packagesUsing = (slug: string) =>
-  PACKAGES.filter((p) => Object.values(p.uses).some((list) => list.includes(slug)));
+/** The engagements a discipline is part of, by its slug */
+export const engagementsUsing = (slug: string) =>
+  ENGAGEMENTS.filter((p) => Object.values(p.uses).some((list) => list.includes(slug)));

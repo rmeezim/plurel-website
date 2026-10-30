@@ -9,24 +9,24 @@ import { TypeReveal } from "@/components/type-reveal";
 import { DISCIPLINES } from "@/lib/disciplines";
 import { pageMetadata } from "@/lib/metadata";
 import { AUDIT_HREF } from "@/lib/nav";
-import { PACKAGES } from "@/lib/packages";
+import { ENGAGEMENTS } from "@/lib/engagements";
 import { STAGES, type StageKey } from "@/lib/services-type";
 
 export const metadata = pageMetadata({
-  title: "Services and packages — Plurel",
+  title: "Engagements and disciplines — Plurel",
   description:
-    "Four packages, by what you came for (reach, reputation, mindshare, revenue), each run on the same system: four layers, eight services you can also buy on their own, one team and one number.",
+    "Four engagements, by what you came for (reach, reputation, mindshare, revenue), each run on the same system: four layers, ten disciplines you can also hire on their own, one team and one number.",
   path: "/services/",
 });
 
 /*
   /services: what Plurel sells, the page the homepage's services chapter
-  and the menu point to. First the four packages, named for what a
-  company comes for (each with its glyph, its want and the services it is
-  built from). Then the system underneath them: its four layers as four
+  and the menu point to. First the four engagements, named for what a
+  company comes for (each with its glyph, its want and Plurel's line on
+  it). Then the system underneath them: its four layers as four
   full-width bands, read top to bottom as on the homepage, each a graphite
   tone a step deeper than the one above, with the instrument it builds,
-  what goes into it, and its services, each one also sold on its own.
+  what goes into it, and its disciplines, each one also hired on its own.
   The page closes in the red room.
 */
 
@@ -85,8 +85,8 @@ export default function ServicesPage() {
   return (
     <main data-room="dark" className="bg-graphite text-paper">
       <PageHead
-        lines={["Four packages.", "One system."]}
-        standfirst="Pick what you came for. Each package runs on the same four layers, is built from the services below, and answers to one number agreed on day one."
+        lines={["Four engagements.", "One system."]}
+        standfirst="Pick what you came for. Each engagement runs on the same four layers, is built from the disciplines below, and answers to one number agreed on day one."
       >
         <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
         <CtaLink href="/method" variant="outline-light" arrow="right">
@@ -94,13 +94,13 @@ export default function ServicesPage() {
         </CtaLink>
       </PageHead>
 
-      <section aria-labelledby="packages-heading">
+      <section aria-labelledby="engagements-heading">
         <div className="mx-auto w-full max-w-[1440px] px-5 pb-4 sm:px-8 lg:px-12 lg:pb-6">
-          <h2 id="packages-heading" className="sr-only">
-            The four packages
+          <h2 id="engagements-heading" className="sr-only">
+            The four engagements
           </h2>
           <ul className={`${GRID} gap-y-12`}>
-            {PACKAGES.map((p) => (
+            {ENGAGEMENTS.map((p) => (
               <li key={p.key} className="group relative col-span-4 sm:col-span-3 lg:col-span-3">
                 <PackageGlyph pkg={p.key} />
                 <h3 className="type-display mt-6 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-none">
@@ -111,7 +111,7 @@ export default function ServicesPage() {
                 <p className="type-title mt-3 text-[19px] leading-[1.3]">{p.want}</p>
                 <p className="mt-3 max-w-[36ch] text-[15px] leading-[1.5] text-fog">{p.stance}</p>
                 <p className="mt-5 flex items-center gap-2 text-[15px] font-medium">
-                  The {p.term} package
+                  The {p.term} engagement
                   <ArrowUpRight aria-hidden className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </p>
               </li>
@@ -124,7 +124,7 @@ export default function ServicesPage() {
         <ChapterHead
           id="system-heading"
           lines={["One system", "underneath."]}
-          aside="Every package runs on the same four layers, read top to bottom. Each layer is built from individual services, and each service can also be bought on its own."
+          aside="Every engagement runs on the same four layers, read top to bottom. Each layer is built from disciplines, and each discipline can also be hired on its own."
         />
       </Room>
 
@@ -197,7 +197,7 @@ export default function ServicesPage() {
         })}
       </ol>
 
-      <Closing lines={["Four packages.", "One number."]}>
+      <Closing lines={["Four engagements.", "One number."]}>
         <CtaLink href={AUDIT_HREF} variant="paper">
           Request a diagnostic
         </CtaLink>

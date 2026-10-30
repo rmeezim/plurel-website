@@ -3,7 +3,7 @@ import { CONTAINER, CtaLink, GRID } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
 import { WantSelector, type Want } from "@/components/home/want-selector";
 import { AUDIT_HREF } from "@/lib/nav";
-import { PACKAGES } from "@/lib/packages";
+import { ENGAGEMENTS } from "@/lib/engagements";
 import { STAGES } from "@/lib/services-type";
 
 /*
@@ -14,8 +14,8 @@ import { STAGES } from "@/lib/services-type";
   pick one and the panel under them, a step deeper in ember, reads out
   what each layer of the Plurel System does for it. The layers are the
   ones the services chapter goes on to build, so this is the System's
-  first sighting. Each want is also a package, and its panel links to the
-  package's page. While the chapter is on screen the four take turns on
+  first sighting. Each want is also an engagement, and its panel links to
+  the engagement's page. While the chapter is on screen the four take turns on
   their own, so a visitor sees that each can be chosen (want-selector.tsx).
   "Go viral" is said once, with the line that keeps it honest; the
   questions say it again.
@@ -24,9 +24,9 @@ import { STAGES } from "@/lib/services-type";
   screen. Server component around the client selector.
 */
 
-/* The four wants are the four packages (lib/packages.ts): the panel reads
+/* The four wants are the four engagements (lib/engagements.ts): the panel reads
    each one's want, stance and layer lines, and links to its page */
-const WANTS: readonly Want[] = PACKAGES.map((p) => ({
+const WANTS: readonly Want[] = ENGAGEMENTS.map((p) => ({
   key: p.key,
   term: p.term,
   want: p.want,

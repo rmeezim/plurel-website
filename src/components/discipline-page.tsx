@@ -9,24 +9,23 @@ import { Reveal } from "@/components/reveal";
 import { CtaLink, GRID } from "@/components/system";
 import { DISCIPLINES, type Discipline } from "@/lib/disciplines";
 import { AUDIT_HREF, LAYERS } from "@/lib/nav";
-import { packagesUsing } from "@/lib/packages";
+import { engagementsUsing } from "@/lib/engagements";
 import { STAGES } from "@/lib/services-type";
 import { SITE_URL } from "@/lib/site";
 
 /*
-  One individual service (app/services/[slug]), told as one story and
+  One discipline (app/services/[slug]), told as one story and
   always as part of the system: the job and the case for it, with the
   published numbers behind it (each with its source); how it works inside
-  the system, as the page's drawing and its readout; what you get; the
+  the system, as the page's live instrument and its readout; what you get; the
   measures it answers to; where it sits in the Plurel System (the page's
   red room), with what it runs on and feeds; its questions; then the
-  closing. Copy in lib/disciplines.ts; the drawing in
-  artifacts/discipline-art.tsx.
+  closing. Copy in lib/disciplines.ts.
 */
 
 export function DisciplinePage({ d }: { d: Discipline }) {
   const layer = LAYERS.find((L) => L.key === d.layer)!;
-  const packages = packagesUsing(d.slug);
+  const engagements = engagementsUsing(d.slug);
 
   const SERVICE_LD = {
     "@context": "https://schema.org",
@@ -52,12 +51,12 @@ export function DisciplinePage({ d }: { d: Discipline }) {
               <Link href="/services" className="underline decoration-signal underline-offset-4 hover:text-signal">
                 the Plurel System
               </Link>
-              {packages.length > 0 && (
+              {engagements.length > 0 && (
                 <>
                   . Runs in{" "}
-                  {packages.map((p, i) => (
+                  {engagements.map((p, i) => (
                     <span key={p.key}>
-                      {i > 0 && (i === packages.length - 1 ? " and " : ", ")}
+                      {i > 0 && (i === engagements.length - 1 ? " and " : ", ")}
                       <Link href={p.href} className="underline decoration-signal underline-offset-4 hover:text-signal">
                         {p.term}
                       </Link>
@@ -166,7 +165,7 @@ export function DisciplinePage({ d }: { d: Discipline }) {
           Request a diagnostic
         </CtaLink>
         <CtaLink href="/services" variant="outline-light" arrow="right">
-          All services
+          All disciplines
         </CtaLink>
       </Closing>
     </main>

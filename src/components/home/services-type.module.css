@@ -139,13 +139,14 @@
   The rows the names line up on, and leave from: aria-hidden, shown only
   while the figure runs. Name sizes are set so every row keeps to two
   lines on phones (index, name, stage, arrow; then the line) and one line
-  from lg, measured against the longest pair, "Martech & Consulting" +
-  "Measure" (10.55 ems wide in the display cut); the index, stage, line
-  and arrow are never shown, but they keep the rows' measure.
+  from lg, measured against the longest pair, "Analytics & Martech" +
+  "Measure"; the index, stage, line and arrow are never shown, but they
+  keep the rows' measure. Ten rows share the pinned screen, so the names
+  and their padding scale with the visible height.
 */
 .menu {
-  --nm: min(calc(9vw - 14px), 3.1svh, 26px);
-  --rp: clamp(6px, 1.1svh, 12px);
+  --nm: min(calc(7.4vw - 11px), 2.5svh, 22px);
+  --rp: clamp(4px, 0.85svh, 10px);
   grid-auto-rows: 1fr;
   display: none;
   pointer-events: none;
@@ -165,18 +166,18 @@
 }
 @media (min-width: 40rem) {
   .menu {
-    --nm: min(5.4vw, 4.4svh, 40px);
+    --nm: min(4.4vw, 3.5svh, 32px);
   }
 }
 @media (min-width: 64rem) {
   .menu {
-    --nm: min(calc(3.1vw - 4.5px), 5.9svh, 52px);
-    --rp: clamp(8px, 2.2svh - 6px, 20px);
+    --nm: min(calc(2.5vw - 3.6px), 4.7svh, 42px);
+    --rp: clamp(6px, 1.75svh - 5px, 16px);
   }
 }
 @media (min-width: 80rem) {
   .menu {
-    --nm: min(3.5vw, 5.9svh, 52px);
+    --nm: min(2.8vw, 4.7svh, 42px);
   }
 }
 .name {
@@ -789,14 +790,15 @@
     align-content: start;
   }
   :global(html[data-js]) .root:not([data-type-motion]) .system {
-    --bpt: clamp(14px, 2.4svh, 30px);
-    --bpb: clamp(14px, 2.4svh, 30px);
+    --bpt: clamp(12px, 2svh, 26px);
+    --bpb: clamp(12px, 2svh, 26px);
   }
 }
 @media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 64rem) and (min-height: 640px) {
   :global(html[data-js]) .root:not([data-type-motion]) .system {
     --bn: min(clamp(2.5rem, 0.6rem + 4.4vw, 5.25rem), 8.4svh);
     --bt: min(clamp(1.25rem, 0.5rem + 1.1vw, 1.5rem), 2.6svh);
+    --bs: min(clamp(1.125rem, 0.55rem + 0.9vw, 1.3125rem), 2.5svh);
     --bpt: clamp(12px, 2.2svh, 30px);
     --bpb: clamp(12px, 2.2svh, 30px);
   }
@@ -817,7 +819,7 @@
     margin-top: 10px;
   }
   :global(html[data-js]) .root:not([data-type-motion]) .svc {
-    padding-block: 5px 6px;
+    padding-block: 4px 5px;
   }
   :global(html[data-js]) .root:not([data-type-motion]) .loop {
     --ny: calc(var(--bpt) + 0.47 * var(--bn));
@@ -831,7 +833,7 @@
   :global(html[data-js]) .root:not([data-type-motion]) .svcs {
     grid-column: 4 / span 3;
     grid-row: 1;
-    margin-top: calc(0.105 * var(--bn) - 5px - 0.255 * var(--bs));
+    margin-top: calc(0.105 * var(--bn) - 4px - 0.255 * var(--bs));
   }
 }
 
@@ -898,13 +900,14 @@
 /* Pinned, the bands keep to the screen: sizes and paddings follow the
    visible height as well as the width */
 .root[data-type-motion="on"] .system {
-  --bpt: clamp(14px, 2.4svh, 30px);
-  --bpb: clamp(14px, 2.4svh, 30px);
+  --bpt: clamp(12px, 2svh, 26px);
+  --bpb: clamp(12px, 2svh, 26px);
 }
 @media (min-width: 64rem) {
   .root[data-type-motion="on"] .system {
     --bn: min(clamp(2.5rem, 0.6rem + 4.4vw, 5.25rem), 8.4svh);
     --bt: min(clamp(1.25rem, 0.5rem + 1.1vw, 1.5rem), 2.6svh);
+    --bs: min(clamp(1.125rem, 0.55rem + 0.9vw, 1.3125rem), 2.5svh);
     --bpt: clamp(12px, 2.2svh, 30px);
     --bpb: clamp(12px, 2.2svh, 30px);
   }
@@ -917,10 +920,10 @@
     margin-top: 8px;
   }
   .root[data-type-motion="on"] .svc {
-    padding-block: clamp(5px, 0.9svh - 1px, 9px) clamp(6px, 0.9svh, 10px);
+    padding-block: clamp(4px, 0.7svh - 1px, 9px) clamp(5px, 0.75svh, 10px);
   }
   .root[data-type-motion="on"] .svcs {
-    margin-top: calc(0.105 * var(--bn) - clamp(5px, 0.9svh - 1px, 9px) - 0.255 * var(--bs));
+    margin-top: calc(0.105 * var(--bn) - clamp(4px, 0.7svh - 1px, 9px) - 0.255 * var(--bs));
   }
 }
 /* Below lg, pinned: each band is its name and services side by side
@@ -940,7 +943,7 @@
     margin-top: 10px;
   }
   .root[data-type-motion="on"] .svc {
-    padding-block: 5px 6px;
+    padding-block: 4px 5px;
   }
   .root[data-type-motion="on"] .loop {
     --ny: calc(var(--bpt) + 0.47 * var(--bn));
@@ -954,7 +957,7 @@
   .root[data-type-motion="on"] .svcs {
     grid-column: 4 / span 3;
     grid-row: 1;
-    margin-top: calc(0.105 * var(--bn) - 5px - 0.255 * var(--bs));
+    margin-top: calc(0.105 * var(--bn) - 4px - 0.255 * var(--bs));
   }
 }
 .root[data-type-motion="on"] .legend {
