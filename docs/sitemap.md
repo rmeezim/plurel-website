@@ -59,7 +59,8 @@ It is the reference build.
 its print (the four layers, a square for each discipline, lit where it
 is used), its want, Plurel's line on it and a link. Then "What each one
 is built from": every discipline against every engagement, as one
-matrix. Then "One system underneath": the four layers from top to
+matrix (on a phone, each discipline lists the engagements it runs in).
+Then "One system underneath": the four layers from top to
 bottom (Narrative, Create, Distribute, Measure) as the homepage's
 graphite bands at the same tones, each with what it builds, what it
 holds, its disciplines (each also hired on its own), its cadence and
@@ -68,23 +69,27 @@ what it feeds. Closes on "Four engagements. One number."
 ### `/services/reach`, `/reputation`, `/mindshare`, `/revenue` The engagements
 
 From `lib/engagements.ts` (`components/engagement-page.tsx`), the
-homepage's What you came for told in full, so it can be understood in a
-minute:
+homepage's What you came for told in full, as a brief: one reading
+column with a contents rail beside it (`BriefLayout`), every section an
+h2, a lead sentence, then prose, a figure, a list or a table.
 
-1. The term, its want and who it is for, then its spec sheet: what it
-   runs on, how it starts, what ships, what it answers to, how it is read.
-2. The case: a two-line head, the page's console (Reach: the
-   amplification rules; Reputation: the consensus; Mindshare: who comes
-   to mind; Revenue: the path), then the published numbers behind it.
-3. What ships: a manifest of each thing, how often, and the layer that
-   makes it.
-4. Four layers, tuned for it: the System mapped, its disciplines lit and
-   joined by their hand-offs; choose a layer to read its part here.
-5. The numbers it answers to (red): the measures as a graph into the one
-   number.
-6. The first ninety days, on a ruler of thirteen weeks.
-7. Questions, with FAQ JSON-LD, then the other three engagements.
-8. Closing.
+1. The head: the term, its want, who it is for, the actions, and its
+   spec sheet (what it runs on, how it starts, what ships, what it
+   answers to, how it is read).
+2. Overview: the case in one line, why it matters, and the published
+   numbers behind it.
+3. How it works: the page's figure (Reach: the amplification rules on
+   one cut; Reputation: when the places buyers check agree; Mindshare:
+   share of search leads market share; Revenue: the path, with its
+   leaks fixed), then its rules (Reach) or its four steps.
+4. What each layer does for it, with the disciplines that do it.
+5. What ships: each thing, how often, and the layer that makes it.
+6. How it's measured: the measures, what each is, how often it is read.
+7. The first ninety days, on a ruler of thirteen weeks.
+8. How we work together: the Diagnostic, the monthly partnership, the
+   quarterly reset.
+9. Questions, with FAQ JSON-LD; then the other three engagements and
+   the red closing.
 
 ### `/services/[slug]` The ten disciplines
 
@@ -95,20 +100,21 @@ Website Design, Content Marketing, Video & Photo and UGC & Creators
 Analytics & Martech (Measure). Creative direction sits in Branding,
 consulting in the Fractional CMO.
 
-1. The name and the lead, then its spec sheet: its layer, the
-   engagements it runs in, how it is hired, how it starts, how often it
-   is read.
-2. The case: the job as the head, why it matters, the page's console
-   (how the work works, as a working model or, for Website Design, a
-   live measurement of the page itself), then the published numbers
-   behind it (each with its source).
-3. What you get: the deliverables.
-4. The numbers it answers to: the measures as a graph into the one
-   number.
-5. Where it sits (red): the System mapped, this discipline marked, with
-   what it runs on and what it feeds.
-6. Questions, with FAQ JSON-LD.
-7. Closing.
+Each is a brief, the same anatomy as the engagements':
+
+1. The head: the name, its line, the lead, the actions, and its spec
+   sheet (its layer, the engagements it runs in, how it is hired, how it
+   starts, how often it is read).
+2. Overview: the case in one line, why it matters, and the published
+   numbers behind it (each with its source).
+3. How it works: the page's figure, one point each (a labelled
+   illustration, or for Website Design a live measurement of the page
+   itself).
+4. What you get: the deliverables.
+5. How it's measured: the measures, what each is, how often it is read.
+6. Where it sits: its layer, what it runs on and what it feeds, the
+   engagements it runs in and the disciplines beside it.
+7. Questions, with FAQ JSON-LD; then the red closing.
 
 There is also Service JSON-LD.
 

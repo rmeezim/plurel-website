@@ -50,11 +50,11 @@ export function SiteFooter() {
             </div>
 
             <nav
-              aria-label="Packages"
+              aria-label="Engagements"
               className="col-span-4 min-[390px]:col-span-2 lg:col-span-2 lg:col-start-4"
             >
               <p className={LABEL}>
-                Packages
+                Engagements
               </p>
               <ul className={LIST}>
                 {ENGAGEMENTS.map((p) => (
@@ -68,11 +68,11 @@ export function SiteFooter() {
             </nav>
 
             <nav
-              aria-label="Services"
+              aria-label="Disciplines"
               className="col-span-4 min-[390px]:col-span-2 lg:col-span-3 lg:col-start-6"
             >
               <p className={LABEL}>
-                Services
+                Disciplines
               </p>
               <ul className={LIST}>
                 {SERVICES.map((s) => (

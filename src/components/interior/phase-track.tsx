@@ -22,7 +22,7 @@ export function PhaseTrack({ items, weeks = 13, label }: { items: readonly { whe
           {Array.from({ length: weeks }, (_, i) => (
             <span
               key={i}
-              className={`absolute bottom-0 h-full border-l border-paper/15 pl-1.5 font-mono text-[13px] leading-none text-fog ${i % 3 && i !== weeks - 1 ? "max-sm:text-transparent" : ""}`}
+              className={`absolute bottom-0 h-full border-l border-paper/15 pl-1.5 text-[13px] leading-none tabular-nums text-fog ${i % 3 && i !== weeks - 1 ? "max-sm:text-transparent" : ""}`}
               style={{ left: pct(i + 1) }}
             >
               {i + 1}
@@ -41,7 +41,7 @@ export function PhaseTrack({ items, weeks = 13, label }: { items: readonly { whe
                   />
                 </div>
                 <div className="mt-3 lg:ml-[var(--x)] lg:max-w-[calc(100%-var(--x))]" style={{ ["--x" as string]: pct(a) }}>
-                  <p className="font-mono text-[13px] leading-none text-fog">{it.when}</p>
+                  <p className="text-[13px] leading-none text-fog">{it.when}</p>
                   <p className="mt-2 max-w-[44ch] text-[17px] leading-[1.45] text-paper">{it.what}</p>
                 </div>
               </li>

@@ -442,43 +442,6 @@
   }
 }
 
-/* ---------- Consoles (components/console) ----------
-   The instruments' sliders: a hairline track and a square thumb, the
-   console's own vocabulary (no rounded pill, no fill). */
-.console-range {
-  appearance: none;
-  height: 20px;
-  background: transparent;
-  cursor: pointer;
-}
-.console-range::-webkit-slider-runnable-track {
-  height: 1px;
-  background: color-mix(in srgb, var(--color-paper) 35%, transparent);
-}
-.console-range::-webkit-slider-thumb {
-  appearance: none;
-  width: 12px;
-  height: 12px;
-  margin-top: -5.5px;
-  border: 0;
-  background: var(--color-paper);
-}
-.console-range::-moz-range-track {
-  height: 1px;
-  background: color-mix(in srgb, var(--color-paper) 35%, transparent);
-}
-.console-range::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
-  border: 0;
-  border-radius: 0;
-  background: var(--color-paper);
-}
-.console-range:focus-visible {
-  outline: 2px solid var(--color-paper);
-  outline-offset: 4px;
-}
-
 /* ---------- Plates (components/artifacts) ----------
    The drawn instruments. Each element carries its own clock: --t (start)
    and --d (duration), in ms.

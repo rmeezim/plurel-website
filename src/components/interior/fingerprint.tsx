@@ -8,8 +8,12 @@ import type { LayerKey } from "@/lib/nav";
   layers left to right, a square for each discipline in the layer, lit
   where the engagement puts it to work (on /services, at the head of each
   engagement). The matrix: every discipline against every engagement, the
-  same squares, so the whole catalog reads in one look.
+  same squares, so the whole catalog reads in one look; on a phone, where
+  four columns won't fit beside the names, each discipline says in words
+  which engagements it runs in.
 */
+
+const and = (xs: readonly string[]) => (xs.length > 1 ? `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}` : xs[0] ?? "");
 
 export function Fingerprint({ uses, label }: { uses: Record<LayerKey, readonly string[]>; label: string }) {
   return (
@@ -32,46 +36,67 @@ export function UseMatrix({
   engagements: readonly { key: string; term: string; href: string; uses: Record<LayerKey, readonly string[]> }[];
 }) {
   return (
-    <Reveal className="mt-12 overflow-x-auto lg:mt-16">
-      <table className="w-full min-w-[560px] border-collapse text-left">
-        <caption className="sr-only">Which disciplines each engagement is built from</caption>
-        <thead>
-          <tr className="border-b border-paper/15">
-            <th scope="col" className="pb-3 text-[13px] font-normal text-fog">
-              Discipline
-            </th>
-            <th scope="col" className="pb-3 text-[13px] font-normal text-fog">
-              Layer
-            </th>
-            {engagements.map((e) => (
-              <th key={e.key} scope="col" className="w-[13%] pb-3 text-center text-[15px] font-medium">
-                {e.term}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="[&:hover>tr:not(:hover)]:opacity-50">
-          {SERVICES.map((s) => (
-            <tr key={s.slug} className="border-b border-paper/10 transition-opacity duration-300">
-              <th scope="row" className="py-3 pr-4 font-normal">
+    <Reveal className="mt-12 lg:mt-16">
+      <ul aria-label="Which disciplines each engagement is built from" className="border-t border-paper/15 sm:hidden">
+        {SERVICES.map((s) => {
+          const runs = engagements.filter((e) => e.uses[s.layer].includes(s.slug));
+          return (
+            <li key={s.slug} className="border-b border-paper/10 py-3.5">
+              <div className="flex items-baseline justify-between gap-4">
                 <Link href={s.href} className="text-[16px] transition-colors hover:text-signal">
                   {s.name}
                 </Link>
+                <span className="text-[13px] text-fog">{LAYERS.find((L) => L.key === s.layer)!.name}</span>
+              </div>
+              <p className="mt-1 text-[14px] leading-[1.45] text-fog">
+                {runs.length === engagements.length ? "In all four engagements" : runs.length ? `In ${and(runs.map((e) => e.term))}` : "Hired on its own"}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+      {/* positioned, so the cells' screen-reader labels stay inside the scroll and never widen the page */}
+      <div className="relative hidden overflow-x-auto sm:block">
+        <table className="w-full min-w-[560px] border-collapse text-left">
+          <caption className="sr-only">Which disciplines each engagement is built from</caption>
+          <thead>
+            <tr className="border-b border-paper/15">
+              <th scope="col" className="pb-3 text-[13px] font-normal text-fog">
+                Discipline
               </th>
-              <td className="py-3 pr-4 text-[14px] text-fog">{LAYERS.find((L) => L.key === s.layer)!.name}</td>
-              {engagements.map((e) => {
-                const on = e.uses[s.layer].includes(s.slug);
-                return (
-                  <td key={e.key} className="py-3 text-center">
-                    <span aria-hidden className={`inline-block size-[9px] align-middle ${on ? "bg-signal" : "border border-paper/25"}`} />
-                    <span className="sr-only">{on ? `In ${e.term}` : `Not in ${e.term}`}</span>
-                  </td>
-                );
-              })}
+              <th scope="col" className="pb-3 text-[13px] font-normal text-fog">
+                Layer
+              </th>
+              {engagements.map((e) => (
+                <th key={e.key} scope="col" className="w-[13%] pb-3 text-center text-[15px] font-medium">
+                  {e.term}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="[&:hover>tr:not(:hover)]:opacity-50">
+            {SERVICES.map((s) => (
+              <tr key={s.slug} className="border-b border-paper/10 transition-opacity duration-300">
+                <th scope="row" className="py-3 pr-4 font-normal">
+                  <Link href={s.href} className="text-[16px] transition-colors hover:text-signal">
+                    {s.name}
+                  </Link>
+                </th>
+                <td className="py-3 pr-4 text-[14px] text-fog">{LAYERS.find((L) => L.key === s.layer)!.name}</td>
+                {engagements.map((e) => {
+                  const on = e.uses[s.layer].includes(s.slug);
+                  return (
+                    <td key={e.key} className="py-3 text-center">
+                      <span aria-hidden className={`inline-block size-[9px] align-middle ${on ? "bg-signal" : "border border-paper/25"}`} />
+                      <span className="sr-only">{on ? `In ${e.term}` : `Not in ${e.term}`}</span>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </Reveal>
   );
 }

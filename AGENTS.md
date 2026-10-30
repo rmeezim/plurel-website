@@ -94,7 +94,7 @@ day one in the Diagnostic: the one the business runs on (orders, installs,
 demos, stockists, sell-through). Never headline "qualified demand" (it reads
 as agency vocabulary), and never "inquiries" or "pipeline" alone. No cited
 statistics on the homepage. Interior pages may cite published numbers
-(`Numbers` in `components/instruments.tsx`), each checked against its
+(`BriefStats` in `components/page.tsx`), each checked against its
 source, quoted within that source's scope (country, sample, year), and
 shown with its publisher, title, year and link in plain view. Engagements
 start with the Diagnostic (the Plurel Distribution Diagnostic: six parts
@@ -121,15 +121,25 @@ argument onto the homepage chapters.
   rooms touch. Content data lives in `src/lib/`, not in the page. Every
   "Request a diagnostic" uses `AUDIT_HREF` (the Diagnostic's request
   form). A new page joins `sitemap.ts` and `docs/sitemap.md`.
-- Every engagement and discipline page runs its case through a live
-  instrument in the shared console (`components/console/`): a small
-  working model of what the work does, which the reader can run, step,
-  inspect and change. It is a labelled simulation (seeded, illustrative
-  numbers, "not a client's results" in plain view) or a real measurement
-  (Website Design measures the page itself); never fake results shown as
-  real, never a static mock screen. The page around it explains itself
-  in plain parts: a spec sheet, a manifest of what ships, the System
-  mapped, the measures as a graph, the first ninety days on a ruler.
+- Engagement and discipline pages are briefs, read top to bottom
+  (`components/page.tsx`): `BriefHead` (the h1, its line, the standfirst
+  under them, a spec sheet), then one reading column of `BriefSection`s
+  (columns 5 to 12) beside a sticky contents rail (`brief-rail.tsx`, lg
+  and up). Every section has the same anatomy: an h2, a lead sentence,
+  then prose, a figure, a list or a `BriefTable` (whose rows stack on a
+  phone). Then the red `Closing`.
+- Every engagement and discipline brief makes its case with one figure
+  (`components/figures/`, its rules in `kit.tsx`): one point, stated as
+  its title; direct labels where they fit, numbered marks with notes
+  under the chart where words would crowd the lines, and a key where a
+  phone has no room to name the lines at their ends; one signal-red
+  series, everything else paper at lower opacity; Geist with tabular
+  figures and no mono, labels 14px, ticks and notes 13px. It draws once
+  as it enters, has at most one two-way toggle, and fits the reading
+  column (a chart is about 250 to 340px tall). Each is a labelled
+  illustration ("not a client's results" in plain view) except Website
+  Design's, which measures the page itself in the reader's browser;
+  never fake results shown as real, never a mock screen or a console.
 - Every other interior page carries at least one drawn instrument, a
   plate (`components/artifacts/`): the system itself drawn as lines,
   nodes and a few labels (a mechanism, a path, a chart of a principle),
@@ -148,11 +158,13 @@ argument onto the homepage chapters.
   its pen (`lib/pen.ts`). A page's own head (the hero, or an interior
   page's `PageHead`) is plotted on load, the page's one orchestrated load
   moment; every other head once as it enters. Two chapters
-  are pinned and scroll-scrubbed: the engine (`home/engine.tsx`: the
-  market drawn as buyers, read and moved by the system in five beats,
-  ending on a graph to explore) and services' typographic system, ending
-  on the Plurel System's layers (`home/services-type.tsx`), with the
-  services head between them.
+  are pinned: the engine (`home/engine.tsx`: the market drawn as buyers,
+  read and moved by the system in five beats, ending on a graph to
+  explore), where the scroll carries the words, lighting each beat's line
+  word by word, while the field moves to that beat on its own clock and
+  keeps a quiet drift, with a Pause control; and services' typographic
+  system, scroll-scrubbed, ending on the Plurel System's layers
+  (`home/services-type.tsx`), with the services head between them.
   Scroll-linked without pinning: the statement's lit words, the
   accountability strips and the faint art's drift. The fluted glass
   (`glass-band.tsx`) is the one WebGL surface; blocks light through
@@ -170,7 +182,8 @@ argument onto the homepage chapters.
   saver get a still frame. Any other auto-moving media needs a pause
   control: What you came for takes its four wants in turn while on
   screen (the chosen word's rule is the clock), holds on hover or focus,
-  has a Pause control, and stops at the visitor's first choice.
+  has a Pause control, and stops at the visitor's first choice; the
+  engine's field has its own Pause.
 - Never invent proof: no client, person, quote, logo or result is shown as
   real unless it is; samples are labelled as samples in plain view. The
   sample Diagnostic shows in one screen in the homepage's Proof and in

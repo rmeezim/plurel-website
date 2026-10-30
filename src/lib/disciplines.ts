@@ -1,4 +1,4 @@
-import type { Measure, Stat } from "@/components/instruments";
+import type { Measure, Stat } from "@/lib/brief";
 import type { QA } from "@/components/questions";
 import { SERVICES, type LayerKey } from "@/lib/nav";
 
@@ -24,8 +24,8 @@ export type Discipline = {
   href: string;
   /** The standfirst: what it is, in the system's terms */
   lead: string;
-  /** The job, in one sentence, set large */
-  job: string;
+  /** The case in one sentence, opening the Overview; its first paragraph argues it */
+  caseHead: string;
   body: readonly [string, string];
   /** What you get */
   deliverables: readonly string[];
@@ -45,7 +45,7 @@ type Copy = Omit<Discipline, "slug" | "name" | "tagline" | "layer" | "href">;
 const COPY: Record<string, Copy> = {
   "fractional-cmo": {
     lead: "A fractional CMO is senior marketing leadership, part time: the plan, the budget, the team and the suppliers, and the board conversation. Ours runs your marketing on the Plurel System and answers for the one number.",
-    job: "Own the plan, the budget and the number, part time.",
+    caseHead: "Someone has to own the number.",
     body: [
       "Growing companies often need a marketing leader before they can justify a full-time one, or between one and the next. Without one, each supplier sets its own goals, budget drifts to whoever asks loudest, and nobody can tell the board what worked.",
       "Ours sets the plan from the Diagnostic, owns the budget and the suppliers, runs the weekly rhythm and the monthly Ledger read, and builds your team when it is time to, then hands it over.",
@@ -91,9 +91,9 @@ const COPY: Record<string, Copy> = {
   },
   branding: {
     lead: "Branding is how you look, sound and come across wherever a buyer meets you: positioning, naming, identity and voice, and the creative direction that keeps it one thing. We build it into the Core Brief, so everything the system makes carries the same signal.",
-    job: "Look like the choice before you say a word.",
+    caseHead: "Buyers judge what they can’t yet test by what they can see.",
     body: [
-      "Buyers judge what they cannot yet test by the signals they can: how you look and sound, and whether it holds from one place to the next. A brand that holds up everywhere earns trust before the first conversation.",
+      "They see how you look and sound, and whether it holds from one place to the next. A brand that holds up everywhere earns trust before the first conversation.",
       "We build brands to be used, not admired in a deck: a system of type, colour, layout and voice, with the templates and rules your team and every supplier can work from, and a creative director who reviews what ships against it.",
     ],
     deliverables: [
@@ -143,9 +143,9 @@ const COPY: Record<string, Copy> = {
   },
   "website-design": {
     lead: "Ads, search, press, creators and AI answers all send people to your site. We design and build it as the home of the Asset System: cut from the Core Brief, and measured against the one number.",
-    job: "Turn the attention everything else earns into the number you run on.",
+    caseHead: "A site is judged before it is read.",
     body: [
-      "A site is judged before it is read. Buyers decide in seconds whether you look like the choice, then look for reasons to believe it, then for the shortest way to buy, book or ask. We design for all of that, in that order.",
+      "Buyers decide in seconds whether you look like the choice, then look for reasons to believe it, then for the shortest way to buy, book or ask. We design for all of that, in that order.",
       "Design and engineering run together, so the site ships fast and accessible, readable by people and by the machines that answer their questions, with measurement wired in from the first page.",
     ],
     deliverables: [
@@ -195,9 +195,9 @@ const COPY: Record<string, Copy> = {
   },
   "content-marketing": {
     lead: "Content is how buyers find you long before they are ready to buy. We make it from the Core Brief and cut it for the places they look: search, AI answers, your own channels and social.",
-    job: "Be found by buyers long before they’re ready.",
+    caseHead: "Most content fails because it is made for a calendar.",
     body: [
-      "Most content fails because it is made for a calendar, not for a buyer. We start from the questions your buyers ask and the places they ask them, then make fewer, better pieces and cut each one many ways.",
+      "We make it for a buyer instead: we start from the questions your buyers ask and the places they ask them, then make fewer, better pieces and cut each one many ways.",
       "One good conversation with your founder becomes an article, a newsletter, short clips, posts and an answer page: a month of publishing from one source, each cut made for the surface it runs on.",
     ],
     deliverables: [
@@ -247,9 +247,9 @@ const COPY: Record<string, Copy> = {
   },
   "video-photo": {
     lead: "Film and photography, planned from the Core Brief and shot to be cut: one shoot day gives you the hero film, the cut-downs, the vertical clips and the stills every surface needs.",
-    job: "Shoot once, and have what every surface needs.",
+    caseHead: "A shoot planned for one ad has to be done again for every format.",
     body: [
-      "Most production is planned shot by shot for one ad, so every new format means another shoot. We plan from the brief and the surfaces instead: every scene is lit for the widest frame and composed for the narrowest, so one take survives the film, the post, the square and the vertical clip.",
+      "We plan from the brief and the surfaces instead: every scene is lit for the widest frame and composed for the narrowest, so one take survives the film, the post, the square and the vertical clip.",
       "Production runs inside the Create layer, so the edit starts from the cut list, and every asset arrives named, captioned and ready for the surface it was made for.",
     ],
     deliverables: [
@@ -293,9 +293,9 @@ const COPY: Record<string, Copy> = {
   },
   "ugc-creators": {
     lead: "Content made by creators, in their own voice, and partnerships with the creators your buyers already follow: briefed from the Core Brief, tested before money goes behind it, with rights settled before anyone films.",
-    job: "Be recommended by people your buyers already trust.",
+    caseHead: "People trust people more than brands.",
     body: [
-      "People trust people more than brands, and short-form travels best in a creator’s voice. But creator programs fail in familiar ways: a hundred videos that say a hundred different things, rights nobody checked, and no way to tell which creator sold anything.",
+      "Short-form travels best in a creator’s voice. But creator programs fail in familiar ways: a hundred videos that say a hundred different things, rights nobody checked, and no way to tell which creator sold anything.",
       "We brief every creator from the same idea, test hooks before paid goes behind them, settle usage and whitelisting up front, and read every creator against the one number.",
     ],
     deliverables: [
@@ -339,9 +339,9 @@ const COPY: Record<string, Copy> = {
   },
   "aeo-seo": {
     lead: "Buyers ask assistants and search engines before they ever reach you. We make sure the answers name you and send people to the right page.",
-    job: "Be the answer, wherever the question is asked.",
+    caseHead: "A buyer asks an assistant and gets one answer.",
     body: [
-      "Search used to be ten links. Now a buyer asks an assistant and gets one answer, built from the sources it trusts. Being in that answer rests on the same foundations as ranking, done more carefully: clear claims, real authority, pages a machine can read, and mentions in the places it checks.",
+      "That answer is built from the sources the assistant trusts. Being in it rests on the same foundations as ranking, done more carefully: clear claims, real authority, pages a machine can read, and mentions in the places it checks.",
       "We run search and AI answers as one surface in the Surface Plan, fed by the Core Brief’s claims and the Asset System’s pages, and we read both in the Ledger.",
     ],
     deliverables: [
@@ -397,9 +397,9 @@ const COPY: Record<string, Copy> = {
   },
   "paid-media": {
     lead: "Paid media rents attention: search, social, video, creators and retail media. We run it inside the Surface Plan, so spend goes behind what already works and every dollar is read against the one number.",
-    job: "Rent attention on purpose, and keep what it earns.",
+    caseHead: "Paid works best behind something that already lands.",
     body: [
-      "Paid works best when it amplifies something that already lands: a message that converts, a creator’s video that took off, a page that turns visits into orders. Run on its own, it buys cheap clicks and reports them as success.",
+      "Put it behind a message that converts, a creator’s video that took off or a page that turns visits into orders. Run on its own, it buys cheap clicks and reports them as success.",
       "We plan, build and run paid search, social, video and creator amplification as one budget, moved each week to whatever the Ledger says is working.",
     ],
     deliverables: [
@@ -449,7 +449,7 @@ const COPY: Record<string, Copy> = {
   },
   "pr-reputation": {
     lead: "Reputation is what people say when you’re not in the room. We earn the press and reviews that tell the story your ads tell, and put them to work across the system.",
-    job: "Be talked about, and believed.",
+    caseHead: "Coverage has to tell your story, where your buyers look.",
     body: [
       "Coverage that says something different from your site and ads confuses buyers, and coverage that never reaches them is wasted. We pitch the Core Brief’s story, in your founder’s voice, to the outlets and podcasts your buyers trust.",
       "Then the system uses it: quotes in the ads, citations for AI answers, reviews on the pages where buyers decide.",
@@ -501,9 +501,9 @@ const COPY: Record<string, Copy> = {
   },
   "analytics-martech": {
     lead: "Analytics and martech are the wiring nobody sees until it breaks. We build the measurement behind the Ledger, so everyone reads the same number, and set up the tools around it: analytics, your CRM or store, email and automation.",
-    job: "One number everyone trusts, and the wiring behind it.",
+    caseHead: "Each tool reports its own version of what worked.",
     body: [
-      "Most companies cannot say which spend produced last quarter’s results, because each tool reports its own version. We agree the one number in the Diagnostic, then wire analytics, your CRM or store, and the ad platforms so it is counted once, the same way, everywhere.",
+      "So most companies cannot say which spend produced last quarter’s results. We agree the one number in the Diagnostic, then wire analytics, your CRM or store, and the ad platforms so it is counted once, the same way, everywhere.",
       "Then the tools around it: which you need and which you don’t, and the automation that turns a first order or sign-up into the next one, from email to the CRM.",
     ],
     deliverables: [

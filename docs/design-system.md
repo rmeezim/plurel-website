@@ -237,10 +237,12 @@ page read as a template.
   (`PageHead`) is plotted on load at the hero's pace, and its standfirst
   and actions light once the pen lifts, timed from the head's length
   (`plotEnd`, `lib/plot.ts`).
-- **Scroll:** two chapters are pinned and scrubbed: the engine (the
-  market, absorbed beat by beat) and services' typographic system, which
-  ends on the Plurel System; the services head sits between them, so the
-  reader is never handed from one pin straight into the next. Scroll-linked without pinning:
+- **Scroll:** two chapters are pinned. In the engine the scroll carries
+  the words (each beat's line lights word by word) while the field moves
+  to that beat on its own clock; services' typographic system is
+  scrubbed by the scroll and ends on the Plurel System. The services head
+  sits between them, so the reader is never handed from one pin straight
+  into the next. Scroll-linked without pinning:
   the statement's words light as the reader reaches them, the
   accountability strips slide in opposite directions, and the faint art
   drifts a few dozen pixels against the page (a CSS scroll-driven
@@ -369,8 +371,14 @@ Rules:
 out in `lib/engine.ts` and the pin in `home/engine.module.css`. It takes
 Why now's place and keeps its claim as the chapter's h2: "Buyers decide
 before they arrive." The field beside it is the market, drawn as about
-560 buyers (small squares), scrubbed by the scroll while the chapter is
-pinned, in five beats, the words on the left changing with each:
+560 buyers (small squares), in five beats. While the chapter is pinned
+the scroll carries the words: it picks the beat, and lights the beat's
+line word by word, its second line following once the first is lit. The
+field is not scrubbed. It moves to the beat on its own clock, one move
+after another at a steady pace (under two seconds a beat, twice as fast
+when the reader has scrolled ahead), and while on screen it keeps a
+quiet motion of its own: the market drifts, and squares travel the
+lines into the Ledger. A Pause control holds it.
 
 1. **The market, as it is.** Buyers clustered around the brand that
    comes to mind first (three named only as Brand A, B and C, and You,
@@ -380,8 +388,7 @@ pinned, in five beats, the words on the left changing with each:
    reviews, stores, word of mouth, social, press).
 3. **One system reads all of it.** The Plurel System's four layers
    arrive under the columns, and every surface streams down into the
-   Ledger, squares travelling the lines as the reader scrolls (the
-   ingestion).
+   Ledger, squares travelling the lines (the ingestion).
 4. **Then it acts on all of it.** Red lines run back up from Distribute
    to every surface, and buyers who were someone else's turn red.
 5. **Everything answers to one number.** Your buyers drop into the
@@ -389,12 +396,15 @@ pinned, in five beats, the words on the left changing with each:
    the streams stay as a graph: point at a surface or a layer, or tab to
    it, to light what it feeds.
 
-Four readouts under the words count what the field shows (surfaces
-read, signals counted once, the share choosing you first, the one
-number), and a note says in plain view that the field is an
-illustration and its numbers a drawing's. Static (no JS, reduced motion,
-a screen under 600px tall) it is the last beat, unpinned, every beat's
-words in order. It pins for about 320svh of travel.
+Two readouts under the words count what the field shows (surfaces read,
+and the share choosing you first), set in the display face with tabular
+figures, never mono; a note says in plain view that the field is an
+illustration and its numbers a drawing's. On a phone the pinned copy
+keeps to its lines, so the readouts and the note step aside and the
+field carries a short note of its own beside Pause. Static (no JS,
+reduced motion, a screen under 600px tall) it is the last beat,
+unpinned, every beat's words in order. It pins for about 360svh of
+travel.
 
 ## Why Plurel: from a menu to the Plurel System
 
@@ -606,55 +616,75 @@ Closing    red: one line (cols 1-8)             paper action + outlined one
   visitor's email app with the message written out, and says so.
 - Samples are labelled where they stand ("Sample engagement,
   illustrative, not a client"), in signal, above the sample itself.
-- Published numbers (`Numbers`, `components/instruments.tsx`) make a
-  page's case: the figure set large in display type, what it measured,
+- Published numbers (`BriefStats`, `components/page.tsx`) make a
+  page's case: the figure set large in the display face, what it measured,
   and its source (publisher, title, year) linked under it. Each is
   checked against its source and quoted within the source's own scope.
   Never on the homepage.
-- Measures (`Measures`) are what a page answers to: a 2px rule, the
-  measure's name, what it is, and how often it is read. They are
-  definitions, never results.
+- Measures are what a page answers to, set as a `BriefTable`: the
+  measure, what it is, and how often it is read. They are definitions,
+  never results.
 
-## Consoles: the live instruments
+## Briefs: the engagement and discipline pages
 
-Every engagement and discipline page runs its case through a console
-(`components/console/`): a small working model of what the page's work
-does, in one frame shared by all fourteen, so they read as views of one
-system rather than drawings made for a page. Each answers one question a
-buyer asks, shows the mechanism moving, and lets the reader act on it.
+Engagement and discipline pages are briefs, read top to bottom like a
+well-set document rather than chapters spread across the screen
+(`components/page.tsx`):
 
 ```
-Console    bar: a lamp (signal while running), the name, its kind
-                (Simulation, or Live measurement), its clock, and
-                Play/Pause, Step and Start again
-           body: the instrument (SVG or canvas, HTML labels 13px and up),
-                 an inspector or a log beside it from lg
-           foot: the readout (what it shows now, in words) and the note
-                 (what the numbers are, in plain view)
+BriefHead     the h1 (plotted on load), its line, the standfirst under
+              them, the actions, and a spec sheet of five facts
+BriefLayout   a contents rail on columns 1 to 3 (brief-rail.tsx: sticky,
+              the section being read lit; lg and up) and one reading
+              column on columns 5 to 12
+BriefSection  every section the same anatomy: an h2, a lead sentence,
+              then prose (Prose, 64ch), a figure, a list or a table
 ```
 
-- Simulations are seeded (`lib/sim.ts`), so every visitor sees the same
-  run and Start again replays it; each says it is a simulation with
-  illustrative numbers, not a client's results. Website Design's is a
-  live measurement of the page itself, and says so.
-- The clock (`useSim`) runs only on screen, in a visible tab and with
-  motion allowed. Server-rendered and without JS a console shows its
-  settled state; under reduced motion it stays settled and moves only
-  when stepped.
-- One question each, one form each: Reach's cuts against the usual post
-  on a log scale, with the rules that act on them; Reputation's wall of
-  the places buyers check; Mindshare's four hundred buyers' memory;
-  Revenue's narrowing path; the CMO's decision log; Branding's shipped
-  work, checked lane by lane; this page, measured; one conversation, cut;
-  one take, framed for every crop; the hook test; one budget, moved
-  weekly; an answer, traced; one story's thirty days; the Ledger,
-  ingesting.
-- The rest of the page explains it in plain parts: a spec sheet under
-  the head, a manifest of what ships, the System mapped with the page's
-  disciplines lit and joined by their hand-offs, the measures as a graph
-  into the one number (a square travels each line as often as it is
-  read, with a Pause control), and the first ninety days on a ruler of
-  weeks.
+- An engagement reads: overview (the case, with published numbers),
+  how it works (its figure, then its rules or steps), what each layer
+  does, what ships, how it's measured, the first ninety days, how we
+  work together, questions; then the other three and the closing. A
+  discipline reads: overview, how it works (its figure), what you get,
+  how it's measured, where it sits, questions; then the closing.
+- `BriefTable` is a plain table on hairlines, the first cell a row
+  header; on a phone each row stacks, its other cells as labelled lines,
+  so nothing scrolls sideways.
+
+## Figures: one point each
+
+Each brief makes its case with one figure (`components/figures/`, the
+rules and parts in `kit.tsx`, chosen by `Instrument`). A figure is an
+editorial chart, not a console or a dashboard: it says one thing, and a
+reader gets it without being taught.
+
+```
+Figure    title: the point, in one sentence (the display face, 20 to 24px)
+          sub: what is drawn (15px, fog)
+          control: at most one two-way toggle, beside the title
+          body: the chart, in the reading column (about 250 to 340px tall)
+          caption: what the numbers are, in plain view (13px)
+```
+
+- One signal-red series carries the point; everything else is paper at
+  a lower opacity. Square markers, hairline gridlines at a few round
+  values, no boxes around the plot.
+- Type is Geist with tabular figures, never mono: labels 14px, ticks and
+  notes 13px, sentence case. Labels sit directly on what they name,
+  placed where the lines are not; where words would crowd the lines
+  (the CMO's decisions, PR's moments on a phone) the points take
+  numbered square marks (`NumberMark`) and the words go in `Notes` under
+  the chart; where a phone has no room to name the lines at their ends,
+  a `Key` does.
+- It draws once as it enters, at a steady rate (`useDraw`), and redraws
+  when its toggle changes; under reduced motion it is simply drawn. A
+  figure never loops.
+- Every figure is a labelled illustration ("not a client's results"),
+  except Website Design's, which measures the page itself in the
+  reader's browser and says so. Mindshare's draws a published pattern
+  (Les Binet, IPA, 2020) and cites it.
+- Measured from 360px up: nothing past the column, nothing under 13px,
+  no label over a line.
 
 ## Plates: the drawn instruments
 

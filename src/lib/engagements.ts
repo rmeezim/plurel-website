@@ -1,4 +1,4 @@
-import type { Stat } from "@/components/instruments";
+import type { Stat } from "@/lib/brief";
 import type { QA } from "@/components/questions";
 import { ENGAGEMENTS as NAV_ENGAGEMENTS, type LayerKey, type EngagementKey } from "@/lib/nav";
 
@@ -38,6 +38,8 @@ export type Engagement = {
   numbers: readonly Stat[];
   /** The disciplines it is built from, by layer */
   uses: Record<LayerKey, readonly string[]>;
+  /** How it works, in plain parts: an intro, then its rules or its steps */
+  how: { intro: string; rules?: readonly { when: string; then: string }[]; points?: readonly { title: string; text: string }[] };
   /** What ships, how often, and the layer that makes it (the manifest) */
   deliverables: readonly { item: string; when: string; layer: LayerKey }[];
   /** The measures it answers to */
@@ -75,6 +77,17 @@ const COPY: Record<EngagementKey, Copy> = {
       create: ["content-marketing", "video-photo", "ugc-creators"],
       distribute: ["paid-media", "aeo-seo"],
       measure: ["analytics-martech"],
+    },
+    how: {
+      intro:
+        "Every week one idea goes out as many cuts: different hooks, formats and voices, on the surfaces your buyers use. Each is measured against your usual post, and fixed rules decide what it earns, so nothing waits on a meeting.",
+      rules: [
+        { when: "Under 1× after 7 days", then: "Retired. What it taught goes into next week’s brief." },
+        { when: "1× to 2×", then: "Kept running, with no money behind it yet." },
+        { when: "2× or more within 48 hours", then: "Paid goes behind it the same day, aimed at people like the ones who watched it through." },
+        { when: "5× for 3 days, under target cost", then: "Its budget doubles, and two creators are briefed to answer it in their own words." },
+        { when: "10× or more", then: "Press is briefed within a day, and search and AI answers get a page ready for the people it brings." },
+      ],
     },
     deliverables: [
       { item: "The Reach brief: one idea, and the hooks to test it with", when: "Each quarter", layer: "narrative" },
@@ -147,6 +160,16 @@ const COPY: Record<EngagementKey, Copy> = {
       distribute: ["pr-reputation", "aeo-seo"],
       measure: ["analytics-martech"],
     },
+    how: {
+      intro:
+        "Trust is built in the order buyers check: your own facts, then the proof, then what others say, then the places that repeat what everyone else agrees on.",
+      points: [
+        { title: "Your own facts first", text: "Your site, directories and profiles say the same thing, in the words the press will use." },
+        { title: "Proof people can check", text: "Original research, case material and reviews: asked for, read and answered." },
+        { title: "Press with something to say", text: "Stories pitched with the research behind them, timed with the campaigns that make them findable." },
+        { title: "The places that repeat", text: "Forums, lists and AI answers repeat what the rest agree on, so they come last, and are read every month." },
+      ],
+    },
     deliverables: [
       { item: "The story, in a sentence a reporter can repeat", when: "Each quarter", layer: "narrative" },
       { item: "Proof behind every claim, from original research to case material", when: "Each quarter", layer: "create" },
@@ -212,6 +235,16 @@ const COPY: Record<EngagementKey, Copy> = {
       distribute: ["paid-media", "aeo-seo"],
       measure: ["analytics-martech"],
     },
+    how: {
+      intro:
+        "Buyers choose from the few names that come to mind. Being one of them takes the same position, look and voice everywhere, steadily, for long enough that memory holds between meetings.",
+      points: [
+        { title: "One position", text: "Said the same way everywhere you show up, written once in the Core Brief." },
+        { title: "A look and a voice", text: "Consistent enough to recognize in half a second, and checked on everything that ships." },
+        { title: "Steady presence", text: "Where the choice gets made, every week rather than in bursts, including the answers AI gives." },
+        { title: "Read as memory", text: "Share of search and direct visits, read every month as the memory working." },
+      ],
+    },
     deliverables: [
       { item: "One position, and the identity that carries it", when: "Once, then held", layer: "narrative" },
       { item: "Work in the same look and voice, on a steady rhythm", when: "Weekly", layer: "create" },
@@ -273,6 +306,16 @@ const COPY: Record<EngagementKey, Copy> = {
       distribute: ["paid-media", "aeo-seo"],
       measure: ["analytics-martech"],
     },
+    how: {
+      intro:
+        "Most of the attention a company already has is lost on the way to the purchase. We measure every step, fix the leaks that cost the most first, then move spend to whatever converts.",
+      points: [
+        { title: "Find the leaks", text: "Every step from first visit to purchase measured by source, and each leak priced in your own numbers." },
+        { title: "Fix the costliest first", text: "Speed, then the reasons to buy, then the last steps: in that order, because that is where most buyers leave." },
+        { title: "Move the spend", text: "Budget moves every week toward whatever turns into orders, installs, demos or stockists." },
+        { title: "Read the number", text: "One number, agreed on day one, read every month by source and with what it cost." },
+      ],
+    },
     deliverables: [
       { item: "The reasons to buy, in your buyers’ own words", when: "Once, then tested", layer: "narrative" },
       { item: "The leaks fixed, costliest first: speed, reasons, the last steps", when: "Weekly", layer: "create" },
@@ -317,3 +360,19 @@ export const engagementBySlug = (slug: string) => ENGAGEMENTS.find((p) => p.key 
 /** The engagements a discipline is part of, by its slug */
 export const engagementsUsing = (slug: string) =>
   ENGAGEMENTS.filter((p) => Object.values(p.uses).some((list) => list.includes(slug)));
+
+/** How every engagement runs, from the first read to the quarterly reset */
+export const WORKING = [
+  {
+    step: "The Diagnostic",
+    text: "Six parts of your distribution scored, and a prioritized read within a business day. The one number is agreed here.",
+  },
+  {
+    step: "A monthly partnership",
+    text: "One team runs all four layers. Something ships every week, and the Ledger is read with you every month.",
+  },
+  {
+    step: "A quarterly reset",
+    text: "What the Ledger reads goes back into the brief and the plan, and the budget moves to what earned it.",
+  },
+] as const;

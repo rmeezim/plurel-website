@@ -1,8 +1,7 @@
 /*
-  The instruments' simulations (components/console): a seeded random
-  source, so every visitor sees the same run and a reset replays it, and
-  the few distributions and easings they draw from. Pure, so the runs can
-  be tested and rendered on the server.
+  A seeded random source and the few distributions drawn from it, for the
+  drawings that lay out many marks (the homepage engine's buyers): every
+  visitor sees the same field, and it renders the same on the server.
 */
 
 export type Rand = () => number;

@@ -1,10 +1,7 @@
 import Link from "next/link";
-import { Instrument } from "@/components/console/instrument";
-import { Manifest } from "@/components/interior/manifest";
-import { MetricGraph } from "@/components/interior/metric-graph";
-import { SystemMap } from "@/components/interior/system-map";
-import { Numbers } from "@/components/instruments";
-import { ChapterHead, Closing, PageHead, Room } from "@/components/page";
+import { BriefRail } from "@/components/brief-rail";
+import { Instrument } from "@/components/figures/instrument";
+import { BriefHead, BriefLayout, BriefSection, BriefStats, BriefTable, Closing, Prose } from "@/components/page";
 import { faqJsonLd, QuestionList } from "@/components/questions";
 import { CtaLink } from "@/components/system";
 import { type Discipline } from "@/lib/disciplines";
@@ -14,26 +11,35 @@ import { STAGES } from "@/lib/services-type";
 import { SITE_URL } from "@/lib/site";
 
 /*
-  One discipline (app/services/[slug]), told so it can be understood in
-  a minute and always as part of the system. The head says what it is,
-  with its spec sheet (its layer, the engagements it runs in, how it is
-  hired, how it starts, how often it is read); the job and the case for
-  it, with the page's live instrument (a working model of what it does)
-  and the published numbers behind it; what you get; the measures it
-  answers to, as a graph into the one number; where it sits in the
-  Plurel System, mapped, in the page's red room; its questions; then the
-  closing. Copy in lib/disciplines.ts.
+  One discipline (app/services/[slug]), laid out as a brief
+  (components/page.tsx), the same anatomy as the engagements: the head
+  with what it is and its spec sheet; then an overview with the
+  published numbers behind it; how it works, with its one figure; what
+  you get; how it is measured; where it sits in the Plurel System;
+  questions; then the closing. Copy in lib/disciplines.ts.
 */
+
+const SECTIONS = [
+  { id: "overview", title: "Overview" },
+  { id: "how-it-works", title: "How it works" },
+  { id: "deliverables", title: "What you get" },
+  { id: "measured", title: "How it’s measured" },
+  { id: "system", title: "Where it sits" },
+  { id: "questions", title: "Questions" },
+];
 
 const cadence = (whens: readonly string[]) => {
   const set = ["Weekly", "Monthly", "Quarterly"].filter((w) => whens.includes(w));
   return set.length > 1 ? `${set.slice(0, -1).join(", ")} and ${set[set.length - 1].toLowerCase()}` : set[0] ?? "Monthly";
 };
 
+const link = "underline decoration-signal decoration-1 underline-offset-[5px] transition-colors hover:text-signal";
+
 export function DisciplinePage({ d }: { d: Discipline }) {
   const layer = LAYERS.find((L) => L.key === d.layer)!;
   const stage = STAGES.find((s) => s.key === d.layer)!;
   const engagements = engagementsUsing(d.slug);
+  const alongside = SERVICES.filter((s) => s.layer === d.layer && s.slug !== d.slug);
 
   const SERVICE_LD = {
     "@context": "https://schema.org",
@@ -44,15 +50,30 @@ export function DisciplinePage({ d }: { d: Discipline }) {
     serviceType: d.name,
   };
 
-  const link = "underline decoration-signal decoration-1 underline-offset-[5px] transition-colors hover:text-signal";
+  const inEngagements =
+    engagements.length > 0 ? (
+      <>
+        {engagements.map((p, i) => (
+          <span key={p.key}>
+            {i > 0 && (i === engagements.length - 1 ? " and " : ", ")}
+            <Link href={p.href} className={link}>
+              {p.term}
+            </Link>
+          </span>
+        ))}
+      </>
+    ) : (
+      "Every engagement"
+    );
 
   return (
     <main data-room="dark" className="bg-graphite text-paper">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICE_LD) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd(d.questions) }} />
 
-      <PageHead
+      <BriefHead
         lines={[d.name]}
+        line={d.tagline}
         standfirst={<p>{d.lead}</p>}
         spec={[
           {
@@ -66,24 +87,7 @@ export function DisciplinePage({ d }: { d: Discipline }) {
               </>
             ),
           },
-          {
-            k: "Runs in",
-            v:
-              engagements.length > 0 ? (
-                <>
-                  {engagements.map((p, i) => (
-                    <span key={p.key}>
-                      {i > 0 && (i === engagements.length - 1 ? " and " : ", ")}
-                      <Link href={p.href} className={link}>
-                        {p.term}
-                      </Link>
-                    </span>
-                  ))}
-                </>
-              ) : (
-                "Every engagement"
-              ),
-          },
+          { k: "Runs in", v: inEngagements },
           { k: "Hired", v: "On its own, or inside an engagement" },
           { k: "Starts with", v: "The Diagnostic, read within a business day" },
           { k: "Read", v: `${cadence(d.metrics.map((m) => m.when))} in the Ledger` },
@@ -93,58 +97,77 @@ export function DisciplinePage({ d }: { d: Discipline }) {
         <CtaLink href="/services" variant="outline-light" arrow="right">
           All disciplines
         </CtaLink>
-      </PageHead>
+      </BriefHead>
 
-      <Room labelledBy="job-heading" className="pt-4 lg:pt-8">
-        <ChapterHead id="job-heading" lines={[d.job]} aside={d.body[0]} />
-        <div className="mt-12 lg:mt-16">
+      <BriefLayout
+        rail={
+          <BriefRail sections={SECTIONS}>
+            <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
+          </BriefRail>
+        }
+      >
+        <BriefSection id="overview" title="Overview" lead={d.caseHead}>
+          <Prose>
+            <p>{d.body[0]}</p>
+          </Prose>
+          {d.numbers && d.numbers.length > 0 && <BriefStats items={d.numbers} />}
+        </BriefSection>
+
+        <BriefSection id="how-it-works" title="How it works" lead={d.body[1]}>
           <Instrument k={d.slug} />
-        </div>
-        {d.numbers && d.numbers.length > 0 && <Numbers items={d.numbers} />}
-      </Room>
+        </BriefSection>
 
-      <Room labelledBy="get-heading" className="border-t border-paper/10">
-        <ChapterHead id="get-heading" lines={["What you get."]} aside={d.body[1]} />
-        <Manifest label={`What ${d.name} delivers`} items={d.deliverables.map((item) => ({ item }))} />
-      </Room>
+        <BriefSection id="deliverables" title="What you get">
+          <ul className="grid gap-x-10 border-t border-paper/15 sm:grid-cols-2">
+            {d.deliverables.map((item) => (
+              <li key={item} className="flex items-baseline gap-3 border-b border-paper/10 py-4 text-[17px] leading-[1.45] text-paper">
+                <span aria-hidden className="size-[6px] shrink-0 -translate-y-[3px] bg-signal" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </BriefSection>
 
-      <Room labelledBy="measures-heading" className="border-t border-paper/10">
-        <ChapterHead
-          id="measures-heading"
-          lines={["The numbers", "it answers to."]}
-          aside="Read with you in the Ledger, each as a cause of the one number agreed on day one."
-        />
-        <MetricGraph metrics={d.metrics} label={`The measures ${d.name} answers to, and the one number they feed`} />
-      </Room>
+        <BriefSection id="measured" title="How it’s measured" lead="Read with you in the Ledger, each as a cause of the one number agreed on day one.">
+          <BriefTable caption={`The measures ${d.name} answers to`} head={["Measure", "What it is", "Read"]} rows={d.metrics.map((m) => [m.name, m.what, m.when])} />
+        </BriefSection>
 
-      <Room labelledBy="sits-heading" tone="red">
-        <ChapterHead
-          id="sits-heading"
-          tone="red"
-          lines={["Where it sits."]}
-          aside={
-            <>
-              <span className="font-medium">Runs on</span> {d.runsOn}
-              <br />
-              <span className="mt-3 inline-block font-medium">Feeds</span> {d.feeds}
-            </>
-          }
-        />
-        <SystemMap
-          tone="red"
-          label={`${d.name} in the Plurel System, with the other disciplines layer by layer`}
-          layers={STAGES.map((s) => ({ key: s.key, name: s.name, builds: s.builds, line: s.line }))}
-          nodes={SERVICES.map((s) => ({ slug: s.slug, name: s.name, tagline: s.tagline, href: s.href, layer: s.layer }))}
-          focus={[d.slug]}
-          current={d.slug}
-          open={d.layer}
-        />
-      </Room>
+        <BriefSection id="system" title="Where it sits" lead={`Part of ${layer.name}, one of the Plurel System’s four layers, and always run as part of the whole.`}>
+          <dl className="border-t border-paper/15">
+            {[
+              ["Runs on", d.runsOn],
+              ["Feeds", d.feeds],
+              ["Runs in", inEngagements],
+              [
+                `Alongside it in ${layer.name}`,
+                alongside.length ? (
+                  <>
+                    {alongside.map((s, i) => (
+                      <span key={s.slug}>
+                        {i > 0 && (i === alongside.length - 1 ? " and " : ", ")}
+                        <Link href={s.href} className={link}>
+                          {s.name}
+                        </Link>
+                      </span>
+                    ))}
+                  </>
+                ) : (
+                  "It is the layer’s only discipline"
+                ),
+              ],
+            ].map(([k, v]) => (
+              <div key={k as string} className="grid gap-x-8 gap-y-1 border-b border-paper/10 py-4 sm:grid-cols-[11rem_1fr]">
+                <dt className="text-[15px] text-fog">{k}</dt>
+                <dd className="max-w-[56ch] text-[16px] leading-[1.55] text-paper">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        </BriefSection>
 
-      <Room labelledBy="discipline-questions" className="pt-20 lg:pt-28">
-        <ChapterHead id="discipline-questions" lines={["Questions."]} />
-        <QuestionList items={d.questions} className="mt-12 lg:mt-16" />
-      </Room>
+        <BriefSection id="questions" title="Questions">
+          <QuestionList items={d.questions} />
+        </BriefSection>
+      </BriefLayout>
 
       <Closing lines={["Start with a read", "of your business."]}>
         <CtaLink href={AUDIT_HREF} variant="paper">
