@@ -46,6 +46,7 @@ export function ReachConsole() {
   const sim = useSim(frame, { end: END, rate: 18, by: 24, settled: END });
   const [pick, setPick] = useState<string | null>(null);
   const [rule, setRule] = useState<RuleKey | null>(null);
+  const [cross, setCross] = useState<number | null>(null);
 
   const wk = Math.min(WEEKS - 1, Math.floor(sim.t / SPAN));
   const h = Math.min(SPAN, sim.t - wk * SPAN);
@@ -130,7 +131,16 @@ export function ReachConsole() {
     >
       <div className="grid lg:grid-cols-12">
         <div className="relative border-paper/12 lg:col-span-8 lg:border-r">
-          <div ref={plotRef} className="relative aspect-square w-full sm:aspect-[16/10] lg:aspect-auto lg:h-[440px]">
+          <div
+            ref={plotRef}
+            onPointerMove={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - r.left;
+              setCross(x >= PAD.l && x <= r.width - PAD.r ? x : null);
+            }}
+            onPointerLeave={() => setCross(null)}
+            className="relative aspect-square w-full sm:aspect-[16/10] lg:aspect-auto lg:h-[440px]"
+          >
             <svg aria-hidden viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 size-full" fill="none" strokeLinecap="square">
               {[0.25, 0.5, 1, 2, 5, 10, 20].map((v) => (
                 <line key={v} x1={PAD.l - 6} x2={PAD.l} y1={Y(v)} y2={Y(v)} stroke="var(--color-paper)" strokeOpacity={0.35} />
@@ -145,6 +155,7 @@ export function ReachConsole() {
               {h < SPAN && (
                 <line x1={X(h)} x2={X(h)} y1={PAD.t} y2={H - PAD.b} stroke="var(--color-paper)" strokeOpacity={0.22} />
               )}
+              {cross != null && <line x1={cross} x2={cross} y1={PAD.t} y2={H - PAD.b} stroke="var(--color-signal)" strokeOpacity={0.7} />}
               {traces.map(({ c, d, status }) => {
                 const st = tone(status, c);
                 return <path key={c.id} d={d} stroke={st.s} strokeOpacity={st.o} strokeWidth={st.w} strokeLinejoin="round" />;
@@ -191,6 +202,15 @@ export function ReachConsole() {
                 {`${v}×`}
               </span>
             ))}
+            {cross != null && (
+              <span
+                aria-hidden
+                className="pointer-events-none absolute top-0 -translate-x-1/2 bg-graphite px-1 font-mono text-[13px] leading-[18px] text-signal"
+                style={{ left: cross }}
+              >
+                {dayClock(((cross - PAD.l) / iw) * SPAN).replace(" · ", " ")}
+              </span>
+            )}
             {!narrow &&
               ([
                 [1, "Your usual post"],

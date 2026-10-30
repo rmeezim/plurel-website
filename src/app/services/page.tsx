@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
-import { PackageGlyph } from "@/components/artifacts/package-art";
 import { ArrowRight, ArrowUpRight } from "@/components/icons";
+import { Fingerprint, UseMatrix } from "@/components/interior/fingerprint";
 import { ChapterHead, Closing, PageHead, Room } from "@/components/page";
 import { Reveal } from "@/components/reveal";
 import { CONTAINER, CtaLink, GRID } from "@/components/system";
@@ -22,8 +22,10 @@ export const metadata = pageMetadata({
 /*
   /services: what Plurel sells, the page the homepage's services chapter
   and the menu point to. First the four engagements, named for what a
-  company comes for (each with its glyph, its want and Plurel's line on
-  it). Then the system underneath them: its four layers as four
+  company comes for (each with its print, the disciplines it puts to
+  work layer by layer, its want and Plurel's line on it); then every
+  discipline against every engagement, as one matrix. Then the system
+  underneath them: its four layers as four
   full-width bands, read top to bottom as on the homepage, each a graphite
   tone a step deeper than the one above, with the instrument it builds,
   what goes into it, and its disciplines, each one also hired on its own.
@@ -102,7 +104,7 @@ export default function ServicesPage() {
           <ul className={`${GRID} gap-y-12`}>
             {ENGAGEMENTS.map((p) => (
               <li key={p.key} className="group relative col-span-4 sm:col-span-3 lg:col-span-3">
-                <PackageGlyph pkg={p.key} />
+                <Fingerprint uses={p.uses} label={`${p.term} puts ${Object.values(p.uses).flat().length} of the ten disciplines to work, across all four layers`} />
                 <h3 className="type-display mt-6 text-[clamp(2rem,1.6rem+1.6vw,2.75rem)] leading-none">
                   <Link href={p.href} className="transition-colors after:absolute after:inset-0 group-hover:text-signal">
                     {p.term}
@@ -119,6 +121,15 @@ export default function ServicesPage() {
           </ul>
         </div>
       </section>
+
+      <Room labelledBy="matrix-heading" className="border-t border-paper/10">
+        <ChapterHead
+          id="matrix-heading"
+          lines={["What each one", "is built from."]}
+          aside="Every engagement runs on all four layers; what changes is which disciplines it puts to work. Each discipline can also be hired on its own."
+        />
+        <UseMatrix engagements={ENGAGEMENTS} />
+      </Room>
 
       <Room labelledBy="system-heading" className="pb-12 lg:pb-16">
         <ChapterHead

@@ -4,9 +4,10 @@ The site tells one story: your marketing shouldn't be ten companies.
 The homepage makes the whole argument. Each interior page takes one claim
 from it and goes deeper, in the order a buyer asks:
 
-1. What do they sell? `/services`: four packages by what a company comes
-   for (`/services/reach`, `/reputation`, `/mindshare`, `/revenue`), and
-   the eight services underneath, one page each.
+1. What do they sell? `/services`: four engagements by what a company
+   comes for (`/services/reach`, `/reputation`, `/mindshare`, `/revenue`),
+   and the ten disciplines underneath, one page each, each also hired on
+   its own.
 2. How does it run? `/method`
 3. Is it for us? `/industries`
 4. How do we start? `/diagnostic`, with a full sample at `/diagnostic/sample`
@@ -40,8 +41,8 @@ site rather than ten templates.
 - **At least one drawn instrument per page** (a plate,
   `components/artifacts/`; see `docs/design-system.md`, "Plates"), so
   every page can be read through a drawing as well as its words.
-- **Data stays out of the pages**: `lib/nav.ts` (navigation, packages and
-  services), `lib/packages.ts`, `lib/disciplines.ts`, `lib/industries.ts`,
+- **Data stays out of the pages**: `lib/nav.ts` (navigation, engagements
+  and disciplines), `lib/engagements.ts`, `lib/disciplines.ts`, `lib/industries.ts`,
   `lib/proof.ts` (the Diagnostic's parts and the sample) and
   `lib/posts.ts`.
 
@@ -52,46 +53,60 @@ site rather than ten templates.
 The full argument (see `docs/design-system.md`, "The homepage's story").
 It is the reference build.
 
-### `/services` Packages and the system
+### `/services` Engagements and the system
 
-"Four packages. One system." The four packages first, each with its
-glyph (its drawing reduced to one small figure), its want, Plurel's line
-on it and a link. Then "One system underneath": the four layers from top
-to bottom (Narrative, Create, Distribute, Measure) as the homepage's
+"Four engagements. One system." The four engagements first, each with
+its print (the four layers, a square for each discipline, lit where it
+is used), its want, Plurel's line on it and a link. Then "What each one
+is built from": every discipline against every engagement, as one
+matrix. Then "One system underneath": the four layers from top to
+bottom (Narrative, Create, Distribute, Measure) as the homepage's
 graphite bands at the same tones, each with what it builds, what it
-holds, its services (each also sold on its own), its cadence and what it
-feeds. Closes on "Four packages. One number."
+holds, its disciplines (each also hired on its own), its cadence and
+what it feeds. Closes on "Four engagements. One number."
 
-### `/services/reach`, `/reputation`, `/mindshare`, `/revenue` The packages
+### `/services/reach`, `/reputation`, `/mindshare`, `/revenue` The engagements
 
-From `lib/packages.ts` (`components/package-page.tsx`), the homepage's
-What you came for told in full:
+From `lib/engagements.ts` (`components/engagement-page.tsx`), the
+homepage's What you came for told in full, so it can be understood in a
+minute:
 
-1. The term, its want and who it is for.
-2. The case: a two-line head, the published number behind it, and the
-   package's signature drawing (luck against a system; one story carried
-   the same way by every mention; memory fading and holding; the path
-   to purchase and its leaks) with its readout.
-3. Four layers, tuned for it, each with the services that do it.
-4. The numbers it answers to (red): four measures, each defined, with
-   how often it is read.
-5. The first ninety days.
-6. Questions, with FAQ JSON-LD, then the other three packages.
-7. Closing.
+1. The term, its want and who it is for, then its spec sheet: what it
+   runs on, how it starts, what ships, what it answers to, how it is read.
+2. The case: a two-line head, the page's console (Reach: the
+   amplification rules; Reputation: the consensus; Mindshare: who comes
+   to mind; Revenue: the path), then the published numbers behind it.
+3. What ships: a manifest of each thing, how often, and the layer that
+   makes it.
+4. Four layers, tuned for it: the System mapped, its disciplines lit and
+   joined by their hand-offs; choose a layer to read its part here.
+5. The numbers it answers to (red): the measures as a graph into the one
+   number.
+6. The first ninety days, on a ruler of thirteen weeks.
+7. Questions, with FAQ JSON-LD, then the other three engagements.
+8. Closing.
 
-### `/services/[slug]` The eight services
+### `/services/[slug]` The ten disciplines
 
 From `lib/disciplines.ts` (`components/discipline-page.tsx`), one story
-each:
+each, in the System's order: Fractional CMO and Branding (Narrative);
+Website Design, Content Marketing, Video & Photo and UGC & Creators
+(Create); AI Search & SEO, Paid Media and PR & Reputation (Distribute);
+Analytics & Martech (Measure). Creative direction sits in Branding,
+consulting in the Fractional CMO.
 
-1. The name and the lead, with its layer and the packages it runs in.
-2. The case: the job as the head, why it matters, the published numbers
-   behind it (each with its source), and the service's drawing (how it
-   works inside the system) with its readout.
+1. The name and the lead, then its spec sheet: its layer, the
+   engagements it runs in, how it is hired, how it starts, how often it
+   is read.
+2. The case: the job as the head, why it matters, the page's console
+   (how the work works, as a working model or, for Website Design, a
+   live measurement of the page itself), then the published numbers
+   behind it (each with its source).
 3. What you get: the deliverables.
-4. The numbers it answers to: four measures, defined.
-5. Where it sits (red): the System's four layers, this one marked, what
-   it runs on and what it feeds.
+4. The numbers it answers to: the measures as a graph into the one
+   number.
+5. Where it sits (red): the System mapped, this discipline marked, with
+   what it runs on and what it feeds.
 6. Questions, with FAQ JSON-LD.
 7. Closing.
 

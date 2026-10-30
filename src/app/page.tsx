@@ -9,7 +9,7 @@ import { ProofChapter } from "@/components/home/proof-chapter";
 import { ServicesChapter } from "@/components/home/services-chapter";
 import { StatementChapter } from "@/components/home/statement";
 import { WhoItsForChapter } from "@/components/home/who-its-for";
-import { WhyNowChapter } from "@/components/home/why-now";
+import { EngineChapter } from "@/components/home/engine";
 import { HOME, pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata({ ...HOME, path: "/" });
@@ -17,8 +17,10 @@ export const metadata = pageMetadata({ ...HOME, path: "/" });
 /*
   Home, as one argument, in the order a visitor asks: the promise (the
   glass over the film), what Plurel is, what you came for (reach,
-  reputation, mindshare and revenue, set as one sum), why now, why one
-  system (the services chapter, which ends on the Plurel System), how an
+  reputation, mindshare and revenue, set as one sum), how the market
+  moves (the engine: buyers decide before they arrive, across many
+  surfaces, and one system reads and moves all of them), why one system
+  (the services chapter, which ends on the Plurel System), how an
   engagement runs (Method), what we answer for, who it is built for,
   what a Diagnostic finds (a labelled sample in one screen, the full one
   a page of its own, until real cases can be published; the people, once
@@ -33,7 +35,7 @@ export default function Home() {
       <Hero />
       <StatementChapter />
       <CameForChapter />
-      <WhyNowChapter />
+      <EngineChapter />
       <ServicesChapter />
       <MethodChapter />
       <AccountabilityChapter />

@@ -74,7 +74,10 @@ export function PageHead({
           style={at(lit + 2 * HEAD.beat)}
         >
           {spec.map((r) => (
-            <div key={r.k} className="border-b border-paper/10 py-4 pr-4 sm:py-5 lg:border-b-0 lg:border-l lg:px-5 lg:first:border-l-0 lg:first:pl-0">
+            <div
+              key={r.k}
+              className="relative border-b border-paper/10 py-4 pr-4 before:absolute before:inset-x-0 before:-top-px before:h-px before:origin-left before:scale-x-0 before:bg-signal before:transition-transform before:duration-500 before:ease-linear hover:before:scale-x-100 sm:py-5 lg:border-b-0 lg:border-l lg:px-5 lg:first:border-l-0 lg:first:pl-0"
+            >
               <dt className="text-[13px] leading-[1.3] text-fog">{r.k}</dt>
               <dd className="mt-2 text-[16px] leading-[1.35] text-paper lg:text-[17px]">{r.v}</dd>
             </div>

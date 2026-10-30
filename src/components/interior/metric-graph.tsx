@@ -107,7 +107,7 @@ export function MetricGraph({ metrics, tone = "dark", label }: { metrics: readon
   }, [live, edges, feeds]);
 
   const line = red ? "border-paper/40" : "border-paper/15";
-  const mute = red ? "text-paper/90" : "text-fog";
+  const mute = red ? "text-paper" : "text-fog";
 
   return (
     <div className="mt-12 lg:mt-16">

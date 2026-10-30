@@ -39,7 +39,7 @@ export function Manifest({ items, label }: { items: readonly ManifestItem[]; lab
         </thead>
         <tbody>
           {items.map((it) => (
-            <tr key={it.item} className="border-b border-paper/10 align-baseline">
+            <tr key={it.item} className="group border-b border-paper/10 align-baseline transition-colors hover:bg-paper/[0.03]">
               <th scope="row" className="py-4 pr-6 font-normal lg:py-5">
                 <span className="type-title block text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-[1.3]">{it.item}</span>
                 <span className="mt-1.5 block text-[14px] text-fog sm:hidden">
@@ -50,7 +50,7 @@ export function Manifest({ items, label }: { items: readonly ManifestItem[]; lab
               <td className="hidden py-4 pr-6 font-mono text-[13px] text-paper sm:table-cell lg:py-5">{it.when}</td>
               <td className="hidden py-4 text-[15px] lg:table-cell lg:py-5">
                 <span className="inline-flex items-center gap-2">
-                  <span aria-hidden className="size-[6px] bg-signal" />
+                  <span aria-hidden className="size-[6px] bg-paper/50 transition-colors group-hover:bg-signal" />
                   {it.layer}
                 </span>
               </td>

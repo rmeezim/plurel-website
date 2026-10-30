@@ -33,8 +33,6 @@ export type Discipline = {
   runsOn: string;
   /** What it gives the rest of the system */
   feeds: string;
-  /** What the instrument shows, step by step */
-  readout: readonly [string, string, string];
   /** The measures it answers to, read in the Ledger */
   metrics: readonly Measure[];
   /** Published numbers that make the case, each with its source */
@@ -62,11 +60,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Diagnostic’s read of the business, and the Ledger every month.",
     feeds: "Every layer: the Core Brief, the plan each team works to, and the budget each surface gets.",
-    readout: [
-      "The plan sets the number for the quarter, week by week.",
-      "Each week the CMO reads it, and moves budget, work or suppliers.",
-      "Every decision is logged with what it did to the number.",
-    ],
     metrics: [
       { name: "The one number", what: "Against the plan, read with you every month.", when: "Monthly" },
       { name: "Budget moved", what: "What moved, where to, and what it returned.", when: "Monthly" },
@@ -113,11 +106,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Diagnostic’s read of your market, your buyers and what already works.",
     feeds: "The Asset System: every page, film, ad and creator brief is cut from it.",
-    readout: [
-      "Everything that ships is checked against the system: type, colour, layout and voice.",
-      "Before it, each surface looks a little different; after it, they match.",
-      "Buyers link what they see to you sooner, so every surface works harder.",
-    ],
     metrics: [
       { name: "Share of search", what: "Searches for your name, as a share of searches for you and your competitors.", when: "Monthly" },
       { name: "Consistency", what: "How much of what ships each month follows the system, checked in review.", when: "Monthly" },
@@ -170,11 +158,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief: the position, the proof and the voice every page is written from.",
     feeds: "The Surface Plan and the Ledger: every surface lands here, and every visit is counted against the one number.",
-    readout: [
-      "This page, measured on your device as you read it.",
-      "Against Google’s lines for good, and our own stricter budget.",
-      "Tap or scroll anything: every response is timed.",
-    ],
     metrics: [
       { name: "Conversion by source", what: "What visits turn into, by where they came from and which buyer they are.", when: "Weekly" },
       { name: "Speed", what: "How fast pages load and respond on the phones your buyers use, against Google’s Core Web Vitals.", when: "Weekly" },
@@ -227,11 +210,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief, and the questions the Surface Plan ranks.",
     feeds: "The Surface Plan: every piece is made for a surface, and paid and press carry the best of it.",
-    readout: [
-      "One long conversation, recorded once.",
-      "Cut into the article, the newsletter, clips, posts and an answer page.",
-      "Each cut lands where buyers look, over four weeks.",
-    ],
     metrics: [
       { name: "Found and cited", what: "What gets found in search, shared, and cited by AI assistants.", when: "Monthly" },
       { name: "Assists", what: "Which pieces people read before they become the one number.", when: "Monthly" },
@@ -284,11 +262,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief, and the cut list the Surface Plan asks for.",
     feeds: "The Asset System: film and stills cut for every surface the plan uses.",
-    readout: [
-      "One take, lit for the widest frame.",
-      "Each crop follows the subject: 16:9, 4:5, 1:1 and 9:16.",
-      "Shot once, it survives every surface it was planned for.",
-    ],
     metrics: [
       { name: "Cost per asset", what: "What each usable asset costs, from the plan to delivery.", when: "Per shoot" },
       { name: "Assets in use", what: "How much of what was shot runs somewhere within a quarter.", when: "Quarterly" },
@@ -335,11 +308,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief, and the hooks the Surface Plan needs tested.",
     feeds: "The Surface Plan: tested cuts for paid, product pages and creators’ own audiences.",
-    readout: [
-      "Ten hooks, three creators each: thirty videos from one brief.",
-      "Views come in; each video is read on how many keep watching.",
-      "The winners are reshot and get paid behind them; the rest are retired.",
-    ],
     metrics: [
       { name: "Hook hold", what: "How many keep watching past the first three seconds, by hook and by creator.", when: "Weekly" },
       { name: "Cost per usable video", what: "What each video that runs costs, rights included.", when: "Monthly" },
@@ -386,11 +354,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief’s claims and the Asset System’s pages.",
     feeds: "The Ledger: searches and answers, counted as causes of the one number.",
-    readout: [
-      "A buyer asks an assistant a question.",
-      "It answers from the sources it trusts, and cites them.",
-      "Fix the sources, and the answer starts to name you.",
-    ],
     metrics: [
       { name: "Share of answers", what: "How often AI assistants name you when asked the questions your buyers ask.", when: "Monthly" },
       { name: "Rankings that matter", what: "Where you rank for the questions tied to the one number, not for vanity terms.", when: "Weekly" },
@@ -449,11 +412,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Asset System’s cuts and the Surface Plan’s order.",
     feeds: "The Ledger: spend against what it produced, by channel and by buyer.",
-    readout: [
-      "One budget, across the surfaces that earn it.",
-      "Each week, spend moves toward whatever turns into the number.",
-      "What doesn’t earn it gets less each week, until it is cut.",
-    ],
     metrics: [
       { name: "Cost per number", what: "What one order, install, demo or stockist costs, by channel.", when: "Weekly" },
       { name: "Incremental lift", what: "What paid adds beyond what would have happened anyway, tested rather than assumed.", when: "Quarterly" },
@@ -506,11 +464,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "The Core Brief’s story and its proof.",
     feeds: "The Asset System and the Surface Plan: quotes, citations and reviews that every other surface uses.",
-    readout: [
-      "A story runs.",
-      "Outlets, podcasts and creators pick it up; ads and pages quote it.",
-      "AI answers start citing it, and searches for your name rise.",
-    ],
     metrics: [
       { name: "Share of voice", what: "Your mentions against your competitors’, in the outlets your buyers read.", when: "Monthly" },
       { name: "Reviews", what: "Rating and volume where buyers check, and how quickly you reply.", when: "Weekly" },
@@ -563,11 +516,6 @@ const COPY: Record<string, Copy> = {
     ],
     runsOn: "Every other layer: it reads what they produce.",
     feeds: "Narrative and Distribute, every quarter: the brief and the plan are reset from what it reads.",
-    readout: [
-      "Every platform reports the sales it touched.",
-      "The Ledger matches them, and counts each sale once.",
-      "Out comes one number everyone trusts.",
-    ],
     metrics: [
       { name: "One definition", what: "Whether the number is counted the same way in every tool and report.", when: "Monthly" },
       { name: "Data health", what: "Broken tracking and missing data, caught within a day.", when: "Daily" },

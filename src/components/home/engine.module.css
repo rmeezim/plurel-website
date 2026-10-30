@@ -1,0 +1,125 @@
+/*
+  The engine's frame. Static (no JS, reduced motion, a short screen): the
+  copy and the field side by side from lg, stacked below it, at their
+  natural heights, every beat's words shown in order. Armed: the track is
+  tall and the stage pins to the screen while the field is scrubbed; one
+  beat's words show at a time, in the same place, swapped by opacity.
+*/
+.root {
+  overflow: clip;
+}
+.track {
+  position: relative;
+}
+.stage {
+  position: relative;
+  padding-block: 96px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 40px;
+}
+.copy {
+  min-width: 0;
+}
+.h {
+  margin: 0;
+}
+.beats {
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  row-gap: 22px;
+}
+.readouts {
+  margin-top: 32px;
+}
+.fieldWrap {
+  min-width: 0;
+}
+.field {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.05;
+}
+@media (min-width: 64rem) {
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 32px;
+  }
+  .copy {
+    grid-column: 1 / span 4;
+  }
+  .fieldWrap {
+    grid-column: 5 / span 8;
+  }
+  .field {
+    aspect-ratio: 16 / 12;
+  }
+}
+
+/* Armed: pinned */
+.root[data-engine="on"] .track {
+  height: 420svh;
+}
+.root[data-engine="on"] .stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding-block: 84px 24px;
+}
+.root[data-engine="on"] .grid {
+  height: 100%;
+  row-gap: 16px;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+.root[data-engine="on"] .beats {
+  display: grid;
+  grid-template-areas: "beat";
+  row-gap: 0;
+  margin-top: 18px;
+}
+.root[data-engine="on"] .beat {
+  grid-area: beat;
+  opacity: 0;
+  transition: opacity 0.35s;
+}
+.root[data-engine="on"] .beat[data-on] {
+  opacity: 1;
+}
+.root[data-engine="on"] .fieldWrap {
+  min-height: 0;
+  display: flex;
+  align-items: center;
+}
+.root[data-engine="on"] .field {
+  max-height: 100%;
+  aspect-ratio: auto;
+  height: 100%;
+}
+/* On a phone the copy keeps to a few lines: the readouts and the note
+   step aside while pinned */
+@media (max-width: 63.99rem) {
+  .root[data-engine="on"] .readouts,
+  .root[data-engine="on"] .copy > p:last-child {
+    display: none;
+  }
+  .root[data-engine="on"] .h {
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 2.25rem);
+  }
+}
+@media (min-width: 64rem) {
+  .root[data-engine="on"] .grid {
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .root[data-engine="on"] .copy {
+    align-self: center;
+  }
+}
+
+/* Without JS there is nothing to draw the field with: the words stand alone */
+:global(html:not([data-js])) .fieldWrap {
+  display: none;
+}

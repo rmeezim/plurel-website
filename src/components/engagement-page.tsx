@@ -71,7 +71,7 @@ export function EngagementPage({ pkg }: { pkg: Engagement }) {
       <Room labelledBy="case-heading" className="pt-4 lg:pt-8">
         <ChapterHead id="case-heading" lines={pkg.caseHead} aside={pkg.caseBody} />
         <div className="mt-12 lg:mt-16">
-          <Instrument k={pkg.key} readout={pkg.readout} />
+          <Instrument k={pkg.key} />
         </div>
         <Numbers items={pkg.numbers} />
       </Room>

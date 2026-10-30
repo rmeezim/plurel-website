@@ -98,7 +98,7 @@ export function DisciplinePage({ d }: { d: Discipline }) {
       <Room labelledBy="job-heading" className="pt-4 lg:pt-8">
         <ChapterHead id="job-heading" lines={[d.job]} aside={d.body[0]} />
         <div className="mt-12 lg:mt-16">
-          <Instrument k={d.slug} readout={d.readout} />
+          <Instrument k={d.slug} />
         </div>
         {d.numbers && d.numbers.length > 0 && <Numbers items={d.numbers} />}
       </Room>

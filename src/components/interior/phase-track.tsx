@@ -29,11 +29,11 @@ export function PhaseTrack({ items, weeks = 13, label }: { items: readonly { whe
             </span>
           ))}
         </div>
-        <ol>
+        <ol className="[&:hover>li:not(:hover)]:opacity-45">
           {items.map((it, i) => {
             const [a, b] = range(it.when);
             return (
-              <li key={it.when} className="relative border-b border-paper/10 py-5 lg:py-6">
+              <li key={it.when} className="relative border-b border-paper/10 py-5 transition-opacity duration-300 lg:py-6">
                 <div aria-hidden className="relative h-2.5">
                   <span
                     className={`absolute inset-y-0 ${i === 0 ? "bg-signal" : "bg-paper/80"}`}

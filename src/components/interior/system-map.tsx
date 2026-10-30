@@ -167,7 +167,7 @@ export function SystemMap({
                     </span>
                     <span aria-hidden className={`size-[7px] transition-colors ${chosen ? (red ? "bg-paper" : "bg-signal") : red ? "border border-paper/60" : "border border-paper/40"}`} />
                   </span>
-                  <span className={`mt-2 block text-[14px] leading-[1.35] ${red ? "text-paper/85" : "text-fog"}`}>Builds {lowerThe(layer.builds)}</span>
+                  <span className={`mt-2 block text-[14px] leading-[1.35] ${red ? "text-paper" : "text-fog"}`}>Builds {lowerThe(layer.builds)}</span>
                 </button>
                 <ul className="mt-5 flex flex-col gap-2.5">
                   {nodes
@@ -212,7 +212,7 @@ export function SystemMap({
         className={`grid gap-y-6 border-t pt-6 lg:grid-cols-12 lg:gap-x-8 lg:pt-8 ${red ? "border-paper/35" : "border-paper/15"}`}
       >
         <div className="lg:col-span-6">
-          <p className={`text-[13px] ${red ? "text-paper/85" : "text-fog"}`}>
+          <p className={`text-[13px] ${red ? "text-paper" : "text-fog"}`}>
             {L.name}, {lines ? "here" : "in the System"}
           </p>
           <p className="type-title mt-3 max-w-[30ch] text-[clamp(1.25rem,1.05rem+0.7vw,1.625rem)] leading-[1.25]">{lines ? lines[li] : L.line}</p>
@@ -224,9 +224,9 @@ export function SystemMap({
                 <span>
                   <span className="text-[16px] font-medium leading-[1.3]">
                     {n.name}
-                    {!inPlay.has(n.slug) && <span className={`ml-2 text-[13px] font-normal ${red ? "text-paper/80" : "text-fog"}`}>Not in this one</span>}
+                    {!inPlay.has(n.slug) && <span className={`ml-2 text-[13px] font-normal ${red ? "text-paper" : "text-fog"}`}>Not in this one</span>}
                   </span>
-                  <span className={`mt-1 block text-[15px] leading-[1.4] ${red ? "text-paper/90" : "text-fog"}`}>{n.tagline}</span>
+                  <span className={`mt-1 block text-[15px] leading-[1.4] ${red ? "text-paper" : "text-fog"}`}>{n.tagline}</span>
                 </span>
                 <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>

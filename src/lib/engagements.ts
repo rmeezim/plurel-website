@@ -36,8 +36,6 @@ export type Engagement = {
   caseBody: string;
   /** Published numbers that make the case, each with its source */
   numbers: readonly Stat[];
-  /** What the page's instrument shows, step by step (its readout) */
-  readout: readonly string[];
   /** The disciplines it is built from, by layer */
   uses: Record<LayerKey, readonly string[]>;
   /** What ships, how often, and the layer that makes it (the manifest) */
@@ -71,11 +69,6 @@ const COPY: Record<EngagementKey, Copy> = {
         source: "Goel, Anderson, Hofman & Watts, Management Science, 2016",
         url: "https://pubsonline.informs.org/doi/10.1287/mnsc.2015.2158",
       },
-    ],
-    readout: [
-      "A viral moment lifts once and falls back to where it started.",
-      "A system takes a chance every week, and keeps a little of what each one earns.",
-      "Over a quarter, the floor rises: more people know you, and more of them look for you.",
     ],
     uses: {
       narrative: ["branding"],
@@ -148,11 +141,6 @@ const COPY: Record<EngagementKey, Copy> = {
         url: "https://spiegel.medill.northwestern.edu/how-online-reviews-influence-sales/",
       },
     ],
-    readout: [
-      "It starts from one story, with the proof behind it.",
-      "Each mention carries the same story: press, podcasts, reviews, creators.",
-      "When they agree, they reach the places buyers check last: search and AI answers.",
-    ],
     uses: {
       narrative: ["branding"],
       create: ["content-marketing"],
@@ -218,11 +206,6 @@ const COPY: Record<EngagementKey, Copy> = {
         url: "https://ipa.co.uk/news/binet-presents-fast-cheap-predictive-share-of-search-metric",
       },
     ],
-    readout: [
-      "Between meetings, memory fades.",
-      "Each meeting the same way lifts it, and it fades less each time.",
-      "Steady enough, you cross the line where you’re the name that comes to mind first.",
-    ],
     uses: {
       narrative: ["branding"],
       create: ["content-marketing", "website-design", "video-photo"],
@@ -283,11 +266,6 @@ const COPY: Record<EngagementKey, Copy> = {
         source: "Baymard Institute, 2025",
         url: "https://baymard.com/lists/cart-abandonment-rate",
       },
-    ],
-    readout: [
-      "Buyers arrive from every surface, and drop out at each step that doesn’t answer them.",
-      "We close the leaks that cost the most first: speed, the reasons to buy, the last steps.",
-      "More of the same attention arrives at the one number.",
     ],
     uses: {
       narrative: ["branding"],

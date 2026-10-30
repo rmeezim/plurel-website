@@ -7,9 +7,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 # Plurel — project standards
 
 Plurel is a distribution engineering firm: marketing and distribution,
-rebuilt as one system. Services: Website Design, Brand Identity, AI Search &
-SEO, Content Marketing, Paid Ads, PR & Reputation, Creative Direction, and
-Martech & Consulting. On the site Plurel stands alone: never mention
+rebuilt as one system. It sells four engagements (Reach, Reputation,
+Mindshare, Revenue) built from ten disciplines, each also hired on its
+own: Fractional CMO, Branding, Website Design, Content Marketing, Video &
+Photo, UGC & Creators, AI Search & SEO, Paid Media, PR & Reputation, and
+Analytics & Martech. On the site Plurel stands alone: never mention
 Northeon, Kelwin, a sister division or a parent group (the owner will bring
 the divisions together later and say so).
 
@@ -78,10 +80,11 @@ words on the homepage (What you came for): reach (going viral is luck;
 reach is a system), reputation, mindshare and revenue, each delivered
 by the same four layers of the Plurel System. Each supplier sells one of
 them; Plurel builds the system that delivers all four. They are also how
-Plurel sells: four packages (Reach, Reputation, Mindshare, Revenue;
-`lib/packages.ts`, pages at `/services/<package>`), each running on all
-four layers and built from the eight services, which are also sold one
-by one (the Services menu shows both). Plurel works for every kind of growing company: consumer
+Plurel sells: four engagements (Reach, Reputation, Mindshare, Revenue;
+`lib/engagements.ts`, pages at `/services/<engagement>`), each running on
+all four layers and built from the ten disciplines, which are also hired
+one by one (the Services menu shows both, as Engagements and
+Disciplines). Plurel works for every kind of growing company: consumer
 brands, physical products, B2B technology and consumer technology (name
 the kinds of business at that high level), and the copy
 reads for all of them (prefer customers, buyers and the people a company
@@ -118,10 +121,19 @@ argument onto the homepage chapters.
   rooms touch. Content data lives in `src/lib/`, not in the page. Every
   "Request a diagnostic" uses `AUDIT_HREF` (the Diagnostic's request
   form). A new page joins `sitemap.ts` and `docs/sitemap.md`.
-- Every interior page carries at least one drawn instrument, a plate
-  (`components/artifacts/`): the system itself drawn as lines, nodes and
-  a few labels (a mechanism, a path, a chart of a principle), never a
-  mock screen or a fake dashboard. `Plate` draws it once as it enters,
+- Every engagement and discipline page runs its case through a live
+  instrument in the shared console (`components/console/`): a small
+  working model of what the work does, which the reader can run, step,
+  inspect and change. It is a labelled simulation (seeded, illustrative
+  numbers, "not a client's results" in plain view) or a real measurement
+  (Website Design measures the page itself); never fake results shown as
+  real, never a static mock screen. The page around it explains itself
+  in plain parts: a spec sheet, a manifest of what ships, the System
+  mapped, the measures as a graph, the first ninety days on a ruler.
+- Every other interior page carries at least one drawn instrument, a
+  plate (`components/artifacts/`): the system itself drawn as lines,
+  nodes and a few labels (a mechanism, a path, a chart of a principle),
+  never a mock screen or a fake dashboard. `Plate` draws it once as it enters,
   through the pen; a plate that loops keeps one quiet motion (pulses
   along its lines, a sweep, a ping) only while on screen, never under
   reduced motion, always with a Pause control. Labels are HTML at 13px
@@ -135,9 +147,12 @@ argument onto the homepage chapters.
   and what arrives together in a chapter is drawn one after another by
   its pen (`lib/pen.ts`). A page's own head (the hero, or an interior
   page's `PageHead`) is plotted on load, the page's one orchestrated load
-  moment; every other head once as it enters. Services'
-  typographic system, ending on the Plurel System's layers
-  (`home/services-type.tsx`), is the one pinned, scroll-scrubbed chapter.
+  moment; every other head once as it enters. Two chapters
+  are pinned and scroll-scrubbed: the engine (`home/engine.tsx`: the
+  market drawn as buyers, read and moved by the system in five beats,
+  ending on a graph to explore) and services' typographic system, ending
+  on the Plurel System's layers (`home/services-type.tsx`), with the
+  services head between them.
   Scroll-linked without pinning: the statement's lit words, the
   accountability strips and the faint art's drift. The fluted glass
   (`glass-band.tsx`) is the one WebGL surface; blocks light through

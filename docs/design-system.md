@@ -75,12 +75,12 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| dark | `bg-graphite` | paper, fog | The room every page lives in: on the homepage the hero and What Plurel is, Why now, Why Plurel (services and the Plurel System), Accountability, proof, questions and the footer; every interior page's head and most of its chapters |
+| dark | `bg-graphite` | paper, fog | The room every page lives in: on the homepage the hero and What Plurel is, the engine, Why Plurel (services and the Plurel System), Accountability, proof, questions and the footer; every interior page's head and most of its chapters |
 | red | `bg-brand` | paper | What you came for, Method, Who it's for, closing; at least one chapter on every interior page, usually its closing |
 | paper | `bg-paper` | ink | Never a chapter: only actions on red (the paper CtaLink) |
 
 All three are flat fills. The homepage is dark, punctuated by red:
-graphite hero and statement, red What you came for, graphite Why now and
+graphite hero and statement, red What you came for, graphite engine and
 Why Plurel, red Method, graphite Accountability, red Who it's for,
 graphite proof and questions, red closing, graphite footer. The Journal
 is not a homepage chapter; it stays one click away in the nav and the
@@ -223,23 +223,24 @@ page read as a template.
 - **One pen per chapter** (`lib/pen.ts`). What arrives together is drawn
   one after another in reading order, never all at once: a head, then
   the copy beside it. A head holds its chapter's pen while
-  it plots, a drawn figure while it draws (Why now's route), and a block
+  it plots, a drawn figure while it draws (a plate), and a block
   that only lights waits without holding it. The pen waits only for
   strokes still on screen, and never longer than 2.4s, so a quick scroll
   never stacks up delays; chapters never wait on each other.
 - **Lines are drawn** at a steady rate (linear): the rule under What
-  you came for's chosen word, Why now's route and its closing rule, the
+  you came for's chosen word, the plates' lines, the
   Method staircase (one bar after another, from lg), the sample
   Diagnostic's bars (all at once, like an instrument reading out).
 - **States light:** `Reveal` blocks, nodes and markers switch on by
-  opacity alone and never travel; Why now's stations light the moment the
-  route reaches them, and the hero's copy, action and glass light in turn
+  opacity alone and never travel; the hero's copy, action and glass light in turn
   as its head is drawn (timed in `hero.tsx`). An interior page's head
   (`PageHead`) is plotted on load at the hero's pace, and its standfirst
   and actions light once the pen lifts, timed from the head's length
   (`plotEnd`, `lib/plot.ts`).
-- **Scroll:** one chapter is pinned and scrubbed: services' typographic
-  system, which ends on the Plurel System. Scroll-linked without pinning:
+- **Scroll:** two chapters are pinned and scrubbed: the engine (the
+  market, absorbed beat by beat) and services' typographic system, which
+  ends on the Plurel System; the services head sits between them, so the
+  reader is never handed from one pin straight into the next. Scroll-linked without pinning:
   the statement's words light as the reader reaches them, the
   accountability strips slide in opposite directions, and the faint art
   drifts a few dozen pixels against the page (a CSS scroll-driven
@@ -362,28 +363,42 @@ Rules:
 - "Go viral" appears here once, with the line that keeps it honest, and
   once in the questions.
 
-## Why now
+## The engine: how the market moves
 
-`home/why-now.tsx`, on graphite. The claim, "Buyers decide before they
-arrive.", with a two-sentence standfirst beside it. Then the argument is
-drawn, not told: a route of six small stations on one hairline (AI
-answers, search, creators, reviews, stores, word of mouth; each a name in
-`type-title` and one short line), under a bracket, "Where the choice gets
-made". The line ends at a red node: "You, your site or store", noted in
-red as "Where most marketing starts". From lg the route runs across a
-seven-column grid; below it, a rail down the left whose stretches run
-node to node. The line is drawn at one steady rate and each station
-lights the moment it arrives, like a signal travelling the route. It
-closes under a signal-red rule, drawn first, in the title face: "We
-engineer the ones your buyers use, as one system." Contours behind, with
-the page's one survey
-readout. No statistics, no sources, no sample people, and only one
-display-size line in the chapter: the six used to be set large, which
-made it read as a wall.
+`home/engine.tsx` (client), with every buyer's place in every beat laid
+out in `lib/engine.ts` and the pin in `home/engine.module.css`. It takes
+Why now's place and keeps its claim as the chapter's h2: "Buyers decide
+before they arrive." The field beside it is the market, drawn as about
+560 buyers (small squares), scrubbed by the scroll while the chapter is
+pinned, in five beats, the words on the left changing with each:
+
+1. **The market, as it is.** Buyers clustered around the brand that
+   comes to mind first (three named only as Brand A, B and C, and You,
+   the smallest, in signal red).
+2. **Spread across surfaces.** The same buyers sort into eight columns,
+   one per surface where they decide (AI answers, search, creators,
+   reviews, stores, word of mouth, social, press).
+3. **One system reads all of it.** The Plurel System's four layers
+   arrive under the columns, and every surface streams down into the
+   Ledger, squares travelling the lines as the reader scrolls (the
+   ingestion).
+4. **Then it acts on all of it.** Red lines run back up from Distribute
+   to every surface, and buyers who were someone else's turn red.
+5. **Everything answers to one number.** Your buyers drop into the
+   Ledger as one block; the rest step back. The columns, the layers and
+   the streams stay as a graph: point at a surface or a layer, or tab to
+   it, to light what it feeds.
+
+Four readouts under the words count what the field shows (surfaces
+read, signals counted once, the share choosing you first, the one
+number), and a note says in plain view that the field is an
+illustration and its numbers a drawing's. Static (no JS, reduced motion,
+a screen under 600px tall) it is the last beat, unpinned, every beat's
+words in order. It pins for about 320svh of travel.
 
 ## Why Plurel: from a menu to the Plurel System
 
-The services chapter carries the thesis, on graphite, between Why now
+The services chapter carries the thesis, on graphite, between the engine
 and the red Method. Markup in `home/services-chapter.tsx`, the
 motion in `home/services-type.tsx` (client) with the engine in
 `lib/services-type.ts` and the pin and clone rules in
@@ -395,10 +410,11 @@ before the figure takes over. Then the figure, the contents
 list itself, so the chapter's artifact makes the argument (integration,
 not a menu) in the one place that has to show a menu:
 
-1. **Eight voices.** "Eight disciplines, eight voices." The eight names
-   arrive set the way eight different suppliers would set them: condensed
-   lowercase, tracked thin caps, a rotated italic, a huge red extended
-   black, a vertical name, a light display cut, mono caps. Mismatched, but
+1. **Ten voices.** "Ten disciplines, ten voices." The ten names arrive
+   set the way ten different suppliers would set them: mono caps, tracked
+   thin caps, condensed lowercase, a slanted light cut, a thin wide cut, a
+   tilted bold lowercase, a rotated black, a huge red extended black, a
+   vertical name, light condensed caps. Mismatched, but
    composed; the house face pushed to its extremes, no other fonts. They
    already stand in the menu's order, top to bottom, each near its row.
 2. **Still a menu.** "Lined up, it's still a menu." They drop onto the
@@ -429,12 +445,14 @@ labelled "Read monthly. Reset quarterly." from 1280px. Pointing at or focusing a
 (never a shadow) and brightens its services.
 
 Rules:
-- The System (the eight service links grouped in four layers) is
+- The System (the ten discipline links grouped in four layers) is
   server-rendered and is what assistive tech, no-JS, reduced motion,
-  forced colors and screens too short to pin get. Eight aria-hidden
+  forced colors and screens too short to pin get. Ten aria-hidden
   clones carry the motion.
-- It pins on desktop from 1280x720 and at 768x1024 and 390x844 or larger;
-  1024x768, 375x667 and 360x640 get the static System. Below lg the
+- It pins on desktop from 1280x720 (1366x768 included) and on phones
+  from 360x740; 1024x768, 375x667 and 360x640 get the static System. Ten
+  rows share the pinned screen, so the names, their rows and the bands'
+  padding scale with the visible height. Below lg the
   pinned bands show name and services only, and what each layer builds
   follows the pin in plain text.
 - Pinned for about 145svh of travel on desktop and 127svh on phones,
@@ -597,9 +615,50 @@ Closing    red: one line (cols 1-8)             paper action + outlined one
   measure's name, what it is, and how often it is read. They are
   definitions, never results.
 
+## Consoles: the live instruments
+
+Every engagement and discipline page runs its case through a console
+(`components/console/`): a small working model of what the page's work
+does, in one frame shared by all fourteen, so they read as views of one
+system rather than drawings made for a page. Each answers one question a
+buyer asks, shows the mechanism moving, and lets the reader act on it.
+
+```
+Console    bar: a lamp (signal while running), the name, its kind
+                (Simulation, or Live measurement), its clock, and
+                Play/Pause, Step and Start again
+           body: the instrument (SVG or canvas, HTML labels 13px and up),
+                 an inspector or a log beside it from lg
+           foot: the readout (what it shows now, in words) and the note
+                 (what the numbers are, in plain view)
+```
+
+- Simulations are seeded (`lib/sim.ts`), so every visitor sees the same
+  run and Start again replays it; each says it is a simulation with
+  illustrative numbers, not a client's results. Website Design's is a
+  live measurement of the page itself, and says so.
+- The clock (`useSim`) runs only on screen, in a visible tab and with
+  motion allowed. Server-rendered and without JS a console shows its
+  settled state; under reduced motion it stays settled and moves only
+  when stepped.
+- One question each, one form each: Reach's cuts against the usual post
+  on a log scale, with the rules that act on them; Reputation's wall of
+  the places buyers check; Mindshare's four hundred buyers' memory;
+  Revenue's narrowing path; the CMO's decision log; Branding's shipped
+  work, checked lane by lane; this page, measured; one conversation, cut;
+  one take, framed for every crop; the hook test; one budget, moved
+  weekly; an answer, traced; one story's thirty days; the Ledger,
+  ingesting.
+- The rest of the page explains it in plain parts: a spec sheet under
+  the head, a manifest of what ships, the System mapped with the page's
+  disciplines lit and joined by their hand-offs, the measures as a graph
+  into the one number (a square travels each line as often as it is
+  read, with a Pause control), and the first ninety days on a ruler of
+  weeks.
+
 ## Plates: the drawn instruments
 
-Every interior page carries at least one plate (`components/artifacts/`),
+The company pages carry plates (`components/artifacts/`),
 so a page is read through a drawing as well as its words. A plate draws
 the system itself: a mechanism (where buyers come from and what the site
 does with them), a path (the surfaces a buyer passes through), or a
@@ -628,9 +687,7 @@ Plate      frame: a hairline and 3% paper on graphite, ember on red
   the plate has a phone layout (Revenue, the industry paths and the
   suppliers run top to bottom) or hides its in-drawing labels for a
   legend (Reach and Mindshare).
-- The drawings: the packages' signatures (`package-art.tsx`, with a
-  small glyph of each for the packages index), the eight services'
-  mechanisms (`discipline-art.tsx`), and the company pages' (`page-art.tsx`:
+- The drawings: the company pages' (`page-art.tsx`:
   Method's rhythm and team, the industries' paths, About's suppliers, the
   Diagnostic's radar). The journal's covers (`cover.tsx`) are survey
   plates: each essay's own patch of the contour terrain, turned per
@@ -674,7 +731,7 @@ one step of that argument, and says it once:
 | Hero | The promise: made to be seen, everywhere; great work no longer sells itself, distribution does |
 | What Plurel is | Identity: a distribution engineering firm, the system it builds and runs, and the facts a buyer checks first |
 | What you came for | The wants, in the visitor's words: reach (and, honestly, going viral), reputation, mindshare and revenue; pick one and the same four layers deliver it, so each supplier sells one of them and Plurel builds the system that delivers all four |
-| Why now | The shift: buyers decide before they arrive, in places the company doesn't control |
+| The engine | The shift: buyers decide before they arrive, across many surfaces, and one system reads and moves all of them |
 | Why Plurel | The thesis, shown: ten suppliers' voices become one system, the Plurel System's four layers and its loop, each layer with its instrument and services |
 | Method | How it runs: the Diagnostic, then the four phases as one monthly partnership |
 | Accountability | What we answer for: ten suppliers report ten numbers, we answer for one, agreed on day one |
