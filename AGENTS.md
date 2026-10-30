@@ -46,7 +46,9 @@ homepage (`src/components/home/`) is the reference build, and the interior
 pages share its parts through `src/components/page.tsx` (PageHead,
 ChapterHead, Room, Closing). The site map, what each page does and what
 was removed is in `docs/sitemap.md`. The hero film brief (real footage,
-not AI-generated) is in `docs/hero-video.md`.
+not AI-generated) is in `docs/hero-video.md`, and the photographs the
+interior pages are waiting for (real, never stock or generated) are
+listed in `docs/photography.md`.
 
 ## Brand tokens (defined in `globals.css` `@theme`)
 
@@ -94,7 +96,7 @@ day one in the Diagnostic: the one the business runs on (orders, installs,
 demos, stockists, sell-through). Never headline "qualified demand" (it reads
 as agency vocabulary), and never "inquiries" or "pipeline" alone. No cited
 statistics on the homepage. Interior pages may cite published numbers
-(`BriefStats` in `components/page.tsx`), each checked against its
+(the red case band, `CaseBand` in `components/service.tsx`), each checked against its
 source, quoted within that source's scope (country, sample, year), and
 shown with its publisher, title, year and link in plain view. Engagements
 start with the Diagnostic (the Plurel Distribution Diagnostic: six parts
@@ -121,14 +123,29 @@ argument onto the homepage chapters.
   rooms touch. Content data lives in `src/lib/`, not in the page. Every
   "Request a diagnostic" uses `AUDIT_HREF` (the Diagnostic's request
   form). A new page joins `sitemap.ts` and `docs/sitemap.md`.
-- Engagement and discipline pages are briefs, read top to bottom
-  (`components/page.tsx`): `BriefHead` (the h1, its line, the standfirst
-  under them, a spec sheet), then one reading column of `BriefSection`s
-  (columns 5 to 12) beside a sticky contents rail (`brief-rail.tsx`, lg
-  and up). Every section has the same anatomy: an h2, a lead sentence,
-  then prose, a figure, a list or a `BriefTable` (whose rows stack on a
-  phone). Then the red `Closing`.
-- Every engagement and discipline brief makes its case with one figure
+- Engagement and discipline pages carry every point as something the
+  eye takes in first, with a sentence or two beside it, never paragraphs
+  (`components/service.tsx`): `ServiceHead` (the h1, its line, the
+  standfirst and actions beside the page's own signature drawing, then
+  four facts set large); the red `CaseBand` (the case in one line and
+  the published numbers set large); then graphite `Part`s, each an h2
+  with one line beside it and one visual: numbered `Steps` (Reach's
+  rules as a `Ladder`), the four layers as a `LayerFlow`, what ships as
+  a `ShipCalendar` of a quarter's thirteen weeks, a discipline's
+  `DeliverableGrid`, the measures as a `MeasureRail` into the one
+  number, `SitsFlow` (what it runs on, what it is, what it feeds), the
+  first ninety days; questions; the red `Closing`.
+- Each of those pages opens on its own signature (`signatures.tsx`):
+  the page's idea drawn as lines, nodes and a few labels on a 600 by 450
+  field that scales with its column (Reach's one idea fanned into cuts,
+  Mindshare's brands changing rank, Branding's specimen, Analytics'
+  sources counted once), so no two pages open alike. It is a diagram of
+  the idea, never a mock screen or a chart of results, with a caption in
+  plain words; it draws once after the h1 (hidden until it starts, so it
+  never flashes in finished), is simply drawn without JS or under
+  reduced motion, keeps labels HTML at 13px and up, and moves labels
+  that would crowd a phone into a numbered key.
+- Every engagement and discipline page makes its case with one figure
   (`components/figures/`, its rules in `kit.tsx`): one point, stated as
   its title; direct labels where they fit, numbered marks with notes
   under the chart where words would crowd the lines, and a key where a

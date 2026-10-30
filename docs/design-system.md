@@ -616,40 +616,73 @@ Closing    red: one line (cols 1-8)             paper action + outlined one
   visitor's email app with the message written out, and says so.
 - Samples are labelled where they stand ("Sample engagement,
   illustrative, not a client"), in signal, above the sample itself.
-- Published numbers (`BriefStats`, `components/page.tsx`) make a
+- Published numbers (the red `CaseBand`, `components/service.tsx`) make a
   page's case: the figure set large in the display face, what it measured,
   and its source (publisher, title, year) linked under it. Each is
   checked against its source and quoted within the source's own scope.
   Never on the homepage.
-- Measures are what a page answers to, set as a `BriefTable`: the
-  measure, what it is, and how often it is read. They are definitions,
-  never results.
+- Measures are what a page answers to, set as a `MeasureRail`: each
+  measure, what it is and how often it is read, on one line that runs
+  into the one number. They are definitions, never results.
 
-## Briefs: the engagement and discipline pages
+## Service pages: the engagements and disciplines
 
-Engagement and discipline pages are briefs, read top to bottom like a
-well-set document rather than chapters spread across the screen
-(`components/page.tsx`):
+Fourteen pages share one set of parts (`components/service.tsx`), but
+each opens on its own drawing, and every part carries its point as
+something seen before it is read: big numbers, numbered steps, a flow, a
+calendar, a rail. Words sit beside the visual, a sentence or two at a
+time; nothing is a paragraph in a column of paragraphs.
 
 ```
-BriefHead     the h1 (plotted on load), its line, the standfirst under
-              them, the actions, and a spec sheet of five facts
-BriefLayout   a contents rail on columns 1 to 3 (brief-rail.tsx: sticky,
-              the section being read lit; lg and up) and one reading
-              column on columns 5 to 12
-BriefSection  every section the same anatomy: an h2, a lead sentence,
-              then prose (Prose, 64ch), a figure, a list or a table
+ServiceHead   the h1 (plotted on load), its line, the standfirst and
+              actions on columns 1 to 6; the page's signature on 7 to 12;
+              then four facts, each a value set large over what it is
+CaseBand      the red room: the case in one line (display face), why it
+              matters in two sentences, the published numbers set large
+Part          a graphite chapter: an h2, one line on columns 9 to 12,
+              then one visual
 ```
 
-- An engagement reads: overview (the case, with published numbers),
-  how it works (its figure, then its rules or steps), what each layer
-  does, what ships, how it's measured, the first ninety days, how we
-  work together, questions; then the other three and the closing. A
-  discipline reads: overview, how it works (its figure), what you get,
-  how it's measured, where it sits, questions; then the closing.
-- `BriefTable` is a plain table on hairlines, the first cell a row
-  header; on a phone each row stacks, its other cells as labelled lines,
-  so nothing scrolls sideways.
+- The visuals: `Steps` (numbered, the numeral in signal); Reach's rules
+  as a `Ladder` of rising steps; the four layers as a `LayerFlow`, one
+  line with four stops and the loop back from the Ledger; what ships as a
+  `ShipCalendar` (a square for each delivery across a quarter's thirteen
+  weeks, a line for daily work, an outline for work timed to a push); a
+  discipline's `DeliverableGrid`; the measures as a `MeasureRail` into
+  the one number; `SitsFlow` (runs on, the discipline, feeds) with its
+  engagements and neighbours as links; the first ninety days on a ruler.
+- An engagement reads: head, case, how it works (its figure, then steps
+  or the ladder), four layers, what ships, how it's measured, the first
+  ninety days, questions, the other three, closing. A discipline reads:
+  head, case, how it works (its figure), what you get, how it's
+  measured, where it sits, questions, closing. The case band and the
+  closing are the red rooms, never touching.
+
+### Signatures: each page's own drawing
+
+`components/signatures.tsx` draws one per page from a list of marks
+(lines that draw at a steady rate, nodes and labels that light by
+opacity) on a 600 by 450 field that scales with its column. Each is the
+page's idea as a diagram: Reach's idea fanned into cuts with the one
+that takes off; Reputation's places converging on one answer;
+Mindshare's brands changing rank; Revenue's path and what leaves at each
+step; the CMO as one owner at the centre; Branding's specimen (type,
+colour, grid, voice) in Plurel's own system; Website Design's page in
+three zones; Content's recording cut into a month; Video's one take and
+its four crops; UGC's ten hooks; AI Search's sources feeding one answer;
+Paid's budget moving week by week; PR's story spreading in rings; and
+Analytics' sources counted once in the Ledger.
+
+- A diagram of the idea, never a mock screen, a fake interface or a
+  chart of results; a caption says what it shows. Brand names in them
+  are placeholders (Brand A, B, C).
+- One signal-red thread, everything else paper at a lower tone; labels
+  are HTML at 13px and up; where a phone would crowd them, they move into
+  a numbered key under the drawing.
+- It draws once, after the h1 is plotted. With JS it waits hidden
+  (`[data-sig]` in `globals.css`) until it starts, so it never shows
+  finished and then redraws; without JS and under reduced motion it is
+  simply drawn.
 
 ## Figures: one point each
 

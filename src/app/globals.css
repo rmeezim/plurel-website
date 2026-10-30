@@ -203,6 +203,12 @@
     animation: fade-in 0.6s cubic-bezier(0.33, 1, 0.68, 1) both;
   }
 
+  /* A page's signature drawing (signatures.tsx) waits unseen until it
+     starts drawing, so it never shows finished and then redraws */
+  html[data-js] [data-sig]:not([data-ready]) {
+    visibility: hidden;
+  }
+
   /* Infinite, seamless side-to-side loop for the work showcase. The track
      holds two identical card sets, so translating by -50% lands exactly on
      the duplicate and repeats with no visible jump. */

@@ -1,38 +1,28 @@
 import Link from "next/link";
-import { BriefRail } from "@/components/brief-rail";
 import { Instrument } from "@/components/figures/instrument";
 import { ArrowUpRight } from "@/components/icons";
 import { PhaseTrack } from "@/components/interior/phase-track";
-import { BriefHead, BriefLayout, BriefSection, BriefStats, BriefTable, Closing, Prose } from "@/components/page";
+import { Closing } from "@/components/page";
 import { faqJsonLd, QuestionList } from "@/components/questions";
+import { CaseBand, Ladder, LayerFlow, MeasureRail, Part, ServiceHead, ShipCalendar, Steps } from "@/components/service";
 import { CONTAINER, CtaLink, GRID } from "@/components/system";
-import { ENGAGEMENTS, WORKING, type Engagement } from "@/lib/engagements";
+import { ENGAGEMENTS, type Engagement } from "@/lib/engagements";
 import { AUDIT_HREF, LAYERS, SERVICES } from "@/lib/nav";
 import { STAGES } from "@/lib/services-type";
 import { SITE_URL } from "@/lib/site";
 
 /*
   An engagement (app/services/[slug] for reach, reputation, mindshare
-  and revenue), laid out as a brief (components/page.tsx): read top to
-  bottom in one column, the contents rail beside it. The head says what
-  it is, for whom, and its spec sheet; then the sections, each the same
-  anatomy: an overview with the published numbers behind it; how it
-  works, with its one figure and its rules or steps; what each layer
-  does; what ships; how it is measured; the first ninety days; how we
-  work together; questions. Then the other three, and the closing.
-  Copy in lib/engagements.ts.
+  and revenue). It opens on its own drawing beside its title and four
+  facts set large; then the case on red, with the published numbers
+  behind it; how it works (its figure, then its steps, or Reach's rules
+  as a ladder); the four layers as one line; what ships as a calendar of
+  the quarter; the measures as a rail into the one number; the first
+  ninety days; questions; the other three; the closing. Copy in
+  lib/engagements.ts, parts in components/service.tsx.
 */
 
-const SECTIONS = [
-  { id: "overview", title: "Overview" },
-  { id: "how-it-works", title: "How it works" },
-  { id: "layers", title: "What each layer does" },
-  { id: "ships", title: "What ships" },
-  { id: "measured", title: "How it’s measured" },
-  { id: "first-90", title: "The first ninety days" },
-  { id: "working", title: "How we work together" },
-  { id: "questions", title: "Questions" },
-];
+const ONE_NUMBER = "Orders, installs, demos or stockists: the one the business runs on, agreed on day one.";
 
 export function EngagementPage({ pkg }: { pkg: Engagement }) {
   const SERVICE_LD = {
@@ -46,135 +36,73 @@ export function EngagementPage({ pkg }: { pkg: Engagement }) {
   const focus = LAYERS.flatMap((L) => pkg.uses[L.key]);
   const others = ENGAGEMENTS.filter((p) => p.key !== pkg.key);
   const layerName = (k: string) => LAYERS.find((L) => L.key === k)!.name;
+  const number = pkg.metrics.find((m) => m.name === "The one number");
 
   return (
     <main data-room="dark" className="bg-graphite text-paper">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(SERVICE_LD) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd(pkg.questions) }} />
 
-      <BriefHead
+      <ServiceHead
         lines={[`${pkg.term}.`]}
         line={pkg.want}
         standfirst={<p>{pkg.lead}</p>}
-        spec={[
-          { k: "Runs on", v: `All four layers, ${focus.length} disciplines` },
-          { k: "Starts with", v: "The Diagnostic, read within a business day" },
-          { k: "Ships", v: "Something every week" },
-          { k: "Answers to", v: "One number, agreed on day one" },
-          { k: "Read", v: "Monthly in the Ledger, reset each quarter" },
+        sig={pkg.key}
+        facts={[
+          { value: "4", label: "layers of the Plurel System, run by one team" },
+          { value: focus.length, label: "disciplines, each also hired on its own" },
+          { value: "Weekly", label: "something ships, from the first week on" },
+          { value: "1", label: "number it answers to, agreed on day one" },
         ]}
       >
         <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
         <CtaLink href="/services" variant="outline-light" arrow="right">
           All engagements
         </CtaLink>
-      </BriefHead>
+      </ServiceHead>
 
-      <BriefLayout
-        rail={
-          <BriefRail sections={SECTIONS}>
-            <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
-          </BriefRail>
-        }
-      >
-        <BriefSection id="overview" title="Overview" lead={`${pkg.caseHead[0]} ${pkg.caseHead[1]}`}>
-          <Prose>
-            <p>{pkg.caseBody}</p>
-          </Prose>
-          <BriefStats items={pkg.numbers} />
-        </BriefSection>
+      <CaseBand id="case-heading" lines={pkg.caseHead} body={pkg.caseBody} stats={pkg.numbers} />
 
-        <BriefSection id="how-it-works" title="How it works" lead={pkg.how.intro}>
+      <Part id="how-heading" title="How it works" lead={pkg.how.intro}>
+        <div className="lg:max-w-[58rem]">
           <Instrument k={pkg.key} />
-          {pkg.how.rules && (
-            <div className="mt-12">
-              <BriefTable
-                caption={`The rules ${pkg.term} runs on`}
-                head={["When a cut is", "What happens"]}
-                rows={pkg.how.rules.map((r) => [r.when, r.then])}
-              />
-            </div>
-          )}
-          {pkg.how.points && (
-            <ol className="mt-12 grid gap-x-10 border-t border-paper/15 sm:grid-cols-2">
-              {pkg.how.points.map((pt) => (
-                <li key={pt.title} className="border-b border-paper/10 py-5">
-                  <p className="text-[17px] font-medium leading-[1.35] text-paper">{pt.title}</p>
-                  <p className="mt-2 text-[15px] leading-[1.55] text-fog">{pt.text}</p>
-                </li>
-              ))}
-            </ol>
-          )}
-        </BriefSection>
+        </div>
+        <div className="mt-16 lg:mt-20">{pkg.how.rules ? <Ladder rules={pkg.how.rules} /> : pkg.how.points && <Steps items={pkg.how.points} />}</div>
+      </Part>
 
-        <BriefSection
-          id="layers"
-          title="What each layer does"
-          lead={`The same four layers run every engagement. For ${pkg.term.toLowerCase()}, this is what each one does, and which disciplines do it.`}
-        >
-          <ol className="border-t border-paper/15">
-            {STAGES.map((st, i) => (
-              <li key={st.key} className="grid gap-x-8 gap-y-3 border-b border-paper/10 py-6 sm:grid-cols-[11rem_1fr]">
-                <div>
-                  <p className="type-title text-[21px] leading-[1.2]">{st.name}</p>
-                  <p className="mt-1 text-[13px] text-fog">Builds {st.builds.replace(/^The /, "the ")}</p>
-                </div>
-                <div>
-                  <p className="max-w-[56ch] text-[17px] leading-[1.55] text-paper">{pkg.layers[i]}</p>
-                  <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
-                    {pkg.uses[st.key].map((slug) => {
-                      const d = SERVICES.find((x) => x.slug === slug)!;
-                      return (
-                        <li key={slug}>
-                          <Link href={d.href} className="group inline-flex items-center gap-1.5 text-[15px] text-fog transition-colors hover:text-paper">
-                            {d.name}
-                            <ArrowUpRight className="size-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </BriefSection>
+      <Part id="layers-heading" title="Four layers, one team" lead={`What each layer of the Plurel System does for ${pkg.term.toLowerCase()}, and the disciplines that do it.`}>
+        <LayerFlow
+          items={STAGES.map((st, i) => ({
+            name: st.name,
+            builds: st.builds.replace(/^The /, "the "),
+            text: pkg.layers[i],
+            links: pkg.uses[st.key].map((slug) => {
+              const d = SERVICES.find((x) => x.slug === slug)!;
+              return { name: d.name, href: d.href };
+            }),
+          }))}
+          loop="What the Ledger reads goes back into the next quarter’s brief."
+        />
+      </Part>
 
-        <BriefSection
-          id="ships"
-          title="What ships"
-          lead="Everything here is made from one brief and read against one number. How often is the commitment; the volumes are set with you in the Diagnostic."
-        >
-          <BriefTable
-            caption={`What the ${pkg.term} engagement ships`}
-            head={["What ships", "How often", "Made in"]}
-            rows={pkg.deliverables.map((d) => [d.item, d.when, layerName(d.layer)])}
-          />
-        </BriefSection>
+      <Part id="ships-heading" title="What ships" lead="Everything is made from one brief and read against one number. How often is the commitment; the volumes are set with you in the Diagnostic.">
+        <ShipCalendar
+          caption="When each ships across a quarter of thirteen weeks: a square for each delivery, a line for work that runs every day, an outline for work timed to each push."
+          items={pkg.deliverables.map((d) => ({ item: d.item, when: d.when, layer: layerName(d.layer), hot: d.layer === "measure" && d.item.includes("Ledger") }))}
+        />
+      </Part>
 
-        <BriefSection id="measured" title="How it’s measured" lead="Read with you in the Ledger, each as a cause of the one number agreed on day one: orders, installs, demos or stockists.">
-          <BriefTable caption={`The measures ${pkg.term} answers to`} head={["Measure", "What it is", "Read"]} rows={pkg.metrics.map((m) => [m.name, m.what, m.when])} />
-        </BriefSection>
+      <Part id="measured-heading" title="How it’s measured" lead="Read with you in the Ledger every month, each as a cause of the one number.">
+        <MeasureRail items={pkg.metrics.filter((m) => m !== number)} number={number?.what ?? ONE_NUMBER} />
+      </Part>
 
-        <BriefSection id="first-90" title="The first ninety days" lead="It starts with the Diagnostic, and something ships every week after it.">
-          <PhaseTrack items={pkg.first90} label={`The first ninety days of ${pkg.term}, week by week`} />
-        </BriefSection>
+      <Part id="first-90-heading" title="The first ninety days" lead="It starts with the Diagnostic, and something ships every week after it.">
+        <PhaseTrack items={pkg.first90} label={`The first ninety days of ${pkg.term}, week by week`} />
+      </Part>
 
-        <BriefSection id="working" title="How we work together" lead="One team, one brief and one number, from the first read to every quarter after it.">
-          <ol className="border-t border-paper/15">
-            {WORKING.map((w) => (
-              <li key={w.step} className="grid gap-x-8 gap-y-2 border-b border-paper/10 py-5 sm:grid-cols-[11rem_1fr]">
-                <p className="text-[17px] font-medium leading-[1.35] text-paper">{w.step}</p>
-                <p className="max-w-[56ch] text-[16px] leading-[1.55] text-fog">{w.text}</p>
-              </li>
-            ))}
-          </ol>
-        </BriefSection>
-
-        <BriefSection id="questions" title="Questions">
-          <QuestionList items={pkg.questions} />
-        </BriefSection>
-      </BriefLayout>
+      <Part id="questions-heading" title="Questions">
+        <QuestionList items={pkg.questions} />
+      </Part>
 
       <section aria-labelledby="others-heading" className="border-t border-paper/10">
         <div className={`${CONTAINER} py-16 lg:py-20`}>

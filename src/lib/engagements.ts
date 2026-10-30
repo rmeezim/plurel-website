@@ -360,19 +360,3 @@ export const engagementBySlug = (slug: string) => ENGAGEMENTS.find((p) => p.key 
 /** The engagements a discipline is part of, by its slug */
 export const engagementsUsing = (slug: string) =>
   ENGAGEMENTS.filter((p) => Object.values(p.uses).some((list) => list.includes(slug)));
-
-/** How every engagement runs, from the first read to the quarterly reset */
-export const WORKING = [
-  {
-    step: "The Diagnostic",
-    text: "Six parts of your distribution scored, and a prioritized read within a business day. The one number is agreed here.",
-  },
-  {
-    step: "A monthly partnership",
-    text: "One team runs all four layers. Something ships every week, and the Ledger is read with you every month.",
-  },
-  {
-    step: "A quarterly reset",
-    text: "What the Ledger reads goes back into the brief and the plan, and the budget moves to what earned it.",
-  },
-] as const;

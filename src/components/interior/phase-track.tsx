@@ -16,7 +16,7 @@ const range = (when: string): [number, number] => {
 export function PhaseTrack({ items, weeks = 13, label }: { items: readonly { when: string; what: string }[]; weeks?: number; label: string }) {
   const pct = (w: number) => `${((w - 1) / weeks) * 100}%`;
   return (
-    <Reveal className="mt-12 lg:mt-16">
+    <Reveal>
       <div role="group" aria-label={label}>
         <div aria-hidden className="relative h-6 border-b border-paper/15">
           {Array.from({ length: weeks }, (_, i) => (
