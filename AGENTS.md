@@ -116,10 +116,15 @@ argument onto the homepage chapters.
   its own title, description, canonical path (with the trailing slash) and
   social card. Next merges metadata shallowly, so a page that set only a
   title would inherit the homepage's canonical and card.
-- Interior pages are built from `components/page.tsx`: `PageHead` (the h1
-  plotted on load, standfirst and actions on columns 9 to 12, no eyebrow),
-  then chapters as `Room`s opening on a `ChapterHead`, and most end on a
-  red `Closing`. Every page keeps at least one red room, and no two red
+- Interior pages are built from `components/page.tsx`: a head, then
+  chapters as `Room`s opening on a `ChapterHead` (or `Part`s,
+  `components/service.tsx`), and most end on a red `Closing`. Every page
+  that sells or explains opens on `ServiceHead`: the h1 plotted on load,
+  its line, standfirst and actions beside the page's own drawing, then
+  four facts set large (the engagements and disciplines, /services,
+  /method, /industries, /about, /diagnostic); the rest (contact, the
+  journal, the legal pages) on `PageHead`, the h1 with its standfirst
+  and actions on columns 9 to 12. No eyebrow on either. Every page keeps at least one red room, and no two red
   rooms touch. Content data lives in `src/lib/`, not in the page. Every
   "Request a diagnostic" uses `AUDIT_HREF` (the Diagnostic's request
   form). A new page joins `sitemap.ts` and `docs/sitemap.md`.
@@ -135,11 +140,12 @@ argument onto the homepage chapters.
   `DeliverableGrid`, the measures as a `MeasureRail` into the one
   number, `SitsFlow` (what it runs on, what it is, what it feeds), the
   first ninety days; questions; the red `Closing`.
-- Each of those pages opens on its own signature (`signatures.tsx`):
-  the page's idea drawn as lines, nodes and a few labels on a 600 by 450
-  field that scales with its column (Reach's one idea fanned into cuts,
-  Mindshare's brands changing rank, Branding's specimen, Analytics'
-  sources counted once), so no two pages open alike. It is a diagram of
+- Each of those pages opens on its own drawing (`signatures.tsx`): the
+  page's idea drawn as lines, nodes and a few labels on a field that
+  scales with its column (Reach's one idea fanned into cuts, Mindshare's
+  brands changing rank, Branding's specimen, the Method's loop, About's
+  ten suppliers against one team, the Diagnostic's sample read), so no
+  two pages open alike. The homepage's shift is drawn the same way. It is a diagram of
   the idea, never a mock screen or a chart of results, with a caption in
   plain words; it draws once after the h1 (hidden until it starts, so it
   never flashes in finished), is simply drawn without JS or under
@@ -157,8 +163,8 @@ argument onto the homepage chapters.
   illustration ("not a client's results" in plain view) except Website
   Design's, which measures the page itself in the reader's browser;
   never fake results shown as real, never a mock screen or a console.
-- Every other interior page carries at least one drawn instrument, a
-  plate (`components/artifacts/`): the system itself drawn as lines,
+- Interior pages may also carry a plate (`components/artifacts/`; the
+  Method's rhythm and team, each industry's path): the system itself drawn as lines,
   nodes and a few labels (a mechanism, a path, a chart of a principle),
   never a mock screen or a fake dashboard. `Plate` draws it once as it enters,
   through the pen; a plate that loops keeps one quiet motion (pulses
@@ -174,14 +180,11 @@ argument onto the homepage chapters.
   and what arrives together in a chapter is drawn one after another by
   its pen (`lib/pen.ts`). A page's own head (the hero, or an interior
   page's `PageHead`) is plotted on load, the page's one orchestrated load
-  moment; every other head once as it enters. Two chapters
-  are pinned: the engine (`home/engine.tsx`: the market drawn as buyers,
-  read and moved by the system in five beats, ending on a graph to
-  explore), where the scroll carries the words, lighting each beat's line
-  word by word, while the field moves to that beat on its own clock and
-  keeps a quiet drift, with a Pause control; and services' typographic
-  system, scroll-scrubbed, ending on the Plurel System's layers
-  (`home/services-type.tsx`), with the services head between them.
+  moment; every other head once as it enters. One chapter is pinned and
+  scroll-scrubbed: services' typographic system, ending on the Plurel
+  System's layers (`home/services-type.tsx`). The shift before it
+  (`home/shift.tsx`: buyers decide before they arrive) is a drawing that
+  draws once as it enters and stays still: no pin, nothing to pause.
   Scroll-linked without pinning: the statement's lit words, the
   accountability strips and the faint art's drift. The fluted glass
   (`glass-band.tsx`) is the one WebGL surface; blocks light through
@@ -197,10 +200,8 @@ argument onto the homepage chapters.
 - The film behind the glass loops muted with no control (the owner's
   call); it stops off screen and in hidden tabs, and reduced motion or data
   saver get a still frame. Any other auto-moving media needs a pause
-  control: What you came for takes its four wants in turn while on
-  screen (the chosen word's rule is the clock), holds on hover or focus,
-  has a Pause control, and stops at the visitor's first choice; the
-  engine's field has its own Pause.
+  control (the plates that loop have one); a drawing that draws once and
+  stays still needs none.
 - Never invent proof: no client, person, quote, logo or result is shown as
   real unless it is; samples are labelled as samples in plain view. The
   sample Diagnostic shows in one screen in the homepage's Proof and in

@@ -1,46 +1,45 @@
 import { Hero } from "@/components/hero";
 import { AccountabilityChapter } from "@/components/home/accountability";
-import { CameForChapter } from "@/components/home/came-for";
 import { ClosingChapter } from "@/components/home/closing-chapter";
+import { EngagementsChapter } from "@/components/home/engagements";
 import { FaqChapter } from "@/components/home/faq-chapter";
 import { MethodChapter } from "@/components/home/method-chapter";
 import { PeopleChapter } from "@/components/home/people-chapter";
 import { ProofChapter } from "@/components/home/proof-chapter";
 import { ServicesChapter } from "@/components/home/services-chapter";
+import { ShiftChapter } from "@/components/home/shift";
 import { StatementChapter } from "@/components/home/statement";
 import { WhoItsForChapter } from "@/components/home/who-its-for";
-import { EngineChapter } from "@/components/home/engine";
 import { HOME, pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata({ ...HOME, path: "/" });
 
 /*
-  Home, as one argument, in the order a visitor asks: the promise (the
-  glass over the film), what Plurel is, what you came for (reach,
-  reputation, mindshare and revenue, set as one sum), how the market
-  moves (the engine: buyers decide before they arrive, across many
-  surfaces, and one system reads and moves all of them), why one system
-  (the services chapter, which ends on the Plurel System), how an
-  engagement runs (Method), what we answer for, who it is built for,
-  what a Diagnostic finds (a labelled sample in one screen, the full one
-  a page of its own, until real cases can be published; the people, once
-  they can be shown), the questions, and the Diagnostic itself before the
-  footer. The Journal stays one click away, in the nav and the footer.
-  Tones: one graphite room, footer included, punctuated by the red What
-  you came for, Method, Who it's for and closing.
+  Home, as a sales argument in the order a buyer needs it: the promise
+  (the glass over the film); what Plurel is; why it exists (buyers decide
+  before they arrive, across many surfaces, each with its own supplier);
+  the thesis (your marketing shouldn't be ten companies: the services
+  chapter, ending on the Plurel System); what Plurel does differently
+  (it answers for one number); then the offer (What you came for: the
+  four engagements, each with its drawing and a way in) and how it runs
+  (Method); what a Diagnostic finds; who it is built for; the people,
+  once they can be shown; the questions; and the Diagnostic itself
+  before the footer. Tones: one graphite room, footer included,
+  punctuated by the red Method, Who it's for and closing, never two
+  touching.
 */
 export default function Home() {
   return (
     <main data-room="dark">
       <Hero />
       <StatementChapter />
-      <CameForChapter />
-      <EngineChapter />
+      <ShiftChapter />
       <ServicesChapter />
-      <MethodChapter />
       <AccountabilityChapter />
-      <WhoItsForChapter />
+      <EngagementsChapter />
+      <MethodChapter />
       <ProofChapter />
+      <WhoItsForChapter />
       <PeopleChapter />
       <FaqChapter />
       <ClosingChapter />

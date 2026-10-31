@@ -26,9 +26,12 @@ site rather than ten templates.
 
 - **One graphite room** (`main[data-room="dark"]`), under the floating
   header. No paper pages.
-- **PageHead.** The h1 is plotted on load, the page's one orchestrated
-  moment. The standfirst and the actions light after it, on columns
-  9 to 12. There is no eyebrow over the headline.
+- **A head.** The h1 is plotted on load, the page's one orchestrated
+  moment. Pages that sell or explain open on `ServiceHead`
+  (`components/service.tsx`): the h1, its line, standfirst and actions
+  beside the page's own drawing, then four facts set large. Contact, the
+  journal and the legal pages use `PageHead`: the standfirst and actions
+  on columns 9 to 12. There is no eyebrow over the headline.
 - **Chapters.** A chapter is a `Room` (graphite or red) opening on a
   `ChapterHead`: an h2 plotted as it enters, with an optional aside on
   columns 9 to 12. Lists sit on hairlines. Mono is used only for data.
@@ -38,9 +41,10 @@ site rather than ten templates.
 - **Metadata** from `pageMetadata`, with the page's own canonical path
   (trailing slash). There is JSON-LD where a schema.org type fits (FAQ,
   Service).
-- **At least one drawn instrument per page** (a plate,
-  `components/artifacts/`; see `docs/design-system.md`, "Plates"), so
-  every page can be read through a drawing as well as its words.
+- **At least one drawing per page that sells or explains**: its head's
+  own drawing (`components/signatures.tsx`), and on some a plate
+  (`components/artifacts/`), so every page can be read through a drawing
+  as well as its words.
 - **Data stays out of the pages**: `lib/nav.ts` (navigation, engagements
   and disciplines), `lib/engagements.ts`, `lib/disciplines.ts`, `lib/industries.ts`,
   `lib/proof.ts` (the Diagnostic's parts and the sample) and
@@ -55,16 +59,16 @@ It is the reference build.
 
 ### `/services` Engagements and the system
 
-"Four engagements. One system." The four engagements first, each with
-its print (the four layers, a square for each discipline, lit where it
-is used), its want, Plurel's line on it and a link. Then "What each one
-is built from": every discipline against every engagement, as one
-matrix (on a phone, each discipline lists the engagements it runs in).
-Then "One system underneath": the four layers from top to
-bottom (Narrative, Create, Distribute, Measure) as the homepage's
-graphite bands at the same tones, each with what it builds, what it
-holds, its disciplines (each also hired on its own), its cadence and
-what it feeds. Closes on "Four engagements. One number."
+"Four engagements. One system." It opens on its drawing (four
+engagements, each through all four layers, into one number) and four
+facts. Then the four engagements, each with its print (the four layers,
+a square for each discipline, lit where it is used), its want, Plurel's
+line on it and a link. Then "What each one is built from": every
+discipline against every engagement, as one matrix (on a phone, each
+discipline lists the engagements it runs in). Then "One system
+underneath": the four layers as one line with four stops, what each is
+in a sentence, its disciplines as links, and the loop back from the
+Ledger. Closes on "Four engagements. One number."
 
 ### `/services/reach`, `/reputation`, `/mindshare`, `/revenue` The engagements
 
@@ -118,24 +122,27 @@ There is also Service JSON-LD.
 
 ### `/method` How an engagement runs
 
-The four phases (Diagnose, Design, Deploy, Compound) on a 13-week chart,
-with their outputs. Then:
+It opens on its drawing (one engagement as a loop) and the rhythm's four
+beats set large. The four phases (Diagnose, Design, Deploy, Compound) on
+a 13-week chart, what each delivers as chips. Then:
 
 - The rhythm (red): weekly, monthly and quarterly, beside its clock
   (thirteen weekly ticks, three monthly arcs, the quarter around them).
 - One senior team: seven roles, drawn wired straight to you.
-- Where AI helps, and where a person decides.
+- Where AI helps, and where a person decides: for each phase, what
+  machines do beside what a person decides.
 - Two ways to work (red): a sprint, or the partnership.
 
 ### `/industries` Who we work with
 
-The symptom first: the signs heard in a first call. Then the four kinds of
-business (consumer brands, physical products, B2B technology, consumer
-technology). For each:
+It opens on its drawing (four kinds of business, four paths, four
+numbers) and four facts. The symptom first: the signs heard in a first
+call, as cards. Then the four kinds of business (consumer brands,
+physical products, B2B technology, consumer technology). For each:
 
 - who they are;
-- where their buyers decide;
-- the number we answer for;
+- the number we answer for, set large in signal;
+- where their buyers decide, as chips;
 - how their buyers get to the number, drawn as a path;
 - how each layer is tuned;
 - one sample engagement, labelled in plain view as illustrative and not a
@@ -147,8 +154,9 @@ The homepage's Who it's for table reads the same data.
 
 The way in. In order:
 
-1. The six parts it scores, beside a radar of them with the sample's
-   read drawn on it (labelled as a sample).
+1. Its head: the drawing of a sample read (the six parts scored out of
+   ten, labelled as a sample) and four facts. Then the six parts it
+   scores, numbered, with what each looks at.
 2. What comes back (red).
 3. How it runs, in four steps.
 4. The request form (`#request`). There is no backend, so it opens the
@@ -164,10 +172,10 @@ The sample read for Halden (a sample brief, not a client), as
 
 In order:
 
-1. Why Plurel exists, with ten suppliers drawn into one team and one
-   number.
+1. Its head: the drawing of ten suppliers and ten numbers, or one team
+   and one, and four facts. Then why Plurel exists, in three steps.
 2. What we hold to (red): six rules.
-3. Small, and senior: how the firm is built.
+3. Small, and senior: how the firm is built, as a grid.
 4. Working here: hiring by introduction. There are no invented openings
    or people.
 

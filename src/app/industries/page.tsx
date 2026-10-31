@@ -1,5 +1,6 @@
 import { PathArt } from "@/components/artifacts/page-art";
-import { ChapterHead, Closing, PageHead, Room } from "@/components/page";
+import { ChapterHead, Closing, Room } from "@/components/page";
+import { ServiceHead } from "@/components/service";
 import { Reveal } from "@/components/reveal";
 import { CtaLink, GRID } from "@/components/system";
 import { TypeReveal } from "@/components/type-reveal";
@@ -16,9 +17,10 @@ export const metadata = pageMetadata({
 
 /*
   /industries: who Plurel works with, the page the homepage's Who it's for
-  points to. The symptom first (the signs heard in a first call), then the
+  points to. It opens on its drawing (four kinds of business, four paths,
+  four numbers) and four facts set large; then the symptom (the signs heard in a first call), then the
   four kinds of business, each on its own stretch of the room: who they
-  are, where their buyers decide and the number we answer for, how each
+  are, the number we answer for set large, where their buyers decide, how each
   layer of the system is tuned for them, and one sample engagement,
   labelled as a sample in plain view. Data in lib/industries.ts.
 */
@@ -34,12 +36,20 @@ const SIGNS = [
 export default function IndustriesPage() {
   return (
     <main data-room="dark" className="bg-graphite text-paper">
-      <PageHead
+      <ServiceHead
         lines={["Who we work with."]}
-        standfirst="Growing companies whose marketing has outgrown one person and split across suppliers. Four kinds of business, one system, and a different number for each."
+        line="Four kinds of business, one system."
+        standfirst={<p>Growing companies whose marketing has outgrown one person and split across suppliers, each with a different number.</p>}
+        sig="industries"
+        facts={[
+          { value: "4", label: "kinds of growing business" },
+          { value: "1", label: "system, tuned to where their buyers decide" },
+          { value: "1", label: "number each answers to: the one it runs on" },
+          { value: "Day 1", label: "that number agreed, in the Diagnostic" },
+        ]}
       >
         <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
-      </PageHead>
+      </ServiceHead>
 
       <Room labelledBy="signs-heading" className="pt-0 lg:pt-4">
         <ChapterHead
@@ -47,14 +57,12 @@ export default function IndustriesPage() {
           lines={["Everything works.", "Nothing works together."]}
           aside="The industry matters less than the symptom. These are the signs we hear in a first call."
         />
-        <Reveal className="mt-12 border-b border-paper/15 lg:mt-16">
-          <ul>
+        <Reveal className="mt-12 lg:mt-16">
+          <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
             {SIGNS.map((sign) => (
-              <li key={sign} className={`${GRID} border-t border-paper/15 py-5`}>
-                <p className="type-title col-span-4 flex items-baseline gap-4 text-[19px] leading-[1.35] sm:col-span-6 lg:col-span-9 lg:text-[22px]">
-                  <span aria-hidden className="size-[6px] shrink-0 -translate-y-[3px] bg-signal" />
-                  {sign}
-                </p>
+              <li key={sign} className="border-t border-paper/20 pb-8 pt-5">
+                <span aria-hidden className="block size-[9px] bg-signal" />
+                <p className="type-title mt-5 max-w-[30ch] text-[20px] leading-[1.3] lg:text-[22px]">{sign}</p>
               </li>
             ))}
           </ul>
@@ -73,14 +81,23 @@ export default function IndustriesPage() {
                 />
                 <Reveal>
                   <p className="mt-5 max-w-[38ch] text-[16px] leading-[1.55] text-fog">{ind.who}</p>
-                  <dl className="mt-8 border-b border-paper/15">
-                    <div className="border-t border-paper/15 py-3.5">
-                      <dt className="text-[14px] font-medium text-fog">Where their buyers decide</dt>
-                      <dd className="mt-1 text-[17px] leading-[1.4]">{ind.decide}</dd>
+                  <dl className="mt-8">
+                    <div className="border-t border-paper/15 pt-5">
+                      <dt className="text-[13px] text-fog">The number we answer for</dt>
+                      <dd className="mt-2">
+                        <span className="type-display block text-[clamp(1.875rem,1.5rem+1.4vw,2.625rem)] leading-[1.02] text-signal">{ind.number}</span>
+                        <span className="mt-2 block max-w-[38ch] text-[15px] leading-[1.5] text-fog">{ind.numberLong}</span>
+                      </dd>
                     </div>
-                    <div className="border-t border-paper/15 py-3.5">
-                      <dt className="text-[14px] font-medium text-fog">The number we answer for</dt>
-                      <dd className="mt-1 text-[17px] leading-[1.4]">{ind.numberLong}</dd>
+                    <div className="mt-7 border-t border-paper/15 pt-5">
+                      <dt className="text-[13px] text-fog">Where their buyers decide</dt>
+                      <dd className="mt-3 flex flex-wrap gap-2">
+                        {ind.decide.split(/, | and /).map((d) => (
+                          <span key={d} className="inline-flex h-9 items-center border border-paper/25 px-3 text-[14px]">
+                            {d.charAt(0).toUpperCase() + d.slice(1)}
+                          </span>
+                        ))}
+                      </dd>
                     </div>
                   </dl>
                 </Reveal>
@@ -95,11 +112,11 @@ export default function IndustriesPage() {
                 />
                 <Reveal className="mt-10">
                   <p className="text-[15px] font-medium text-fog">How the system is tuned</p>
-                  <ol className="mt-3 border-b border-paper/15">
+                  <ol className="mt-3 grid gap-x-8 sm:grid-cols-2">
                     {LAYERS.map((L, i) => (
-                      <li key={L.key} className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-x-4 border-t border-paper/15 py-3.5 sm:grid-cols-[8rem_minmax(0,1fr)]">
-                        <span className="text-[15px] text-fog">{L.name}</span>
-                        <span className="text-[16px] leading-[1.5] lg:text-[17px]">{ind.tuning[i]}</span>
+                      <li key={L.key} className="border-t border-paper/15 py-4">
+                        <span className="block text-[13px] text-fog">{L.name}</span>
+                        <span className="mt-1 block text-[16px] leading-[1.5]">{ind.tuning[i]}</span>
                       </li>
                     ))}
                   </ol>

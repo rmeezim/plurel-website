@@ -75,14 +75,14 @@ Three tones, and every chapter is exactly one of them:
 
 | Tone | Class | Text | Use |
 | --- | --- | --- | --- |
-| dark | `bg-graphite` | paper, fog | The room every page lives in: on the homepage the hero and What Plurel is, the engine, Why Plurel (services and the Plurel System), Accountability, proof, questions and the footer; every interior page's head and most of its chapters |
-| red | `bg-brand` | paper | What you came for, Method, Who it's for, closing; at least one chapter on every interior page, usually its closing |
+| dark | `bg-graphite` | paper, fog | The room every page lives in: on the homepage the hero and What Plurel is, the shift, Why Plurel (services and the Plurel System), Accountability, What you came for, proof, questions and the footer; every interior page's head and most of its chapters |
+| red | `bg-brand` | paper | Method, Who it's for, closing; at least one chapter on every interior page, usually its closing |
 | paper | `bg-paper` | ink | Never a chapter: only actions on red (the paper CtaLink) |
 
 All three are flat fills. The homepage is dark, punctuated by red:
-graphite hero and statement, red What you came for, graphite engine and
-Why Plurel, red Method, graphite Accountability, red Who it's for,
-graphite proof and questions, red closing, graphite footer. The Journal
+graphite hero, statement, shift, Why Plurel, Accountability and What you
+came for, red Method, graphite proof, red Who it's for, graphite
+questions, red closing, graphite footer. The Journal
 is not a homepage chapter; it stays one click away in the nav and the
 footer. Graphite chapters that meet part by their
 headline and their room alone, never a rule or a tint; no two red chapters
@@ -166,7 +166,7 @@ Content on GRID
   a headline ("Why now", "Method") read as a template and as AI-made, so
   there are none, on the homepage or the pages that follow it. No
   numbers, no running head, no ruler. A chapter whose headline is a
-  figure (What you came for, What Plurel is) keeps a visually hidden h2
+  figure (What Plurel is) keeps a visually hidden h2
   for the outline. A sample keeps its label in plain view, as text on the
   sheet, never as an eyebrow.
 - Padding: `py-24 lg:py-36`; closing chapters `py-28 lg:py-40`.
@@ -211,7 +211,7 @@ page read as a template.
   new line waits a short return and the hero's "Everywhere." a short
   lift. A long line takes longer than a short one; the speed never
   changes. Paces, in ms a character: the hero and the closing's name 30,
-  What you came for's four words 24, chapter heads and names set large
+  chapter heads and names set large
   18, smaller heads 11. Transforms only (each word a window sliding over its own
   text, which slides back by as much), so the compositor draws it even
   while the page is busy hydrating. A head below the fold is plotted once
@@ -237,12 +237,9 @@ page read as a template.
   (`PageHead`) is plotted on load at the hero's pace, and its standfirst
   and actions light once the pen lifts, timed from the head's length
   (`plotEnd`, `lib/plot.ts`).
-- **Scroll:** two chapters are pinned. In the engine the scroll carries
-  the words (each beat's line lights word by word) while the field moves
-  to that beat on its own clock; services' typographic system is
-  scrubbed by the scroll and ends on the Plurel System. The services head
-  sits between them, so the reader is never handed from one pin straight
-  into the next. Scroll-linked without pinning:
+- **Scroll:** one chapter is pinned: services' typographic system,
+  scrubbed by the scroll, ending on the Plurel System. The shift before
+  it draws once and stays still. Scroll-linked without pinning:
   the statement's words light as the reader reaches them, the
   accountability strips slide in opposite directions, and the faint art
   drifts a few dozen pixels against the page (a CSS scroll-driven
@@ -326,90 +323,35 @@ it, four facts on a hairline, set like a fact sheet: built for, how it
 runs, answers for, starts with. The mark watermark sits behind the
 statement, cropped at the right. A visually hidden h2 keeps the outline.
 
-## What you came for
+## The shift: buyers decide before they arrive
 
-`home/came-for.tsx` (server) with `home/want-selector.tsx` (client) and
-`came-for.module.css`, on red, third on the page. The four things a
-company comes for, Reach, Reputation, Mindshare and Revenue, are the
-chapter's headline and its controls at once: a tab list in display type
-(340, one line from lg), the chosen word in paper on a drawn paper rule,
-the others in blush. "Pick the one you came for. Each runs through the
-same four layers, so the other three come with it." Under them a panel a
-step deeper, in ember, reads out the choice: the want in the visitor's
-words ("Be seen, and sometimes go viral."), Plurel's line on it in
-blush ("A viral moment is luck. Reach is a system that gives luck more
-chances."), and the four layers of the Plurel System on a spine, each
-with what it does for that want, then a link to the want's package page
-("The Reach package"). It is the System's first sighting; the services
-chapter goes on to build it. It closes on "Each supplier sells you one of
-these. We build the system that delivers all four." with "Start with the
-Diagnostic".
+`home/shift.tsx` (server), third on the page, after What Plurel is: why
+Plurel exists, in one drawing (`signatures.tsx`, "shift-wide" from lg,
+"shift-narrow" on a phone, where time runs down the page). A buyer's way
+from a need to your door runs left to right, the surfaces they pass
+marked on it (AI answers, search, creators, reviews, social, word of
+mouth, press, stores); one red line rises along it, how much of the
+choice is made, and is nearly flat by the time they arrive, "where most
+marketing starts". A bracket under the way says it: decided here, before
+they arrive. No numbers: it is a principle, drawn. It draws once as it
+enters and stays still, so there is no pin and nothing to pause. Three
+short lines under it (across many surfaces; each with its own supplier;
+one system for all of them, in signal) hand over to the thesis.
 
-Rules:
-- ARIA tabs (arrows, Home, End; the panel takes focus). The panels share
-  one grid cell, so the box keeps the tallest one's height and nothing
-  below moves when the choice changes. Without JS all four panels show,
-  one after another.
-- Motion: the four words are plotted once as the chapter arrives (the
-  shared window-over-text sweep, 24ms a character), then the chosen
-  word's rule is drawn; a new choice draws its rule at once and lights
-  its panel's lines one after another, by opacity alone.
-- The tour: so a visitor sees each word can be chosen, the four take
-  turns while the selector is in the middle of the screen. The chosen
-  word's rule is the clock, drawn over 6.5s on a faint track; when it is
-  full the next word is chosen. It holds while a pointer rests on the
-  words or the panel, while focus is in the panel, off screen, and on
-  Pause (a small outlined control beside the standfirst, Play to resume).
-  The visitor's first choice ends it for good. No tour under reduced
-  motion or without JS.
-- "Go viral" appears here once, with the line that keeps it honest, and
-  once in the questions.
+## What you came for: the engagements
 
-## The engine: how the market moves
-
-`home/engine.tsx` (client), with every buyer's place in every beat laid
-out in `lib/engine.ts` and the pin in `home/engine.module.css`. It takes
-Why now's place and keeps its claim as the chapter's h2: "Buyers decide
-before they arrive." The field beside it is the market, drawn as about
-560 buyers (small squares), in five beats. While the chapter is pinned
-the scroll carries the words: it picks the beat, and lights the beat's
-line word by word, its second line following once the first is lit. The
-field is not scrubbed. It moves to the beat on its own clock, one move
-after another at a steady pace (under two seconds a beat, twice as fast
-when the reader has scrolled ahead), and while on screen it keeps a
-quiet motion of its own: the market drifts, and squares travel the
-lines into the Ledger. A Pause control holds it.
-
-1. **The market, as it is.** Buyers clustered around the brand that
-   comes to mind first (three named only as Brand A, B and C, and You,
-   the smallest, in signal red).
-2. **Spread across surfaces.** The same buyers sort into eight columns,
-   one per surface where they decide (AI answers, search, creators,
-   reviews, stores, word of mouth, social, press).
-3. **One system reads all of it.** The Plurel System's four layers
-   arrive under the columns, and every surface streams down into the
-   Ledger, squares travelling the lines (the ingestion).
-4. **Then it acts on all of it.** Red lines run back up from Distribute
-   to every surface, and buyers who were someone else's turn red.
-5. **Everything answers to one number.** Your buyers drop into the
-   Ledger as one block; the rest step back. The columns, the layers and
-   the streams stay as a graph: point at a surface or a layer, or tab to
-   it, to light what it feeds.
-
-Two readouts under the words count what the field shows (surfaces read,
-and the share choosing you first), set in the display face with tabular
-figures, never mono; a note says in plain view that the field is an
-illustration and its numbers a drawing's. On a phone the pinned copy
-keeps to its lines, so the readouts and the note step aside and the
-field carries a short note of its own beside Pause. Static (no JS,
-reduced motion, a screen under 600px tall) it is the last beat,
-unpinned, every beat's words in order. It pins for about 360svh of
-travel.
+`home/engagements.tsx` (server), after the thesis and Accountability, so
+the offer arrives once its reason has been made: the four engagements,
+each its name set large, the want in the visitor's words ("Be seen, and
+sometimes go viral."), the drawing its own page opens on, with its
+caption, and a way in ("See Reach"). Two by two from md, one column on a
+phone. It ends on one line for anyone unsure which they need ("Not sure
+which you need? The Diagnostic says.") and "Request a diagnostic".
 
 ## Why Plurel: from a menu to the Plurel System
 
-The services chapter carries the thesis, on graphite, between the engine
-and the red Method. Markup in `home/services-chapter.tsx`, the
+The services chapter carries the thesis, on graphite, between the shift
+and Accountability. Markup in `home/services-chapter.tsx`, the
 motion in `home/services-type.tsx` (client) with the engine in
 `lib/services-type.ts` and the pin and clone rules in
 `home/services-type.module.css`. Its head is the standard chapter head
@@ -673,6 +615,14 @@ its four crops; UGC's ten hooks; AI Search's sources feeding one answer;
 Paid's budget moving week by week; PR's story spreading in rings; and
 Analytics' sources counted once in the Ledger.
 
+- The same kit draws the rest of the site's heads: /services (four
+  engagements through four layers into one number), /method (the loop:
+  diagnose, design, deploy, compound), /industries (four kinds of
+  business, each with its path and its number), /about (ten suppliers
+  and ten numbers, or one team and one), /diagnostic (a sample read, six
+  parts scored out of ten, labelled as a sample), and the homepage's
+  shift. A drawing may set its own field (the shift is 1200 by 440 wide,
+  600 by 760 on a phone).
 - A diagram of the idea, never a mock screen, a fake interface or a
   chart of results; a caption says what it shows. Brand names in them
   are placeholders (Brand A, B, C).
@@ -793,13 +743,13 @@ one step of that argument, and says it once:
 | --- | --- |
 | Hero | The promise: made to be seen, everywhere; great work no longer sells itself, distribution does |
 | What Plurel is | Identity: a distribution engineering firm, the system it builds and runs, and the facts a buyer checks first |
-| What you came for | The wants, in the visitor's words: reach (and, honestly, going viral), reputation, mindshare and revenue; pick one and the same four layers deliver it, so each supplier sells one of them and Plurel builds the system that delivers all four |
-| The engine | The shift: buyers decide before they arrive, across many surfaces, and one system reads and moves all of them |
-| Why Plurel | The thesis, shown: ten suppliers' voices become one system, the Plurel System's four layers and its loop, each layer with its instrument and services |
+| The shift | Why Plurel exists: buyers decide before they arrive, across many surfaces, each with its own supplier, and one system reads and moves all of them |
+| Why Plurel | The thesis, shown: your marketing shouldn't be ten companies; ten suppliers' voices become one system, the Plurel System's four layers and its loop, each layer with its instrument and services |
+| Accountability | What Plurel does differently: ten suppliers report ten numbers, we answer for one, agreed on day one |
+| What you came for | The offer: the four engagements (reach, and honestly going viral; reputation; mindshare; revenue), each with its drawing and a way in, and the Diagnostic for anyone unsure |
 | Method | How it runs: the Diagnostic, then the four phases as one monthly partnership |
-| Accountability | What we answer for: ten suppliers report ten numbers, we answer for one, agreed on day one |
-| Who it's for | Fit: consumer brands, physical products, B2B technology and consumer technology, the same system with a different number |
 | Proof | What a Diagnostic finds, in one screen (a labelled sample until real cases can be published; the full sample on /diagnostic/sample) |
+| Who it's for | Fit: consumer brands, physical products, B2B technology and consumer technology, the same system with a different number |
 | People | Who does the work (shown once real people are listed) |
 | FAQ | The real objections, biggest first: is this a full-service agency? can you make us go viral? every channel? what about our current agencies? cost |
 | Closing | The Diagnostic as the door in ("Request a diagnostic", with "See a sample" beside it), what follows it, and an email as the other way in |

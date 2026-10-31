@@ -30,7 +30,8 @@ type Mark =
   | (Timed & { t: "text"; x: number; y: number; text: string; ink?: Ink; align?: "l" | "c" | "r"; v?: "t" | "m" | "b"; size?: string; cls?: string; key?: number; sub?: { text: string; ink?: Ink } })
   | (Timed & { t: "num"; x: number; y: number; n: number });
 
-type Sig = { caption: string; marks: Mark[] };
+/** A drawing: its marks on a field of w by h (600 by 450 unless it says) and what it shows, in words */
+type Sig = { caption?: string; marks: Mark[]; w?: number; h?: number };
 
 const COLOR: Record<Tone | "brand" | "graphite", [string, number]> = {
   dim: ["var(--color-paper)", 0.16],
@@ -410,6 +411,210 @@ function analytics(): Sig {
   };
 }
 
+
+/* ------------------------------------------------- the rest of the site */
+
+const SURFACES = ["AI answers", "Search", "Creators", "Reviews", "Social", "Word of mouth", "Press", "Stores"];
+
+/** The homepage's shift, wide: the choice is made along the way, before the buyer arrives */
+function shiftWide(): Sig {
+  const xs = SURFACES.map((_, i) => 110 + i * 107);
+  return {
+    w: 1200,
+    h: 440,
+    marks: [
+      { t: "path", d: "M40 310L1160 310", tone: "line", w: 1.25, at: 0, dur: 0.24 },
+      { t: "text", x: 40, y: 348, text: "A need", ink: "fog", size: "13px", at: 0.02 },
+      ...xs.flatMap((x, i): Mark[] => [
+        { t: "node", x, y: 310, s: 9, tone: "paper", at: 0.08 + i * 0.03 },
+        { t: "text", x, y: i % 2 ? 348 : 326, text: SURFACES[i], ink: "fog", align: "c", size: "13px", at: 0.1 + i * 0.03 },
+      ]),
+      { t: "path", d: "M940 70L940 330", tone: "paper", w: 1.5, at: 0.36, dur: 0.14 },
+      { t: "text", x: 952, y: 326, text: "They arrive", ink: "paper", sub: { text: "where most marketing starts" }, at: 0.44 },
+      { t: "path", d: "M40 300C360 298 520 120 940 100L1160 98", tone: "signal", w: 2.5, at: 0.4, dur: 0.36 },
+      { t: "text", x: 380, y: 200, text: "How much of the choice is made", ink: "signal", size: "13px", v: "b", at: 0.58 },
+      { t: "path", d: "M40 384L40 392L940 392L940 384", tone: "paper", w: 1, at: 0.74, dur: 0.14 },
+      { t: "text", x: 490, y: 402, text: "Decided here, before they arrive", ink: "paper", align: "c", at: 0.82 },
+    ],
+  };
+}
+
+/** The same, on a phone: time runs down the page */
+function shiftNarrow(): Sig {
+  const ys = SURFACES.map((_, i) => 96 + i * 66);
+  return {
+    w: 600,
+    h: 760,
+    marks: [
+      { t: "text", x: 560, y: 4, text: "How much of the choice is made", ink: "signal", align: "r", size: "13px", at: 0.5 },
+      { t: "path", d: "M270 60L270 700", tone: "line", w: 1.25, at: 0, dur: 0.24 },
+      { t: "text", x: 250, y: 60, text: "A need", ink: "fog", align: "r", v: "m", size: "13px", at: 0.02 },
+      ...ys.flatMap((y, i): Mark[] => [
+        { t: "node", x: 270, y, s: 10, tone: "paper", at: 0.08 + i * 0.03 },
+        { t: "text", x: 250, y, text: SURFACES[i], ink: "fog", align: "r", v: "m", at: 0.1 + i * 0.03 },
+      ]),
+      { t: "path", d: "M280 80C282 320 528 380 548 620L548 700", tone: "signal", w: 2.5, at: 0.4, dur: 0.36 },
+      { t: "path", d: "M40 640L560 640", tone: "paper", w: 1.5, at: 0.36, dur: 0.14 },
+      { t: "text", x: 40, y: 654, text: "They arrive", ink: "paper", sub: { text: "where most marketing starts" }, at: 0.44 },
+    ],
+  };
+}
+
+/** /services: four engagements, each through all four layers, into one number */
+function servicesSig(): Sig {
+  const xs = [205, 315, 425, 535];
+  const names = ["Reach", "Reputation", "Mindshare", "Revenue"];
+  const layers = ["Narrative", "Create", "Distribute", "Measure"];
+  const ys = [124, 182, 240, 298];
+  return {
+    caption: "Four engagements, each running on all four layers of one system, built from ten disciplines and answering to one number.",
+    marks: [
+      ...layers.flatMap((l, i): Mark[] => [
+        { t: "rect", x: 150, y: ys[i] - 16, w: 420, h: 32, tone: "dim", at: 0.04 + i * 0.04 },
+        { t: "text", x: 138, y: ys[i], text: l, ink: "fog", align: "r", v: "m", size: "13px", at: 0.06 + i * 0.04 },
+      ]),
+      ...xs.flatMap((x, i): Mark[] => [
+        { t: "text", x, y: i % 2 ? 38 : 58, text: names[i], ink: "paper", align: "c", v: "b", size: "13px", at: 0.2 + i * 0.04 },
+        { t: "node", x, y: 76, s: 9, tone: "paper", at: 0.22 + i * 0.04 },
+        { t: "path", d: `M${x} 80L${x} 330C${x} 370 370 360 370 398`, tone: "line", w: 1.25, at: 0.3 + i * 0.05, dur: 0.3 },
+        ...ys.map((y, j): Mark => ({ t: "node", x, y, s: 6, tone: "paper", at: 0.42 + i * 0.05 + j * 0.03 })),
+      ]),
+      { t: "node", x: 370, y: 404, s: 14, tone: "signal", at: 0.78 },
+      { t: "text", x: 390, y: 404, text: "One number", ink: "paper", v: "m", at: 0.82 },
+    ],
+  };
+}
+
+/** /method: one engagement as a loop */
+function methodSig(): Sig {
+  const c = [290, 225] as const;
+  const r = 110;
+  const stops = [
+    { deg: 270, name: "Diagnose", sub: "find where it breaks", side: "t" },
+    { deg: 0, name: "Design", sub: "rebuild the story", side: "r" },
+    { deg: 90, name: "Deploy", sub: "launch where buyers are", side: "b" },
+    { deg: 180, name: "Compound", sub: "run it, read it", side: "l" },
+  ] as const;
+  const at = (deg: number) => polar(c[0], c[1], r, deg);
+  const arc = (a: number, b: number) => {
+    const [x1, y1] = at(a);
+    const [x2, y2] = at(b);
+    return `M${x1.toFixed(1)} ${y1.toFixed(1)}A${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+  };
+  return {
+    caption: "One engagement as a loop: the Diagnostic first, then the story, then the work where buyers are, and what the Ledger reads goes back into the next quarter.",
+    marks: [
+      { t: "path", d: arc(276, 354), tone: "line", w: 1.5, at: 0.1, dur: 0.16 },
+      { t: "path", d: arc(6, 84), tone: "line", w: 1.5, at: 0.24, dur: 0.16 },
+      { t: "path", d: arc(96, 174), tone: "line", w: 1.5, at: 0.38, dur: 0.16 },
+      { t: "path", d: arc(186, 264), tone: "signal", w: 2.25, at: 0.52, dur: 0.18 },
+      { t: "path", d: (() => { const [x, y] = at(264); return `M${(x - 9).toFixed(1)} ${(y - 6).toFixed(1)}L${x.toFixed(1)} ${y.toFixed(1)}L${(x - 7).toFixed(1)} ${(y + 8).toFixed(1)}`; })(), tone: "signal", w: 2, at: 0.68, dur: 0.06 },
+      ...stops.flatMap((s, i): Mark[] => {
+        const [x, y] = at(s.deg);
+        const lab: Mark =
+          s.side === "t"
+            ? { t: "text", x, y: y - 16, text: s.name, ink: "paper", align: "c", v: "b", sub: { text: s.sub }, at: 0.04 + i * 0.14 }
+            : s.side === "b"
+              ? { t: "text", x, y: y + 16, text: s.name, ink: "paper", align: "c", sub: { text: s.sub }, at: 0.04 + i * 0.14 }
+              : { t: "text", x: s.side === "r" ? x + 18 : x - 18, y, text: s.name, ink: "paper", align: s.side === "r" ? "l" : "r", v: "m", sub: { text: s.sub }, at: 0.04 + i * 0.14 };
+        return [{ t: "node", x, y, s: 12, tone: i === 0 ? "signal" : "paper", at: 0.02 + i * 0.14 }, lab];
+      }),
+      { t: "text", x: c[0], y: c[1], text: "One number", ink: "paper", align: "c", v: "m", sub: { text: "read every month" }, at: 0.74 },
+    ],
+  };
+}
+
+/** /industries: four kinds of business, four paths to a purchase, four numbers */
+function industriesSig(): Sig {
+  const kinds = [
+    { name: "Consumer brands", n: "Orders", last: "Your site or a store" },
+    { name: "Physical products", n: "Sell-through", last: "The shelf" },
+    { name: "B2B technology", n: "Demos with buyers who fit", last: "Your site" },
+    { name: "Consumer technology", n: "Users who stay", last: "The first week" },
+  ];
+  const q = [
+    [20, 20],
+    [310, 20],
+    [20, 235],
+    [310, 235],
+  ];
+  return {
+    caption: "Four kinds of growing business, each with its own path to a purchase and its own number: the one it runs on, agreed on day one.",
+    marks: [
+      { t: "path", d: "M300 20L300 430", tone: "dim", w: 1, at: 0 },
+      { t: "path", d: "M20 225L580 225", tone: "dim", w: 1, at: 0.04 },
+      ...kinds.flatMap((k, i): Mark[] => {
+        const [x, y] = q[i];
+        const nodes = [x + 24, x + 101, x + 178, x + 255];
+        return [
+          { t: "text", x: x + 20, y: y + 22, text: k.name, ink: "paper", sub: { text: k.n }, at: 0.08 + i * 0.08 },
+          { t: "path", d: `M${nodes[0]} ${y + 140}L${nodes[3]} ${y + 140}`, tone: "line", w: 1.25, at: 0.2 + i * 0.08, dur: 0.18 },
+          ...nodes.map((nx, j): Mark => ({ t: "node", x: nx, y: y + 140, s: j === 3 ? 12 : 8, tone: j === 3 ? "signal" : "paper", at: 0.26 + i * 0.08 + j * 0.03 })),
+          { t: "text", x: nodes[3] + 6, y: y + 158, text: k.last, ink: "signal", align: "r", size: "13px", at: 0.42 + i * 0.08 },
+        ];
+      }),
+    ],
+  };
+}
+
+/** /about: ten suppliers and ten numbers, or one team and one */
+function aboutSig(): Sig {
+  const loose: P[] = [[70, 112], [150, 96], [232, 128], [92, 190], [190, 176], [250, 222], [62, 272], [146, 256], [224, 302], [112, 344]];
+  const dirs = [30, 160, 300, 220, 80, 20, 140, 260, 340, 110];
+  const tidy: P[] = Array.from({ length: 10 }, (_, i) => [350 + (i % 2) * 70, 110 + Math.floor(i / 2) * 58] as const);
+  return {
+    caption: "Ten suppliers, each answering for a number of its own. Plurel is one senior team that answers for one.",
+    marks: [
+      { t: "text", x: 40, y: 40, text: "Ten suppliers, ten numbers", ink: "fog", size: "13px", at: 0 },
+      { t: "text", x: 340, y: 40, text: "One team, one number", ink: "paper", at: 0.4 },
+      { t: "path", d: "M300 30L300 420", tone: "dim", w: 1, at: 0.02 },
+      ...loose.flatMap(([x, y], i): Mark[] => {
+        const [ex, ey] = polar(x, y, 26, dirs[i]);
+        return [
+          { t: "node", x, y, s: 8, tone: "paper", at: 0.04 + i * 0.025 },
+          { t: "path", d: `M${x} ${y}L${ex.toFixed(1)} ${ey.toFixed(1)}`, tone: "line", w: 1.25, at: 0.12 + i * 0.025, dur: 0.1 },
+          { t: "node", x: ex, y: ey, s: 5, tone: "dim", at: 0.16 + i * 0.025 },
+        ];
+      }),
+      ...tidy.flatMap(([x, y], i): Mark[] => [
+        { t: "path", d: curve(x + 4, y, 520, 225), tone: "line", w: 1.25, at: 0.5 + i * 0.02, dur: 0.18 },
+        { t: "node", x, y, s: 8, tone: "paper", at: 0.46 + i * 0.02 },
+      ]),
+      { t: "node", x: 520, y: 225, s: 16, tone: "signal", at: 0.8 },
+      { t: "text", x: 520, y: 248, text: "One number", ink: "paper", align: "c", at: 0.84 },
+    ],
+  };
+}
+
+/** /diagnostic: a sample read, six parts scored out of ten */
+function diagnosticSig(): Sig {
+  const parts = [
+    ["Market", 8],
+    ["Narrative", 5],
+    ["Website", 4],
+    ["Assets", 6],
+    ["Distribution", 3],
+    ["Measurement", 2],
+  ] as const;
+  const weakest = Math.min(...parts.map((p) => p[1]));
+  return {
+    caption: "A sample read, not a client: the six parts of a company’s distribution, each scored out of ten, and the weakest fixed first.",
+    marks: [
+      { t: "text", x: 40, y: 28, text: "A sample read: 28 out of 60", ink: "fog", size: "13px", at: 0 },
+      ...parts.flatMap(([name, score], i): Mark[] => {
+        const y = 92 + i * 60;
+        const low = score === weakest;
+        return [
+          { t: "text", x: 40, y: y - 10, text: name, ink: low ? "signal" : "paper", v: "b", at: 0.04 + i * 0.05 },
+          { t: "rect", x: 40, y, w: 440, h: 12, fill: "paper", fillOp: 0.07, at: 0.06 + i * 0.05 },
+          { t: "rect", x: 40, y, w: (score / 10) * 440, h: 12, fill: low ? "signal" : "paper", fillOp: low ? 1 : 0.6, at: 0.2 + i * 0.07 },
+          { t: "text", x: 560, y: y + 6, text: `${score}/10`, ink: low ? "signal" : "fog", align: "r", v: "m", size: "13px", at: 0.3 + i * 0.07 },
+        ];
+      }),
+    ],
+  };
+}
+
 const SIGS: Record<string, () => Sig> = {
   reach,
   reputation,
@@ -425,6 +630,13 @@ const SIGS: Record<string, () => Sig> = {
   "paid-media": paid,
   "pr-reputation": pr,
   "analytics-martech": analytics,
+  "shift-wide": shiftWide,
+  "shift-narrow": shiftNarrow,
+  services: servicesSig,
+  method: methodSig,
+  industries: industriesSig,
+  about: aboutSig,
+  diagnostic: diagnosticSig,
 };
 
 /* ------------------------------------------------------------- the drawing */
@@ -477,19 +689,21 @@ const ALIGN = { l: "", c: "-translate-x-1/2", r: "-translate-x-full" } as const;
 const VALIGN = { t: "", m: "-translate-y-1/2", b: "-translate-y-full" } as const;
 const MARK = "flex size-[18px] items-center justify-center bg-paper text-[13px] font-medium leading-none tabular-nums text-ink";
 
-export function Signature({ k: slug, delay = 0 }: { k: string; delay?: number }) {
+export function Signature({ k: slug, delay = 0, className = "" }: { k: string; delay?: number; className?: string }) {
   const sig = SIGS[slug]?.();
   const box = useRef<HTMLDivElement>(null);
   const { k, started } = useSigDraw(box, 2400, delay);
   if (!sig) return null;
+  const W = sig.w ?? 600;
+  const H = sig.h ?? 450;
   // every mark is whole once the drawing is done, whatever its timing
   const p = (m: Timed) => (k >= 1 ? 1 : clamp((k - m.at) / (m.dur ?? 0.2)));
   const keyed = sig.marks.filter((m): m is Extract<Mark, { t: "text" }> => m.t === "text" && m.key != null);
 
   return (
-    <figure className="@container m-0">
-      <div ref={box} data-sig="" data-ready={started || undefined} aria-hidden className="relative aspect-[4/3] w-full">
-        <svg viewBox="0 0 600 450" className="absolute inset-0 size-full overflow-visible" fill="none">
+    <figure className={`@container m-0 ${className}`}>
+      <div ref={box} data-sig="" data-ready={started || undefined} aria-hidden className="relative w-full" style={{ aspectRatio: `${W} / ${H}` }}>
+        <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 size-full overflow-visible" fill="none">
           {sig.marks.map((m, i) => {
             const v = p(m);
             if (m.t === "path") {
@@ -547,13 +761,13 @@ export function Signature({ k: slug, delay = 0 }: { k: string; delay?: number })
         {sig.marks.map((m, i) => {
           if (m.t === "num") {
             return (
-              <span key={i} className={`${MARK} absolute -translate-x-1/2 -translate-y-1/2`} style={{ left: pct(m.x, 600), top: pct(m.y, 450), opacity: p(m) }}>
+              <span key={i} className={`${MARK} absolute -translate-x-1/2 -translate-y-1/2`} style={{ left: pct(m.x, W), top: pct(m.y, H), opacity: p(m) }}>
                 {m.n}
               </span>
             );
           }
           if (m.t !== "text") return null;
-          const style: CSSProperties = { left: pct(m.x, 600), top: pct(m.y, 450), opacity: p(m), fontSize: m.size };
+          const style: CSSProperties = { left: pct(m.x, W), top: pct(m.y, H), opacity: p(m), fontSize: m.size };
           return (
             <span
               key={i}
@@ -578,7 +792,7 @@ export function Signature({ k: slug, delay = 0 }: { k: string; delay?: number })
           ))}
         </ol>
       )}
-      <figcaption className="mt-4 max-w-[52ch] text-[13px] leading-[1.5] text-fog">{sig.caption}</figcaption>
+      {sig.caption && <figcaption className="mt-4 max-w-[52ch] text-[13px] leading-[1.5] text-fog">{sig.caption}</figcaption>}
     </figure>
   );
 }

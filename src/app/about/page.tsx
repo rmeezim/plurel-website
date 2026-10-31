@@ -1,6 +1,5 @@
-import { Readout } from "@/components/artifacts/kit";
-import { SuppliersArt } from "@/components/artifacts/page-art";
-import { ChapterHead, Closing, PageHead, Room } from "@/components/page";
+import { ChapterHead, Closing, Room } from "@/components/page";
+import { Part, ServiceHead, Steps } from "@/components/service";
 import { Reveal } from "@/components/reveal";
 import { CtaLink, GRID, TextLink } from "@/components/system";
 import { pageMetadata } from "@/lib/metadata";
@@ -14,18 +13,27 @@ export const metadata = pageMetadata({
 });
 
 /*
-  /about: the firm. Why it exists (the problem, the idea, the practice,
-  then ten suppliers drawn into one number, artifacts/page-art.tsx),
-  the rules every engagement runs on (the page's first red room), how it
+  /about: the firm. It opens on its drawing (ten suppliers and ten
+  numbers, or one team and one) and four facts set large; then why it
+  exists, in three steps; the rules every engagement runs on (the page's first red room), how it
   is built, and how it hires (by introduction: no invented openings, no
   invented people; the People chapter on the homepage waits for real
   names). Closes in the red room.
 */
 
 const WHY = [
-  "Growing companies end up buying their marketing in pieces: a brand studio, a web agency, a search consultant, a paid team, a PR firm, a creator platform. Each is good at its piece. None owns the whole, and each reports the number that flatters its own work.",
-  "Buyers never meet those pieces separately. They see the ad, read the review, ask an assistant and land on the site, and they judge you on all of it at once. When the pieces disagree, buyers notice.",
-  "So we built a firm that runs the pieces as one system, from one brief, with one team, answerable for one number agreed on day one. We call it distribution engineering: making a company impossible to miss for the people it sells to, and measuring it by what they do next.",
+  {
+    title: "Marketing, bought in pieces",
+    text: "A brand studio, a web agency, a search consultant, a paid team, a PR firm: each good at its piece, none owning the whole, each reporting the number that flatters its work.",
+  },
+  {
+    title: "Buyers see it all at once",
+    text: "They see the ad, read the review, ask an assistant and land on the site, and judge you on all of it together. When the pieces disagree, they notice.",
+  },
+  {
+    title: "So we built one system",
+    text: "One brief, one team, answerable for one number agreed on day one. We call it distribution engineering: hard to miss for the people you sell to, measured by what they do next.",
+  },
 ];
 
 const RULES = [
@@ -48,43 +56,27 @@ const BUILT = [
 export default function AboutPage() {
   return (
     <main data-room="dark" className="bg-graphite text-paper">
-      <PageHead
+      <ServiceHead
         lines={["A distribution", "engineering firm."]}
-        standfirst="Plurel exists because growing companies buy their marketing from ten suppliers and get ten reports. We build and run it as one system, with one team, and answer for one number."
+        line="Ten suppliers, or one team."
+        standfirst={<p>Growing companies buy their marketing from ten suppliers and get ten reports. We build and run it as one system, with one team, and answer for one number.</p>}
+        sig="about"
+        facts={[
+          { value: "1", label: "senior team for each company we work with" },
+          { value: "0", label: "account managers between you and the work" },
+          { value: "Yours", label: "every file, account and piece of data we make" },
+          { value: "1", label: "number we answer for, agreed on day one" },
+        ]}
       >
         <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
         <CtaLink href="/contact" variant="outline-light" arrow="right">
           Get in touch
         </CtaLink>
-      </PageHead>
+      </ServiceHead>
 
-      <Room labelledBy="why-heading" className="pt-0 lg:pt-4">
-        <div className={`${GRID} gap-y-10 border-t border-paper/15 pt-10 lg:pt-14`}>
-          <h2 id="why-heading" className="type-display col-span-4 text-[clamp(2rem,1.4rem+2.4vw,3.5rem)] leading-[1.02] sm:col-span-6 lg:col-span-4">
-            Why Plurel exists.
-          </h2>
-          <Reveal className="col-span-4 space-y-6 sm:col-span-6 lg:col-span-7 lg:col-start-6">
-            {WHY.map((para) => (
-              <p key={para.slice(0, 24)} className="max-w-[60ch] text-[18px] leading-[1.6] lg:text-[19px]">
-                {para}
-              </p>
-            ))}
-          </Reveal>
-        </div>
-        <div className="mt-16 lg:mt-24">
-          <SuppliersArt
-            caption={
-              <Readout
-                items={[
-                  "Each supplier reports the number that flatters its own work.",
-                  "None of those is the number you run on.",
-                  "We run the pieces as one team, answerable for one number.",
-                ]}
-              />
-            }
-          />
-        </div>
-      </Room>
+      <Part id="why-heading" title="Why Plurel exists" lead="Three things, in the order we saw them.">
+        <Steps items={WHY} />
+      </Part>
 
       <Room labelledBy="rules-heading" tone="red">
         <ChapterHead
@@ -110,13 +102,11 @@ export default function AboutPage() {
           aside="Built so the people who read your Diagnostic are the people who do the work."
         />
         <Reveal className="mt-12 lg:mt-16">
-          <dl className="border-b border-paper/15">
+          <dl className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
             {BUILT.map((b) => (
-              <div key={b.term} className={`${GRID} gap-y-1.5 border-t border-paper/15 py-5`}>
-                <dt className="col-span-4 text-[15px] font-medium text-fog sm:col-span-2 lg:col-span-4">{b.term}</dt>
-                <dd className="type-title col-span-4 text-[19px] leading-[1.35] sm:col-span-4 lg:col-span-7 lg:col-start-6 lg:text-[22px]">
-                  {b.value}
-                </dd>
+              <div key={b.term} className="flex flex-col border-t border-paper/20 pb-8 pt-5">
+                <dt className="text-[13px] text-fog">{b.term}</dt>
+                <dd className="type-title mt-3 max-w-[30ch] text-[20px] leading-[1.3]">{b.value}</dd>
               </div>
             ))}
           </dl>

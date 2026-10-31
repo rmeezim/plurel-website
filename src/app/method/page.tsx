@@ -1,5 +1,6 @@
 import { RhythmArt, TeamArt } from "@/components/artifacts/page-art";
-import { ChapterHead, PageHead, Room } from "@/components/page";
+import { ChapterHead, Room } from "@/components/page";
+import { ServiceHead } from "@/components/service";
 import { Reveal } from "@/components/reveal";
 import { CtaLink, GRID } from "@/components/system";
 import { PHASES } from "@/lib/home";
@@ -15,7 +16,8 @@ export const metadata = pageMetadata({
 
 /*
   /method: how an engagement runs, the page the homepage's Method chapter
-  points to. The four phases on a time chart (weeks 1 to 12, then monthly),
+  points to. It opens on its drawing (one engagement as a loop) and the
+  four beats of the rhythm set large; then the four phases on a time chart (weeks 1 to 12, then monthly),
   each with what happens and what it delivers; the rhythm, in the page's
   first red room, beside its clock (artifacts/page-art.tsx); the team,
   drawn around you; where AI helps and where a person decides;
@@ -84,15 +86,23 @@ const WAYS = [
 export default function MethodPage() {
   return (
     <main data-room="dark" className="bg-graphite text-paper">
-      <PageHead
+      <ServiceHead
         lines={["How an engagement", "runs."]}
-        standfirst="It starts with the Diagnostic, runs as four phases with one senior team, and settles into a monthly rhythm read against one number."
+        line="One loop, run by one team."
+        standfirst={<p>It starts with the Diagnostic, runs as four phases with one senior team, and settles into a rhythm read against one number.</p>}
+        sig="method"
+        facts={[
+          { value: "Week 1", label: "the Diagnostic, and the one number agreed" },
+          { value: "Weekly", label: "something ships, with a note on why" },
+          { value: "Monthly", label: "the Ledger, read with you" },
+          { value: "Quarterly", label: "the reset of the brief and the plan" },
+        ]}
       >
         <CtaLink href={AUDIT_HREF}>Request a diagnostic</CtaLink>
         <CtaLink href="/services" variant="outline-light" arrow="right">
           The Plurel System
         </CtaLink>
-      </PageHead>
+      </ServiceHead>
 
       <Room labelledBy="phases-heading" className="pt-0 lg:pt-4">
         <ChapterHead
@@ -135,13 +145,16 @@ export default function MethodPage() {
                       <p className="type-title text-[20px] leading-[1.25] lg:text-[22px]">{ph.tagline}</p>
                       <p className="mt-3 max-w-[48ch] text-[16px] leading-[1.6] text-fog">{t.what}</p>
                     </div>
-                    <ul aria-label={`${ph.name} delivers`} className="col-span-4 border-b border-paper/15 sm:col-span-6 lg:col-span-4">
-                      {ph.outputs.map((o) => (
-                        <li key={o} className="border-t border-paper/15 py-2.5 text-[15px] leading-[1.4]">
-                          {o}
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="col-span-4 sm:col-span-6 lg:col-span-4">
+                      <p className="text-[13px] text-fog">What it delivers</p>
+                      <ul aria-label={`${ph.name} delivers`} className="mt-3 flex flex-wrap gap-2">
+                        {ph.outputs.map((o) => (
+                          <li key={o} className="inline-flex min-h-9 items-center border border-paper/25 px-3 py-1.5 text-[14px] leading-[1.3]">
+                            {o}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </Reveal>
               </li>
@@ -201,16 +214,30 @@ export default function MethodPage() {
           lines={["Where AI helps,", "and where a person decides."]}
           aside="Machines take the volume. People make the calls, and answer for them."
         />
-        <Reveal className="mt-12 border-b border-paper/15 lg:mt-16">
-          <ul>
-            {PHASES.map((ph) => (
-              <li key={ph.name} className={`${GRID} gap-y-1.5 border-t border-paper/15 py-5`}>
-                <p className="col-span-4 text-[15px] font-medium text-fog sm:col-span-2 lg:col-span-4">{ph.name}</p>
-                <p className="type-title col-span-4 text-[19px] leading-[1.35] sm:col-span-4 lg:col-span-7 lg:col-start-6 lg:text-[21px]">
-                  {ph.ai}
-                </p>
-              </li>
-            ))}
+        <Reveal className="mt-12 lg:mt-16">
+          <div aria-hidden className={`${GRID} hidden border-b border-paper/20 pb-3 text-[13px] text-fog lg:grid`}>
+            <span className="col-span-2">Phase</span>
+            <span className="col-span-5">What machines do</span>
+            <span className="col-span-5 text-signal">What a person decides</span>
+          </div>
+          <ul className="border-b border-paper/15">
+            {PHASES.map((ph) => {
+              // each line is a machine's part, then a person's
+              const [machine, ...person] = ph.ai.split(/(?<=\.)\s+/);
+              return (
+                <li key={ph.name} className={`${GRID} gap-y-3 border-t border-paper/15 py-6`}>
+                  <p className="col-span-4 text-[15px] font-medium sm:col-span-6 lg:col-span-2">{ph.name}</p>
+                  <p className="col-span-4 text-[17px] leading-[1.45] text-fog sm:col-span-3 lg:col-span-5">
+                    <span className="mb-1 block text-[13px] lg:hidden">What machines do</span>
+                    {machine}
+                  </p>
+                  <p className="col-span-4 border-l-2 border-signal pl-4 text-[17px] leading-[1.45] sm:col-span-3 lg:col-span-5">
+                    <span className="mb-1 block text-[13px] text-signal lg:hidden">What a person decides</span>
+                    {person.join(" ")}
+                  </p>
+                </li>
+              );
+            })}
           </ul>
         </Reveal>
       </Room>

@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { RadarArt } from "@/components/artifacts/page-art";
 import { DiagnosticForm } from "@/components/diagnostic-form";
-import { ChapterHead, PageHead, Room } from "@/components/page";
+import { ChapterHead, Room } from "@/components/page";
 import { faqJsonLd, QuestionList, type QA } from "@/components/questions";
 import { Reveal } from "@/components/reveal";
+import { ServiceHead } from "@/components/service";
 import { CtaLink, GRID } from "@/components/system";
 import { pageMetadata } from "@/lib/metadata";
 import { CONTACT_EMAIL } from "@/lib/nav";
@@ -18,22 +18,12 @@ export const metadata = pageMetadata({
 
 /*
   /diagnostic: the way in, and where every "Request a diagnostic" lands.
-  What it is (the six parts, the same for every company, beside a radar
-  of them with the sample's read drawn on it), what comes back
+  It opens on its drawing (a sample read: the six parts, each scored out
+  of ten) and four facts set large; then the six parts, the same for
+  every company, as a numbered grid; what comes back
   (the read, as the sample shows it, in the page's red room), how it runs
   (four steps on a hairline), the request itself, and its questions.
 */
-
-/** The six parts by their short names, with the sample's scores, for the radar */
-const SHORT: Record<string, string> = {
-  "Market and category": "Market",
-  "Narrative and positioning": "Narrative",
-  "Website and touchpoints": "Website",
-  "Assets and content": "Assets",
-  "Distribution across channels": "Distribution",
-  Measurement: "Measurement",
-};
-const RADAR = SAMPLE_DIAGNOSTIC.parts.map((p) => ({ short: SHORT[p.part] ?? p.part, score: p.score }));
 
 const COMES_BACK = [
   { head: "Six scores", line: "Each part out of 10, with the finding behind the number." },
@@ -83,9 +73,17 @@ export default function DiagnosticPage() {
     <main data-room="dark" className="bg-graphite text-paper">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd(QUESTIONS) }} />
 
-      <PageHead
+      <ServiceHead
         lines={["The Diagnostic."]}
-        standfirst="A strategist scores six parts of your distribution and sends back a prioritized read within a business day. It’s free, and yours to keep."
+        line="Six parts of your distribution, scored."
+        standfirst={<p>A strategist scores six parts of your distribution and sends back a prioritized read within a business day. It’s free, and yours to keep.</p>}
+        sig="diagnostic"
+        facts={[
+          { value: "6", label: "parts, each scored out of ten" },
+          { value: "1 day", label: "for the written read to come back" },
+          { value: "Free", label: "and yours to keep, whatever you decide" },
+          { value: "1", label: "senior strategist, who would run the work" },
+        ]}
       >
         <CtaLink href="#request" arrow="right">
           Request yours
@@ -93,7 +91,7 @@ export default function DiagnosticPage() {
         <CtaLink href={SAMPLE_HREF} variant="outline-light" arrow="right">
           See a sample
         </CtaLink>
-      </PageHead>
+      </ServiceHead>
 
       <Room labelledBy="parts-heading" className="pt-0 lg:pt-4">
         <ChapterHead
@@ -101,27 +99,23 @@ export default function DiagnosticPage() {
           lines={["Six parts, scored out of 10."]}
           aside="The same six for every company, so a score means the same thing wherever you sit."
         />
-        <div className={`${GRID} mt-14 gap-y-10 lg:mt-20 lg:items-start`}>
-          <div className="col-span-4 sm:col-span-6 lg:col-span-5">
-            <RadarArt parts={RADAR} sample={SAMPLE_DIAGNOSTIC.client} />
-            <p className="mt-4 max-w-[44ch] text-[14px] leading-[1.5] text-fog">
-              {SAMPLE_DIAGNOSTIC.note} Its read scored {SAMPLE_TOTAL} of 60.{" "}
-              <Link href={SAMPLE_HREF} className="text-paper underline decoration-signal underline-offset-4 hover:text-signal">
-                See it in full
-              </Link>
-            </p>
-          </div>
-          <Reveal className="col-span-4 border-b border-paper/15 sm:col-span-6 lg:col-span-6 lg:col-start-7">
-            <ol>
-              {DIAGNOSTIC_PARTS.map((p) => (
-                <li key={p.part} className="border-t border-paper/15 py-5 lg:py-6">
-                  <h3 className="type-title text-[clamp(1.25rem,1.05rem+0.7vw,1.5rem)] leading-[1.15]">{p.part}</h3>
-                  <p className="mt-2 max-w-[52ch] text-[16px] leading-[1.55] text-fog">{p.look}</p>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-        </div>
+        <Reveal className="mt-14 lg:mt-20">
+          <ol className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
+            {DIAGNOSTIC_PARTS.map((p, i) => (
+              <li key={p.part} className="border-t border-paper/20 pb-10 pt-5">
+                <p className="type-display text-[44px] leading-none tabular-nums text-signal">{i + 1}</p>
+                <h3 className="type-title mt-6 text-[clamp(1.25rem,1.05rem+0.7vw,1.5rem)] leading-[1.15]">{p.part}</h3>
+                <p className="mt-2 max-w-[40ch] text-[15px] leading-[1.55] text-fog">{p.look}</p>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-2 max-w-[60ch] text-[14px] leading-[1.5] text-fog">
+            {SAMPLE_DIAGNOSTIC.note} Its read scored {SAMPLE_TOTAL} of 60.{" "}
+            <Link href={SAMPLE_HREF} className="text-paper underline decoration-signal underline-offset-4 hover:text-signal">
+              See it in full
+            </Link>
+          </p>
+        </Reveal>
       </Room>
 
       <Room labelledBy="back-heading" tone="red">
